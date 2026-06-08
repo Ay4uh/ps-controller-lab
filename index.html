@@ -1991,177 +1991,126 @@
     </div>
   </div>
 
-  <div class="modal fade hide-raw-numbers" id="finetuneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finetuneModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down">
+  <!-- Finetune Calibration Modal -->
+  <div class="modal fade" id="finetuneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finetuneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
-        <div class="modal-header border-secondary">
-          <h1 class="modal-title fs-5" id="finetuneModalLabel">Finetune stick calibration</h1>
-          <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
+
+        <!-- Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="finetuneModalLabel">Finetune stick calibration</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body border-secondary text-dark">
-          <div class="modal-header border-top-0 pt-0 border-secondary">
-            <div class="btn-group w-100" role="group" aria-label="Finetune mode selection">
-              <input type="radio" class="btn-check" name="finetuneMode" id="finetuneModeCenter" autocomplete="off" checked>
-              <label class="btn btn-outline-primary" for="finetuneModeCenter">Center (L1)</label>
 
-              <input type="radio" class="btn-check" name="finetuneMode" id="finetuneModeCircularity" autocomplete="off">
-              <label class="btn btn-outline-primary" for="finetuneModeCircularity">Circularity (R1)</label>
-            </div>
+        <!-- Body -->
+        <div class="modal-body">
+
+          <!-- Mode toggle -->
+          <div class="btn-group w-100 mb-3" role="group">
+            <input type="radio" class="btn-check" name="finetuneMode" id="finetuneModeCenter" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="finetuneModeCenter">Center (L1)</label>
+            <input type="radio" class="btn-check" name="finetuneMode" id="finetuneModeCircularity" autocomplete="off">
+            <label class="btn btn-outline-primary" for="finetuneModeCircularity">Circularity (R1)</label>
           </div>
 
-          <div class="alert alert-info finetune-center-mode text-start" role="alert">
-            <i class="fas fa-info-circle"></i>&nbsp;&nbsp;
-            <span>Move the stick to select it for tuning, then without touching the stick use the D-pad buttons to adjust the center point. Flick it and adjust it again if it is off center or flickers.</span>
+          <!-- Blue info banner -->
+          <div class="alert alert-info py-2 mb-2 ft-center-info" role="alert" style="font-size:0.9rem;">
+            <i class="fas fa-info-circle"></i>&nbsp;
+            Move the stick to select it for tuning, then without touching the stick use the D-pad buttons to adjust the center point. Flick it and adjust it again if it is off center or flickers.
           </div>
-          
-          <div class="alert alert-info finetune-circularity-mode text-start" role="alert" style="display: none;">
-            <p>
-              <i class="fas fa-info-circle"></i>&nbsp;&nbsp;
-              <span>While holding the stick to be adjusted straight up/down/left/right, make adjustments until you see lightblue sectors in all four directions after circling the stick both left and right.</span>
-            </p>
+          <!-- Green DPAD instruction -->
+          <div class="alert alert-success py-2 mb-3 ft-center-info" role="alert" style="font-size:0.9rem;">
+            <i class="fas fa-check-circle"></i>&nbsp;
+            Press the D-pad or face buttons in the direction you want the stick position to move.
+          </div>
+          <!-- Circularity info (hidden by default) -->
+          <div class="alert alert-info py-2 mb-3 ft-circularity-info" role="alert" style="display:none; font-size:0.9rem;">
+            <i class="fas fa-info-circle"></i>&nbsp;
+            While holding the stick to be adjusted straight up/down/left/right, make adjustments until you see lightblue sectors in all four directions after circling the stick both left and right.
           </div>
 
-          <div style="width: 100%; display: flex; justify-content: center;">
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col col-lg-6 col-12">
-
-                  <div class="card bg-light" id="left-stick-card" style="height: 350px;">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-light text-dark border-secondary">
-                      <span>Left stick</span>
+          <!-- Two stick cards side by side -->
+          <div class="row g-3">
+            <!-- Left stick card -->
+            <div class="col-6">
+              <div class="card border-2" id="left-stick-card" style="cursor:pointer; border-color:#0d6efd !important;">
+                <div class="card-header fw-semibold" id="left-stick-header" style="background:#0d6efd; color:#fff;">Left stick</div>
+                <div class="card-body d-flex flex-column align-items-center py-2">
+                  <canvas id="finetuneStickCanvasL" width="200" height="200" style="max-width:100%;"></canvas>
+                  <div class="mt-2 d-flex gap-4">
+                    <div class="text-center">
+                      <div class="small text-muted">LX:</div>
+                      <strong><pre id="finetuneStickCanvasLx-lbl" style="margin:0; min-width:70px; text-align:center; font-size:1rem;">0.000</pre></strong>
                     </div>
-                    <div class="card-body position-relative">
-                      <div class="container-fluid">
-                        <div class="finetune-grid">
-                          <div class="finetune-top finetune-center-mode">
-                            <input id="finetuneLY" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-top finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneLT" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-left finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneLL" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-left finetune-center-mode">
-                            <input id="finetuneLX" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-center">
-                            <canvas id="finetuneStickCanvasL" width="150px" height="150px"></canvas>
-                            <canvas id="finetuneStickCanvasL_large" width="210px" height="210px" style="display: none;"></canvas>
-                          </div>
-                          <div class="finetune-right finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneLR" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-bottom finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneLB" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- LX/LY values display -->
-                      <div class="px-2 left-stick-values text-dark">
-                        <div class="spacer finetune-center-mode hide-raw-numbers" style="height: 35px;">&nbsp;</div>
-
-                        <div class="hstack justify-content-center gap-4 mt-2">
-                          <div class="vstack" style="text-align: center;">
-                            <span>LX:</span>
-                            <strong><pre id="finetuneStickCanvasLx-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
-                          </div>
-
-                          <div class="vstack" style="text-align: center;">
-                            <span>LY:</span>
-                            <strong><pre id="finetuneStickCanvasLy-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Circularity slider for left stick -->
-                      <div class="px-2 mt-2 finetune-circularity-mode left-stick-slider text-dark" style="display: none;">
-                        <label for="leftCircularitySlider" class="form-label" style="margin-bottom: 2px;">Increase non-circularity</label>
-                        <input type="range" class="form-range" min="0" max="100" value="0" id="leftCircularitySlider">
-                      </div>
+                    <div class="text-center">
+                      <div class="small text-muted">LY:</div>
+                      <strong><pre id="finetuneStickCanvasLy-lbl" style="margin:0; min-width:70px; text-align:center; font-size:1rem;">0.000</pre></strong>
                     </div>
                   </div>
-                </div> <!-- col -->
+                </div>
+              </div>
+            </div>
 
-                <div class="col col-lg-6 col-12 mt-3 mt-lg-0">
-                  <div class="card bg-light" id="right-stick-card" style="height: 350px;">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-light text-dark border-secondary">
-                      <span>Right stick</span>
+            <!-- Right stick card -->
+            <div class="col-6">
+              <div class="card border" id="right-stick-card" style="cursor:pointer;">
+                <div class="card-header fw-semibold" id="right-stick-header" style="background:#f8f9fa; color:#212529;">Right stick</div>
+                <div class="card-body d-flex flex-column align-items-center py-2">
+                  <canvas id="finetuneStickCanvasR" width="200" height="200" style="max-width:100%;"></canvas>
+                  <div class="mt-2 d-flex gap-4">
+                    <div class="text-center">
+                      <div class="small text-muted">RX:</div>
+                      <strong><pre id="finetuneStickCanvasRx-lbl" style="margin:0; min-width:70px; text-align:center; font-size:1rem;">0.000</pre></strong>
                     </div>
-                    <div class="card-body position-relative">
-                      <div class="container-fluid">
-                        <div class="finetune-grid">
-                          <div class="finetune-top finetune-center-mode">
-                            <input id="finetuneRY" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-top finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneRT" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-left finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneRL" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-left finetune-center-mode">
-                            <input id="finetuneRX" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-center">
-                            <canvas id="finetuneStickCanvasR" width="150px" height="150px"></canvas>
-                            <canvas id="finetuneStickCanvasR_large" width="210px" height="210px" style="display: none;"></canvas>
-                          </div>
-                          <div class="finetune-right finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneRR" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                          <div class="finetune-bottom finetune-circularity-mode" style="display: none;">
-                            <input id="finetuneRB" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
-                          </div>
-                        </div>
-
-                        <!-- RX/RY values display -->
-                        <div class="px-2 right-stick-values text-dark">
-                          <div class="spacer finetune-center-mode hide-raw-numbers" style="height: 35px;">&nbsp;</div>
-
-                          <div class="hstack justify-content-center gap-4 mt-2">
-                            <div class="vstack" style="text-align: center;">
-                              <span>RX:</span>
-                              <strong><pre id="finetuneStickCanvasRx-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
-                            </div>
-
-                            <div class="vstack" style="text-align: center;">
-                              <span>RY:</span>
-                              <strong><pre id="finetuneStickCanvasRy-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Circularity slider for right stick -->
-                        <div class="px-2 mt-2 finetune-circularity-mode right-stick-slider text-dark" style="display: none;">
-                          <label for="rightCircularitySlider" class="form-label" style="margin-bottom: 2px;">Increase non-circularity</label>
-                          <input type="range" class="form-range" min="0" max="100" value="0" id="rightCircularitySlider">
-                        </div>
-
-                      </div>
+                    <div class="text-center">
+                      <div class="small text-muted">RY:</div>
+                      <strong><pre id="finetuneStickCanvasRy-lbl" style="margin:0; min-width:70px; text-align:center; font-size:1rem;">0.000</pre></strong>
                     </div>
-                  </div> <!-- col -->
-                </div> <!-- row -->
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="modal-footer border-secondary">
-            <div class="form-check form-switch mt-1 me-auto text-dark">
-              <input class="form-check-input" type="checkbox" role="switch" id="showRawNumbersCheckbox">
-              <label class="form-check-label" for="showRawNumbersCheckbox">Show raw numbers</label>
-            </div>
-            <a href="#" class="text-decoration-none me-3">Step size: 5</a>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="btnApplyFineTuneSave">Done</button>
+          <!-- Hidden raw number inputs (all in one place, always in DOM) -->
+          <div id="finetune-raw-inputs" style="display:none;">
+            <input id="finetuneLX" type="number" min="0" max="65535" value="32768">
+            <input id="finetuneLY" type="number" min="0" max="65535" value="32768">
+            <input id="finetuneRX" type="number" min="0" max="65535" value="32768">
+            <input id="finetuneRY" type="number" min="0" max="65535" value="32768">
+            <input id="finetuneLL" type="number" min="0" max="65535" value="0">
+            <input id="finetuneLT" type="number" min="0" max="65535" value="0">
+            <input id="finetuneLR" type="number" min="0" max="65535" value="0">
+            <input id="finetuneLB" type="number" min="0" max="65535" value="0">
+            <input id="finetuneRL" type="number" min="0" max="65535" value="0">
+            <input id="finetuneRT" type="number" min="0" max="65535" value="0">
+            <input id="finetuneRR" type="number" min="0" max="65535" value="0">
+            <input id="finetuneRB" type="number" min="0" max="65535" value="0">
           </div>
+
+        </div><!-- /modal-body -->
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <div class="me-auto d-flex align-items-center gap-3">
+            <div class="form-check mb-0">
+              <input class="form-check-input" type="checkbox" id="showRawNumbersCheckbox">
+              <label class="form-check-label small" for="showRawNumbersCheckbox">Show raw numbers</label>
+            </div>
+            <span class="text-primary small">Step size: 5</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" id="btnFinetuneCancel">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btnApplyFineTuneSave">Done</button>
         </div>
+
       </div>
     </div>
   </div>
 
+
+
   <!-- Toast Notification Container -->
+
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
     <div id="appToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
@@ -3614,26 +3563,19 @@
 
       // Draw the finetune modal canvases
       const ftCanvasL = document.getElementById("finetuneStickCanvasL");
-      const ftCanvasL_large = document.getElementById("finetuneStickCanvasL_large");
-      const activeCanvasL = (ftCanvasL_large && ftCanvasL_large.offsetParent !== null) ? ftCanvasL_large : ftCanvasL;
-      
-      if (activeCanvasL && activeCanvasL.offsetParent !== null) {
-        const ctxL = activeCanvasL.getContext("2d");
-        ctxL.clearRect(0, 0, activeCanvasL.width, activeCanvasL.height);
-        // Radius is slightly smaller than half width to leave room for the dot
-        draw_stick_dial(ctxL, activeCanvasL.width/2, activeCanvasL.height/2, activeCanvasL.width/2 - 15, lx, ly);
+      if (ftCanvasL && ftCanvasL.offsetParent !== null) {
+        const ctxL = ftCanvasL.getContext("2d");
+        ctxL.clearRect(0, 0, ftCanvasL.width, ftCanvasL.height);
+        draw_stick_dial(ctxL, ftCanvasL.width/2, ftCanvasL.height/2, ftCanvasL.width/2 - 10, lx, ly);
         document.getElementById("finetuneStickCanvasLx-lbl").innerText = (lx > 0 ? "+" : "") + lx.toFixed(3);
         document.getElementById("finetuneStickCanvasLy-lbl").innerText = (ly > 0 ? "+" : "") + ly.toFixed(3);
       }
-      
-      const ftCanvasR = document.getElementById("finetuneStickCanvasR");
-      const ftCanvasR_large = document.getElementById("finetuneStickCanvasR_large");
-      const activeCanvasR = (ftCanvasR_large && ftCanvasR_large.offsetParent !== null) ? ftCanvasR_large : ftCanvasR;
 
-      if (activeCanvasR && activeCanvasR.offsetParent !== null) {
-        const ctxR = activeCanvasR.getContext("2d");
-        ctxR.clearRect(0, 0, activeCanvasR.width, activeCanvasR.height);
-        draw_stick_dial(ctxR, activeCanvasR.width/2, activeCanvasR.height/2, activeCanvasR.width/2 - 15, rx, ry);
+      const ftCanvasR = document.getElementById("finetuneStickCanvasR");
+      if (ftCanvasR && ftCanvasR.offsetParent !== null) {
+        const ctxR = ftCanvasR.getContext("2d");
+        ctxR.clearRect(0, 0, ftCanvasR.width, ftCanvasR.height);
+        draw_stick_dial(ctxR, ftCanvasR.width/2, ftCanvasR.height/2, ftCanvasR.width/2 - 10, rx, ry);
         document.getElementById("finetuneStickCanvasRx-lbl").innerText = (rx > 0 ? "+" : "") + rx.toFixed(3);
         document.getElementById("finetuneStickCanvasRy-lbl").innerText = (ry > 0 ? "+" : "") + ry.toFixed(3);
       }
@@ -4924,6 +4866,35 @@
             applyDpadAdjustment(lastDpadState.left, lastDpadState.right, lastDpadState.up, lastDpadState.down);
           }, 150);
         }, 400);
+      }
+    }
+
+    function setFinetuneActiveStick(stick) {
+      activeFinetuneStick = stick;
+      const leftCard = document.getElementById("left-stick-card");
+      const leftHeader = document.getElementById("left-stick-header");
+      const rightCard = document.getElementById("right-stick-card");
+      const rightHeader = document.getElementById("right-stick-header");
+      if (!leftCard || !rightCard) return;
+
+      if (stick === "left") {
+        leftCard.style.borderColor = "#0d6efd";
+        leftCard.style.borderWidth = "2px";
+        leftHeader.style.background = "#0d6efd";
+        leftHeader.style.color = "#fff";
+        rightCard.style.borderColor = "";
+        rightCard.style.borderWidth = "";
+        rightHeader.style.background = "#f8f9fa";
+        rightHeader.style.color = "#212529";
+      } else {
+        rightCard.style.borderColor = "#0d6efd";
+        rightCard.style.borderWidth = "2px";
+        rightHeader.style.background = "#0d6efd";
+        rightHeader.style.color = "#fff";
+        leftCard.style.borderColor = "";
+        leftCard.style.borderWidth = "";
+        leftHeader.style.background = "#f8f9fa";
+        leftHeader.style.color = "#212529";
       }
     }
 
