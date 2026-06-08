@@ -4828,17 +4828,34 @@
     });
 
     // DualSense Fine-Tune Commands
-    const finetuneInputs = ["LL", "LT", "LR", "LB", "LX", "LY", "RL", "RT", "RR", "RB", "RX", "RY"];
+    const finetuneInputs = ["LL", "LT", "RL", "RT", "LR", "LB", "RR", "RB", "LX", "LY", "RX", "RY"];
+
+    document.getElementById("finetuneModeCenter").addEventListener("change", (e) => {
+      if (e.target.checked) document.getElementById("finetuneModal").classList.remove("circularity-mode");
+    });
+    
+    document.getElementById("finetuneModeCircularity").addEventListener("change", (e) => {
+      if (e.target.checked) document.getElementById("finetuneModal").classList.add("circularity-mode");
+    });
+    
+    document.getElementById("showRawNumbersCheckbox").addEventListener("change", (e) => {
+      document.getElementById("finetuneModal").classList.toggle("hide-raw-numbers", !e.target.checked);
+    });
 
     document.getElementById("finetuneModal").addEventListener("show.bs.modal", async () => {
       if (!hidDevice || isClone) return;
       try {
-        const res = await receiveFeatureReport(hidDevice, 0x83);
-        if (res.byteLength >= 24) {
-          // Read 12 INT16 values
+        await sendFeatureReport(hidDevice, 0x80, new Uint8Array([12, 2]));
+        await new Promise(r => setTimeout(r, 100)); // sleep 100ms
+        const res = await receiveFeatureReport(hidDevice, 0x81);
+        
+        const cmd = res.getUint8(0, true);
+        const p1 = res.getUint8(1, true);
+        
+        if (cmd === 129 && p1 === 12) {
           const values = [];
           for (let i = 0; i < 12; i++) {
-            values.push(res.getInt16(i * 2, true));
+            values.push(res.getUint16(4 + i * 2, true));
           }
           
           finetuneInputs.forEach((suffix, i) => {
@@ -4847,6 +4864,8 @@
           });
           
           showNotification("Successfully read raw finetune offsets from controller.");
+        } else {
+          showNotification("Failed to parse finetune data from controller.", "danger");
         }
       } catch (e) {
         showNotification("Failed to read raw offsets: " + e.message, "danger");
@@ -4856,17 +4875,18 @@
     document.getElementById("btnApplyFineTuneSave").addEventListener("click", async () => {
       if (!hidDevice || isClone) return;
       try {
-        const payload = new Uint8Array(25);
-        payload[0] = 0x05; 
+        const payload = new Uint8Array(2 + 24);
+        payload[0] = 12;
+        payload[1] = 1;
         
         const dv = new DataView(payload.buffer);
         finetuneInputs.forEach((suffix, i) => {
           const el = document.getElementById("finetune" + suffix);
           const val = el ? parseInt(el.value) || 0 : 0;
-          dv.setInt16(1 + i * 2, val, true);
+          dv.setUint16(2 + i * 2, val, true);
         });
 
-        await sendFeatureReport(hidDevice, 0x82, payload);
+        await sendFeatureReport(hidDevice, 0x80, payload);
         showNotification("Fine-tune values written successfully!");
         
         // Close modal
