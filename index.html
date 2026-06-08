@@ -2152,7 +2152,7 @@
               <input class="form-check-input" type="checkbox" role="switch" id="showRawNumbersCheckbox">
               <label class="form-check-label" for="showRawNumbersCheckbox">Show raw numbers</label>
             </div>
-            <span class="text-primary me-3">Step size: 5</span>
+            <a href="#" class="text-decoration-none me-3">Step size: 5</a>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             <button type="button" class="btn btn-primary" id="btnApplyFineTuneSave">Done</button>
           </div>
@@ -3622,8 +3622,8 @@
         ctxL.clearRect(0, 0, activeCanvasL.width, activeCanvasL.height);
         // Radius is slightly smaller than half width to leave room for the dot
         draw_stick_dial(ctxL, activeCanvasL.width/2, activeCanvasL.height/2, activeCanvasL.width/2 - 15, lx, ly);
-        document.getElementById("finetuneStickCanvasLx-lbl").innerText = lx.toFixed(3);
-        document.getElementById("finetuneStickCanvasLy-lbl").innerText = ly.toFixed(3);
+        document.getElementById("finetuneStickCanvasLx-lbl").innerText = (lx > 0 ? "+" : "") + lx.toFixed(3);
+        document.getElementById("finetuneStickCanvasLy-lbl").innerText = (ly > 0 ? "+" : "") + ly.toFixed(3);
       }
       
       const ftCanvasR = document.getElementById("finetuneStickCanvasR");
@@ -3634,8 +3634,8 @@
         const ctxR = activeCanvasR.getContext("2d");
         ctxR.clearRect(0, 0, activeCanvasR.width, activeCanvasR.height);
         draw_stick_dial(ctxR, activeCanvasR.width/2, activeCanvasR.height/2, activeCanvasR.width/2 - 15, rx, ry);
-        document.getElementById("finetuneStickCanvasRx-lbl").innerText = rx.toFixed(3);
-        document.getElementById("finetuneStickCanvasRy-lbl").innerText = ry.toFixed(3);
+        document.getElementById("finetuneStickCanvasRx-lbl").innerText = (rx > 0 ? "+" : "") + rx.toFixed(3);
+        document.getElementById("finetuneStickCanvasRy-lbl").innerText = (ry > 0 ? "+" : "") + ry.toFixed(3);
       }
 
       // Apply visual damping (lerp) to analog sticks for buttery-smooth visual movements
@@ -4844,64 +4844,16 @@
     const finetuneInputs = ["LL", "LT", "RL", "RT", "LR", "LB", "RR", "RB", "LX", "LY", "RX", "RY"];
 
     let activeFinetuneStick = "left"; // "left" or "right"
-    let dpadThrottleTimer = null;
+    let dpadInitialTimer = null;
+    let dpadRepeatTimer = null;
+    let lastDpadState = { up: false, down: false, left: false, right: false };
 
-    function setFinetuneActiveStick(stick) {
-      if (activeFinetuneStick === stick) return;
-      activeFinetuneStick = stick;
-      
-      const leftCard = document.getElementById("left-stick-card");
-      const leftHeader = leftCard.querySelector(".card-header");
-      const rightCard = document.getElementById("right-stick-card");
-      const rightHeader = rightCard.querySelector(".card-header");
-
-      if (stick === "left") {
-        leftCard.classList.add("border-primary");
-        leftHeader.classList.remove("bg-light", "text-dark");
-        leftHeader.classList.add("bg-primary", "text-white");
-        
-        rightCard.classList.remove("border-primary");
-        rightHeader.classList.remove("bg-primary", "text-white");
-        rightHeader.classList.add("bg-light", "text-dark");
-      } else {
-        leftCard.classList.remove("border-primary");
-        leftHeader.classList.remove("bg-primary", "text-white");
-        leftHeader.classList.add("bg-light", "text-dark");
-        
-        rightCard.classList.add("border-primary");
-        rightHeader.classList.remove("bg-light", "text-dark");
-        rightHeader.classList.add("bg-primary", "text-white");
-      }
+    function stopContinuousDpad() {
+      if (dpadInitialTimer) { clearTimeout(dpadInitialTimer); dpadInitialTimer = null; }
+      if (dpadRepeatTimer) { clearInterval(dpadRepeatTimer); dpadRepeatTimer = null; }
     }
 
-    function handleFinetuneDpadAndSticks(gp) {
-      // Auto-switch active stick based on stick movement
-      const [lx, ly, rx, ry] = gp.axes;
-      if (Math.abs(lx) > 0.2 || Math.abs(ly) > 0.2) {
-        setFinetuneActiveStick("left");
-      } else if (Math.abs(rx) > 0.2 || Math.abs(ry) > 0.2) {
-        setFinetuneActiveStick("right");
-      }
-
-      // Check if we are in center mode or circularity mode
-      const isCircularity = document.getElementById("finetuneModal").classList.contains("circularity-mode");
-      if (isCircularity) return; // For now, only support Center mode DPAD calibration as per requirements
-
-      const dpadUp = gp.buttons[12].pressed;
-      const dpadDown = gp.buttons[13].pressed;
-      const dpadLeft = gp.buttons[14].pressed;
-      const dpadRight = gp.buttons[15].pressed;
-
-      if (!dpadUp && !dpadDown && !dpadLeft && !dpadRight) {
-        if (dpadThrottleTimer) {
-          clearTimeout(dpadThrottleTimer);
-          dpadThrottleTimer = null;
-        }
-        return;
-      }
-
-      if (dpadThrottleTimer) return;
-
+    function applyDpadAdjustment(left, right, up, down) {
       let xId = activeFinetuneStick === "left" ? "finetuneLX" : "finetuneRX";
       let yId = activeFinetuneStick === "left" ? "finetuneLY" : "finetuneRY";
 
@@ -4915,20 +4867,64 @@
 
       const step = 5;
 
-      if (dpadLeft) xVal += step;
-      if (dpadRight) xVal -= step;
-      if (dpadUp) yVal += step;
-      if (dpadDown) yVal -= step;
+      if (left) xVal += step;
+      if (right) xVal -= step;
+      if (up) yVal += step;
+      if (down) yVal -= step;
 
       xInput.value = Math.max(0, Math.min(65535, xVal));
       yInput.value = Math.max(0, Math.min(65535, yVal));
 
       // Trigger live write to hardware so the stick canvas updates instantly
       writeFinetuneDataToController().catch(e => console.error("Finetune write error", e));
+    }
 
-      dpadThrottleTimer = setTimeout(() => {
-        dpadThrottleTimer = null;
-      }, 150); // 150ms throttle to prevent WebHID spam
+    function handleFinetuneDpadAndSticks(gp) {
+      // Auto-switch active stick based on stick movement
+      const [lx, ly, rx, ry] = gp.axes;
+      if (Math.abs(lx) > 0.2 || Math.abs(ly) > 0.2) {
+        setFinetuneActiveStick("left");
+      } else if (Math.abs(rx) > 0.2 || Math.abs(ry) > 0.2) {
+        setFinetuneActiveStick("right");
+      }
+
+      // Check if we are in center mode or circularity mode
+      const isCircularity = document.getElementById("finetuneModal").classList.contains("circularity-mode");
+      if (isCircularity) return;
+
+      const dpadUp = gp.buttons[12].pressed;
+      const dpadDown = gp.buttons[13].pressed;
+      const dpadLeft = gp.buttons[14].pressed;
+      const dpadRight = gp.buttons[15].pressed;
+
+      // If nothing is pressed, clear timers and save state
+      if (!dpadUp && !dpadDown && !dpadLeft && !dpadRight) {
+        stopContinuousDpad();
+        lastDpadState = { up: false, down: false, left: false, right: false };
+        return;
+      }
+
+      // Check if this is a newly pressed button
+      const newlyPressed = (!lastDpadState.up && dpadUp) || 
+                           (!lastDpadState.down && dpadDown) || 
+                           (!lastDpadState.left && dpadLeft) || 
+                           (!lastDpadState.right && dpadRight);
+
+      // Save current state
+      lastDpadState = { up: dpadUp, down: dpadDown, left: dpadLeft, right: dpadRight };
+
+      if (newlyPressed) {
+        stopContinuousDpad();
+        applyDpadAdjustment(dpadLeft, dpadRight, dpadUp, dpadDown);
+
+        // Start initial delay
+        dpadInitialTimer = setTimeout(() => {
+          // After 400ms, start repeat timer
+          dpadRepeatTimer = setInterval(() => {
+            applyDpadAdjustment(lastDpadState.left, lastDpadState.right, lastDpadState.up, lastDpadState.down);
+          }, 150);
+        }, 400);
+      }
     }
 
     document.getElementById("left-stick-card").addEventListener("click", () => setFinetuneActiveStick("left"));
