@@ -1991,7 +1991,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="finetuneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finetuneModalLabel" aria-hidden="true">
+  <div class="modal fade hide-raw-numbers" id="finetuneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finetuneModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down">
       <div class="modal-content">
         <div class="modal-header bg-dark text-white border-secondary">
@@ -2144,13 +2144,12 @@
                   </div> <!-- col -->
                 </div> <!-- row -->
               </div>
-
             </div>
           </div>
 
           <div class="modal-footer border-secondary">
-            <div class="form-check me-auto text-white">
-              <input class="form-check-input" type="checkbox" id="showRawNumbersCheckbox" checked>
+            <div class="form-check form-switch mt-1 me-auto text-white">
+              <input class="form-check-input" type="checkbox" role="switch" id="showRawNumbersCheckbox">
               <label class="form-check-label" for="showRawNumbersCheckbox">Show raw numbers</label>
             </div>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -3614,19 +3613,26 @@
 
       // Draw the finetune modal canvases
       const ftCanvasL = document.getElementById("finetuneStickCanvasL");
-      if (ftCanvasL && ftCanvasL.offsetParent !== null) {
-        const ctxL = ftCanvasL.getContext("2d");
-        ctxL.clearRect(0, 0, ftCanvasL.width, ftCanvasL.height);
-        draw_stick_dial(ctxL, ftCanvasL.width/2, ftCanvasL.height/2, 60, lx, ly);
+      const ftCanvasL_large = document.getElementById("finetuneStickCanvasL_large");
+      const activeCanvasL = (ftCanvasL_large && ftCanvasL_large.offsetParent !== null) ? ftCanvasL_large : ftCanvasL;
+      
+      if (activeCanvasL && activeCanvasL.offsetParent !== null) {
+        const ctxL = activeCanvasL.getContext("2d");
+        ctxL.clearRect(0, 0, activeCanvasL.width, activeCanvasL.height);
+        // Radius is slightly smaller than half width to leave room for the dot
+        draw_stick_dial(ctxL, activeCanvasL.width/2, activeCanvasL.height/2, activeCanvasL.width/2 - 15, lx, ly);
         document.getElementById("finetuneStickCanvasLx-lbl").innerText = lx.toFixed(3);
         document.getElementById("finetuneStickCanvasLy-lbl").innerText = ly.toFixed(3);
       }
       
       const ftCanvasR = document.getElementById("finetuneStickCanvasR");
-      if (ftCanvasR && ftCanvasR.offsetParent !== null) {
-        const ctxR = ftCanvasR.getContext("2d");
-        ctxR.clearRect(0, 0, ftCanvasR.width, ftCanvasR.height);
-        draw_stick_dial(ctxR, ftCanvasR.width/2, ftCanvasR.height/2, 60, rx, ry);
+      const ftCanvasR_large = document.getElementById("finetuneStickCanvasR_large");
+      const activeCanvasR = (ftCanvasR_large && ftCanvasR_large.offsetParent !== null) ? ftCanvasR_large : ftCanvasR;
+
+      if (activeCanvasR && activeCanvasR.offsetParent !== null) {
+        const ctxR = activeCanvasR.getContext("2d");
+        ctxR.clearRect(0, 0, activeCanvasR.width, activeCanvasR.height);
+        draw_stick_dial(ctxR, activeCanvasR.width/2, activeCanvasR.height/2, activeCanvasR.width/2 - 15, rx, ry);
         document.getElementById("finetuneStickCanvasRx-lbl").innerText = rx.toFixed(3);
         document.getElementById("finetuneStickCanvasRy-lbl").innerText = ry.toFixed(3);
       }
