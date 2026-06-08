@@ -928,42 +928,8 @@
     #finetuneModal.circularity-mode .finetune-center-mode { display: none; }
     #finetuneModal.circularity-mode .finetune-circularity-mode { display: block; }
 
-    #finetuneModal.hide-raw-numbers .finetune-top,
-    #finetuneModal.hide-raw-numbers .finetune-left,
-    #finetuneModal.hide-raw-numbers .finetune-right,
-    #finetuneModal.hide-raw-numbers .finetune-bottom { display: none; }
-
-    #finetuneModal.hide-raw-numbers .spacer.hide-raw-numbers { display: none; }
-
-    #finetuneModal.hide-raw-numbers .finetune-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr;
-      grid-template-areas: "center";
-    }
-
-    #finetuneModal.hide-raw-numbers #finetuneStickCanvasL,
-    #finetuneModal.hide-raw-numbers #finetuneStickCanvasR { display: none; }
-    
-    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasL,
-    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasR { display: block; }
-    
-    #finetuneModal.hide-raw-numbers #finetuneStickCanvasL_large,
-    #finetuneModal.hide-raw-numbers #finetuneStickCanvasR_large { display: block; }
-    
-    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasL_large,
-    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasR_large { display: none; }
-
-    .left-stick-values,
-    .right-stick-values { display: block; }
-
-    .left-stick-slider,
-    .right-stick-slider { display: none; }
-
-    #finetuneModal.circularity-mode #left-stick-card.show-slider .left-stick-values { display: none !important; }
-    #finetuneModal.circularity-mode #left-stick-card.show-slider .left-stick-slider.finetune-circularity-mode { display: block !important; }
-
-    #finetuneModal.circularity-mode #right-stick-card.show-slider .right-stick-values { display: none !important; }
-    #finetuneModal.circularity-mode #right-stick-card.show-slider .right-stick-slider.finetune-circularity-mode { display: block !important; }
+    /* ft-center-info shown/hidden based on mode toggle via JS */
+    .ft-circularity-info { display: none; }
   </style>
 </head>
 <body>
@@ -3561,23 +3527,25 @@
         if (lblRy) lblRy.innerText = ry.toFixed(3);
       }
 
-      // Draw the finetune modal canvases
-      const ftCanvasL = document.getElementById("finetuneStickCanvasL");
-      if (ftCanvasL && ftCanvasL.offsetParent !== null) {
-        const ctxL = ftCanvasL.getContext("2d");
-        ctxL.clearRect(0, 0, ftCanvasL.width, ftCanvasL.height);
-        draw_stick_dial(ctxL, ftCanvasL.width/2, ftCanvasL.height/2, ftCanvasL.width/2 - 10, lx, ly);
-        document.getElementById("finetuneStickCanvasLx-lbl").innerText = (lx > 0 ? "+" : "") + lx.toFixed(3);
-        document.getElementById("finetuneStickCanvasLy-lbl").innerText = (ly > 0 ? "+" : "") + ly.toFixed(3);
-      }
-
-      const ftCanvasR = document.getElementById("finetuneStickCanvasR");
-      if (ftCanvasR && ftCanvasR.offsetParent !== null) {
-        const ctxR = ftCanvasR.getContext("2d");
-        ctxR.clearRect(0, 0, ftCanvasR.width, ftCanvasR.height);
-        draw_stick_dial(ctxR, ftCanvasR.width/2, ftCanvasR.height/2, ftCanvasR.width/2 - 10, rx, ry);
-        document.getElementById("finetuneStickCanvasRx-lbl").innerText = (rx > 0 ? "+" : "") + rx.toFixed(3);
-        document.getElementById("finetuneStickCanvasRy-lbl").innerText = (ry > 0 ? "+" : "") + ry.toFixed(3);
+      // Draw the finetune modal canvases (always draw if canvas exists - modal uses display:block not offsetParent)
+      const finetuneModalEl = document.getElementById("finetuneModal");
+      if (finetuneModalEl && finetuneModalEl.classList.contains("show")) {
+        const ftCanvasL = document.getElementById("finetuneStickCanvasL");
+        if (ftCanvasL) {
+          const ctxL = ftCanvasL.getContext("2d");
+          ctxL.clearRect(0, 0, ftCanvasL.width, ftCanvasL.height);
+          draw_stick_dial(ctxL, ftCanvasL.width/2, ftCanvasL.height/2, ftCanvasL.width/2 - 10, lx, ly);
+          document.getElementById("finetuneStickCanvasLx-lbl").innerText = (lx > 0 ? "+" : "") + lx.toFixed(3);
+          document.getElementById("finetuneStickCanvasLy-lbl").innerText = (ly > 0 ? "+" : "") + ly.toFixed(3);
+        }
+        const ftCanvasR = document.getElementById("finetuneStickCanvasR");
+        if (ftCanvasR) {
+          const ctxR = ftCanvasR.getContext("2d");
+          ctxR.clearRect(0, 0, ftCanvasR.width, ftCanvasR.height);
+          draw_stick_dial(ctxR, ftCanvasR.width/2, ftCanvasR.height/2, ftCanvasR.width/2 - 10, rx, ry);
+          document.getElementById("finetuneStickCanvasRx-lbl").innerText = (rx > 0 ? "+" : "") + rx.toFixed(3);
+          document.getElementById("finetuneStickCanvasRy-lbl").innerText = (ry > 0 ? "+" : "") + ry.toFixed(3);
+        }
       }
 
       // Apply visual damping (lerp) to analog sticks for buttery-smooth visual movements
