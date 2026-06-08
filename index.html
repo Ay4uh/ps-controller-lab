@@ -4789,13 +4789,29 @@
       writeFinetuneDataToController().catch(e => console.error("Finetune write error", e));
     }
 
+    let userSelectedStick = false;
+
     function handleFinetuneDpadAndSticks(gp) {
-      // Auto-switch active stick based on stick movement
-      const [lx, ly, rx, ry] = gp.axes;
-      if (Math.abs(lx) > 0.2 || Math.abs(ly) > 0.2) {
+      // Allow L3 and R3 buttons to manually select and lock sticks
+      const l3Pressed = gp.buttons[10]?.pressed;
+      const r3Pressed = gp.buttons[11]?.pressed;
+
+      if (l3Pressed) {
+        userSelectedStick = true;
         setFinetuneActiveStick("left");
-      } else if (Math.abs(rx) > 0.2 || Math.abs(ry) > 0.2) {
+      } else if (r3Pressed) {
+        userSelectedStick = true;
         setFinetuneActiveStick("right");
+      } else {
+        // Auto-switch active stick based on stick movement only if push is intentional (> 0.5) to avoid drift switching it
+        const [lx, ly, rx, ry] = gp.axes;
+        if (Math.abs(lx) > 0.5 || Math.abs(ly) > 0.5) {
+          userSelectedStick = false;
+          setFinetuneActiveStick("left");
+        } else if (Math.abs(rx) > 0.5 || Math.abs(ry) > 0.5) {
+          userSelectedStick = false;
+          setFinetuneActiveStick("right");
+        }
       }
 
       // Check if we are in center mode or circularity mode
@@ -4866,8 +4882,14 @@
       }
     }
 
-    document.getElementById("left-stick-card").addEventListener("click", () => setFinetuneActiveStick("left"));
-    document.getElementById("right-stick-card").addEventListener("click", () => setFinetuneActiveStick("right"));
+    document.getElementById("left-stick-card").addEventListener("click", () => {
+      userSelectedStick = true;
+      setFinetuneActiveStick("left");
+    });
+    document.getElementById("right-stick-card").addEventListener("click", () => {
+      userSelectedStick = true;
+      setFinetuneActiveStick("right");
+    });
 
     document.getElementById("finetuneModeCenter").addEventListener("change", (e) => {
       if (e.target.checked) document.getElementById("finetuneModal").classList.remove("circularity-mode");
@@ -4882,6 +4904,7 @@
     });
 
     document.getElementById("finetuneModal").addEventListener("show.bs.modal", async () => {
+      userSelectedStick = false;
       setFinetuneActiveStick("left");
       if (!hidDevice || isClone) return;
       try {
