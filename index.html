@@ -3386,6 +3386,11 @@
       if (gp) {
         if (!isConnected) {
           updateInputDisplay(gp);
+          if (document.getElementById("finetuneModal")?.classList.contains("show")) {
+            if (typeof handleFinetuneDpadAndSticks === "function") {
+              handleFinetuneDpadAndSticks(gp);
+            }
+          }
         }
         
         const actuator = gp.vibrationActuator || (gp.hapticActuators && gp.hapticActuators[0]);
@@ -3397,7 +3402,12 @@
           document.getElementById("vibrationSupportBadge").innerHTML = `<span class="badge-custom badge-danger"><i class="fa-solid fa-circle-xmark"></i> Unsupported</span>`;
         }
       } else if (demoModeActive) {
-        simulateDemoInputs();
+        const simGp = simulateDemoInputs();
+        if (simGp && document.getElementById("finetuneModal")?.classList.contains("show")) {
+          if (typeof handleFinetuneDpadAndSticks === "function") {
+            handleFinetuneDpadAndSticks(simGp);
+          }
+        }
         document.getElementById("vibrationSupportBadge").innerHTML = `<span class="badge-custom badge-success"><i class="fa-solid fa-circle-check"></i> Supported (Simulated)</span>`;
       }
 
@@ -4891,6 +4901,33 @@
       setFinetuneActiveStick("right");
     });
 
+    window.addEventListener("keydown", (e) => {
+      const modal = document.getElementById("finetuneModal");
+      if (!modal || !modal.classList.contains("show")) return;
+      
+      // Do not intercept arrow keys if focused on input boxes
+      if (document.activeElement && document.activeElement.tagName === "INPUT") return;
+
+      let handled = false;
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+        applyDpadAdjustment(true, false, false, false);
+        handled = true;
+      } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+        applyDpadAdjustment(false, true, false, false);
+        handled = true;
+      } else if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
+        applyDpadAdjustment(false, false, true, false);
+        handled = true;
+      } else if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
+        applyDpadAdjustment(false, false, false, true);
+        handled = true;
+      }
+
+      if (handled) {
+        e.preventDefault();
+      }
+    });
+
     document.getElementById("finetuneModeCenter").addEventListener("change", (e) => {
       if (e.target.checked) document.getElementById("finetuneModal").classList.remove("circularity-mode");
     });
@@ -5056,8 +5093,18 @@
     }
 
     function simulateDemoInputs() {
+      const lxOffset = ((parseInt(document.getElementById("finetuneLX").value) || 32768) - 32768) / 32768;
+      const lyOffset = ((parseInt(document.getElementById("finetuneLY").value) || 32768) - 32768) / 32768;
+      const rxOffset = ((parseInt(document.getElementById("finetuneRX").value) || 32768) - 32768) / 32768;
+      const ryOffset = ((parseInt(document.getElementById("finetuneRY").value) || 32768) - 32768) / 32768;
+
       const gp = {
-        axes: demoAxes,
+        axes: [
+          demoAxes[0] - lxOffset,
+          demoAxes[1] - lyOffset,
+          demoAxes[2] - rxOffset,
+          demoAxes[3] - ryOffset
+        ],
         buttons: demoButtons.map((pressed, idx) => ({
           pressed: pressed,
           value: pressed ? 1.0 : 0.0
@@ -5068,6 +5115,7 @@
       if (demoButtons[5]) gp.buttons[7].value = 0.8; // R1 holds R2 trigger
 
       updateInputDisplay(gp);
+      return gp;
     }
 
     // ==========================================
