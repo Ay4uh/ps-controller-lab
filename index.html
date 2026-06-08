@@ -3274,6 +3274,12 @@
 
         updateInputDisplay(gp);
 
+        if (document.getElementById("finetuneModal")?.classList.contains("show")) {
+          if (typeof handleFinetuneDpadAndSticks === "function") {
+            handleFinetuneDpadAndSticks(gp);
+          }
+        }
+
         // Parse motion sensors for DS4 and DualSense
         if (isDS4 && data.byteLength >= 24) {
           try {
@@ -4830,6 +4836,81 @@
     // DualSense Fine-Tune Commands
     const finetuneInputs = ["LL", "LT", "RL", "RT", "LR", "LB", "RR", "RB", "LX", "LY", "RX", "RY"];
 
+    let activeFinetuneStick = "left"; // "left" or "right"
+    let dpadThrottleTimer = null;
+
+    function setFinetuneActiveStick(stick) {
+      if (activeFinetuneStick === stick) return;
+      activeFinetuneStick = stick;
+      if (stick === "left") {
+        document.getElementById("left-stick-card").classList.add("border-primary");
+        document.getElementById("right-stick-card").classList.remove("border-primary");
+      } else {
+        document.getElementById("left-stick-card").classList.remove("border-primary");
+        document.getElementById("right-stick-card").classList.add("border-primary");
+      }
+    }
+
+    function handleFinetuneDpadAndSticks(gp) {
+      // Auto-switch active stick based on stick movement
+      const [lx, ly, rx, ry] = gp.axes;
+      if (Math.abs(lx) > 0.2 || Math.abs(ly) > 0.2) {
+        setFinetuneActiveStick("left");
+      } else if (Math.abs(rx) > 0.2 || Math.abs(ry) > 0.2) {
+        setFinetuneActiveStick("right");
+      }
+
+      // Check if we are in center mode or circularity mode
+      const isCircularity = document.getElementById("finetuneModal").classList.contains("circularity-mode");
+      if (isCircularity) return; // For now, only support Center mode DPAD calibration as per requirements
+
+      const dpadUp = gp.buttons[12].pressed;
+      const dpadDown = gp.buttons[13].pressed;
+      const dpadLeft = gp.buttons[14].pressed;
+      const dpadRight = gp.buttons[15].pressed;
+
+      if (!dpadUp && !dpadDown && !dpadLeft && !dpadRight) {
+        if (dpadThrottleTimer) {
+          clearTimeout(dpadThrottleTimer);
+          dpadThrottleTimer = null;
+        }
+        return;
+      }
+
+      if (dpadThrottleTimer) return;
+
+      let xId = activeFinetuneStick === "left" ? "finetuneLX" : "finetuneRX";
+      let yId = activeFinetuneStick === "left" ? "finetuneLY" : "finetuneRY";
+
+      const xInput = document.getElementById(xId);
+      const yInput = document.getElementById(yId);
+
+      if (!xInput || !yInput) return;
+
+      let xVal = parseInt(xInput.value) || 0;
+      let yVal = parseInt(yInput.value) || 0;
+
+      const step = 5;
+
+      if (dpadLeft) xVal += step;
+      if (dpadRight) xVal -= step;
+      if (dpadUp) yVal += step;
+      if (dpadDown) yVal -= step;
+
+      xInput.value = Math.max(0, Math.min(65535, xVal));
+      yInput.value = Math.max(0, Math.min(65535, yVal));
+
+      // Trigger live write to hardware so the stick canvas updates instantly
+      writeFinetuneDataToController().catch(e => console.error("Finetune write error", e));
+
+      dpadThrottleTimer = setTimeout(() => {
+        dpadThrottleTimer = null;
+      }, 150); // 150ms throttle to prevent WebHID spam
+    }
+
+    document.getElementById("left-stick-card").addEventListener("click", () => setFinetuneActiveStick("left"));
+    document.getElementById("right-stick-card").addEventListener("click", () => setFinetuneActiveStick("right"));
+
     document.getElementById("finetuneModeCenter").addEventListener("change", (e) => {
       if (e.target.checked) document.getElementById("finetuneModal").classList.remove("circularity-mode");
     });
@@ -4843,6 +4924,7 @@
     });
 
     document.getElementById("finetuneModal").addEventListener("show.bs.modal", async () => {
+      setFinetuneActiveStick("left");
       if (!hidDevice || isClone) return;
       try {
         await sendFeatureReport(hidDevice, 0x80, new Uint8Array([12, 2]));
@@ -4872,21 +4954,25 @@
       }
     });
 
-    document.getElementById("btnApplyFineTuneSave").addEventListener("click", async () => {
+    async function writeFinetuneDataToController() {
       if (!hidDevice || isClone) return;
-      try {
-        const payload = new Uint8Array(2 + 24);
-        payload[0] = 12;
-        payload[1] = 1;
-        
-        const dv = new DataView(payload.buffer);
-        finetuneInputs.forEach((suffix, i) => {
-          const el = document.getElementById("finetune" + suffix);
-          const val = el ? parseInt(el.value) || 0 : 0;
-          dv.setUint16(2 + i * 2, val, true);
-        });
+      const payload = new Uint8Array(2 + 24);
+      payload[0] = 12;
+      payload[1] = 1;
+      
+      const dv = new DataView(payload.buffer);
+      finetuneInputs.forEach((suffix, i) => {
+        const el = document.getElementById("finetune" + suffix);
+        const val = el ? parseInt(el.value) || 0 : 0;
+        dv.setUint16(2 + i * 2, val, true);
+      });
 
-        await sendFeatureReport(hidDevice, 0x80, payload);
+      await sendFeatureReport(hidDevice, 0x80, payload);
+    }
+
+    document.getElementById("btnApplyFineTuneSave").addEventListener("click", async () => {
+      try {
+        await writeFinetuneDataToController();
         showNotification("Fine-tune values written successfully!");
         
         // Close modal
