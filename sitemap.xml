@@ -2,27 +2,72 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ay5uh.com/</loc>
-    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://ay5uh.com/fix-ps5-controller-drift/</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://ay5uh.com/tools/battery-tester/</loc>
     <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://ay5uh.com/ps4-controller-drift-test/</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://ay5uh.com/tools/thermal-test/</loc>
     <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://ay5uh.com/dualsense-calibration/</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://ay5uh.com/tools/ssd-test/</loc>
     <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://ay5uh.com/controller-vibration-test/</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://ay5uh.com/tools/ram-test/</loc>
     <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/benchmark/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/controller-lab/</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/keyboard-test/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/mouse-test/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/mic-test/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/speaker-test/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/display-test/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/dead-pixel-test/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/webcam-test/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
 </urlset>
