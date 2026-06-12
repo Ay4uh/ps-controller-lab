@@ -1,51 +1,80 @@
 function injectSidebar(activeToolId = null) {
-  const sidebarHTML = `
-    <aside class="global-sidebar" id="globalSidebar">
-      <div class="sidebar-brand">
-        <a href="/">
-          <span>🔧</span>
-          <div>
-            <h2>ay5uh</h2>
-            <p>Hardware Diagnostics</p>
-          </div>
+  const headerHTML = `
+    <header class="global-header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="hamburgerBtn">☰</button>
+        <a href="/" class="header-logo">
+          <span>🔧</span> ay5uh
         </a>
       </div>
+      <div class="header-tagline">Hardware Diagnostics</div>
+    </header>
+  `;
+
+  const sidebarHTML = `
+    <aside class="global-sidebar" id="globalSidebar">
       
       <div class="nav-section">
         <div class="nav-category">Laptop</div>
         <ul class="nav-list">
-          <li class="nav-item"><a href="/tools/battery-tester/" id="nav-battery-tester"><span class="nav-icon">🔋</span> Battery Health</a></li>
-          <li class="nav-item"><a href="/tools/thermal-test/" id="nav-thermal-test"><span class="nav-icon">🌡️</span> Thermal Profiler</a></li>
-          <li class="nav-item"><a href="/tools/ssd-test/" id="nav-ssd-test"><span class="nav-icon">💾</span> SSD Health</a></li>
-          <li class="nav-item"><a href="/tools/ram-test/" id="nav-ram-test"><span class="nav-icon">🧠</span> RAM Test</a></li>
-          <li class="nav-item"><a href="/tools/benchmark/" id="nav-benchmark"><span class="nav-icon">⚡</span> Benchmark</a></li>
+          <li class="nav-item"><a href="/tools/battery-tester/" id="nav-battery-tester">
+            <div class="nav-item-left"><span class="nav-icon">🔋</span> Battery</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/thermal-test/" id="nav-thermal-test">
+            <div class="nav-item-left"><span class="nav-icon">🌡️</span> Thermal</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/ssd-test/" id="nav-ssd-test">
+            <div class="nav-item-left"><span class="nav-icon">💾</span> SSD</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/ram-test/" id="nav-ram-test">
+            <div class="nav-item-left"><span class="nav-icon">🧠</span> RAM</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/benchmark/" id="nav-benchmark">
+            <div class="nav-item-left"><span class="nav-icon">⚡</span> Benchmark</div>
+          </a></li>
         </ul>
       </div>
 
       <div class="nav-section">
         <div class="nav-category">Peripherals</div>
         <ul class="nav-list">
-          <li class="nav-item"><a href="/tools/controller-lab/" id="nav-controller-lab"><span class="nav-icon">🎮</span> Controller Lab</a></li>
-          <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test"><span class="nav-icon">⌨️</span> Keyboard Test</a></li>
-          <li class="nav-item"><a href="/tools/mouse-test/" id="nav-mouse-test"><span class="nav-icon">🖱️</span> Mouse Test</a></li>
-          <li class="nav-item"><a href="/tools/mic-test/" id="nav-mic-test"><span class="nav-icon">🎤</span> Mic Test</a></li>
-          <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test"><span class="nav-icon">🔊</span> Speaker Test</a></li>
+          <li class="nav-item"><a href="/tools/controller-lab/" id="nav-controller-lab">
+            <div class="nav-item-left"><span class="nav-icon">🎮</span> Controller</div>
+            <span class="badge-sidebar">★</span>
+          </a></li>
+          <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test">
+            <div class="nav-item-left"><span class="nav-icon">⌨️</span> Keyboard</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/mouse-test/" id="nav-mouse-test">
+            <div class="nav-item-left"><span class="nav-icon">🖱️</span> Mouse</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/mic-test/" id="nav-mic-test">
+            <div class="nav-item-left"><span class="nav-icon">🎤</span> Mic</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test">
+            <div class="nav-item-left"><span class="nav-icon">🔊</span> Speaker</div>
+          </a></li>
         </ul>
       </div>
 
       <div class="nav-section">
         <div class="nav-category">Display</div>
         <ul class="nav-list">
-          <li class="nav-item"><a href="/tools/display-test/" id="nav-display-test"><span class="nav-icon">🖥️</span> Display Test</a></li>
-          <li class="nav-item"><a href="/tools/dead-pixel-test/" id="nav-dead-pixel-test"><span class="nav-icon">💀</span> Dead Pixel Test</a></li>
-          <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test"><span class="nav-icon">📷</span> Webcam Test</a></li>
+          <li class="nav-item"><a href="/tools/display-test/" id="nav-display-test">
+            <div class="nav-item-left"><span class="nav-icon">🖥️</span> Display</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/dead-pixel-test/" id="nav-dead-pixel-test">
+            <div class="nav-item-left"><span class="nav-icon">💀</span> Dead Pixel</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test">
+            <div class="nav-item-left"><span class="nav-icon">📷</span> Webcam</div>
+          </a></li>
         </ul>
       </div>
 
       <div class="sidebar-ad">
-        <p>Ad · keeps tool free</p>
         <ins class="adsbygoogle"
-             style="display:block;width:100%;height:100px;"
+             style="display:block;width:100%;height:250px;"
              data-ad-client="ca-pub-4806235756537260"
              data-ad-slot="8013321574"
              data-ad-format="auto"
@@ -57,12 +86,15 @@ function injectSidebar(activeToolId = null) {
     </aside>
   `;
 
-  // Inject sidebar at the start of app-layout
+  // Inject header at body start
+  if (!document.querySelector('.global-header')) {
+    document.body.insertAdjacentHTML('afterbegin', headerHTML);
+  }
+
+  // Inject sidebar inside app-layout
   const layout = document.querySelector('.app-layout');
-  if (layout) {
+  if (layout && !document.querySelector('.global-sidebar')) {
     layout.insertAdjacentHTML('afterbegin', sidebarHTML);
-  } else {
-    console.error('No .app-layout element found to inject sidebar.');
   }
 
   // Highlight active tool
@@ -73,7 +105,7 @@ function injectSidebar(activeToolId = null) {
     }
   }
 
-  // Setup mobile hamburger toggle if it exists
+  // Setup mobile hamburger toggle
   const hamburger = document.getElementById('hamburgerBtn');
   const sidebar = document.getElementById('globalSidebar');
   
@@ -94,7 +126,6 @@ function injectSidebar(activeToolId = null) {
   }
 }
 
-// Global Analytics Base Function
 function trackToolEvent(toolName, eventType, data = {}) {
   const event = {
     tool: toolName,

@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ay5uh — Hardware Diagnostic Hub</title>
-  <meta name="description" content="Free browser-based tools to test your laptop, fix what's broken, and save money. MacBook, Windows, PS5 controller diagnostics.">
+  <title>Webcam Test | ay5uh</title>
+  <meta name="description" content="Free online webcam test. Test camera feed and res">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -16,68 +15,28 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <!-- Bootstrap 5.3.3 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Global CSS & Icons -->
+  <link rel="stylesheet" href="/shared/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
-    :root {
-      --bg: #0f172a;
-      --bg-card: #1e293b;
-      --bg-nav: #0f172a;
-      --accent: #3b82f6;
-      --accent-glow: rgba(59, 130, 246, 0.2);
-      --success: #22c55e;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --transition: all 0.3s ease;
-    }
 
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      overflow-x: hidden;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    
+
+    
 
     /* Scrollbars */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    
+    
+    
+    
 
-    .app-container {
-      display: flex;
-      flex: 1;
-      height: 100vh;
-      overflow: hidden;
-    }
+    
 
     /* Navigation Sidebar */
-    .sidebar {
-      width: 260px;
-      background-color: var(--bg-nav);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      overflow-y: auto;
-    }
+    
 
-    .brand-container {
-      padding: 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-    }
+    
     
     .brand-logo-wrap {
       display: flex;
@@ -92,24 +51,9 @@
     .brand-title { font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px; }
     .brand-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .nav-category {
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 0 20px;
-      margin: 20px 0 8px 0;
-    }
+    
 
-    .nav-tabs-custom {
-      display: flex;
-      flex-direction: column;
-      padding: 0 10px;
-      gap: 2px;
-      list-style: none;
-      margin: 0;
-    }
+    
 
     .nav-tab-item a {
       display: flex;
@@ -146,13 +90,7 @@
     }
 
     /* Main Area */
-    .main-content {
-      flex: 1;
-      padding: 30px;
-      background-color: var(--bg);
-      overflow-y: auto;
-      position: relative;
-    }
+    
 
     /* Global Repair Cards */
     .repair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; transition: transform 0.2s; }
@@ -166,115 +104,24 @@
 
     /* Cards & Globals */
     .card-custom { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
-  </style>
-
-  <!-- Global Repair Costs Data -->
-  <script id="repairCosts" type="application/json">
-{
-  "keyboard": {
-    "cleaning": { "cost": 35, "label": "Keyboard cleaning" },
-    "replacement_macbook": { "cost": 199, "label": "MacBook keyboard replacement" },
-    "replacement_windows": { "cost": 89, "label": "Windows laptop keyboard replacement" }
-  },
-  "trackpad": {
-    "replacement_macbook": { "cost": 149, "label": "MacBook trackpad replacement" },
-    "replacement_windows": { "cost": 79, "label": "Windows trackpad replacement" }
-  },
-  "speaker": {
-    "macbook_single": { "cost": 89, "label": "Single speaker replacement" },
-    "macbook_both": { "cost": 159, "label": "Both speakers replaced" }
-  },
-  "webcam": {
-    "macbook": { "cost": 149, "label": "MacBook webcam replacement" },
-    "external_usb": { "cost": 49.99, "label": "External USB webcam", "affiliate": true, "link": "https://ay5uh.com/store/webcam" }
-  },
-  "display": {
-    "macbook_13": { "cost": 299, "label": "MacBook 13\" screen replacement" },
-    "macbook_14": { "cost": 399, "label": "MacBook 14\" screen replacement" },
-    "macbook_16": { "cost": 499, "label": "MacBook 16\" screen replacement" },
-    "dead_pixel": { "cost": 199, "label": "Dead pixel repair" }
-  },
-  "thermal": {
-    "paste_basic": { "cost": 49.99, "label": "Thermal paste replacement" },
-    "full_service": { "cost": 89.99, "label": "Full thermal service" },
-    "advanced": { "cost": 149.99, "label": "Advanced thermal + liquid metal" }
-  },
-  "storage": {
-    "ssd_1tb": { "cost": 89.99, "label": "1TB SSD upgrade + install" },
-    "ssd_2tb": { "cost": 129.99, "label": "2TB SSD upgrade + install" },
-    "ssd_4tb": { "cost": 209.99, "label": "4TB SSD upgrade + install" },
-    "migration": { "cost": 35, "label": "Data migration service" }
-  },
-  "ram": {
-    "upgrade_16gb": { "cost": 89.99, "label": "16GB RAM upgrade + install" },
-    "upgrade_32gb": { "cost": 164.99, "label": "32GB RAM upgrade + install" }
-  },
-  "battery": {
-    "macbook_air": { "cost": 124.99, "label": "MacBook Air battery replacement" },
-    "macbook_pro": { "cost": 179.99, "label": "MacBook Pro battery replacement" },
-    "windows_generic": { "cost": 89.99, "label": "Windows laptop battery replacement" }
-  }
-}
-
-  </script>
+  
+</style>
 </head>
 <body>
-  <div class="app-container">
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="brand-container">
-        <a href="/" class="brand-logo-wrap">
-          <i class="fa-solid fa-microchip brand-logo"></i>
-          <div>
-            <div class="brand-title">ay5uh</div>
-          </div>
-        </a>
-        <div class="brand-subtitle">Hardware Diagnostics</div>
-      </div>
-      
-      <div class="nav-category">Laptop</div>
-      <ul class="nav-tabs-custom">
-        <li class="nav-tab-item"><a href="/tools/battery-tester/" class="tab-btn text-decoration-none"><i class="fa-solid fa-battery-half" style="color:#22c55e;"></i> Battery Health</a></li>
-        <li class="nav-tab-item"><a href="/tools/thermal-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-temperature-high" style="color:#ef4444;"></i> Thermal Profiler</a></li>
-        <li class="nav-tab-item"><a href="/tools/ssd-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-hard-drive" style="color:#3b82f6;"></i> SSD Health</a></li>
-        <li class="nav-tab-item"><a href="/tools/ram-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-memory" style="color:#a855f7;"></i> RAM Test</a></li>
-        <li class="nav-tab-item"><a href="/tools/benchmark/" class="tab-btn text-decoration-none"><i class="fa-solid fa-bolt" style="color:#eab308;"></i> Benchmark</a></li>
-      </ul>
-      
-      <div class="nav-category">Peripherals</div>
-      <ul class="nav-tabs-custom">
-        <li class="nav-tab-item"><a href="/tools/controller-lab/" class="tab-btn text-decoration-none"><i class="fa-solid fa-gamepad" style="color:#3b82f6;"></i> Controller Lab</a></li>
-        <li class="nav-tab-item"><a href="/tools/keyboard-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-keyboard text-muted"></i> Keyboard Test</a></li>
-        <li class="nav-tab-item"><a href="/tools/mouse-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-computer-mouse text-muted"></i> Mouse Test</a></li>
-        <li class="nav-tab-item"><a href="/tools/mic-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-microphone text-muted"></i> Mic Test</a></li>
-        <li class="nav-tab-item"><a href="/tools/speaker-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-volume-high text-muted"></i> Speaker Test</a></li>
-      </ul>
-      
-      <div class="nav-category">Display</div>
-      <ul class="nav-tabs-custom">
-        <li class="nav-tab-item"><a href="/tools/display-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-desktop text-muted"></i> Display Test</a></li>
-        <li class="nav-tab-item"><a href="/tools/dead-pixel-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-border-all text-muted"></i> Dead Pixel Test</a></li>
-        <li class="nav-tab-item"><a href="/tools/webcam-test/" class="tab-btn text-decoration-none active"><i class="fa-solid fa-camera text-muted"></i> Webcam Test</a></li>
-      </ul>
-      
-      <!-- Sidebar Ad Slot -->
-      <div class="sidebar-ad-card">
-        <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px;">Ad · keeps this tool free</div>
-        <ins class="adsbygoogle"
-             style="display:block;width:100%;height:100px;"
-             data-ad-client="ca-pub-4806235756537260"
-             data-ad-slot="8013321574"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        </script>
-      </div>
-    </aside>
 
+  <div class="app-layout">
     <main class="main-content">
-<style>
+      <div class="container">
+        
+        <a href="/" class="tool-back-link">&larr; Back to all tools</a>
+        
+        <div class="tool-header-inner">
+          <h1>Webcam Test</h1>
+          <p>Test camera feed and res</p>
+        </div>
+
+        <!-- Tool Content -->
+        <style>
   .webcam-container {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -462,11 +309,91 @@
     }
   }
 </script>
+        <!-- End Tool Content -->
 
+        <div class="about-tool-section">
+          <h3>About this tool</h3>
+          <p>This is a free browser-based diagnostic tool provided by ay5uh.com to help you test and troubleshoot your hardware. It runs entirely on your device with no installation required.</p>
+        </div>
+
+      </div>
     </main>
   </div>
 
-  <script src="/shared/analytics.js"></script>
-  <script src="/shared/repair-card.js"></script>
+  <script src="/shared/sidebar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      injectSidebar('webcam-test');
+    });
+  </script>
+  
+<script>
+  trackToolEvent('webcam_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.macbook, false) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.external_usb, true) + '</div>';
+
+  async function startWebcam() {
+    try {
+      // Request maximum resolution to see what the hardware supports
+      const constraints = {
+        video: {
+          width: { ideal: 4096 },
+          height: { ideal: 2160 }
+        },
+        audio: false
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      
+      const video = document.getElementById('webcamVideo');
+      video.srcObject = stream;
+      video.style.display = 'block';
+      
+      document.getElementById('camOverlay').classList.add('hidden');
+      trackToolEvent('webcam_test', 'started');
+
+      const track = stream.getVideoTracks()[0];
+      const settings = track.getSettings();
+      
+      document.getElementById('valName').innerText = track.label || 'Default Camera';
+      document.getElementById('valName').title = track.label || '';
+      
+      // Update when video has loaded metadata to get actual resolution rendered
+      video.onloadedmetadata = () => {
+        const w = video.videoWidth;
+        const h = video.videoHeight;
+        
+        let resText = `${w}x${h}`;
+        if (w >= 3840) resText += ' (4K)';
+        else if (w >= 2560) resText += ' (1440p)';
+        else if (w >= 1920) resText += ' (1080p)';
+        else if (w >= 1280) resText += ' (720p)';
+        else resText += ' (SD)';
+        
+        document.getElementById('valRes').innerText = resText;
+        
+        if (settings.frameRate) {
+          document.getElementById('valFps').innerText = Math.round(settings.frameRate);
+        } else {
+          document.getElementById('valFps').innerText = 'Unknown';
+        }
+        
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        const div = gcd(w, h);
+        document.getElementById('valAspect').innerText = `${w/div}:${h/div}`;
+      };
+
+    } catch (err) {
+      console.error(err);
+      alert('Camera access denied or no camera found. Please allow camera permissions in your browser.');
+    }
+  }
+</script>
+
 </body>
 </html>

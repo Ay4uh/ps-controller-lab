@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ay5uh — Free Hardware Diagnostic Tools</title>
+  <title>ay5uh — Hardware Diagnostics</title>
   <meta name="description" content="Free browser-based tools to test your laptop, keyboard, mouse, mic, display and more. No install needed.">
-  <link rel="icon" type="image/png" sizes="512x512" href="./logo.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -17,212 +16,225 @@
   </script>
 
   <!-- Global CSS -->
-  <link rel="stylesheet" href="./shared/styles.css">
+  <link rel="stylesheet" href="/shared/styles.css">
   
   <style>
-    /* Homepage Specific Styles */
     .hero {
-      padding: 4rem 0 3rem 0;
-      text-align: center;
+      padding: 64px 0 48px 0;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 3rem;
+      margin-bottom: 48px;
     }
     
-    .hero-logo {
-      font-size: 3rem;
+    .hero-title {
+      font-size: 32px;
       font-weight: 700;
       color: var(--text-primary);
-      margin: 0 0 0.5rem 0;
-      letter-spacing: -1px;
+      margin: 0 0 16px 0;
+      letter-spacing: -0.5px;
     }
     
-    .hero-tagline {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin: 0 0 1rem 0;
-    }
-    
-    .hero-subtext {
-      font-size: 1.1rem;
+    .hero-subtitle {
+      font-size: 16px;
       color: var(--text-secondary);
+      margin: 0 0 8px 0;
       max-width: 600px;
-      margin: 0 auto;
       line-height: 1.5;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      margin-top: 24px;
+      background-color: var(--accent-blue);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    .hero-cta:hover {
+      background-color: #2563eb;
     }
 
     .homepage-footer {
       border-top: 1px solid var(--border);
-      padding: 2rem 0;
-      margin-top: auto;
-      text-align: center;
+      padding: 48px 0;
+      margin-top: 64px;
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
     }
 
-    .homepage-footer a {
-      color: var(--text-muted);
+    .footer-links a {
+      color: var(--text-secondary);
       text-decoration: none;
-      margin: 0 10px;
+      margin: 0 12px;
+      font-weight: 600;
       transition: color 0.2s;
     }
 
-    .homepage-footer a:hover {
+    .footer-links a:hover {
       color: var(--text-primary);
-    }
-    
-    .footer-links {
-      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- Mobile Header -->
-  <header class="mobile-header">
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <span style="font-size: 1.2rem;">🔧</span>
-      <strong style="font-size: 1.1rem;">ay5uh</strong>
-    </div>
-    <button class="hamburger-btn" id="hamburgerBtn">☰</button>
-  </header>
-
   <div class="app-layout">
-    <!-- Sidebar will be injected here via JS -->
-    
     <main class="main-content">
-      
-      <!-- Global Header (Clean) -->
-      <header class="global-header">
-        <a href="/">
-          <span>🔧</span> ay5uh
-        </a>
-      </header>
       
       <div class="hero">
         <div class="container">
-          <h1 class="hero-logo">ay5uh</h1>
-          <h2 class="hero-tagline">Free Hardware Diagnostic Tools</h2>
-          <p class="hero-subtext">Test your laptop and peripherals entirely in your browser. No install needed.</p>
+          <h1 class="hero-title">Free Hardware Diagnostic Tools</h1>
+          <p class="hero-subtitle">Test your laptop and peripherals entirely in your browser.</p>
+          <p class="hero-subtitle" style="color: var(--text-muted);">No install. No signup. Free.</p>
+          <a href="/tools/controller-lab/" class="hero-cta">Start with most popular tool &rarr;</a>
         </div>
       </div>
 
       <div class="container">
         
-        <!-- LAPTOP DIAGNOSTICS -->
-        <h3 class="section-title">LAPTOP DIAGNOSTICS</h3>
-        <div class="tool-grid">
-          
-          <a href="./tools/battery-tester/" class="tool-card">
-            <div class="tool-icon">🔋</div>
-            <h4 class="tool-name">Battery Health</h4>
-            <p class="tool-desc">Check capacity & cycles</p>
-          </a>
-          
-          <a href="./tools/thermal-test/" class="tool-card">
-            <div class="tool-icon">🌡️</div>
-            <h4 class="tool-name">Thermal Profiler</h4>
-            <p class="tool-desc">Detect throttle & heat</p>
-          </a>
-          
-          <a href="./tools/ssd-test/" class="tool-card">
-            <div class="tool-icon">💾</div>
-            <h4 class="tool-name">SSD Health</h4>
-            <p class="tool-desc">Analyze SMART & speed</p>
-          </a>
-          
-          <a href="./tools/ram-test/" class="tool-card">
-            <div class="tool-icon">🧠</div>
-            <h4 class="tool-name">RAM Test</h4>
-            <p class="tool-desc">Measure speed & usage</p>
-          </a>
-          
-          <a href="./tools/benchmark/" class="tool-card">
-            <div class="tool-icon">⚡</div>
-            <h4 class="tool-name">Benchmark</h4>
-            <p class="tool-desc">Full system performance</p>
-          </a>
+        <div class="tool-section">
+          <h2 class="section-title">LAPTOP DIAGNOSTICS</h2>
+          <div class="tool-grid">
+            
+            <a href="/tools/battery-tester/" class="tool-card">
+              <span class="badge badge-live">Live</span>
+              <div class="tool-icon-large">🔋</div>
+              <h3 class="tool-title">Battery Health</h3>
+              <p class="tool-desc">Check capacity and cycles</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/thermal-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">🌡️</div>
+              <h3 class="tool-title">Thermal Profiler</h3>
+              <p class="tool-desc">Detect throttle and heat</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/ssd-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">💾</div>
+              <h3 class="tool-title">SSD Health</h3>
+              <p class="tool-desc">Analyze SMART and speed</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/ram-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">🧠</div>
+              <h3 class="tool-title">RAM Test</h3>
+              <p class="tool-desc">Measure speed and usage</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
 
+          </div>
         </div>
 
-        <!-- PERIPHERALS & I/O -->
-        <h3 class="section-title">PERIPHERALS & I/O</h3>
-        <div class="tool-grid">
-          
-          <a href="./tools/controller-lab/" class="tool-card">
-            <span class="badge badge-popular">POPULAR</span>
-            <div class="tool-icon">🎮</div>
-            <h4 class="tool-name">Controller Lab</h4>
-            <p class="tool-desc">Deep PS5/PS4 analysis</p>
-          </a>
-          
-          <a href="./tools/keyboard-test/" class="tool-card">
-            <div class="tool-icon">⌨️</div>
-            <h4 class="tool-name">Keyboard Test</h4>
-            <p class="tool-desc">Find stuck or dead keys</p>
-          </a>
-          
-          <a href="./tools/mouse-test/" class="tool-card">
-            <div class="tool-icon">🖱️</div>
-            <h4 class="tool-name">Mouse Test</h4>
-            <p class="tool-desc">Check buttons & scroll</p>
-          </a>
-          
-          <a href="./tools/mic-test/" class="tool-card">
-            <div class="tool-icon">🎤</div>
-            <h4 class="tool-name">Mic Test</h4>
-            <p class="tool-desc">Audio input visualizer</p>
-          </a>
-          
-          <a href="./tools/speaker-test/" class="tool-card">
-            <div class="tool-icon">🔊</div>
-            <h4 class="tool-name">Speaker Test</h4>
-            <p class="tool-desc">L/R channel & frequency</p>
-          </a>
+        <div class="tool-section">
+          <h2 class="section-title">PERIPHERALS & I/O</h2>
+          <div class="tool-grid">
+            
+            <a href="/tools/controller-lab/" class="tool-card">
+              <span class="badge badge-popular">★ Popular</span>
+              <div class="tool-icon-large">🎮</div>
+              <h3 class="tool-title">Controller Lab</h3>
+              <p class="tool-desc">Deep PS5/PS4 analysis</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/keyboard-test/" class="tool-card">
+              <span class="badge badge-live">Live</span>
+              <div class="tool-icon-large">⌨️</div>
+              <h3 class="tool-title">Keyboard Test</h3>
+              <p class="tool-desc">Find stuck or dead keys</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/mouse-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">🖱️</div>
+              <h3 class="tool-title">Mouse Test</h3>
+              <p class="tool-desc">Check buttons and scroll</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/mic-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">🎤</div>
+              <h3 class="tool-title">Mic Test</h3>
+              <p class="tool-desc">Audio input visualizer</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/speaker-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">🔊</div>
+              <h3 class="tool-title">Speaker Test</h3>
+              <p class="tool-desc">L/R channel frequencies</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
 
+          </div>
         </div>
 
-        <!-- DISPLAY -->
-        <h3 class="section-title">DISPLAY</h3>
-        <div class="tool-grid" style="margin-bottom: 5rem;">
-          
-          <a href="./tools/display-test/" class="tool-card">
-            <div class="tool-icon">🖥️</div>
-            <h4 class="tool-name">Display Test</h4>
-            <p class="tool-desc">Monitor Hz & tearing</p>
-          </a>
-          
-          <a href="./tools/dead-pixel-test/" class="tool-card">
-            <div class="tool-icon">💀</div>
-            <h4 class="tool-name">Dead Pixel Test</h4>
-            <p class="tool-desc">Find & fix stuck pixels</p>
-          </a>
-          
-          <a href="./tools/webcam-test/" class="tool-card">
-            <div class="tool-icon">📷</div>
-            <h4 class="tool-name">Webcam Test</h4>
-            <p class="tool-desc">Test camera feed & res</p>
-          </a>
+        <div class="tool-section">
+          <h2 class="section-title">DISPLAY</h2>
+          <div class="tool-grid">
+            
+            <a href="/tools/display-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">🖥️</div>
+              <h3 class="tool-title">Display Test</h3>
+              <p class="tool-desc">Monitor Hz and tearing</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/dead-pixel-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">💀</div>
+              <h3 class="tool-title">Dead Pixel Test</h3>
+              <p class="tool-desc">Find and fix stuck pixels</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
+            
+            <a href="/tools/webcam-test/" class="tool-card">
+              <span class="badge badge-soon">Soon</span>
+              <div class="tool-icon-large">📷</div>
+              <h3 class="tool-title">Webcam Test</h3>
+              <p class="tool-desc">Test camera feed and res</p>
+              <div class="btn-open">Open Tool &rarr;</div>
+            </a>
 
+          </div>
         </div>
 
       </div>
       
       <!-- Footer -->
       <footer class="homepage-footer">
+        <div>ay5uh · Free Hardware Diagnostics</div>
         <div class="footer-links">
-          <a href="./about/">About</a>
-          <a href="./privacy-policy/">Privacy Policy</a>
-          <a href="./contact/">Contact</a>
+          <a href="/about/">About</a>
+          <a href="/privacy-policy/">Privacy Policy</a>
         </div>
-        <div>© 2026 ay5uh · Free hardware diagnostics</div>
+        <div>
+          © 2026 · All tools run in your browser.<br>
+          No data is collected or sent to servers.
+        </div>
       </footer>
 
     </main>
   </div>
 
-  <!-- Global Sidebar Logic -->
-  <script src="./shared/sidebar.js"></script>
+  <script src="/shared/sidebar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar(null);
