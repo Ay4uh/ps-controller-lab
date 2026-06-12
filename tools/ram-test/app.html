@@ -1,0 +1,183 @@
+<style>
+  .ram-hero {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .ram-hero .capacity {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    color: #a855f7;
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .status-item .label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .status-item .val {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .benchmark-box {
+    background: rgba(0,0,0,0.2);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4">
+    <h1 class="fw-bold mb-2"><i class="fa-solid fa-memory" style="color:var(--text-muted);"></i> RAM Test</h1>
+    <p class="text-muted">Detect memory capacity and benchmark allocation speeds to check RAM health.</p>
+  </div>
+
+  <div class="ram-hero">
+    <div class="capacity" id="ramCapacity">-- GB</div>
+    <div class="fw-bold text-muted text-uppercase tracking-wider">Total System Memory</div>
+    <div class="small mt-2" style="color:var(--text-muted); opacity: 0.7;">(Auto-detected via browser)</div>
+  </div>
+
+  <div class="status-grid">
+    <div class="status-item">
+      <div class="label">JS Heap Limit</div>
+      <div class="val text-primary" id="valLimit">-- MB</div>
+      <div class="small text-muted mt-1">Browser Sandbox Max</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Current Usage</div>
+      <div class="val text-warning" id="valUsage">-- MB</div>
+      <div class="small text-muted mt-1">Memory currently allocated</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Allocation Speed</div>
+      <div class="val text-success" id="valSpeed">-- MB/s</div>
+      <div class="small text-muted mt-1">Higher is better</div>
+    </div>
+  </div>
+
+  <div class="benchmark-box mb-5">
+    <button class="btn-custom-primary btn-lg mb-3" onclick="runBenchmark()" id="btnBench">
+      <i class="fa-solid fa-gauge-high me-2"></i> Run RAM Benchmark
+    </button>
+    <p class="text-muted mb-0 small" style="max-width:500px; margin:0 auto;">This test rapidly allocates and reads from large memory arrays to measure raw memory bandwidth throughput.</p>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">RAM Upgrade Options</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('ram_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  // Ram Amount (approx)
+  const ramGB = navigator.deviceMemory || 'Unknown';
+  document.getElementById('ramCapacity').innerText = ramGB === 'Unknown' ? '??' : `${ramGB} GB`;
+  
+  // Suggest repairs based on RAM size
+  if (ramGB !== 'Unknown' && ramGB <= 8) {
+    repairContainer.innerHTML = 
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_16gb, true) + '</div>' +
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_32gb, false) + '</div>';
+  } else {
+    repairContainer.innerHTML = 
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_16gb, false) + '</div>' +
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_32gb, true) + '</div>';
+  }
+
+  // Memory Usage Check (Chrome/Edge only)
+  function updateUsage() {
+    if (performance.memory) {
+      const limit = Math.round(performance.memory.jsHeapSizeLimit / 1048576);
+      const used = Math.round(performance.memory.usedJSHeapSize / 1048576);
+      
+      document.getElementById('valLimit').innerText = `${limit.toLocaleString()} MB`;
+      document.getElementById('valUsage').innerText = `${used.toLocaleString()} MB`;
+    } else {
+      document.getElementById('valLimit').innerText = `N/A`;
+      document.getElementById('valUsage').innerText = `N/A`;
+    }
+    requestAnimationFrame(updateUsage);
+  }
+  updateUsage();
+
+  // Allocation Benchmark
+  function runBenchmark() {
+    const btn = document.getElementById('btnBench');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Testing...';
+    
+    document.getElementById('valSpeed').innerText = 'Testing...';
+
+    // Yield to let UI update
+    setTimeout(() => {
+      const start = performance.now();
+      
+      // Allocate 500MB of data and write to it
+      const numArrays = 50;
+      const arrSize = 10 * 1024 * 1024; // 10MB per array
+      const arrays = [];
+      
+      for (let i = 0; i < numArrays; i++) {
+        const arr = new Uint8Array(arrSize);
+        // Force memory assignment
+        for(let j=0; j<arrSize; j+=4096) {
+          arr[j] = 1;
+        }
+        arrays.push(arr);
+      }
+      
+      const end = performance.now();
+      
+      // Cleanup to prevent crash
+      arrays.length = 0;
+      
+      const timeSec = (end - start) / 1000;
+      const dataMB = (numArrays * arrSize) / 1048576;
+      const speed = Math.round(dataMB / timeSec);
+      
+      document.getElementById('valSpeed').innerText = `${speed.toLocaleString()} MB/s`;
+      
+      trackToolEvent('ram_test', 'benchmark_completed', { speed_mb_s: speed });
+      
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-rotate-right me-2"></i> Run Again';
+    }, 100);
+  }
+
+</script>

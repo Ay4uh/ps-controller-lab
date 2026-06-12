@@ -1,0 +1,205 @@
+<style>
+  .hero-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hz-display {
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent) 0%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hz-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .status-item .label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .status-item .val {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* Ufo Animation to visually show Hz */
+  .ufo-track {
+    background: rgba(255,255,255,0.05);
+    height: 40px;
+    border-radius: 20px;
+    margin: 2rem auto 0;
+    max-width: 800px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .ufo {
+    width: 30px;
+    height: 30px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    left: 0;
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4">
+    <h1 class="fw-bold mb-2"><i class="fa-solid fa-desktop" style="color:var(--text-muted);"></i> Display & Refresh Rate Test</h1>
+    <p class="text-muted">Accurately measure your monitor's true refresh rate, resolution, and color profile.</p>
+  </div>
+
+  <div class="hero-box">
+    <div class="hz-display" id="hzDisplay">--</div>
+    <div class="hz-label">Hz Detected</div>
+    <div class="text-muted mt-2 small">Based on hardware requestAnimationFrame timing</div>
+    
+    <div class="ufo-track">
+      <div class="ufo" id="ufoBox"></div>
+    </div>
+    <div class="small text-muted mt-2">Smoothness Visualizer (600px/sec)</div>
+  </div>
+
+  <div class="status-grid">
+    <div class="status-item">
+      <div class="label">Native Resolution</div>
+      <div class="val" id="valRes">--</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Device Pixel Ratio</div>
+      <div class="val" id="valDpr">--</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Color Gamut</div>
+      <div class="val text-success" id="valColor">--</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Color Depth</div>
+      <div class="val" id="valDepth">--</div>
+    </div>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Screen Upgrades & Repair</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('display_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_14, false) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_16, false) + '</div>';
+
+  // Display Specs
+  const w = window.screen.width;
+  const h = window.screen.height;
+  const dpr = window.devicePixelRatio || 1;
+  
+  document.getElementById('valRes').innerText = `${w * dpr} x ${h * dpr}`;
+  document.getElementById('valDpr').innerText = `${dpr}x ${dpr > 1 ? '(HiDPI/Retina)' : ''}`;
+  document.getElementById('valDepth').innerText = `${window.screen.colorDepth}-bit`;
+  
+  // Color Gamut detection (approximate via CSS media queries)
+  let gamut = "Standard (sRGB)";
+  if (window.matchMedia("(color-gamut: p3)").matches) {
+    gamut = "Wide (Display P3)";
+  } else if (window.matchMedia("(color-gamut: rec2020)").matches) {
+    gamut = "Ultra Wide (Rec.2020)";
+  }
+  document.getElementById('valColor').innerText = gamut;
+
+  // Hz Detection via requestAnimationFrame
+  let frameCount = 0;
+  let lastTime = performance.now();
+  let fpsHistory = [];
+  const display = document.getElementById('hzDisplay');
+  
+  // UFO Visualizer
+  let ufoPos = 0;
+  const ufo = document.getElementById('ufoBox');
+
+  function measureRefresh(time) {
+    frameCount++;
+    
+    // UFO Logic: move 600px per second independent of framerate
+    const dt = time - (lastUfoTime || time);
+    lastUfoTime = time;
+    ufoPos += (600 * (dt / 1000));
+    if (ufoPos > 800) ufoPos = -30;
+    ufo.style.transform = `translateX(${ufoPos}px)`;
+
+    // FPS Calculation (every ~0.5 seconds)
+    if (time - lastTime >= 500) {
+      const fps = Math.round((frameCount * 1000) / (time - lastTime));
+      fpsHistory.push(fps);
+      if (fpsHistory.length > 5) fpsHistory.shift();
+      
+      // Average the last few readings for stability
+      const avgFps = Math.round(fpsHistory.reduce((a,b)=>a+b)/fpsHistory.length);
+      
+      // Snap to standard refresh rates if within 2Hz margin of error
+      let finalHz = avgFps;
+      const standards = [60, 75, 90, 100, 120, 144, 165, 240, 360];
+      for (const std of standards) {
+        if (Math.abs(avgFps - std) <= 2) {
+          finalHz = std;
+          break;
+        }
+      }
+      
+      display.innerText = finalHz;
+      
+      if (frameCount > 60 && fpsHistory.length === 5 && !window.trackedHz) {
+        window.trackedHz = true;
+        trackToolEvent('display_test', 'hz_detected', { hz: finalHz });
+      }
+
+      frameCount = 0;
+      lastTime = time;
+    }
+    
+    requestAnimationFrame(measureRefresh);
+  }
+  
+  let lastUfoTime = performance.now();
+  requestAnimationFrame(measureRefresh);
+
+</script>

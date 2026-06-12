@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ay5uh — Hardware Diagnostic Hub</title>
+  <meta name="description" content="Free browser-based tools to test your laptop, fix what's broken, and save money. MacBook, Windows, PS5 controller diagnostics.">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --bg-nav: #0f172a;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.2);
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    .app-container {
+      display: flex;
+      flex: 1;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Navigation Sidebar */
+    .sidebar {
+      width: 260px;
+      background-color: var(--bg-nav);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .brand-container {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .brand-logo-wrap:hover { color: var(--accent); }
+
+    .brand-logo { font-size: 1.5rem; color: var(--accent); }
+    .brand-title { font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px; }
+    .brand-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .nav-category {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin: 20px 0 8px 0;
+    }
+
+    .nav-tabs-custom {
+      display: flex;
+      flex-direction: column;
+      padding: 0 10px;
+      gap: 2px;
+      list-style: none;
+      margin: 0;
+    }
+
+    .nav-tab-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .nav-tab-item a:hover {
+      color: var(--text);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tab-item a.active {
+      color: #fff;
+      background: rgba(59, 130, 246, 0.15);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .nav-tab-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+
+    .sidebar-ad-card {
+      margin-top: auto;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background-color: rgba(0,0,0,0.2);
+    }
+
+    /* Main Area */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      background-color: var(--bg);
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Global Repair Cards */
+    .repair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; transition: transform 0.2s; }
+    .repair-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .repair-card.recommended { border-color: var(--success); }
+    .repair-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #fff; padding-right: 80px;}
+    .repair-card .badge-rec { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--success); color: #000; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
+    .detail-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
+    .detail-row strong.cost { color: var(--success); font-size: 1.1rem; font-weight: 800; }
+    .repair-card .btn { margin-top: 1rem; width: 100%; font-weight: 700; }
+
+    /* Cards & Globals */
+    .card-custom { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  </style>
+
+  <!-- Global Repair Costs Data -->
+  <script id="repairCosts" type="application/json">
+{
+  "keyboard": {
+    "cleaning": { "cost": 35, "label": "Keyboard cleaning" },
+    "replacement_macbook": { "cost": 199, "label": "MacBook keyboard replacement" },
+    "replacement_windows": { "cost": 89, "label": "Windows laptop keyboard replacement" }
+  },
+  "trackpad": {
+    "replacement_macbook": { "cost": 149, "label": "MacBook trackpad replacement" },
+    "replacement_windows": { "cost": 79, "label": "Windows trackpad replacement" }
+  },
+  "speaker": {
+    "macbook_single": { "cost": 89, "label": "Single speaker replacement" },
+    "macbook_both": { "cost": 159, "label": "Both speakers replaced" }
+  },
+  "webcam": {
+    "macbook": { "cost": 149, "label": "MacBook webcam replacement" },
+    "external_usb": { "cost": 49.99, "label": "External USB webcam", "affiliate": true, "link": "https://ay5uh.com/store/webcam" }
+  },
+  "display": {
+    "macbook_13": { "cost": 299, "label": "MacBook 13\" screen replacement" },
+    "macbook_14": { "cost": 399, "label": "MacBook 14\" screen replacement" },
+    "macbook_16": { "cost": 499, "label": "MacBook 16\" screen replacement" },
+    "dead_pixel": { "cost": 199, "label": "Dead pixel repair" }
+  },
+  "thermal": {
+    "paste_basic": { "cost": 49.99, "label": "Thermal paste replacement" },
+    "full_service": { "cost": 89.99, "label": "Full thermal service" },
+    "advanced": { "cost": 149.99, "label": "Advanced thermal + liquid metal" }
+  },
+  "storage": {
+    "ssd_1tb": { "cost": 89.99, "label": "1TB SSD upgrade + install" },
+    "ssd_2tb": { "cost": 129.99, "label": "2TB SSD upgrade + install" },
+    "ssd_4tb": { "cost": 209.99, "label": "4TB SSD upgrade + install" },
+    "migration": { "cost": 35, "label": "Data migration service" }
+  },
+  "ram": {
+    "upgrade_16gb": { "cost": 89.99, "label": "16GB RAM upgrade + install" },
+    "upgrade_32gb": { "cost": 164.99, "label": "32GB RAM upgrade + install" }
+  },
+  "battery": {
+    "macbook_air": { "cost": 124.99, "label": "MacBook Air battery replacement" },
+    "macbook_pro": { "cost": 179.99, "label": "MacBook Pro battery replacement" },
+    "windows_generic": { "cost": 89.99, "label": "Windows laptop battery replacement" }
+  }
+}
+
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand-container">
+        <a href="/" class="brand-logo-wrap">
+          <i class="fa-solid fa-microchip brand-logo"></i>
+          <div>
+            <div class="brand-title">ay5uh</div>
+          </div>
+        </a>
+        <div class="brand-subtitle">Hardware Diagnostics</div>
+      </div>
+      
+      <div class="nav-category">Laptop</div>
+      <ul class="nav-tabs-custom">
+        <li class="nav-tab-item"><a href="/tools/battery-tester/" class="tab-btn text-decoration-none"><i class="fa-solid fa-battery-half" style="color:#22c55e;"></i> Battery Health</a></li>
+        <li class="nav-tab-item"><a href="/tools/thermal-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-temperature-high" style="color:#ef4444;"></i> Thermal Profiler</a></li>
+        <li class="nav-tab-item"><a href="/tools/ssd-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-hard-drive" style="color:#3b82f6;"></i> SSD Health</a></li>
+        <li class="nav-tab-item"><a href="/tools/ram-test/" class="tab-btn text-decoration-none active"><i class="fa-solid fa-memory" style="color:#a855f7;"></i> RAM Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/benchmark/" class="tab-btn text-decoration-none"><i class="fa-solid fa-bolt" style="color:#eab308;"></i> Benchmark</a></li>
+      </ul>
+      
+      <div class="nav-category">Peripherals</div>
+      <ul class="nav-tabs-custom">
+        <li class="nav-tab-item"><a href="/tools/controller-lab/" class="tab-btn text-decoration-none"><i class="fa-solid fa-gamepad" style="color:#3b82f6;"></i> Controller Lab</a></li>
+        <li class="nav-tab-item"><a href="/tools/keyboard-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-keyboard text-muted"></i> Keyboard Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/mouse-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-computer-mouse text-muted"></i> Mouse Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/mic-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-microphone text-muted"></i> Mic Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/speaker-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-volume-high text-muted"></i> Speaker Test</a></li>
+      </ul>
+      
+      <div class="nav-category">Display</div>
+      <ul class="nav-tabs-custom">
+        <li class="nav-tab-item"><a href="/tools/display-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-desktop text-muted"></i> Display Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/dead-pixel-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-border-all text-muted"></i> Dead Pixel Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/webcam-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-camera text-muted"></i> Webcam Test</a></li>
+      </ul>
+      
+      <!-- Sidebar Ad Slot -->
+      <div class="sidebar-ad-card">
+        <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px;">Ad · keeps this tool free</div>
+        <ins class="adsbygoogle"
+             style="display:block;width:100%;height:100px;"
+             data-ad-client="ca-pub-4806235756537260"
+             data-ad-slot="8013321574"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        </script>
+      </div>
+    </aside>
+
+    <main class="main-content">
+<style>
+  .ram-hero {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .ram-hero .capacity {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    color: #a855f7;
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .status-item .label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .status-item .val {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .benchmark-box {
+    background: rgba(0,0,0,0.2);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4">
+    <h1 class="fw-bold mb-2"><i class="fa-solid fa-memory" style="color:var(--text-muted);"></i> RAM Test</h1>
+    <p class="text-muted">Detect memory capacity and benchmark allocation speeds to check RAM health.</p>
+  </div>
+
+  <div class="ram-hero">
+    <div class="capacity" id="ramCapacity">-- GB</div>
+    <div class="fw-bold text-muted text-uppercase tracking-wider">Total System Memory</div>
+    <div class="small mt-2" style="color:var(--text-muted); opacity: 0.7;">(Auto-detected via browser)</div>
+  </div>
+
+  <div class="status-grid">
+    <div class="status-item">
+      <div class="label">JS Heap Limit</div>
+      <div class="val text-primary" id="valLimit">-- MB</div>
+      <div class="small text-muted mt-1">Browser Sandbox Max</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Current Usage</div>
+      <div class="val text-warning" id="valUsage">-- MB</div>
+      <div class="small text-muted mt-1">Memory currently allocated</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Allocation Speed</div>
+      <div class="val text-success" id="valSpeed">-- MB/s</div>
+      <div class="small text-muted mt-1">Higher is better</div>
+    </div>
+  </div>
+
+  <div class="benchmark-box mb-5">
+    <button class="btn-custom-primary btn-lg mb-3" onclick="runBenchmark()" id="btnBench">
+      <i class="fa-solid fa-gauge-high me-2"></i> Run RAM Benchmark
+    </button>
+    <p class="text-muted mb-0 small" style="max-width:500px; margin:0 auto;">This test rapidly allocates and reads from large memory arrays to measure raw memory bandwidth throughput.</p>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">RAM Upgrade Options</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('ram_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  // Ram Amount (approx)
+  const ramGB = navigator.deviceMemory || 'Unknown';
+  document.getElementById('ramCapacity').innerText = ramGB === 'Unknown' ? '??' : `${ramGB} GB`;
+  
+  // Suggest repairs based on RAM size
+  if (ramGB !== 'Unknown' && ramGB <= 8) {
+    repairContainer.innerHTML = 
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_16gb, true) + '</div>' +
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_32gb, false) + '</div>';
+  } else {
+    repairContainer.innerHTML = 
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_16gb, false) + '</div>' +
+      '<div class="col-md-4">' + createRepairCard(repairCosts.ram.upgrade_32gb, true) + '</div>';
+  }
+
+  // Memory Usage Check (Chrome/Edge only)
+  function updateUsage() {
+    if (performance.memory) {
+      const limit = Math.round(performance.memory.jsHeapSizeLimit / 1048576);
+      const used = Math.round(performance.memory.usedJSHeapSize / 1048576);
+      
+      document.getElementById('valLimit').innerText = `${limit.toLocaleString()} MB`;
+      document.getElementById('valUsage').innerText = `${used.toLocaleString()} MB`;
+    } else {
+      document.getElementById('valLimit').innerText = `N/A`;
+      document.getElementById('valUsage').innerText = `N/A`;
+    }
+    requestAnimationFrame(updateUsage);
+  }
+  updateUsage();
+
+  // Allocation Benchmark
+  function runBenchmark() {
+    const btn = document.getElementById('btnBench');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Testing...';
+    
+    document.getElementById('valSpeed').innerText = 'Testing...';
+
+    // Yield to let UI update
+    setTimeout(() => {
+      const start = performance.now();
+      
+      // Allocate 500MB of data and write to it
+      const numArrays = 50;
+      const arrSize = 10 * 1024 * 1024; // 10MB per array
+      const arrays = [];
+      
+      for (let i = 0; i < numArrays; i++) {
+        const arr = new Uint8Array(arrSize);
+        // Force memory assignment
+        for(let j=0; j<arrSize; j+=4096) {
+          arr[j] = 1;
+        }
+        arrays.push(arr);
+      }
+      
+      const end = performance.now();
+      
+      // Cleanup to prevent crash
+      arrays.length = 0;
+      
+      const timeSec = (end - start) / 1000;
+      const dataMB = (numArrays * arrSize) / 1048576;
+      const speed = Math.round(dataMB / timeSec);
+      
+      document.getElementById('valSpeed').innerText = `${speed.toLocaleString()} MB/s`;
+      
+      trackToolEvent('ram_test', 'benchmark_completed', { speed_mb_s: speed });
+      
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-rotate-right me-2"></i> Run Again';
+    }, 100);
+  }
+
+</script>
+
+    </main>
+  </div>
+
+  <script src="/shared/analytics.js"></script>
+  <script src="/shared/repair-card.js"></script>
+</body>
+</html>
