@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ay5uh — Hardware Diagnostic Hub</title>
+  <meta name="description" content="Free browser-based tools to test your laptop, fix what's broken, and save money. MacBook, Windows, PS5 controller diagnostics.">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --bg-nav: #0f172a;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.2);
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    .app-container {
+      display: flex;
+      flex: 1;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Navigation Sidebar */
+    .sidebar {
+      width: 260px;
+      background-color: var(--bg-nav);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .brand-container {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .brand-logo-wrap:hover { color: var(--accent); }
+
+    .brand-logo { font-size: 1.5rem; color: var(--accent); }
+    .brand-title { font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px; }
+    .brand-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .nav-category {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin: 20px 0 8px 0;
+    }
+
+    .nav-tabs-custom {
+      display: flex;
+      flex-direction: column;
+      padding: 0 10px;
+      gap: 2px;
+      list-style: none;
+      margin: 0;
+    }
+
+    .nav-tab-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .nav-tab-item a:hover {
+      color: var(--text);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tab-item a.active {
+      color: #fff;
+      background: rgba(59, 130, 246, 0.15);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .nav-tab-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+
+    .sidebar-ad-card {
+      margin-top: auto;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background-color: rgba(0,0,0,0.2);
+    }
+
+    /* Main Area */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      background-color: var(--bg);
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Global Repair Cards */
+    .repair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; transition: transform 0.2s; }
+    .repair-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .repair-card.recommended { border-color: var(--success); }
+    .repair-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #fff; padding-right: 80px;}
+    .repair-card .badge-rec { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--success); color: #000; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
+    .detail-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
+    .detail-row strong.cost { color: var(--success); font-size: 1.1rem; font-weight: 800; }
+    .repair-card .btn { margin-top: 1rem; width: 100%; font-weight: 700; }
+
+    /* Cards & Globals */
+    .card-custom { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  </style>
+
+  <!-- Global Repair Costs Data -->
+  <script id="repairCosts" type="application/json">
+{
+  "keyboard": {
+    "cleaning": { "cost": 35, "label": "Keyboard cleaning" },
+    "replacement_macbook": { "cost": 199, "label": "MacBook keyboard replacement" },
+    "replacement_windows": { "cost": 89, "label": "Windows laptop keyboard replacement" }
+  },
+  "trackpad": {
+    "replacement_macbook": { "cost": 149, "label": "MacBook trackpad replacement" },
+    "replacement_windows": { "cost": 79, "label": "Windows trackpad replacement" }
+  },
+  "speaker": {
+    "macbook_single": { "cost": 89, "label": "Single speaker replacement" },
+    "macbook_both": { "cost": 159, "label": "Both speakers replaced" }
+  },
+  "webcam": {
+    "macbook": { "cost": 149, "label": "MacBook webcam replacement" },
+    "external_usb": { "cost": 49.99, "label": "External USB webcam", "affiliate": true, "link": "https://ay5uh.com/store/webcam" }
+  },
+  "display": {
+    "macbook_13": { "cost": 299, "label": "MacBook 13\" screen replacement" },
+    "macbook_14": { "cost": 399, "label": "MacBook 14\" screen replacement" },
+    "macbook_16": { "cost": 499, "label": "MacBook 16\" screen replacement" },
+    "dead_pixel": { "cost": 199, "label": "Dead pixel repair" }
+  },
+  "thermal": {
+    "paste_basic": { "cost": 49.99, "label": "Thermal paste replacement" },
+    "full_service": { "cost": 89.99, "label": "Full thermal service" },
+    "advanced": { "cost": 149.99, "label": "Advanced thermal + liquid metal" }
+  },
+  "storage": {
+    "ssd_1tb": { "cost": 89.99, "label": "1TB SSD upgrade + install" },
+    "ssd_2tb": { "cost": 129.99, "label": "2TB SSD upgrade + install" },
+    "ssd_4tb": { "cost": 209.99, "label": "4TB SSD upgrade + install" },
+    "migration": { "cost": 35, "label": "Data migration service" }
+  },
+  "ram": {
+    "upgrade_16gb": { "cost": 89.99, "label": "16GB RAM upgrade + install" },
+    "upgrade_32gb": { "cost": 164.99, "label": "32GB RAM upgrade + install" }
+  },
+  "battery": {
+    "macbook_air": { "cost": 124.99, "label": "MacBook Air battery replacement" },
+    "macbook_pro": { "cost": 179.99, "label": "MacBook Pro battery replacement" },
+    "windows_generic": { "cost": 89.99, "label": "Windows laptop battery replacement" }
+  }
+}
+
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand-container">
+        <a href="/" class="brand-logo-wrap">
+          <i class="fa-solid fa-microchip brand-logo"></i>
+          <div>
+            <div class="brand-title">ay5uh</div>
+          </div>
+        </a>
+        <div class="brand-subtitle">Hardware Diagnostics</div>
+      </div>
+      
+      <div class="nav-category">Laptop</div>
+      <ul class="nav-tabs-custom">
+        <li class="nav-tab-item"><a href="/tools/battery-tester/" class="tab-btn text-decoration-none"><i class="fa-solid fa-battery-half" style="color:#22c55e;"></i> Battery Health</a></li>
+        <li class="nav-tab-item"><a href="/tools/thermal-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-temperature-high" style="color:#ef4444;"></i> Thermal Profiler</a></li>
+        <li class="nav-tab-item"><a href="/tools/ssd-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-hard-drive" style="color:#3b82f6;"></i> SSD Health</a></li>
+        <li class="nav-tab-item"><a href="/tools/ram-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-memory" style="color:#a855f7;"></i> RAM Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/benchmark/" class="tab-btn text-decoration-none"><i class="fa-solid fa-bolt" style="color:#eab308;"></i> Benchmark</a></li>
+      </ul>
+      
+      <div class="nav-category">Peripherals</div>
+      <ul class="nav-tabs-custom">
+        <li class="nav-tab-item"><a href="/tools/controller-lab/" class="tab-btn text-decoration-none"><i class="fa-solid fa-gamepad" style="color:#3b82f6;"></i> Controller Lab</a></li>
+        <li class="nav-tab-item"><a href="/tools/keyboard-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-keyboard text-muted"></i> Keyboard Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/mouse-test/" class="tab-btn text-decoration-none active"><i class="fa-solid fa-computer-mouse text-muted"></i> Mouse Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/mic-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-microphone text-muted"></i> Mic Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/speaker-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-volume-high text-muted"></i> Speaker Test</a></li>
+      </ul>
+      
+      <div class="nav-category">Display</div>
+      <ul class="nav-tabs-custom">
+        <li class="nav-tab-item"><a href="/tools/display-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-desktop text-muted"></i> Display Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/dead-pixel-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-border-all text-muted"></i> Dead Pixel Test</a></li>
+        <li class="nav-tab-item"><a href="/tools/webcam-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-camera text-muted"></i> Webcam Test</a></li>
+      </ul>
+      
+      <!-- Sidebar Ad Slot -->
+      <div class="sidebar-ad-card">
+        <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px;">Ad · keeps this tool free</div>
+        <ins class="adsbygoogle"
+             style="display:block;width:100%;height:100px;"
+             data-ad-client="ca-pub-4806235756537260"
+             data-ad-slot="8013321574"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        </script>
+      </div>
+    </aside>
+
+    <main class="main-content">
+<style>
+  .mouse-stage {
+    background: var(--bg-card);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    height: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    user-select: none;
+    cursor: crosshair;
+  }
+
+  .mouse-stage h2 {
+    color: var(--text-muted);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .click-ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: ripple 0.6s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes ripple {
+    0% { width: 0; height: 0; opacity: 0.8; }
+    100% { width: 100px; height: 100px; opacity: 0; }
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .status-item span { font-weight: 600; color: var(--text-muted); }
+  .status-item .val { font-family: monospace; font-size: 1.1rem; color: var(--text); }
+  .status-item.active { border-color: var(--success); box-shadow: 0 0 10px var(--success-glow); }
+  .status-item.active .val { color: var(--success); }
+
+  .mouse-visual {
+    width: 120px;
+    height: 180px;
+    border: 4px solid var(--border);
+    border-radius: 60px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  .mouse-btn-left, .mouse-btn-right {
+    width: 45%;
+    height: 60px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 40px 40px 10px 10px;
+    transition: 0.1s;
+  }
+
+  .mouse-scroll {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 30px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    transition: 0.1s;
+  }
+
+  .mouse-btn-left.active, .mouse-btn-right.active, .mouse-scroll.active {
+    background: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4">
+    <h1 class="fw-bold mb-2"><i class="fa-solid fa-computer-mouse" style="color:var(--text-muted);"></i> Mouse & Trackpad Test</h1>
+    <p class="text-muted">Test left, right, middle clicks, scroll wheel, and trackpad multi-touch in the area below.</p>
+  </div>
+
+  <div class="row align-items-center mb-4">
+    <div class="col-md-3 text-center">
+      <div class="mouse-visual">
+        <div class="mouse-btn-left" id="visLeft"></div>
+        <div class="mouse-scroll" id="visMiddle"></div>
+        <div class="mouse-btn-right" id="visRight"></div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="status-grid">
+        <div class="status-item" id="statLeft"><span>Left Click</span> <div class="val">--</div></div>
+        <div class="status-item" id="statRight"><span>Right Click</span> <div class="val">--</div></div>
+        <div class="status-item" id="statMiddle"><span>Middle Click</span> <div class="val">--</div></div>
+        <div class="status-item" id="statScroll"><span>Scroll Dir</span> <div class="val">--</div></div>
+        <div class="status-item" id="statTouch"><span>Multi-Touch</span> <div class="val">0 Fingers</div></div>
+        <div class="status-item" id="statSpeed"><span>Dbl Click Spd</span> <div class="val">-- ms</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mouse-stage" id="mouseStage">
+    <h2>CLICK / SCROLL / TOUCH HERE</h2>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Trackpad & Mouse Repair</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('mouse_test', 'started');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.trackpad.replacement_macbook, false) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.trackpad.replacement_windows, false) + '</div>';
+
+  const stage = document.getElementById('mouseStage');
+  
+  // Disable context menu so we can test right click
+  stage.addEventListener('contextmenu', e => {
+    e.preventDefault();
+  });
+
+  let lastClickTime = 0;
+
+  function createRipple(x, y, color) {
+    const r = document.createElement('div');
+    r.className = 'click-ripple';
+    r.style.left = x + 'px';
+    r.style.top = y + 'px';
+    r.style.background = color;
+    stage.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  }
+
+  function activateStat(id, valText, colorClass = 'var(--accent)') {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    el.querySelector('.val').innerText = valText;
+    setTimeout(() => el.classList.remove('active'), 300);
+  }
+
+  function activateVis(id) {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    setTimeout(() => el.classList.remove('active'), 200);
+  }
+
+  stage.addEventListener('mousedown', (e) => {
+    const rect = stage.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    let color = 'rgba(255,255,255,0.5)';
+    
+    // Double click timing
+    const now = Date.now();
+    if (now - lastClickTime < 500) {
+      document.getElementById('statSpeed').querySelector('.val').innerText = (now - lastClickTime) + ' ms';
+    }
+    lastClickTime = now;
+
+    if (e.button === 0) { // Left
+      color = 'var(--accent)';
+      activateStat('statLeft', 'OK');
+      activateVis('visLeft');
+    } else if (e.button === 1) { // Middle
+      color = 'var(--success)';
+      activateStat('statMiddle', 'OK');
+      activateVis('visMiddle');
+    } else if (e.button === 2) { // Right
+      color = 'var(--warning)';
+      activateStat('statRight', 'OK');
+      activateVis('visRight');
+    }
+
+    createRipple(x, y, color);
+  });
+
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const dir = e.deltaY > 0 ? 'DOWN' : 'UP';
+    activateStat('statScroll', dir);
+    activateVis('visMiddle');
+  }, { passive: false });
+
+  // Multi-touch for trackpads
+  let maxTouches = 0;
+  stage.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (e.touches.length > maxTouches) {
+      maxTouches = e.touches.length;
+    }
+    document.getElementById('statTouch').querySelector('.val').innerText = maxTouches + ' Fingers';
+    document.getElementById('statTouch').classList.add('active');
+    
+    // Create ripples for all touches
+    const rect = stage.getBoundingClientRect();
+    for(let i=0; i<e.touches.length; i++) {
+      const x = e.touches[i].clientX - rect.left;
+      const y = e.touches[i].clientY - rect.top;
+      createRipple(x, y, 'var(--accent)');
+    }
+  }, { passive: false });
+  
+  stage.addEventListener('touchend', () => {
+    setTimeout(() => document.getElementById('statTouch').classList.remove('active'), 300);
+  });
+</script>
+
+    </main>
+  </div>
+
+  <script src="/shared/analytics.js"></script>
+  <script src="/shared/repair-card.js"></script>
+</body>
+</html>

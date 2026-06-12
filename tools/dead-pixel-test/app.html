@@ -1,0 +1,265 @@
+<style>
+  #pixelTestContainer {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    cursor: crosshair;
+  }
+  
+  #pixelInstructions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.5s;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px black;
+    pointer-events: none;
+  }
+
+  .fixer-box {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    display: none;
+  }
+
+  .grid-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .color-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .color-btn:hover { transform: scale(1.1); }
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4">
+    <h1 class="fw-bold mb-2"><i class="fa-solid fa-border-all" style="color:var(--text-muted);"></i> Dead Pixel Test</h1>
+    <p class="text-muted">Fill your screen with pure colors to easily spot dead, stuck, or hot pixels. Click anywhere during the test to mark a bad pixel.</p>
+  </div>
+
+  <div class="grid-card text-center">
+    <button class="btn-custom-primary btn-lg mb-4" onclick="startTest()">
+      <i class="fa-solid fa-expand me-2"></i> Start Fullscreen Test
+    </button>
+    <p class="text-muted small mb-4">Press Space/Arrow keys or click to cycle colors. Press ESC to exit.</p>
+    
+    <div class="d-flex justify-content-center gap-3 mb-4">
+      <div class="color-btn" style="background:#000;" title="Black"></div>
+      <div class="color-btn" style="background:#fff;" title="White"></div>
+      <div class="color-btn" style="background:#f00;" title="Red"></div>
+      <div class="color-btn" style="background:#0f0;" title="Green"></div>
+      <div class="color-btn" style="background:#00f;" title="Blue"></div>
+    </div>
+  </div>
+
+  <div class="grid-card d-none" id="resultsCard">
+    <h3 class="fw-bold text-danger mb-3"><span id="badCount">0</span> Bad Pixels Marked</h3>
+    <ul id="pixelLog" class="list-group list-group-flush mb-4 bg-transparent"></ul>
+    
+    <div class="p-4 rounded border border-warning" style="background: rgba(245, 158, 11, 0.1);">
+      <h5 class="text-warning fw-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> Try Pixel Fixer</h5>
+      <p class="small text-muted">Stuck pixels (red, green, or blue) can sometimes be revived by rapidly flashing colors. Dead pixels (black) cannot be revived.</p>
+      <button class="btn btn-outline-warning" onclick="startFixer()">Run 60-Second Pixel Fixer</button>
+    </div>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Screen Replacement Options</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<!-- Fullscreen Test Container -->
+<div id="pixelTestContainer" onclick="handleTestClick(event)">
+  <div id="pixelInstructions">
+    <h2 class="fw-bold mb-2">Dead Pixel Test</h2>
+    <p class="mb-0 fs-5">Click or press Space to change colors.<br>Click any dead pixel to mark it.</p>
+  </div>
+  <div class="fixer-box" id="fixerBox"></div>
+</div>
+
+<script>
+  trackToolEvent('dead_pixel_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.display.dead_pixel, true) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_13, false) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_16, false) + '</div>';
+
+  const colors = ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff'];
+  let currentColorIdx = 0;
+  let isTesting = false;
+  let markedPixels = [];
+  let isFixing = false;
+  let fixInterval;
+
+  const container = document.getElementById('pixelTestContainer');
+  const instructions = document.getElementById('pixelInstructions');
+  const resultsCard = document.getElementById('resultsCard');
+  const badCount = document.getElementById('badCount');
+  const pixelLog = document.getElementById('pixelLog');
+  const fixerBox = document.getElementById('fixerBox');
+
+  function startTest() {
+    isTesting = true;
+    currentColorIdx = 0;
+    
+    // Clear old markers visually but keep data just in case
+    document.querySelectorAll('.marker').forEach(m => m.remove());
+    markedPixels = [];
+    
+    container.style.display = 'block';
+    container.style.backgroundColor = colors[currentColorIdx];
+    
+    instructions.style.opacity = '1';
+    setTimeout(() => { instructions.style.opacity = '0'; }, 3000);
+    
+    try {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    } catch(e) {}
+    
+    trackToolEvent('dead_pixel_test', 'started');
+  }
+
+  function endTest() {
+    isTesting = false;
+    container.style.display = 'none';
+    
+    try {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+    } catch(e) {}
+    
+    if (markedPixels.length > 0) {
+      resultsCard.classList.remove('d-none');
+      badCount.innerText = markedPixels.length;
+      
+      pixelLog.innerHTML = markedPixels.map((p, i) => `
+        <li class="list-group-item bg-transparent text-white border-secondary">
+          Pixel #${i+1} at Coordinates: X: ${p.x}, Y: ${p.y}
+        </li>
+      `).join('');
+      
+      trackToolEvent('dead_pixel_test', 'pixels_marked', { count: markedPixels.length });
+    }
+  }
+
+  function handleTestClick(e) {
+    if (!isTesting) return;
+    
+    // If we click near the top right, maybe it's a mistake, but we'll assume they are marking
+    // Actually, let's make left click cycle colors, and RIGHT click mark pixels.
+    // Or just any click cycles, but if they hold Shift they mark.
+    // Simpler: Normal click cycles colors. To mark a pixel, the test must be done.
+    
+    // Let's go with: Left click = cycle color.
+    // Double click = mark pixel?
+    // Let's just cycle colors. We'll add a marker if they click.
+    
+    // Cycle Color
+    currentColorIdx = (currentColorIdx + 1) % colors.length;
+    container.style.backgroundColor = colors[currentColorIdx];
+    
+    // Also mark the spot they clicked
+    const marker = document.createElement('div');
+    marker.className = 'marker';
+    marker.style.left = e.clientX + 'px';
+    marker.style.top = e.clientY + 'px';
+    container.appendChild(marker);
+    
+    markedPixels.push({x: e.clientX, y: e.clientY});
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (isTesting) {
+      if (e.key === 'Escape') {
+        if(isFixing) stopFixer();
+        else endTest();
+      } else if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        currentColorIdx = (currentColorIdx + 1) % colors.length;
+        container.style.backgroundColor = colors[currentColorIdx];
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        currentColorIdx = (currentColorIdx - 1 + colors.length) % colors.length;
+        container.style.backgroundColor = colors[currentColorIdx];
+      }
+    }
+  });
+
+  function startFixer() {
+    if (markedPixels.length === 0) return;
+    
+    isTesting = true;
+    isFixing = true;
+    container.style.display = 'block';
+    container.style.backgroundColor = 'black';
+    instructions.style.opacity = '0';
+    
+    try {
+      if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+    } catch(e) {}
+
+    // Position fixer box at the first marked pixel
+    const p = markedPixels[0];
+    fixerBox.style.display = 'block';
+    fixerBox.style.left = p.x + 'px';
+    fixerBox.style.top = p.y + 'px';
+    
+    trackToolEvent('dead_pixel_test', 'fixer_started');
+
+    const fixColors = ['#f00', '#0f0', '#00f', '#fff', '#000'];
+    let fIdx = 0;
+    
+    // Flash at 60Hz (approx 16ms)
+    fixInterval = setInterval(() => {
+      fixerBox.style.backgroundColor = fixColors[fIdx];
+      fIdx = (fIdx + 1) % fixColors.length;
+    }, 16);
+    
+    // Stop after 60 seconds
+    setTimeout(stopFixer, 60000);
+  }
+
+  function stopFixer() {
+    if (!isFixing) return;
+    clearInterval(fixInterval);
+    fixerBox.style.display = 'none';
+    isFixing = false;
+    endTest();
+  }
+</script>

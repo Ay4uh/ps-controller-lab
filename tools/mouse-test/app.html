@@ -1,0 +1,234 @@
+<style>
+  .mouse-stage {
+    background: var(--bg-card);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    height: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    user-select: none;
+    cursor: crosshair;
+  }
+
+  .mouse-stage h2 {
+    color: var(--text-muted);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .click-ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: ripple 0.6s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes ripple {
+    0% { width: 0; height: 0; opacity: 0.8; }
+    100% { width: 100px; height: 100px; opacity: 0; }
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .status-item span { font-weight: 600; color: var(--text-muted); }
+  .status-item .val { font-family: monospace; font-size: 1.1rem; color: var(--text); }
+  .status-item.active { border-color: var(--success); box-shadow: 0 0 10px var(--success-glow); }
+  .status-item.active .val { color: var(--success); }
+
+  .mouse-visual {
+    width: 120px;
+    height: 180px;
+    border: 4px solid var(--border);
+    border-radius: 60px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  .mouse-btn-left, .mouse-btn-right {
+    width: 45%;
+    height: 60px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 40px 40px 10px 10px;
+    transition: 0.1s;
+  }
+
+  .mouse-scroll {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 30px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    transition: 0.1s;
+  }
+
+  .mouse-btn-left.active, .mouse-btn-right.active, .mouse-scroll.active {
+    background: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4">
+    <h1 class="fw-bold mb-2"><i class="fa-solid fa-computer-mouse" style="color:var(--text-muted);"></i> Mouse & Trackpad Test</h1>
+    <p class="text-muted">Test left, right, middle clicks, scroll wheel, and trackpad multi-touch in the area below.</p>
+  </div>
+
+  <div class="row align-items-center mb-4">
+    <div class="col-md-3 text-center">
+      <div class="mouse-visual">
+        <div class="mouse-btn-left" id="visLeft"></div>
+        <div class="mouse-scroll" id="visMiddle"></div>
+        <div class="mouse-btn-right" id="visRight"></div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="status-grid">
+        <div class="status-item" id="statLeft"><span>Left Click</span> <div class="val">--</div></div>
+        <div class="status-item" id="statRight"><span>Right Click</span> <div class="val">--</div></div>
+        <div class="status-item" id="statMiddle"><span>Middle Click</span> <div class="val">--</div></div>
+        <div class="status-item" id="statScroll"><span>Scroll Dir</span> <div class="val">--</div></div>
+        <div class="status-item" id="statTouch"><span>Multi-Touch</span> <div class="val">0 Fingers</div></div>
+        <div class="status-item" id="statSpeed"><span>Dbl Click Spd</span> <div class="val">-- ms</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mouse-stage" id="mouseStage">
+    <h2>CLICK / SCROLL / TOUCH HERE</h2>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Trackpad & Mouse Repair</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('mouse_test', 'started');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.trackpad.replacement_macbook, false) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.trackpad.replacement_windows, false) + '</div>';
+
+  const stage = document.getElementById('mouseStage');
+  
+  // Disable context menu so we can test right click
+  stage.addEventListener('contextmenu', e => {
+    e.preventDefault();
+  });
+
+  let lastClickTime = 0;
+
+  function createRipple(x, y, color) {
+    const r = document.createElement('div');
+    r.className = 'click-ripple';
+    r.style.left = x + 'px';
+    r.style.top = y + 'px';
+    r.style.background = color;
+    stage.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  }
+
+  function activateStat(id, valText, colorClass = 'var(--accent)') {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    el.querySelector('.val').innerText = valText;
+    setTimeout(() => el.classList.remove('active'), 300);
+  }
+
+  function activateVis(id) {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    setTimeout(() => el.classList.remove('active'), 200);
+  }
+
+  stage.addEventListener('mousedown', (e) => {
+    const rect = stage.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    let color = 'rgba(255,255,255,0.5)';
+    
+    // Double click timing
+    const now = Date.now();
+    if (now - lastClickTime < 500) {
+      document.getElementById('statSpeed').querySelector('.val').innerText = (now - lastClickTime) + ' ms';
+    }
+    lastClickTime = now;
+
+    if (e.button === 0) { // Left
+      color = 'var(--accent)';
+      activateStat('statLeft', 'OK');
+      activateVis('visLeft');
+    } else if (e.button === 1) { // Middle
+      color = 'var(--success)';
+      activateStat('statMiddle', 'OK');
+      activateVis('visMiddle');
+    } else if (e.button === 2) { // Right
+      color = 'var(--warning)';
+      activateStat('statRight', 'OK');
+      activateVis('visRight');
+    }
+
+    createRipple(x, y, color);
+  });
+
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const dir = e.deltaY > 0 ? 'DOWN' : 'UP';
+    activateStat('statScroll', dir);
+    activateVis('visMiddle');
+  }, { passive: false });
+
+  // Multi-touch for trackpads
+  let maxTouches = 0;
+  stage.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (e.touches.length > maxTouches) {
+      maxTouches = e.touches.length;
+    }
+    document.getElementById('statTouch').querySelector('.val').innerText = maxTouches + ' Fingers';
+    document.getElementById('statTouch').classList.add('active');
+    
+    // Create ripples for all touches
+    const rect = stage.getBoundingClientRect();
+    for(let i=0; i<e.touches.length; i++) {
+      const x = e.touches[i].clientX - rect.left;
+      const y = e.touches[i].clientY - rect.top;
+      createRipple(x, y, 'var(--accent)');
+    }
+  }, { passive: false });
+  
+  stage.addEventListener('touchend', () => {
+    setTimeout(() => document.getElementById('statTouch').classList.remove('active'), 300);
+  });
+</script>

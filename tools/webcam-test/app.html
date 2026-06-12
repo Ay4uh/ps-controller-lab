@@ -1,0 +1,188 @@
+<style>
+  .webcam-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+  }
+
+  .webcam-video {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    display: none;
+    background: #000;
+  }
+
+  .cam-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 10;
+    transition: opacity 0.3s;
+  }
+
+  .cam-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .cam-overlay p {
+    color: var(--text-muted);
+    max-width: 400px;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .status-item .label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .status-item .val {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="fw-bold mb-2"><i class="fa-solid fa-camera" style="color:var(--text-muted);"></i> Webcam Test</h1>
+      <p class="text-muted">Check your camera resolution, framerate, and video quality.</p>
+    </div>
+  </div>
+
+  <div class="webcam-container">
+    <div class="cam-overlay" id="camOverlay">
+      <button class="btn-custom-primary btn-lg" onclick="startWebcam()">
+        <i class="fa-solid fa-video me-2"></i> Enable Webcam
+      </button>
+      <p>Your browser will ask for camera permission. We do not record or save any video data—everything stays strictly on your device.</p>
+    </div>
+    <video id="webcamVideo" class="webcam-video" autoplay playsinline></video>
+  </div>
+
+  <div class="status-grid">
+    <div class="status-item">
+      <div class="label">Camera Name</div>
+      <div class="val text-truncate" id="valName">--</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Resolution</div>
+      <div class="val" id="valRes">--</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Framerate (FPS)</div>
+      <div class="val" id="valFps">--</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Aspect Ratio</div>
+      <div class="val" id="valAspect">--</div>
+    </div>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Webcam Upgrades & Repair</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('webcam_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.macbook, false) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.external_usb, true) + '</div>';
+
+  async function startWebcam() {
+    try {
+      // Request maximum resolution to see what the hardware supports
+      const constraints = {
+        video: {
+          width: { ideal: 4096 },
+          height: { ideal: 2160 }
+        },
+        audio: false
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      
+      const video = document.getElementById('webcamVideo');
+      video.srcObject = stream;
+      video.style.display = 'block';
+      
+      document.getElementById('camOverlay').classList.add('hidden');
+      trackToolEvent('webcam_test', 'started');
+
+      const track = stream.getVideoTracks()[0];
+      const settings = track.getSettings();
+      
+      document.getElementById('valName').innerText = track.label || 'Default Camera';
+      document.getElementById('valName').title = track.label || '';
+      
+      // Update when video has loaded metadata to get actual resolution rendered
+      video.onloadedmetadata = () => {
+        const w = video.videoWidth;
+        const h = video.videoHeight;
+        
+        let resText = `${w}x${h}`;
+        if (w >= 3840) resText += ' (4K)';
+        else if (w >= 2560) resText += ' (1440p)';
+        else if (w >= 1920) resText += ' (1080p)';
+        else if (w >= 1280) resText += ' (720p)';
+        else resText += ' (SD)';
+        
+        document.getElementById('valRes').innerText = resText;
+        
+        if (settings.frameRate) {
+          document.getElementById('valFps').innerText = Math.round(settings.frameRate);
+        } else {
+          document.getElementById('valFps').innerText = 'Unknown';
+        }
+        
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        const div = gcd(w, h);
+        document.getElementById('valAspect').innerText = `${w/div}:${h/div}`;
+      };
+
+    } catch (err) {
+      console.error(err);
+      alert('Camera access denied or no camera found. Please allow camera permissions in your browser.');
+    }
+  }
+</script>

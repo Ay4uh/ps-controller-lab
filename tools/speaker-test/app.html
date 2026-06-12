@@ -1,0 +1,225 @@
+<style>
+  .speaker-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .speaker-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .speaker-card .icon {
+    font-size: 3rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+  }
+
+  .speaker-card.playing {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .speaker-card.playing .icon {
+    color: var(--accent);
+    animation: bounce 0.5s infinite alternate;
+  }
+
+  @keyframes bounce {
+    from { transform: scale(1); }
+    to { transform: scale(1.15); }
+  }
+
+  .test-list {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .test-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .test-item:last-child { border-bottom: none; }
+
+  .test-item .info h5 { margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 700; }
+  .test-item .info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4">
+    <h1 class="fw-bold mb-2"><i class="fa-solid fa-volume-high" style="color:var(--text-muted);"></i> Speaker Test</h1>
+    <p class="text-muted">Test your left and right channels, stereo balance, and frequency response.</p>
+  </div>
+
+  <div class="speaker-grid">
+    <div class="speaker-card" id="speakerLeft">
+      <i class="fa-solid fa-speaker icon"></i>
+      <h3 class="fw-bold">Left Channel</h3>
+      <button class="btn btn-outline-secondary mt-3" onclick="playTest(-1, 'speakerLeft')">Test Left</button>
+    </div>
+    <div class="speaker-card" id="speakerRight">
+      <i class="fa-solid fa-speaker icon"></i>
+      <h3 class="fw-bold">Right Channel</h3>
+      <button class="btn btn-outline-secondary mt-3" onclick="playTest(1, 'speakerRight')">Test Right</button>
+    </div>
+  </div>
+
+  <div class="test-list">
+    <div class="test-item">
+      <div class="info">
+        <h5>Stereo Sweep</h5>
+        <p>Pans a tone smoothly from left to right speaker</p>
+      </div>
+      <button class="btn-custom-primary" onclick="playSweep()"><i class="fa-solid fa-play"></i></button>
+    </div>
+    <div class="test-item">
+      <div class="info">
+        <h5>Sub-Bass Test (50Hz)</h5>
+        <p>Checks low-end response and subwoofer health</p>
+      </div>
+      <button class="btn-custom-primary" onclick="playFreq(50)"><i class="fa-solid fa-play"></i></button>
+    </div>
+    <div class="test-item">
+      <div class="info">
+        <h5>Treble Test (12kHz)</h5>
+        <p>Checks high-end tweeters and distortion</p>
+      </div>
+      <button class="btn-custom-primary" onclick="playFreq(12000)"><i class="fa-solid fa-play"></i></button>
+    </div>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Speaker Upgrade & Repair</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('speaker_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.speaker.macbook_single, false) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard(repairCosts.speaker.macbook_both, false) + '</div>';
+
+  let audioContext = null;
+
+  function initAudio() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playFreq(freq) {
+    initAudio();
+    trackToolEvent('speaker_test', 'play_freq', { frequency: freq });
+    
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    osc.frequency.value = freq;
+    
+    // Ramp up/down to prevent popping
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
+    gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
+    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
+    
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.start();
+    osc.stop(audioContext.currentTime + 2.0);
+  }
+
+  function playTest(pan, elementId) {
+    initAudio();
+    trackToolEvent('speaker_test', 'play_channel', { channel: pan === -1 ? 'left' : 'right' });
+    
+    const el = document.getElementById(elementId);
+    el.classList.add('playing');
+    
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const panner = audioContext.createStereoPanner();
+    
+    osc.type = 'triangle';
+    osc.frequency.value = 440;
+    panner.pan.value = pan;
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
+    gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
+    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
+    
+    osc.connect(panner);
+    panner.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.start();
+    osc.stop(audioContext.currentTime + 2.0);
+    
+    setTimeout(() => {
+      el.classList.remove('playing');
+    }, 2000);
+  }
+
+  function playSweep() {
+    initAudio();
+    trackToolEvent('speaker_test', 'play_sweep');
+    
+    const l = document.getElementById('speakerLeft');
+    const r = document.getElementById('speakerRight');
+    
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const panner = audioContext.createStereoPanner();
+    
+    osc.type = 'sine';
+    osc.frequency.value = 800;
+    
+    // Sweep from left (-1) to right (1) over 3 seconds
+    panner.pan.setValueAtTime(-1, audioContext.currentTime);
+    panner.pan.linearRampToValueAtTime(1, audioContext.currentTime + 3.0);
+    
+    gain.gain.setValueAtTime(0, audioContext.currentTime);
+    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.2);
+    gain.gain.setValueAtTime(1, audioContext.currentTime + 2.8);
+    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 3.0);
+    
+    osc.connect(panner);
+    panner.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.start();
+    
+    l.classList.add('playing');
+    setTimeout(() => {
+      l.classList.remove('playing');
+      r.classList.add('playing');
+    }, 1500);
+    
+    setTimeout(() => {
+      r.classList.remove('playing');
+    }, 3000);
+    
+    osc.stop(audioContext.currentTime + 3.0);
+  }
+</script>

@@ -1,0 +1,248 @@
+<style>
+  .visualizer-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    height: 300px;
+    position: relative;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .mic-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 10;
+    transition: opacity 0.3s;
+  }
+
+  .mic-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .status-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .status-item .label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .status-item .val {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .level-bar-bg {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  
+  .level-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--success), var(--warning), var(--danger));
+    transition: width 0.1s;
+  }
+
+</style>
+
+<div class="container-fluid">
+  
+  <div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="fw-bold mb-2"><i class="fa-solid fa-microphone" style="color:var(--text-muted);"></i> Microphone Test</h1>
+      <p class="text-muted">Check your microphone input level, view the live waveform, and test your noise floor.</p>
+    </div>
+    <div id="deviceInfo" class="text-end text-muted small font-monospace"></div>
+  </div>
+
+  <div class="visualizer-container">
+    <div class="mic-overlay" id="micOverlay">
+      <button class="btn-custom-primary btn-lg" onclick="startMic()">
+        <i class="fa-solid fa-microphone-lines me-2"></i> Enable Microphone
+      </button>
+    </div>
+    <canvas id="waveformCanvas"></canvas>
+  </div>
+
+  <div class="status-grid">
+    <div class="status-item">
+      <div class="label">Current Level</div>
+      <div class="val" id="valLevel">- ∞ dB</div>
+      <div class="level-bar-bg"><div class="level-bar-fill" id="barLevel"></div></div>
+    </div>
+    <div class="status-item">
+      <div class="label">Peak Level</div>
+      <div class="val text-success" id="valPeak">- ∞ dB</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Background Noise Floor</div>
+      <div class="val text-warning" id="valNoise">Measuring...</div>
+      <div style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">(Stay silent to measure)</div>
+    </div>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Microphone Upgrade & Repair</h4>
+  <div class="row" id="repairOptionsContainer"></div>
+
+</div>
+
+<script>
+  trackToolEvent('mic_test', 'viewed');
+
+  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
+  const repairContainer = document.getElementById('repairOptionsContainer');
+  
+  repairContainer.innerHTML = 
+    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.external_usb, true) + '</div>' +
+    '<div class="col-md-4">' + createRepairCard({ label: "Acoustic Foam Panels", cost: "24.99", affiliate: true, link: "https://ay5uh.com/store/acoustic" }) + '</div>';
+
+  let audioContext;
+  let analyser;
+  let microphone;
+  let isRunning = false;
+
+  const canvas = document.getElementById('waveformCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  function resizeCanvas() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  let peak = -100;
+  let noiseFloor = 0;
+  let noiseSamples = [];
+
+  async function startMic() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      
+      document.getElementById('micOverlay').classList.add('hidden');
+      trackToolEvent('mic_test', 'started');
+
+      const track = stream.getAudioTracks()[0];
+      document.getElementById('deviceInfo').innerText = track.label || 'Default Microphone';
+
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      microphone = audioContext.createMediaStreamSource(stream);
+      
+      analyser.fftSize = 2048;
+      microphone.connect(analyser);
+      
+      isRunning = true;
+      drawWaveform();
+      
+    } catch (err) {
+      console.error(err);
+      alert('Microphone access denied. Please allow microphone permissions in your browser.');
+    }
+  }
+
+  function getDBFS(rms) {
+    if (rms === 0) return -100;
+    return 20 * Math.log10(rms);
+  }
+
+  function drawWaveform() {
+    if (!isRunning) return;
+    requestAnimationFrame(drawWaveform);
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyser.getByteTimeDomainData(dataArray);
+
+    ctx.fillStyle = 'var(--bg-card)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'var(--accent)';
+    ctx.beginPath();
+
+    const sliceWidth = canvas.width * 1.0 / bufferLength;
+    let x = 0;
+    let sumSquares = 0;
+
+    for (let i = 0; i < bufferLength; i++) {
+      const v = dataArray[i] / 128.0;
+      const y = v * canvas.height / 2;
+
+      // RMS calculation
+      const normalized = (dataArray[i] - 128) / 128;
+      sumSquares += normalized * normalized;
+
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+      x += sliceWidth;
+    }
+
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.stroke();
+
+    // Calculate levels
+    const rms = Math.sqrt(sumSquares / bufferLength);
+    const dbfs = getDBFS(rms);
+    
+    // Update UI
+    let dbStr = dbfs <= -100 ? '- ∞' : dbfs.toFixed(1);
+    document.getElementById('valLevel').innerText = `${dbStr} dB`;
+    
+    // Bar width (mapping -60dB to 0dB -> 0% to 100%)
+    let pct = Math.max(0, Math.min(100, (dbfs + 60) * (100/60)));
+    document.getElementById('barLevel').style.width = `${pct}%`;
+
+    if (dbfs > peak && dbfs > -90) {
+      peak = dbfs;
+      document.getElementById('valPeak').innerText = `${peak.toFixed(1)} dB`;
+    }
+
+    // Measure noise floor (lowest volume over last 3 seconds)
+    if (dbfs > -95) {
+      noiseSamples.push(dbfs);
+      if (noiseSamples.length > 180) noiseSamples.shift(); // ~3 seconds at 60fps
+      
+      if (noiseSamples.length === 180) {
+        const floor = Math.min(...noiseSamples);
+        document.getElementById('valNoise').innerText = `${floor.toFixed(1)} dB`;
+      }
+    }
+  }
+</script>
