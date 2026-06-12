@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keyboard Test — Check Every Key Online | ay5uh</title>
-  <meta name="description" content="Free online keyboard test. Press every key to check for stuck, dead, or unresponsive keys on your laptop or MacBook.">
+  <title>Keyboard Test — MacBook, Windows & Chromebook | ay5uh</title>
+  <meta name="description" content="Free online keyboard test for MacBook, Windows and Chromebook. Detect stuck or broken keys instantly.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -16,7 +15,6 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <!-- Bootstrap 5.3.3 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,7 +48,6 @@
       flex-direction: column;
     }
 
-    /* Scrollbars */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
@@ -63,7 +60,6 @@
       overflow: hidden;
     }
 
-    /* Navigation Sidebar */
     .sidebar {
       width: 260px;
       background-color: var(--bg-nav);
@@ -147,7 +143,6 @@
       background-color: rgba(0,0,0,0.2);
     }
 
-    /* Main Area */
     .main-content {
       flex: 1;
       padding: 30px;
@@ -156,7 +151,36 @@
       position: relative;
     }
 
-    /* Keyboard Test Specific Styles */
+    /* DEVICE SELECTION */
+    #deviceSelection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+    }
+    .device-btn {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      width: 250px;
+      text-align: center;
+      color: var(--text);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .device-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px var(--accent-glow);
+    }
+    .device-btn .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+    .device-btn .title { font-size: 1.25rem; font-weight: 700; }
+
+    /* TEST SCREEN */
+    #testScreen { display: none; }
+    
     .keyboard-container {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -165,39 +189,57 @@
       margin-bottom: 2rem;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
       overflow-x: auto;
+      display: none; /* active layout gets block */
+      justify-content: center;
+    }
+    
+    .kb-wrapper {
+      display: inline-flex;
+      gap: 20px;
+    }
+
+    .kb-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .kb-row {
       display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      min-width: 800px;
+      gap: 6px;
     }
 
     .kb-key {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--border);
       border-radius: 6px;
-      min-width: 50px;
-      height: 50px;
+      min-width: 45px;
+      height: 45px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       font-family: monospace;
       transition: all 0.1s;
       user-select: none;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      text-align: center;
+      line-height: 1.1;
     }
 
-    .kb-key[data-width="1.5"] { min-width: 75px; }
-    .kb-key[data-width="1.75"] { min-width: 87.5px; }
-    .kb-key[data-width="2"] { min-width: 100px; }
-    .kb-key[data-width="2.25"] { min-width: 112.5px; }
-    .kb-key[data-width="2.75"] { min-width: 137.5px; }
-    .kb-key[data-width="6"] { min-width: 300px; }
+    .kb-key[data-w="1.25"] { min-width: calc(45px * 1.25 + 6px * 0.25); }
+    .kb-key[data-w="1.5"] { min-width: calc(45px * 1.5 + 6px * 0.5); }
+    .kb-key[data-w="1.75"] { min-width: calc(45px * 1.75 + 6px * 0.75); }
+    .kb-key[data-w="2"] { min-width: calc(45px * 2 + 6px * 1); }
+    .kb-key[data-w="2.25"] { min-width: calc(45px * 2.25 + 6px * 1.25); }
+    .kb-key[data-w="2.5"] { min-width: calc(45px * 2.5 + 6px * 1.5); }
+    .kb-key[data-w="2.75"] { min-width: calc(45px * 2.75 + 6px * 1.75); }
+    .kb-key[data-w="6"] { min-width: calc(45px * 6 + 6px * 5); }
+    
+    .kb-key[data-h="2"] { height: calc(45px * 2 + 6px * 1); }
 
     .kb-key.tested {
       background: var(--success-glow);
@@ -216,73 +258,71 @@
       background: var(--danger);
       color: #fff;
       border-color: var(--danger);
-      animation: pulseStuck 1s infinite;
       box-shadow: 0 0 15px var(--danger-glow);
     }
 
-    @keyframes pulseStuck {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    }
-
-    .status-panel {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .status-box {
-      flex: 1;
+    /* Status Bar */
+    .test-status {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .test-counter {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .progress {
+      flex: 1;
+      height: 12px;
+      background: var(--bg);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .result-alert {
+      display: none;
       padding: 1.5rem;
-      text-align: center;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
     }
-
-    .status-box h3 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--accent); }
-    .status-box p { color: var(--text-muted); margin: 0; font-size: 0.9rem; font-weight: 600; text-transform: uppercase;}
-
-    #stuckKeysAlert { display: none; }
-    #testCompleteAlert { display: none; }
-
-    /* Custom Buttons */
-    .btn-custom-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%);
-      color: white;
-      border: none;
-      box-shadow: 0 4px 15px var(--accent-glow);
+    .result-alert.success {
+      display: block;
+      background: var(--success-glow);
+      border: 1px solid var(--success);
+      color: var(--success);
     }
-    .btn-custom-primary:hover {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      color: white;
-      box-shadow: 0 6px 20px var(--accent-glow);
+    .result-alert.error {
+      display: block;
+      background: var(--danger-glow);
+      border: 1px solid var(--danger);
+      color: #fca5a5;
     }
-
-    /* Repair Cards */
-    .repair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; transition: transform 0.2s; }
-    .repair-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .repair-card.recommended { border-color: var(--danger); box-shadow: 0 0 15px var(--danger-glow); }
-    .repair-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #fff; padding-right: 80px;}
-    .repair-card .badge-rec { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--danger); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
-    .detail-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
-    .detail-row strong.cost { color: var(--success); font-size: 1.1rem; font-weight: 800; }
-    .repair-card .btn { margin-top: 1rem; width: 100%; font-weight: 700; }
 
   </style>
 </head>
 <body>
   <div class="app-container">
-    
-    <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="brand-container">
         <a href="/" class="brand-logo-wrap">
           <i class="fa-solid fa-microchip brand-logo"></i>
-          <div>
-            <div class="brand-title">ay5uh</div>
-          </div>
+          <div><div class="brand-title">ay5uh</div></div>
         </a>
         <div class="brand-subtitle">Hardware Diagnostics</div>
       </div>
@@ -312,18 +352,10 @@
         <li class="nav-tab-item"><a href="/tools/webcam-test/" class="tab-btn text-decoration-none"><i class="fa-solid fa-camera text-muted"></i> Webcam Test</a></li>
       </ul>
       
-      <!-- Sidebar Ad Slot -->
       <div class="sidebar-ad-card">
         <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px;">Ad · keeps this tool free</div>
-        <ins class="adsbygoogle"
-             style="display:block;width:100%;height:100px;"
-             data-ad-client="ca-pub-4806235756537260"
-             data-ad-slot="8013321574"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        </script>
+        <ins class="adsbygoogle" style="display:block;width:100%;height:100px;" data-ad-client="ca-pub-4806235756537260" data-ad-slot="8013321574" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}</script>
       </div>
     </aside>
 
@@ -332,219 +364,395 @@
         
         <div class="mb-4">
           <h1 class="fw-bold mb-2"><i class="fa-solid fa-keyboard" style="color:var(--text-muted);"></i> Keyboard Test</h1>
-          <p class="text-muted">Press any key on your keyboard to test it. Check for dead keys, stuck switches, and ghosting.</p>
+          <p class="text-muted">Press every key to check for stuck, dead, or unresponsive keys.</p>
         </div>
 
-        <div class="status-panel">
-          <div class="status-box">
-            <h3 id="keysTested">0 <span style="font-size:1.2rem; color:var(--text-muted);">/ 87</span></h3>
-            <p>Keys Tested</p>
-          </div>
-          <div class="status-box" id="stuckBox">
-            <h3 id="stuckCount" class="text-success">0</h3>
-            <p>Stuck Keys</p>
-          </div>
-        </div>
-
-        <div class="alert alert-success" id="testCompleteAlert">
-          <i class="fa-solid fa-check-circle me-2"></i> <strong>Test Complete!</strong> You have successfully tested all mapped keys.
-        </div>
-
-        <div class="alert alert-danger" id="stuckKeysAlert">
-          <i class="fa-solid fa-triangle-exclamation me-2"></i> <strong>Stuck keys detected!</strong> The keys highlighted in red are registering as permanently pressed. This usually means a broken switch or liquid damage. See repair options below.
-        </div>
-
-        <!-- Keyboard UI -->
-        <div class="keyboard-container" id="kbContainer">
-          <!-- Row 1 -->
-          <div class="kb-row">
-            <div class="kb-key" id="Escape">Esc</div>
-            <div class="kb-key" id="F1">F1</div><div class="kb-key" id="F2">F2</div><div class="kb-key" id="F3">F3</div><div class="kb-key" id="F4">F4</div>
-            <div class="kb-key" id="F5" style="margin-left: 10px;">F5</div><div class="kb-key" id="F6">F6</div><div class="kb-key" id="F7">F7</div><div class="kb-key" id="F8">F8</div>
-            <div class="kb-key" id="F9" style="margin-left: 10px;">F9</div><div class="kb-key" id="F10">F10</div><div class="kb-key" id="F11">F11</div><div class="kb-key" id="F12">F12</div>
-          </div>
-          <!-- Row 2 -->
-          <div class="kb-row">
-            <div class="kb-key" id="Backquote">`</div>
-            <div class="kb-key" id="Digit1">1</div><div class="kb-key" id="Digit2">2</div><div class="kb-key" id="Digit3">3</div>
-            <div class="kb-key" id="Digit4">4</div><div class="kb-key" id="Digit5">5</div><div class="kb-key" id="Digit6">6</div>
-            <div class="kb-key" id="Digit7">7</div><div class="kb-key" id="Digit8">8</div><div class="kb-key" id="Digit9">9</div>
-            <div class="kb-key" id="Digit0">0</div><div class="kb-key" id="Minus">-</div><div class="kb-key" id="Equal">=</div>
-            <div class="kb-key" id="Backspace" data-width="2">Backspace</div>
-          </div>
-          <!-- Row 3 -->
-          <div class="kb-row">
-            <div class="kb-key" id="Tab" data-width="1.5">Tab</div>
-            <div class="kb-key" id="KeyQ">Q</div><div class="kb-key" id="KeyW">W</div><div class="kb-key" id="KeyE">E</div>
-            <div class="kb-key" id="KeyR">R</div><div class="kb-key" id="KeyT">T</div><div class="kb-key" id="KeyY">Y</div>
-            <div class="kb-key" id="KeyU">U</div><div class="kb-key" id="KeyI">I</div><div class="kb-key" id="KeyO">O</div>
-            <div class="kb-key" id="KeyP">P</div><div class="kb-key" id="BracketLeft">[</div><div class="kb-key" id="BracketRight">]</div>
-            <div class="kb-key" id="Backslash" data-width="1.5">\</div>
-          </div>
-          <!-- Row 4 -->
-          <div class="kb-row">
-            <div class="kb-key" id="CapsLock" data-width="1.75">Caps</div>
-            <div class="kb-key" id="KeyA">A</div><div class="kb-key" id="KeyS">S</div><div class="kb-key" id="KeyD">D</div>
-            <div class="kb-key" id="KeyF">F</div><div class="kb-key" id="KeyG">G</div><div class="kb-key" id="KeyH">H</div>
-            <div class="kb-key" id="KeyJ">J</div><div class="kb-key" id="KeyK">K</div><div class="kb-key" id="KeyL">L</div>
-            <div class="kb-key" id="Semicolon">;</div><div class="kb-key" id="Quote">'</div>
-            <div class="kb-key" id="Enter" data-width="2.25">Enter</div>
-          </div>
-          <!-- Row 5 -->
-          <div class="kb-row">
-            <div class="kb-key" id="ShiftLeft" data-width="2.25">Shift</div>
-            <div class="kb-key" id="KeyZ">Z</div><div class="kb-key" id="KeyX">X</div><div class="kb-key" id="KeyC">C</div>
-            <div class="kb-key" id="KeyV">V</div><div class="kb-key" id="KeyB">B</div><div class="kb-key" id="KeyN">N</div>
-            <div class="kb-key" id="KeyM">M</div><div class="kb-key" id="Comma">,</div><div class="kb-key" id="Period">.</div>
-            <div class="kb-key" id="Slash">/</div>
-            <div class="kb-key" id="ShiftRight" data-width="2.75">Shift</div>
-          </div>
-          <!-- Row 6 -->
-          <div class="kb-row">
-            <div class="kb-key" id="ControlLeft" data-width="1.5">Ctrl</div>
-            <div class="kb-key" id="MetaLeft" data-width="1.25">Win/Cmd</div>
-            <div class="kb-key" id="AltLeft" data-width="1.25">Alt</div>
-            <div class="kb-key" id="Space" data-width="6">Space</div>
-            <div class="kb-key" id="AltRight" data-width="1.25">Alt</div>
-            <div class="kb-key" id="Fn">Fn</div>
-            <div class="kb-key" id="ControlRight" data-width="1.5">Ctrl</div>
-            <div class="d-flex flex-column" style="margin-left: 20px;">
-              <div class="kb-row" style="margin-bottom:2px;"><div class="kb-key" id="ArrowUp" style="height:24px;">↑</div></div>
-              <div class="kb-row" style="margin-bottom:0;"><div class="kb-key" id="ArrowLeft" style="height:24px;">←</div><div class="kb-key" id="ArrowDown" style="height:24px;">↓</div><div class="kb-key" id="ArrowRight" style="height:24px;">→</div></div>
+        <div id="deviceSelection">
+          <h3 class="mb-5 text-center fw-bold">Which keyboard are you testing?</h3>
+          <div class="d-flex gap-4 flex-wrap justify-content-center">
+            <div class="device-btn" onclick="selectLayout('macbook')">
+              <span class="icon">🍎</span>
+              <span class="title">MacBook</span>
+            </div>
+            <div class="device-btn" onclick="selectLayout('windows')">
+              <span class="icon">🪟</span>
+              <span class="title">Windows</span>
+            </div>
+            <div class="device-btn" onclick="selectLayout('chromebook')">
+              <span class="icon">📚</span>
+              <span class="title">Chromebook</span>
             </div>
           </div>
         </div>
 
-        <!-- Repair Options -->
-        <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Keyboard Repair Options</h4>
-        <div class="row" id="repairOptionsContainer">
-          <!-- Will be dynamically generated -->
-        </div>
+        <div id="testScreen">
+          <div class="test-status">
+            <div class="test-counter" id="testCounter">0 / 0</div>
+            <div class="progress">
+              <div class="progress-bar" id="testProgress"></div>
+            </div>
+          </div>
 
+          <div id="resultAlert" class="result-alert"></div>
+
+          <!-- MACBOOK LAYOUT (78 keys) -->
+          <div class="keyboard-container" id="layout-macbook">
+            <div class="kb-wrapper">
+              <div class="kb-block">
+                <div class="kb-row">
+                  <div class="kb-key layout-macbook-key" data-code="Escape">Esc</div>
+                  <div class="kb-key layout-macbook-key" data-code="F1">F1</div><div class="kb-key layout-macbook-key" data-code="F2">F2</div>
+                  <div class="kb-key layout-macbook-key" data-code="F3">F3</div><div class="kb-key layout-macbook-key" data-code="F4">F4</div>
+                  <div class="kb-key layout-macbook-key" data-code="F5">F5</div><div class="kb-key layout-macbook-key" data-code="F6">F6</div>
+                  <div class="kb-key layout-macbook-key" data-code="F7">F7</div><div class="kb-key layout-macbook-key" data-code="F8">F8</div>
+                  <div class="kb-key layout-macbook-key" data-code="F9">F9</div><div class="kb-key layout-macbook-key" data-code="F10">F10</div>
+                  <div class="kb-key layout-macbook-key" data-code="F11">F11</div><div class="kb-key layout-macbook-key" data-code="F12">F12</div>
+                  <div class="kb-key layout-macbook-key" data-code="AudioVolumeUp">Touch ID</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-macbook-key" data-code="Backquote">~<br>`</div>
+                  <div class="kb-key layout-macbook-key" data-code="Digit1">!<br>1</div><div class="kb-key layout-macbook-key" data-code="Digit2">@<br>2</div>
+                  <div class="kb-key layout-macbook-key" data-code="Digit3">#<br>3</div><div class="kb-key layout-macbook-key" data-code="Digit4">$<br>4</div>
+                  <div class="kb-key layout-macbook-key" data-code="Digit5">%<br>5</div><div class="kb-key layout-macbook-key" data-code="Digit6">^<br>6</div>
+                  <div class="kb-key layout-macbook-key" data-code="Digit7">&<br>7</div><div class="kb-key layout-macbook-key" data-code="Digit8">*<br>8</div>
+                  <div class="kb-key layout-macbook-key" data-code="Digit9">(<br>9</div><div class="kb-key layout-macbook-key" data-code="Digit0">)<br>0</div>
+                  <div class="kb-key layout-macbook-key" data-code="Minus">_<br>-</div><div class="kb-key layout-macbook-key" data-code="Equal">+<br>=</div>
+                  <div class="kb-key layout-macbook-key" data-code="Backspace" data-w="1.5">Delete</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-macbook-key" data-code="Tab" data-w="1.5">Tab</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyQ">Q</div><div class="kb-key layout-macbook-key" data-code="KeyW">W</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyE">E</div><div class="kb-key layout-macbook-key" data-code="KeyR">R</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyT">T</div><div class="kb-key layout-macbook-key" data-code="KeyY">Y</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyU">U</div><div class="kb-key layout-macbook-key" data-code="KeyI">I</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyO">O</div><div class="kb-key layout-macbook-key" data-code="KeyP">P</div>
+                  <div class="kb-key layout-macbook-key" data-code="BracketLeft">{<br>[</div><div class="kb-key layout-macbook-key" data-code="BracketRight">}<br>]</div>
+                  <div class="kb-key layout-macbook-key" data-code="Backslash" data-w="1.5">|<br>\</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-macbook-key" data-code="CapsLock" data-w="1.75">Caps</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyA">A</div><div class="kb-key layout-macbook-key" data-code="KeyS">S</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyD">D</div><div class="kb-key layout-macbook-key" data-code="KeyF">F</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyG">G</div><div class="kb-key layout-macbook-key" data-code="KeyH">H</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyJ">J</div><div class="kb-key layout-macbook-key" data-code="KeyK">K</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyL">L</div><div class="kb-key layout-macbook-key" data-code="Semicolon">:<br>;</div>
+                  <div class="kb-key layout-macbook-key" data-code="Quote">"<br>'</div>
+                  <div class="kb-key layout-macbook-key" data-code="Enter" data-w="1.75">Return</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-macbook-key" data-code="ShiftLeft" data-w="2.25">Shift ⇧</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyZ">Z</div><div class="kb-key layout-macbook-key" data-code="KeyX">X</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyC">C</div><div class="kb-key layout-macbook-key" data-code="KeyV">V</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyB">B</div><div class="kb-key layout-macbook-key" data-code="KeyN">N</div>
+                  <div class="kb-key layout-macbook-key" data-code="KeyM">M</div><div class="kb-key layout-macbook-key" data-code="Comma"><<br>,</div>
+                  <div class="kb-key layout-macbook-key" data-code="Period">><br>.</div><div class="kb-key layout-macbook-key" data-code="Slash">?<br>/</div>
+                  <div class="kb-key layout-macbook-key" data-code="ShiftRight" data-w="2.25">Shift ⇧</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-macbook-key" data-code="Fn" data-w="1.25">🌐 fn</div>
+                  <div class="kb-key layout-macbook-key" data-code="ControlLeft" data-w="1.25">⌃<br>control</div>
+                  <div class="kb-key layout-macbook-key" data-code="AltLeft" data-w="1.25">⌥<br>option</div>
+                  <div class="kb-key layout-macbook-key" data-code="MetaLeft" data-w="1.5">⌘<br>cmd</div>
+                  <div class="kb-key layout-macbook-key" data-code="Space" data-w="5">Space</div>
+                  <div class="kb-key layout-macbook-key" data-code="MetaRight" data-w="1.5">⌘<br>cmd</div>
+                  <div class="kb-key layout-macbook-key" data-code="AltRight" data-w="1.25">⌥<br>option</div>
+                  <div class="kb-key layout-macbook-key" data-code="ArrowLeft">◀</div>
+                  <div class="d-flex flex-column" style="gap:2px;">
+                    <div class="kb-key layout-macbook-key" data-code="ArrowUp" style="height:21.5px; font-size:10px;">▲</div>
+                    <div class="kb-key layout-macbook-key" data-code="ArrowDown" style="height:21.5px; font-size:10px;">▼</div>
+                  </div>
+                  <div class="kb-key layout-macbook-key" data-code="ArrowRight">▶</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WINDOWS LAYOUT (104 keys) -->
+          <div class="keyboard-container" id="layout-windows">
+            <div class="kb-wrapper">
+              <div class="kb-block">
+                <div class="kb-row" style="margin-bottom: 20px;">
+                  <div class="kb-key layout-windows-key" data-code="Escape">Esc</div>
+                  <div class="kb-key layout-windows-key" data-code="F1" style="margin-left: 20px;">F1</div>
+                  <div class="kb-key layout-windows-key" data-code="F2">F2</div>
+                  <div class="kb-key layout-windows-key" data-code="F3">F3</div>
+                  <div class="kb-key layout-windows-key" data-code="F4">F4</div>
+                  <div class="kb-key layout-windows-key" data-code="F5" style="margin-left: 20px;">F5</div>
+                  <div class="kb-key layout-windows-key" data-code="F6">F6</div>
+                  <div class="kb-key layout-windows-key" data-code="F7">F7</div>
+                  <div class="kb-key layout-windows-key" data-code="F8">F8</div>
+                  <div class="kb-key layout-windows-key" data-code="F9" style="margin-left: 20px;">F9</div>
+                  <div class="kb-key layout-windows-key" data-code="F10">F10</div>
+                  <div class="kb-key layout-windows-key" data-code="F11">F11</div>
+                  <div class="kb-key layout-windows-key" data-code="F12">F12</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Backquote">~<br>`</div>
+                  <div class="kb-key layout-windows-key" data-code="Digit1">!<br>1</div><div class="kb-key layout-windows-key" data-code="Digit2">@<br>2</div>
+                  <div class="kb-key layout-windows-key" data-code="Digit3">#<br>3</div><div class="kb-key layout-windows-key" data-code="Digit4">$<br>4</div>
+                  <div class="kb-key layout-windows-key" data-code="Digit5">%<br>5</div><div class="kb-key layout-windows-key" data-code="Digit6">^<br>6</div>
+                  <div class="kb-key layout-windows-key" data-code="Digit7">&<br>7</div><div class="kb-key layout-windows-key" data-code="Digit8">*<br>8</div>
+                  <div class="kb-key layout-windows-key" data-code="Digit9">(<br>9</div><div class="kb-key layout-windows-key" data-code="Digit0">)<br>0</div>
+                  <div class="kb-key layout-windows-key" data-code="Minus">_<br>-</div><div class="kb-key layout-windows-key" data-code="Equal">+<br>=</div>
+                  <div class="kb-key layout-windows-key" data-code="Backspace" data-w="2">Backspace</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Tab" data-w="1.5">Tab</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyQ">Q</div><div class="kb-key layout-windows-key" data-code="KeyW">W</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyE">E</div><div class="kb-key layout-windows-key" data-code="KeyR">R</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyT">T</div><div class="kb-key layout-windows-key" data-code="KeyY">Y</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyU">U</div><div class="kb-key layout-windows-key" data-code="KeyI">I</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyO">O</div><div class="kb-key layout-windows-key" data-code="KeyP">P</div>
+                  <div class="kb-key layout-windows-key" data-code="BracketLeft">{<br>[</div><div class="kb-key layout-windows-key" data-code="BracketRight">}<br>]</div>
+                  <div class="kb-key layout-windows-key" data-code="Backslash" data-w="1.5">|<br>\</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="CapsLock" data-w="1.75">Caps</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyA">A</div><div class="kb-key layout-windows-key" data-code="KeyS">S</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyD">D</div><div class="kb-key layout-windows-key" data-code="KeyF">F</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyG">G</div><div class="kb-key layout-windows-key" data-code="KeyH">H</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyJ">J</div><div class="kb-key layout-windows-key" data-code="KeyK">K</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyL">L</div><div class="kb-key layout-windows-key" data-code="Semicolon">:<br>;</div>
+                  <div class="kb-key layout-windows-key" data-code="Quote">"<br>'</div>
+                  <div class="kb-key layout-windows-key" data-code="Enter" data-w="2.25">Enter</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="ShiftLeft" data-w="2.25">Shift</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyZ">Z</div><div class="kb-key layout-windows-key" data-code="KeyX">X</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyC">C</div><div class="kb-key layout-windows-key" data-code="KeyV">V</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyB">B</div><div class="kb-key layout-windows-key" data-code="KeyN">N</div>
+                  <div class="kb-key layout-windows-key" data-code="KeyM">M</div><div class="kb-key layout-windows-key" data-code="Comma"><<br>,</div>
+                  <div class="kb-key layout-windows-key" data-code="Period">><br>.</div><div class="kb-key layout-windows-key" data-code="Slash">?<br>/</div>
+                  <div class="kb-key layout-windows-key" data-code="ShiftRight" data-w="2.75">Shift</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="ControlLeft" data-w="1.25">Ctrl</div>
+                  <div class="kb-key layout-windows-key" data-code="MetaLeft" data-w="1.25">Win</div>
+                  <div class="kb-key layout-windows-key" data-code="AltLeft" data-w="1.25">Alt</div>
+                  <div class="kb-key layout-windows-key" data-code="Space" data-w="6.5">Space</div>
+                  <div class="kb-key layout-windows-key" data-code="AltRight" data-w="1.25">Alt</div>
+                  <div class="kb-key layout-windows-key" data-code="MetaRight" data-w="1.25">Win</div>
+                  <div class="kb-key layout-windows-key" data-code="ContextMenu" data-w="1.25">Menu</div>
+                  <div class="kb-key layout-windows-key" data-code="ControlRight" data-w="1.25">Ctrl</div>
+                </div>
+              </div>
+              
+              <!-- Navigation Block -->
+              <div class="kb-block">
+                <div class="kb-row" style="margin-bottom: 20px;">
+                  <div class="kb-key layout-windows-key" data-code="PrintScreen">PrtSc</div>
+                  <div class="kb-key layout-windows-key" data-code="ScrollLock">ScrLk</div>
+                  <div class="kb-key layout-windows-key" data-code="Pause">Pause</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Insert">Ins</div>
+                  <div class="kb-key layout-windows-key" data-code="Home">Home</div>
+                  <div class="kb-key layout-windows-key" data-code="PageUp">PgUp</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Delete">Del</div>
+                  <div class="kb-key layout-windows-key" data-code="End">End</div>
+                  <div class="kb-key layout-windows-key" data-code="PageDown">PgDn</div>
+                </div>
+                <div class="kb-row" style="margin-top: 51px;">
+                  <div style="width: 45px;"></div>
+                  <div class="kb-key layout-windows-key" data-code="ArrowUp">↑</div>
+                  <div style="width: 45px;"></div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="ArrowLeft">←</div>
+                  <div class="kb-key layout-windows-key" data-code="ArrowDown">↓</div>
+                  <div class="kb-key layout-windows-key" data-code="ArrowRight">→</div>
+                </div>
+              </div>
+
+              <!-- Numpad Block -->
+              <div class="kb-block">
+                <div class="kb-row" style="margin-bottom: 20px;">
+                  <div style="width: 45px;"></div>
+                  <div style="width: 45px;"></div>
+                  <div style="width: 45px;"></div>
+                  <div style="width: 45px;"></div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="NumLock">Num</div>
+                  <div class="kb-key layout-windows-key" data-code="NumpadDivide">/</div>
+                  <div class="kb-key layout-windows-key" data-code="NumpadMultiply">*</div>
+                  <div class="kb-key layout-windows-key" data-code="NumpadSubtract">-</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Numpad7">7</div>
+                  <div class="kb-key layout-windows-key" data-code="Numpad8">8</div>
+                  <div class="kb-key layout-windows-key" data-code="Numpad9">9</div>
+                  <div class="kb-key layout-windows-key" data-code="NumpadAdd" data-h="2">+</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Numpad4">4</div>
+                  <div class="kb-key layout-windows-key" data-code="Numpad5">5</div>
+                  <div class="kb-key layout-windows-key" data-code="Numpad6">6</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Numpad1">1</div>
+                  <div class="kb-key layout-windows-key" data-code="Numpad2">2</div>
+                  <div class="kb-key layout-windows-key" data-code="Numpad3">3</div>
+                  <div class="kb-key layout-windows-key" data-code="NumpadEnter" data-h="2" style="transform: translateY(-51px);">Ent</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-windows-key" data-code="Numpad0" data-w="2">0</div>
+                  <div class="kb-key layout-windows-key" data-code="NumpadDecimal">.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHROMEBOOK LAYOUT (74 keys) -->
+          <div class="keyboard-container" id="layout-chromebook">
+            <div class="kb-wrapper">
+              <div class="kb-block">
+                <div class="kb-row">
+                  <div class="kb-key layout-chromebook-key" data-code="Escape">Esc</div>
+                  <div class="kb-key layout-chromebook-key" data-code="BrowserBack">←</div>
+                  <div class="kb-key layout-chromebook-key" data-code="BrowserForward">→</div>
+                  <div class="kb-key layout-chromebook-key" data-code="BrowserRefresh">↻</div>
+                  <div class="kb-key layout-chromebook-key" data-code="F4">🖵</div>
+                  <div class="kb-key layout-chromebook-key" data-code="F5">💻</div>
+                  <div class="kb-key layout-chromebook-key" data-code="F6">🔆-</div>
+                  <div class="kb-key layout-chromebook-key" data-code="F7">🔆+</div>
+                  <div class="kb-key layout-chromebook-key" data-code="AudioVolumeMute">🔇</div>
+                  <div class="kb-key layout-chromebook-key" data-code="AudioVolumeDown">🔉</div>
+                  <div class="kb-key layout-chromebook-key" data-code="AudioVolumeUp">🔊</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Power">⏻</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-chromebook-key" data-code="Backquote">~<br>`</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Digit1">!<br>1</div><div class="kb-key layout-chromebook-key" data-code="Digit2">@<br>2</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Digit3">#<br>3</div><div class="kb-key layout-chromebook-key" data-code="Digit4">$<br>4</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Digit5">%<br>5</div><div class="kb-key layout-chromebook-key" data-code="Digit6">^<br>6</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Digit7">&<br>7</div><div class="kb-key layout-chromebook-key" data-code="Digit8">*<br>8</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Digit9">(<br>9</div><div class="kb-key layout-chromebook-key" data-code="Digit0">)<br>0</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Minus">_<br>-</div><div class="kb-key layout-chromebook-key" data-code="Equal">+<br>=</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Backspace" data-w="1.75">Backspace</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-chromebook-key" data-code="Tab" data-w="1.5">Tab</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyQ">Q</div><div class="kb-key layout-chromebook-key" data-code="KeyW">W</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyE">E</div><div class="kb-key layout-chromebook-key" data-code="KeyR">R</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyT">T</div><div class="kb-key layout-chromebook-key" data-code="KeyY">Y</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyU">U</div><div class="kb-key layout-chromebook-key" data-code="KeyI">I</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyO">O</div><div class="kb-key layout-chromebook-key" data-code="KeyP">P</div>
+                  <div class="kb-key layout-chromebook-key" data-code="BracketLeft">{<br>[</div><div class="kb-key layout-chromebook-key" data-code="BracketRight">}<br>]</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Backslash" data-w="1.25">|<br>\</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-chromebook-key" data-code="MetaLeft" data-w="1.75">🔍</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyA">A</div><div class="kb-key layout-chromebook-key" data-code="KeyS">S</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyD">D</div><div class="kb-key layout-chromebook-key" data-code="KeyF">F</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyG">G</div><div class="kb-key layout-chromebook-key" data-code="KeyH">H</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyJ">J</div><div class="kb-key layout-chromebook-key" data-code="KeyK">K</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyL">L</div><div class="kb-key layout-chromebook-key" data-code="Semicolon">:<br>;</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Quote">"<br>'</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Enter" data-w="2">Enter</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-chromebook-key" data-code="ShiftLeft" data-w="2.25">Shift</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyZ">Z</div><div class="kb-key layout-chromebook-key" data-code="KeyX">X</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyC">C</div><div class="kb-key layout-chromebook-key" data-code="KeyV">V</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyB">B</div><div class="kb-key layout-chromebook-key" data-code="KeyN">N</div>
+                  <div class="kb-key layout-chromebook-key" data-code="KeyM">M</div><div class="kb-key layout-chromebook-key" data-code="Comma"><<br>,</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Period">><br>.</div><div class="kb-key layout-chromebook-key" data-code="Slash">?<br>/</div>
+                  <div class="kb-key layout-chromebook-key" data-code="ShiftRight" data-w="2.5">Shift</div>
+                </div>
+                <div class="kb-row">
+                  <div class="kb-key layout-chromebook-key" data-code="ControlLeft" data-w="1.5">Ctrl</div>
+                  <div class="kb-key layout-chromebook-key" data-code="AltLeft" data-w="1.5">Alt</div>
+                  <div class="kb-key layout-chromebook-key" data-code="Space" data-w="5">Space</div>
+                  <div class="kb-key layout-chromebook-key" data-code="AltRight" data-w="1.5">Alt</div>
+                  <div class="kb-key layout-chromebook-key" data-code="ControlRight" data-w="1.5">Ctrl</div>
+                  <div class="kb-key layout-chromebook-key" data-code="ArrowLeft">◀</div>
+                  <div class="d-flex flex-column" style="gap:2px;">
+                    <div class="kb-key layout-chromebook-key" data-code="ArrowUp" style="height:21.5px; font-size:10px;">▲</div>
+                    <div class="kb-key layout-chromebook-key" data-code="ArrowDown" style="height:21.5px; font-size:10px;">▼</div>
+                  </div>
+                  <div class="kb-key layout-chromebook-key" data-code="ArrowRight">▶</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
 
   <script>
-    // Inlined Analytics Logic
-    function trackToolEvent(toolName, eventType, data) {
-      const event = {
-        tool: toolName,
-        event: eventType,
-        timestamp: new Date().toISOString(),
-        ...data
-      };
-      
-      console.log('[Analytics]', event);
-      
-      if (typeof gtag === 'function') {
-        gtag('event', eventType, {
-          event_category: 'diagnostics',
-          tool_name: toolName,
-          ...data
-        });
-      }
-    }
-
-    // Inlined Repair Card Generator
-    function createRepairCard(repair, isRecommended = false) {
-      const link = repair.link ? repair.link : '#';
-      return `
-        <div class="repair-card ${isRecommended ? 'recommended' : ''}">
-          <h4>${repair.label}</h4>
-          ${isRecommended ? '<span class="badge-rec">RECOMMENDED</span>' : ''}
-          
-          <div class="detail-row mt-3">
-            <span>Est. Cost:</span>
-            <strong class="cost">$${repair.cost}</strong>
-          </div>
-          <div class="detail-row">
-            <span>Location:</span>
-            <strong>London/Woodstock, ON</strong>
-          </div>
-          
-          <a href="${link}" class="btn btn-custom-primary" onclick="trackToolEvent('keyboard_test', 'repair_option_clicked', { repair_label: '${repair.label}' })">
-            Book Service
-          </a>
-        </div>
-      `;
-    }
-
-    trackToolEvent('keyboard_test', 'keyboard_test_started');
-
-    const REPAIR_URL = 'https://ay5uh.com/store/keyboard-repair?ref=keyboard-test';
-    const repairOptions = {
-      cleaning: { label: "MacBook keyboard cleaning", cost: "35", link: REPAIR_URL },
-      macbook_rep: { label: "MacBook keyboard replacement", cost: "199", link: REPAIR_URL },
-      windows_rep: { label: "Windows keyboard replacement", cost: "89", link: REPAIR_URL }
+    const layouts = {
+      macbook: { count: 78, query: '.layout-macbook-key' },
+      windows: { count: 104, query: '.layout-windows-key' },
+      chromebook: { count: 74, query: '.layout-chromebook-key' }
     };
 
-    const repairContainer = document.getElementById('repairOptionsContainer');
-    
-    function renderRepairCards(hasIssue = false) {
-      repairContainer.innerHTML = 
-        '<div class="col-md-4">' + createRepairCard(repairOptions.cleaning, hasIssue) + '</div>' +
-        '<div class="col-md-4">' + createRepairCard(repairOptions.macbook_rep, false) + '</div>' +
-        '<div class="col-md-4">' + createRepairCard(repairOptions.windows_rep, false) + '</div>';
-    }
-    
-    // Initial Render
-    renderRepairCards(false);
-
+    let activeLayout = null;
+    let totalKeys = 0;
     const testedKeys = new Set();
-    const currentlyPressed = new Set();
     const stuckKeys = new Set();
-
-    const TOTAL_KEYS = 87; // Total mapped keys on the screen
-    let isTestCompleted = false;
-
-    // Detect held keys for > 3 seconds
+    const currentlyPressed = new Set();
     const pressTimers = {};
+    let isComplete = false;
+
+    function selectLayout(type) {
+      activeLayout = type;
+      totalKeys = layouts[type].count;
+      
+      document.getElementById('deviceSelection').style.display = 'none';
+      document.getElementById('testScreen').style.display = 'block';
+      document.getElementById('layout-' + type).style.display = 'flex';
+      
+      updateCounter();
+    }
 
     document.addEventListener('keydown', (e) => {
-      // Prevent scrolling with arrows/space
+      if (!activeLayout) return;
+
       if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent scrolling
       }
       
       const code = e.code;
-      const el = document.getElementById(code);
+      // We only care about keys in the active layout
+      const selector = `#layout-${activeLayout} [data-code="${code}"]`;
+      const els = document.querySelectorAll(selector); // Could be multiple e.g., shift? Normally mapped properly
       
-      if (el) {
-        el.classList.add('active');
-        el.classList.add('tested');
-      }
-      
-      trackToolEvent('keyboard_test', 'key_pressed', { key: code });
+      if (els.length > 0) {
+        els.forEach(el => {
+          el.classList.add('active', 'tested');
+        });
+        
+        if (!testedKeys.has(code)) {
+          testedKeys.add(code);
+          updateCounter();
+        }
 
-      if (!testedKeys.has(code) && el) {
-        testedKeys.add(code);
-        updateTestedCount();
-      }
-
-      currentlyPressed.add(code);
-      
-      // 3 second stuck key logic
-      if (!pressTimers[code]) {
-        pressTimers[code] = setTimeout(() => {
-          if (currentlyPressed.has(code)) {
-            stuckKeys.add(code);
-            if(el) el.classList.add('stuck');
-            updateStuckUI();
-            trackToolEvent('keyboard_test', 'stuck_key_detected', { key: code });
-          }
-        }, 3000);
+        currentlyPressed.add(code);
+        
+        // 3-second stuck logic
+        if (!pressTimers[code]) {
+          pressTimers[code] = setTimeout(() => {
+            if (currentlyPressed.has(code)) {
+              stuckKeys.add(code);
+              els.forEach(el => el.classList.add('stuck'));
+              updateAlerts();
+            }
+          }, 3000);
+        }
       }
     });
 
     document.addEventListener('keyup', (e) => {
+      if (!activeLayout) return;
       const code = e.code;
-      const el = document.getElementById(code);
+      const selector = `#layout-${activeLayout} [data-code="${code}"]`;
+      const els = document.querySelectorAll(selector);
       
-      if (el) {
-        el.classList.remove('active');
-      }
-      
+      els.forEach(el => el.classList.remove('active'));
       currentlyPressed.delete(code);
       
       if (pressTimers[code]) {
@@ -552,36 +760,36 @@
         delete pressTimers[code];
       }
       
-      // If marked stuck but released, unmark
       if (stuckKeys.has(code)) {
         stuckKeys.delete(code);
-        if(el) el.classList.remove('stuck');
-        updateStuckUI();
+        els.forEach(el => el.classList.remove('stuck'));
+        updateAlerts();
       }
     });
 
-    function updateTestedCount() {
-      document.getElementById('keysTested').innerHTML = `${testedKeys.size} <span style="font-size:1.2rem; color:var(--text-muted);">/ ${TOTAL_KEYS}</span>`;
-      if (testedKeys.size >= TOTAL_KEYS && !isTestCompleted) {
-        isTestCompleted = true;
-        document.getElementById('testCompleteAlert').style.display = 'block';
-        trackToolEvent('keyboard_test', 'test_completed', { count: testedKeys.size });
+    function updateCounter() {
+      const c = testedKeys.size;
+      document.getElementById('testCounter').innerText = `${c} / ${totalKeys} keys tested`;
+      document.getElementById('testProgress').style.width = `${(c / totalKeys) * 100}%`;
+      
+      if (c >= totalKeys && !isComplete) {
+        isComplete = true;
+        updateAlerts();
       }
     }
 
-    function updateStuckUI() {
-      const count = stuckKeys.size;
-      const countEl = document.getElementById('stuckCount');
-      countEl.innerText = count;
+    function updateAlerts() {
+      const alertEl = document.getElementById('resultAlert');
       
-      if (count > 0) {
-        countEl.className = 'text-danger';
-        document.getElementById('stuckKeysAlert').style.display = 'block';
-        renderRepairCards(true);
+      if (stuckKeys.size > 0) {
+        alertEl.className = 'result-alert error';
+        const stuckList = Array.from(stuckKeys).join(', ');
+        alertEl.innerHTML = `⚠️ ${stuckKeys.size} issues: ${stuckList} stuck`;
+      } else if (isComplete) {
+        alertEl.className = 'result-alert success';
+        alertEl.innerHTML = `✓ All ${totalKeys} keys working perfectly`;
       } else {
-        countEl.className = 'text-success';
-        document.getElementById('stuckKeysAlert').style.display = 'none';
-        renderRepairCards(false);
+        alertEl.style.display = 'none';
       }
     }
   </script>
