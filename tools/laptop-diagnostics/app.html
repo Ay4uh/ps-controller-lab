@@ -1,35 +1,6 @@
-import re
-import os
 
-with open('index.html', 'r', encoding='utf-8') as f:
-    main_html = f.read()
 
-# Extract shell from main_html
-main_match = re.search(r'([\s\S]*?)<main class="main-content">', main_html)
-if not main_match:
-    print("Error: Could not find main content marker")
-    exit(1)
 
-shell_prefix = main_match.group(1) + '<main class="main-content">\n'
-
-shell_prefix = re.sub(
-    r'<button class="tab-btn active" data-tab="tab-overview">([\s\S]*?)<\/button>',
-    r'<a href="/" class="tab-btn" style="text-decoration:none;">\1</a>',
-    shell_prefix
-)
-shell_prefix = re.sub(
-    r'<a href="/tools/laptop-diagnostics/" class="tab-btn text-decoration-none"',
-    r'<a href="/tools/laptop-diagnostics/" class="tab-btn text-decoration-none active"',
-    shell_prefix
-)
-shell_prefix = re.sub(
-    r'<button class="tab-btn" data-tab="([^"]+)">([\s\S]*?)<\/button>',
-    r'<a href="/#\1" class="tab-btn" style="text-decoration:none;">\2</a>',
-    shell_prefix
-)
-
-# Define the Tool's Inner HTML
-tool_html = """
 <div class="container py-4">
   <!-- START SECTION -->
   <div id="startSection">
@@ -227,53 +198,8 @@ tool_html = """
 
   </div>
 </div>
-"""
 
-# Pricing Data JSON
-repair_costs_json = """
-<script id="repairCosts" type="application/json">
-{
-  "battery": {
-    "MacBookAir": {
-      "replacement": { "name": "MacBook Air Battery Module", "cost": 124.99, "labor": 35, "total": 159.99, "link": "https://ay5uh.com/store/macbook-air-battery" },
-      "refurbished": { "name": "Refurbished MacBook Air", "cost": 499.99, "link": "https://ay5uh.com/store/macbook-air-refurbished" }
-    },
-    "MacBookPro": {
-      "replacement": { "name": "MacBook Pro Battery Module", "cost": 179.99, "labor": 40, "total": 219.99, "link": "https://ay5uh.com/store/macbook-pro-battery" },
-      "refurbished": { "name": "Refurbished MacBook Pro", "cost": 899.99, "link": "https://ay5uh.com/store/macbook-pro-refurbished" }
-    },
-    "Generic": {
-      "replacement": { "name": "Generic Laptop Battery", "cost": 89.99, "labor": 20, "total": 109.99, "link": "https://ay5uh.com/store/generic-laptop-battery" },
-      "refurbished": { "name": "Refurbished Windows Laptop", "cost": 399.99, "link": "https://ay5uh.com/store/refurbished-windows" }
-    }
-  },
-  "thermal": {
-    "cleaning": { "name": "Thermal Paste Replacement", "cost": 49.99, "time": "45 min", "link": "https://ay5uh.com/store/thermal-paste-service" },
-    "advanced": { "name": "Full Thermal Service (Deep Clean & Repaste)", "cost": 89.99, "time": "2 hours", "link": "https://ay5uh.com/store/advanced-thermal-service" }
-  },
-  "storage": {
-    "ssd_upgrade_1tb": { "name": "1TB SSD NVMe Upgrade", "cost": 69.99, "labor": 20, "total": 89.99, "link": "https://ay5uh.com/store/ssd-1tb" },
-    "ssd_upgrade_2tb": { "name": "2TB SSD NVMe Upgrade", "cost": 109.99, "labor": 20, "total": 129.99, "link": "https://ay5uh.com/store/ssd-2tb" },
-    "data_migration": { "name": "Data Migration Service", "cost": 35.00, "link": "https://ay5uh.com/store/data-migration" }
-  },
-  "ram": {
-    "upgrade_32gb": { "name": "Upgrade to 32GB RAM", "cost": 149.99, "labor": 15, "total": 164.99, "link": "https://ay5uh.com/store/ram-32gb" }
-  }
-}
-</script>
-"""
 
-# Custom CSS for the tool
-custom_css = """
-<style>
-  .repair-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem; }
-  .repair-card h6 { font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
-  .repair-card .price { color: var(--success); font-weight: 800; }
-</style>
-"""
-
-# Application Logic JavaScript
-tool_js = """
 <script>
   function trackEvent(eventName, params = {}) {
     if (typeof gtag === 'function') {
@@ -497,11 +423,4 @@ tool_js = """
     trackEvent('health_score_calculated', { overall: overall, battery: manHealth, thermal: temp, ram: ramGb });
   }
 </script>
-"""
 
-# Merge
-new_html = shell_prefix.replace('</head>', custom_css + '\n' + repair_costs_json + '\n</head>') + '\n' + tool_html + '\n' + tool_js + '\n</main>\n</div>\n</body>\n</html>'
-
-with open('tools/laptop-diagnostics/index.html', 'w', encoding='utf-8') as f:
-    f.write(new_html)
-print("Built tools/laptop-diagnostics/index.html successfully!")

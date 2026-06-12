@@ -1,0 +1,728 @@
+diff --git a/index.html b/index.html
+index 5176adb..92f9564 100644
+--- a/index.html
++++ b/index.html
+@@ -859,6 +859,94 @@
+         padding: 15px;
+       }
+     }
++    /* Styles for fine-tuning interface */
++    #finetuneStickCanvasLx-lbl,
++    #finetuneStickCanvasLy-lbl,
++    #finetuneStickCanvasRx-lbl,
++    #finetuneStickCanvasRy-lbl {
++      padding: 2px 4px !important;
++      border-radius: 3px !important;
++      background-color: transparent !important;
++    }
++
++    input[id^="finetune"] {
++      border: 1px solid transparent !important;
++      width: 90px !important;
++      min-width: 90px !important;
++      color: #969696 !important;
++    }
++
++    #finetuneStickCanvasLx-lbl.text-primary,
++    #finetuneStickCanvasLy-lbl.text-primary,
++    #finetuneStickCanvasRx-lbl.text-primary,
++    #finetuneStickCanvasRy-lbl.text-primary {
++      color: #0d6efd !important;
++      background-color: rgba(13, 110, 253, 0.1) !important;
++    }
++
++    .finetune-grid {
++      display: grid;
++      grid-template-columns: 1fr auto 1fr;
++      grid-template-rows: auto 1fr auto;
++      grid-template-areas:
++      ". top ."
++      "left center right"
++      ". bottom .";
++      justify-items: center;
++      align-items: center;
++      width: 100%;
++      margin: 0 auto;
++      max-width: fit-content;
++    }
++
++    .finetune-top { grid-area: top; }
++    .finetune-left { grid-area: left; }
++    .finetune-center { grid-area: center; }
++    .finetune-right { grid-area: right; }
++    .finetune-bottom { grid-area: bottom; }
++
++    .finetune-center-mode { display: block; }
++    .finetune-circularity-mode { display: none; }
++
++    #finetuneModal.circularity-mode .finetune-center-mode { display: none; }
++    #finetuneModal.circularity-mode .finetune-circularity-mode { display: block; }
++
++    #finetuneModal.hide-raw-numbers .finetune-top,
++    #finetuneModal.hide-raw-numbers .finetune-left,
++    #finetuneModal.hide-raw-numbers .finetune-right,
++    #finetuneModal.hide-raw-numbers .finetune-bottom { display: none; }
++
++    #finetuneModal.hide-raw-numbers .spacer.hide-raw-numbers { display: none; }
++
++    #finetuneModal.hide-raw-numbers .finetune-grid {
++      grid-template-columns: 1fr;
++      grid-template-rows: 1fr;
++      grid-template-areas: "center";
++    }
++
++    #finetuneModal.hide-raw-numbers #finetuneStickCanvasL,
++    #finetuneModal.hide-raw-numbers #finetuneStickCanvasR { display: none; }
++    
++    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasL,
++    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasR { display: block; }
++    
++    #finetuneModal.hide-raw-numbers #finetuneStickCanvasL_large,
++    #finetuneModal.hide-raw-numbers #finetuneStickCanvasR_large { display: block; }
++    
++    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasL_large,
++    #finetuneModal:not(.hide-raw-numbers) #finetuneStickCanvasR_large { display: none; }
++
++    .left-stick-values,
++    .right-stick-values { display: block; }
++
++    .left-stick-slider,
++    .right-stick-slider { display: none; }
++
++    #finetuneModal.circularity-mode #left-stick-card.show-slider .left-stick-values { display: none !important; }
++    #finetuneModal.circularity-mode #left-stick-card.show-slider .left-stick-slider.finetune-circularity-mode { display: block !important; }
++
++    #finetuneModal.circularity-mode #right-stick-card.show-slider .right-stick-values { display: none !important; }
++    #finetuneModal.circularity-mode #right-stick-card.show-slider .right-stick-slider.finetune-circularity-mode { display: block !important; }
+   </style>
+ </head>
+ <body>
+@@ -881,11 +969,6 @@
+             <i class="fa-solid fa-sliders"></i> Overview
+           </button>
+         </li>
+-        <li class="nav-tab-item">
+-          <button class="tab-btn" data-tab="tab-calibration">
+-            <i class="fa-solid fa-wrench"></i> Calibration
+-          </button>
+-        </li>
+         <li class="nav-tab-item">
+           <button class="tab-btn" data-tab="tab-tester">
+             <i class="fa-solid fa-keyboard"></i> Input Tester
+@@ -1012,12 +1095,12 @@
+             </div>
+ 
+             <!-- Controller Info Summary Card -->
+-            <div class="card-custom opacity-50" id="overviewInfoCard">
+-              <h2 class="card-title-custom"><i class="fa-solid fa-circle-info"></i> Device Overview</h2>
++            <div class="card-custom opacity-50 mb-3" id="overviewInfoCard" style="background-color: #f8f9fa; color: #212529; border: 1px solid #dee2e6;">
++              <h2 class="card-title-custom" style="color: #212529; border-bottom: 1px solid #dee2e6;"><i class="fa-solid fa-gamepad"></i> Controller Info</h2>
+               <div class="row g-3">
+                 <div class="col-sm-6">
+                   <div class="text-muted small">Status</div>
+-                  <div class="fw-bold" id="infoGenuineBadge"><span class="badge-custom badge-muted">Not Connected</span></div>
++                  <div class="fw-bold" id="infoGenuineBadge"><span class="badge bg-secondary">Not Connected</span></div>
+                 </div>
+                 <div class="col-sm-6">
+                   <div class="text-muted small">Connection Type</div>
+@@ -1042,146 +1125,103 @@
+               </div>
+             </div>
+ 
+-            <div class="card-custom">
+-              <h2 class="card-title-custom"><i class="fa-solid fa-circle-question"></i> Help & Quick Start</h2>
+-              <ol class="ps-3 text-muted text-start" style="font-size: 0.9rem;">
+-                <li class="mb-2">Ensure your controller is connected to this computer via a <strong>USB cable</strong> (recommended for calibration accuracy) or Bluetooth.</li>
+-                <li class="mb-2">Click <strong>Connect Controller</strong> in the sidebar or landing page to trigger the browser's pairing prompt.</li>
+-                <li class="mb-2">Select your controller from the list (e.g. "Wireless Controller") and click <strong>Connect</strong>.</li>
+-                <li class="mb-2">Use the sidebar tabs to navigate through stick drift analysis, trigger force feedback, RGB lightbar pickers, haptic patterns, and EEPROM calibration.</li>
+-              </ol>
+-              <div class="text-center mt-3 d-none" id="demoModeIndicator">
+-                <span class="badge-custom badge-warning"><i class="fa-solid fa-circle-play"></i> Running in Demo Mode</span>
+-                <p class="text-muted small mt-2">Use WASD/Arrow keys & Space/Enter on your keyboard to simulate controller inputs.</p>
+-              </div>
++            <div class="d-flex justify-content-end mb-3" id="quick-tests-div">
++              <button type="button" class="btn btn-outline-primary fw-bold" style="border-radius:6px; padding:8px 16px;">
++                <i class="fas fa-vial"></i> Quick Test
++              </button>
+             </div>
+-          </div>
+ 
+-          <div class="col-lg-6">
+-            <div class="card-custom text-center">
+-              <h2 class="card-title-custom text-start"><i class="fa-solid fa-gamepad"></i> Controller Live View</h2>
+-              <div id="overviewControllerContainer" class="controller-svg-container">
+-                <!-- SVG injected dynamically -->
+-              </div>
++            <div class="text-center mx-3" id="overviewControllerContainer" style="filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.5));">
++              <!-- SVG injected dynamically -->
+             </div>
+           </div>
+-        </div>
+-      </section>
+ 
+-      <!-- 2. CALIBRATION PANEL -->
+-      <section class="tab-panel" id="tab-calibration">
+-        <div class="row">
+-          <div class="col-lg-6">
+-            <div class="card-custom" id="calibrationOptionsCard">
+-              <h2 class="card-title-custom"><i class="fa-solid fa-wrench"></i> Calibration Tools</h2>
+-              <p class="text-muted">Recalibrate the stick center, range, or fine-tune individual potentiometer outputs. Note: Calibration writes directly to the controller's permanent storage (NVS) mirror. Use with care.</p>
++          <div class="col-lg-6" style="min-width: 330px;">
++            <div class="vstack gap-2 p-2 mt-4 mt-lg-0">
++              <button type="button" class="btn btn-primary fw-bold text-start ps-4" id="btnCalibrateCenter" disabled style="padding: 10px; border-radius: 6px;">
++                Calibrate stick center
++              </button>
+               
+-              <div class="row g-3">
+-                <div class="col-md-6">
+-                  <div class="border border-secondary rounded p-3 h-100 d-flex flex-column justify-content-between">
+-                    <div>
+-                      <h5>Analog Stick Center</h5>
+-                      <p class="text-muted small">Aligns drifts or offset center positions of both analog sticks. Standard 4-step sampling routine.</p>
+-                    </div>
+-                    <button class="btn-custom-primary w-100" id="btnCalibrateCenter" disabled><i class="fa-solid fa-circle-dot"></i> Calibrate Center</button>
+-                  </div>
+-                </div>
++              <button type="button" class="btn btn-primary fw-bold text-start ps-4" id="btnCalibrateRange" disabled style="padding: 10px; border-radius: 6px;">
++                Calibrate stick range
++              </button>
+ 
+-                <div class="col-md-6">
+-                  <div class="border border-secondary rounded p-3 h-100 d-flex flex-column justify-content-between">
+-                    <div>
+-                      <h5>Analog Stick Range</h5>
+-                      <p class="text-muted small">Calibrates the maximum circular bounds by rotating sticks to outer edges. Ensures 100% outer range coverage.</p>
+-                    </div>
+-                    <button class="btn-custom-primary w-100" id="btnCalibrateRange" disabled><i class="fa-solid fa-circle-notch"></i> Calibrate Range</button>
+-                  </div>
+-                </div>
+-              </div>
+-              
+-              <!-- NVS Lock status & save button -->
+-              <div class="mt-4 pt-3 border-top border-secondary d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+-                <div>
+-                  <span class="text-muted small d-block">Controller NVS Storage State:</span>
+-                  <div class="fw-bold mt-1" id="nvsStatusText"><span class="badge-custom badge-muted">Not Checked</span></div>
+-                </div>
+-                <button class="btn-custom-primary" id="btnSavePermanently" disabled><i class="fa-solid fa-floppy-disk"></i> Save Permanently (Unlock NVS)</button>
+-              </div>
+-            </div>
++              <button type="button" class="btn btn-primary fw-bold text-start ps-4" id="btnFinetuneModal" data-bs-toggle="modal" data-bs-target="#finetuneModal" disabled style="padding: 10px; border-radius: 6px;">
++                Finetune stick calibration
++              </button>
+ 
+-            <!-- Fine Tune DualSense Only -->
+-            <div class="card-custom d-none" id="dualsenseFineTuneCard">
+-              <h2 class="card-title-custom"><i class="fa-solid fa-sliders"></i> DualSense Fine-Tune Calibration</h2>
+-              <p class="text-muted small">Manually input raw calibration values to adjust potentiometer offsets on the DualSense controller.</p>
++              <hr class="border-secondary my-2">
+               
+-              <div class="row g-3 mb-3">
+-                <div class="col-sm-6">
+-                  <h6 class="border-bottom border-secondary pb-2">Left Stick Offsets</h6>
+-                  <div class="row g-2 align-items-center mb-2">
+-                    <div class="col-4 text-muted small">X Axis (Horizontal)</div>
+-                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftLeftX" value="0"></div>
+-                  </div>
+-                  <div class="row g-2 align-items-center">
+-                    <div class="col-4 text-muted small">Y Axis (Vertical)</div>
+-                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftLeftY" value="0"></div>
+-                  </div>
++              <button type="button" class="btn btn-success fw-bold text-center" id="btnSavePermanently" disabled style="padding: 10px; border-radius: 6px;">
++                Save changes permanently
++              </button>
++
++              <button type="button" class="btn btn-secondary fw-bold text-center" disabled style="padding: 10px; border-radius: 6px; background-color: #6c757d;">
++                Restore calibration
++              </button>
++
++              <button type="button" class="btn btn-danger fw-bold text-center" disabled style="padding: 10px; border-radius: 6px; background-color: #dc3545;">
++                Reboot controller
++              </button>
++
++              <div class="card mt-3 text-center" style="background-color: #f8f9fa; color: #212529; border: 1px solid #dee2e6; border-radius: 8px;">
++                <div class="card-header text-start" style="background-color: rgba(0,0,0,.03); border-bottom: 1px solid rgba(0,0,0,.125); font-weight: bold;">
++                  <i class="fa-solid fa-crosshairs"></i> Joystick Info
+                 </div>
++                <div class="card-body">
++                  <div class="d-flex justify-content-center gap-4 my-3">
++                    <!-- Left Stick -->
++                    <div class="d-flex flex-column align-items-center">
++                      <div id="stick-circle-left" style="width: 150px; height: 150px; border: 2px solid #555; border-radius: 50%; position: relative; background: #fff; overflow: hidden;">
++                        <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #ccc;"></div>
++                        <div style="position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px solid #ccc;"></div>
++                        <div id="stick-dot-left" style="width: 6px; height: 6px; background: #000; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: none !important;"></div>
++                      </div>
++                      <div class="mt-3 d-flex gap-4">
++                        <div>
++                          <div class="small fw-bold">LX:</div>
++                          <div class="font-monospace fw-bold" id="joyLxReadout">+0.00</div>
++                        </div>
++                        <div>
++                          <div class="small fw-bold">LY:</div>
++                          <div class="font-monospace fw-bold" id="joyLyReadout">+0.00</div>
++                        </div>
++                      </div>
++                    </div>
+ 
+-                <div class="col-sm-6">
+-                  <h6 class="border-bottom border-secondary pb-2">Right Stick Offsets</h6>
+-                  <div class="row g-2 align-items-center mb-2">
+-                    <div class="col-4 text-muted small">X Axis (Horizontal)</div>
+-                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftRightX" value="0"></div>
+-                  </div>
+-                  <div class="row g-2 align-items-center">
+-                    <div class="col-4 text-muted small">Y Axis (Vertical)</div>
+-                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftRightY" value="0"></div>
++                    <!-- Right Stick -->
++                    <div class="d-flex flex-column align-items-center">
++                      <div id="stick-circle-right" style="width: 150px; height: 150px; border: 2px solid #555; border-radius: 50%; position: relative; background: #fff; overflow: hidden;">
++                        <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #ccc;"></div>
++                        <div style="position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px solid #ccc;"></div>
++                        <div id="stick-dot-right" style="width: 6px; height: 6px; background: #000; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: none !important;"></div>
++                      </div>
++                      <div class="mt-3 d-flex gap-4">
++                        <div>
++                          <div class="small fw-bold">RX:</div>
++                          <div class="font-monospace fw-bold" id="joyRxReadout">+0.00</div>
++                        </div>
++                        <div>
++                          <div class="small fw-bold">RY:</div>
++                          <div class="font-monospace fw-bold" id="joyRyReadout">+0.00</div>
++                        </div>
++                      </div>
++                    </div>
+                   </div>
+-                </div>
+-              </div>
++                  
++                  <div class="btn-group mt-2" role="group">
++                    <input type="radio" class="btn-check" name="btnZoom" id="btnZoomNormal" autocomplete="off" checked>
++                    <label class="btn btn-outline-secondary btn-sm" for="btnZoomNormal" style="color:#6c757d; border-color:#6c757d;">Normal</label>
+ 
+-              <div class="d-flex justify-content-between">
+-                <button class="btn-custom-secondary" id="btnReadFineTune"><i class="fa-solid fa-arrows-rotate"></i> Read Raw Values (0x83)</button>
+-                <button class="btn-custom-primary" id="btnApplyFineTune"><i class="fa-solid fa-check"></i> Write Fine-Tune</button>
+-              </div>
+-            </div>
+-          </div>
++                    <input type="radio" class="btn-check" name="btnZoom" id="btnZoom10x" autocomplete="off">
++                    <label class="btn btn-outline-secondary btn-sm" for="btnZoom10x" style="color:#6c757d; border-color:#6c757d;">10x zoom</label>
+ 
+-          <div class="col-lg-6">
+-            <div class="card-custom text-center">
+-              <h2 class="card-title-custom text-start"><i class="fa-solid fa-gamepad"></i> Controller Live View & Drift</h2>
+-              <div id="calibrationControllerContainer" class="controller-svg-container">
+-                <!-- SVG injected dynamically -->
+-              </div>
+-              
+-              <!-- Real-time drift status display -->
+-              <div class="mt-3 p-3 border border-secondary rounded text-start bg-black bg-opacity-25">
+-                <h6 class="mb-2"><i class="fa-solid fa-triangle-exclamation text-warning"></i> Real-time Center Offsets:</h6>
+-                <div class="row g-2">
+-                  <div class="col-6">
+-                    <span class="small text-muted">Left Stick:</span>
+-                    <div class="fw-bold font-monospace" id="calibDriftLeft">X: 0.00 | Y: 0.00</div>
+-                    <div class="mt-1" id="calibBadgeLeft"><span class="badge-custom badge-success" style="font-size:0.7rem; padding:2px 8px;">✓ OK</span></div>
+-                  </div>
+-                  <div class="col-6">
+-                    <span class="small text-muted">Right Stick:</span>
+-                    <div class="fw-bold font-monospace" id="calibDriftRight">X: 0.00 | Y: 0.00</div>
+-                    <div class="mt-1" id="calibBadgeRight"><span class="badge-custom badge-success" style="font-size:0.7rem; padding:2px 8px;">✓ OK</span></div>
++                    <input type="checkbox" class="btn-check" id="btnCheckCircularity" autocomplete="off">
++                    <label class="btn btn-outline-secondary btn-sm text-white" for="btnCheckCircularity" style="background-color:#6c757d; border-color:#6c757d;">Check circularity</label>
+                   </div>
+                 </div>
+               </div>
+             </div>
+-
+-            <div class="card-custom">
+-              <h2 class="card-title-custom"><i class="fa-solid fa-triangle-exclamation"></i> Warning & Guide</h2>
+-              <div class="text-warning small mb-3">
+-                <i class="fa-solid fa-triangle-exclamation"></i> DO NOT move the controller sticks while starting Center Calibration!
+-              </div>
+-              <ul class="text-muted small ps-3">
+-                <li class="mb-2">Unlocking NVS allows permanent writing to EEPROM storage.</li>
+-                <li class="mb-2">Clones and Edge models have write limitations.</li>
+-                <li class="mb-2">Run the **Drift Check** tab to store permanent glowing drift markers on the controller sticks.</li>
+-              </ul>
+-            </div>
+           </div>
+         </div>
+       </section>
+@@ -1878,6 +1918,176 @@
+     </div>
+   </div>
+ 
++  <div class="modal fade" id="finetuneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finetuneModalLabel" aria-hidden="true">
++    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down">
++      <div class="modal-content">
++        <div class="modal-header bg-dark text-white border-secondary">
++          <h1 class="modal-title fs-5" id="finetuneModalLabel">Finetune stick calibration</h1>
++          <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
++        </div>
++        <div class="modal-body bg-dark text-white border-secondary">
++          <div class="modal-header border-top-0 pt-0 border-secondary">
++            <div class="btn-group w-100" role="group" aria-label="Finetune mode selection">
++              <input type="radio" class="btn-check" name="finetuneMode" id="finetuneModeCenter" autocomplete="off" checked>
++              <label class="btn btn-outline-primary" for="finetuneModeCenter">Center (L1)</label>
++
++              <input type="radio" class="btn-check" name="finetuneMode" id="finetuneModeCircularity" autocomplete="off">
++              <label class="btn btn-outline-primary" for="finetuneModeCircularity">Circularity (R1)</label>
++            </div>
++          </div>
++
++          <div class="alert alert-info finetune-center-mode text-start" role="alert">
++            <i class="fas fa-info-circle"></i>&nbsp;&nbsp;
++            <span>Move the stick to select it for tuning, then without touching the stick use the D-pad buttons to adjust the center point. Flick it and adjust it again if it is off center or flickers.</span>
++          </div>
++          
++          <div class="alert alert-info finetune-circularity-mode text-start" role="alert" style="display: none;">
++            <p>
++              <i class="fas fa-info-circle"></i>&nbsp;&nbsp;
++              <span>While holding the stick to be adjusted straight up/down/left/right, make adjustments until you see lightblue sectors in all four directions after circling the stick both left and right.</span>
++            </p>
++          </div>
++
++          <div style="width: 100%; display: flex; justify-content: center;">
++            <div class="container-fluid">
++              <div class="row">
++                <div class="col col-lg-6 col-12">
++
++                  <div class="card text-bg-light" id="left-stick-card" style="height: 350px;">
++                    <div class="card-header d-flex justify-content-between align-items-center bg-secondary text-white border-secondary">
++                      <span>Left stick</span>
++                    </div>
++                    <div class="card-body position-relative bg-dark">
++                      <div class="container-fluid">
++                        <div class="finetune-grid">
++                          <div class="finetune-top finetune-center-mode">
++                            <input id="finetuneLY" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-top finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneLT" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-left finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneLL" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-left finetune-center-mode">
++                            <input id="finetuneLX" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-center">
++                            <canvas id="finetuneStickCanvasL" width="150px" height="150px"></canvas>
++                            <canvas id="finetuneStickCanvasL_large" width="210px" height="210px" style="display: none;"></canvas>
++                          </div>
++                          <div class="finetune-right finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneLR" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-bottom finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneLB" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                        </div>
++                      </div>
++
++                      <!-- LX/LY values display -->
++                      <div class="px-2 left-stick-values text-white">
++                        <div class="spacer finetune-center-mode hide-raw-numbers" style="height: 35px;">&nbsp;</div>
++
++                        <div class="hstack justify-content-center gap-4 mt-2">
++                          <div class="vstack" style="text-align: center;">
++                            <span>LX:</span>
++                            <strong><pre id="finetuneStickCanvasLx-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
++                          </div>
++
++                          <div class="vstack" style="text-align: center;">
++                            <span>LY:</span>
++                            <strong><pre id="finetuneStickCanvasLy-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
++                          </div>
++                        </div>
++                      </div>
++
++                      <!-- Circularity slider for left stick -->
++                      <div class="px-2 mt-2 finetune-circularity-mode left-stick-slider text-white" style="display: none;">
++                        <label for="leftCircularitySlider" class="form-label" style="margin-bottom: 2px;">Increase non-circularity</label>
++                        <input type="range" class="form-range" min="0" max="100" value="0" id="leftCircularitySlider">
++                      </div>
++                    </div>
++                  </div>
++                </div> <!-- col -->
++
++                <div class="col col-lg-6 col-12">
++                  <div class="card text-bg-light" id="right-stick-card" style="height: 350px;">
++                    <div class="card-header d-flex justify-content-between align-items-center bg-secondary text-white border-secondary">
++                      <span>Right stick</span>
++                    </div>
++                    <div class="card-body position-relative bg-dark">
++                      <div class="container-fluid">
++                        <div class="finetune-grid">
++                          <div class="finetune-top finetune-center-mode">
++                            <input id="finetuneRY" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-top finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneRT" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-left finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneRL" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-left finetune-center-mode">
++                            <input id="finetuneRX" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-center">
++                            <canvas id="finetuneStickCanvasR" width="150px" height="150px"></canvas>
++                            <canvas id="finetuneStickCanvasR_large" width="210px" height="210px" style="display: none;"></canvas>
++                          </div>
++                          <div class="finetune-right finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneRR" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                          <div class="finetune-bottom finetune-circularity-mode" style="display: none;">
++                            <input id="finetuneRB" type="number" class="form-control bg-dark text-white border-secondary" min="0" max="65535" value="0">
++                          </div>
++                        </div>
++
++                        <!-- RX/RY values display -->
++                        <div class="px-2 right-stick-values text-white">
++                          <div class="spacer finetune-center-mode hide-raw-numbers" style="height: 35px;">&nbsp;</div>
++
++                          <div class="hstack justify-content-center gap-4 mt-2">
++                            <div class="vstack" style="text-align: center;">
++                              <span>RX:</span>
++                              <strong><pre id="finetuneStickCanvasRx-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
++                            </div>
++
++                            <div class="vstack" style="text-align: center;">
++                              <span>RY:</span>
++                              <strong><pre id="finetuneStickCanvasRy-lbl" style="min-width: 80px; margin-bottom: 0;">0.000</pre></strong>
++                            </div>
++                          </div>
++                        </div>
++
++                        <!-- Circularity slider for right stick -->
++                        <div class="px-2 mt-2 finetune-circularity-mode right-stick-slider text-white" style="display: none;">
++                          <label for="rightCircularitySlider" class="form-label" style="margin-bottom: 2px;">Increase non-circularity</label>
++                          <input type="range" class="form-range" min="0" max="100" value="0" id="rightCircularitySlider">
++                        </div>
++
++                      </div>
++                    </div>
++                  </div> <!-- col -->
++                </div> <!-- row -->
++              </div>
++
++            </div>
++          </div>
++
++          <div class="modal-footer border-secondary">
++            <div class="form-check me-auto text-white">
++              <input class="form-check-input" type="checkbox" id="showRawNumbersCheckbox" checked>
++              <label class="form-check-label" for="showRawNumbersCheckbox">Show raw numbers</label>
++            </div>
++            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
++            <button type="button" class="btn btn-primary" id="btnApplyFineTuneSave">Done</button>
++          </div>
++        </div>
++      </div>
++    </div>
++  </div>
++
+   <!-- Toast Notification Container -->
+   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+     <div id="appToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+@@ -2306,9 +2516,12 @@
+       // Show elements
+       document.getElementById("btnDisconnect").classList.remove("d-none");
+       document.getElementById("btnConnect").classList.add("d-none");
+-      document.getElementById("overviewInfoCard").classList.remove("opacity-50");
+-      document.getElementById("calibrationOptionsCard").classList.remove("opacity-50");
+-      document.getElementById("driftResultsRow").classList.remove("opacity-50");
++      const overviewCard = document.getElementById("overviewInfoCard");
++      if (overviewCard) overviewCard.classList.remove("opacity-50");
++      const calibCard = document.getElementById("calibrationOptionsCard");
++      if (calibCard) calibCard.classList.remove("opacity-50");
++      const driftRow = document.getElementById("driftResultsRow");
++      if (driftRow) driftRow.classList.remove("opacity-50");
+       
+       const isDualSense = device.productId === 0x0CE6 || device.productId === 0x0DF2;
+       const isDualShock = device.productId === 0x05C4 || device.productId === 0x09CC;
+@@ -2415,7 +2628,8 @@
+ 
+         } else if (isDualSense) {
+           document.getElementById("ds4BoardModelContainer").classList.add("d-none");
+-          document.getElementById("dualsenseFineTuneCard").classList.remove("d-none");
++          const ftCard = document.getElementById("dualsenseFineTuneCard");
++          if (ftCard) ftCard.classList.remove("d-none");
+ 
+           // Read feature report 0x20
+           let infoData = null;
+@@ -2628,11 +2842,15 @@
+       document.getElementById("infoBoardModel").innerText = "-";
+       document.getElementById("infoBuildDate").innerText = "-";
+       document.getElementById("ds4BoardModelContainer").classList.add("d-none");
+-      document.getElementById("dualsenseFineTuneCard").classList.add("d-none");
++      const ftCard = document.getElementById("dualsenseFineTuneCard");
++      if (ftCard) ftCard.classList.add("d-none");
+       
+-      document.getElementById("overviewInfoCard").classList.add("opacity-50");
+-      document.getElementById("calibrationOptionsCard").classList.add("opacity-50");
+-      document.getElementById("driftResultsRow").classList.add("opacity-50");
++      const overviewCard = document.getElementById("overviewInfoCard");
++      if (overviewCard) overviewCard.classList.add("opacity-50");
++      const calibCard = document.getElementById("calibrationOptionsCard");
++      if (calibCard) calibCard.classList.add("opacity-50");
++      const driftRow = document.getElementById("driftResultsRow");
++      if (driftRow) driftRow.classList.add("opacity-50");
+       
+       document.getElementById("btnCalibrateCenter").disabled = true;
+       document.getElementById("btnCalibrateRange").disabled = true;
+@@ -3290,6 +3508,31 @@
+       drawCoordinateGrid("canvasLeftStick", lx, ly);
+       drawCoordinateGrid("canvasRightStick", rx, ry);
+ 
++      // Update new Joystick Info widgets
++      const isZoomed = document.getElementById("btnZoom10x") ? document.getElementById("btnZoom10x").checked : false;
++      const zoomFactor = isZoomed ? 10 : 1;
++      
++      const dotLx = Math.max(-1, Math.min(1, lx * zoomFactor));
++      const dotLy = Math.max(-1, Math.min(1, ly * zoomFactor));
++      const dotRx = Math.max(-1, Math.min(1, rx * zoomFactor));
++      const dotRy = Math.max(-1, Math.min(1, ry * zoomFactor));
++
++      const stickDotLeft = document.getElementById("stick-dot-left");
++      if (stickDotLeft) {
++        stickDotLeft.style.left = `${50 + (dotLx * 50)}%`;
++        stickDotLeft.style.top = `${50 + (dotLy * 50)}%`;
++        document.getElementById("joyLxReadout").innerText = (lx >= 0 ? '+' : '') + lx.toFixed(2);
++        document.getElementById("joyLyReadout").innerText = (ly >= 0 ? '+' : '') + ly.toFixed(2);
++      }
++      
++      const stickDotRight = document.getElementById("stick-dot-right");
++      if (stickDotRight) {
++        stickDotRight.style.left = `${50 + (dotRx * 50)}%`;
++        stickDotRight.style.top = `${50 + (dotRy * 50)}%`;
++        document.getElementById("joyRxReadout").innerText = (rx >= 0 ? '+' : '') + rx.toFixed(2);
++        document.getElementById("joyRyReadout").innerText = (ry >= 0 ? '+' : '') + ry.toFixed(2);
++      }
++
+       // Apply visual damping (lerp) to analog sticks for buttery-smooth visual movements
+       visualLx += (lx - visualLx) * 0.24;
+       visualLy += (ly - visualLy) * 0.24;
+@@ -3305,28 +3548,6 @@
+       document.querySelectorAll(".svg-stick-left").forEach(el => el.setAttribute("transform", `translate(${visualLx * 15}, ${visualLy * 15}) scale(${lScale})`));
+       document.querySelectorAll(".svg-stick-right").forEach(el => el.setAttribute("transform", `translate(${visualRx * 15}, ${visualRy * 15}) scale(${rScale})`));
+ 
+-      // 3D Tilt rotation based on stick pushes & physical sensors
+-      let rotX = 0;
+-      let rotY = 0;
+-      if (isConnected && sensorState && (Math.abs(sensorState.accelX) > 0.01 || Math.abs(sensorState.accelY) > 0.01)) {
+-        // WebHID connected: tilt based on physical Accelerometer data
+-        const rawX = -sensorState.accelY * 18;
+-        const rawY = sensorState.accelX * 18;
+-        rotX = Math.max(-15, Math.min(15, rawX));
+-        rotY = Math.max(-15, Math.min(15, rawY));
+-      } else {
+-        // Gamepad API / Demo mode: tilt based on joysticks input
+-        rotX = -ly * 8 - ry * 8;
+-        rotY = lx * 8 + rx * 8;
+-      }
+-
+-      // Smooth 3D tilt
+-      visualRotX += (rotX - visualRotX) * 0.15;
+-      visualRotY += (rotY - visualRotY) * 0.15;
+-
+-      document.querySelectorAll(".controller-svg").forEach(el => {
+-        el.style.transform = `perspective(800px) rotateX(${visualRotX.toFixed(2)}deg) rotateY(${visualRotY.toFixed(2)}deg)`;
+-      });
+ 
+       if (isConnected) {
+         document.getElementById("infoBattery").innerHTML = `<i class="fa-solid fa-battery-three-quarters text-success"></i> 85%`;
+@@ -4493,47 +4714,51 @@
+     });
+ 
+     // DualSense Fine-Tune Commands
+-    document.getElementById("btnReadFineTune").addEventListener("click", async () => {
++    const finetuneInputs = ["LL", "LT", "LR", "LB", "LX", "LY", "RL", "RT", "RR", "RB", "RX", "RY"];
++
++    document.getElementById("finetuneModal").addEventListener("show.bs.modal", async () => {
+       if (!hidDevice || isClone) return;
+       try {
+         const res = await receiveFeatureReport(hidDevice, 0x83);
+-        if (res.byteLength >= 8) {
+-          const lx = res.getInt16(0, true);
+-          const ly = res.getInt16(2, true);
+-          const rx = res.getInt16(4, true);
+-          const ry = res.getInt16(6, true);
++        if (res.byteLength >= 24) {
++          // Read 12 INT16 values
++          const values = [];
++          for (let i = 0; i < 12; i++) {
++            values.push(res.getInt16(i * 2, true));
++          }
+           
+-          document.getElementById("ftLeftX").value = lx;
+-          document.getElementById("ftLeftY").value = ly;
+-          document.getElementById("ftRightX").value = rx;
+-          document.getElementById("ftRightY").value = ry;
++          finetuneInputs.forEach((suffix, i) => {
++            const el = document.getElementById("finetune" + suffix);
++            if (el) el.value = values[i];
++          });
+           
+-          showNotification("Successfully read raw offsets from controller.");
++          showNotification("Successfully read raw finetune offsets from controller.");
+         }
+       } catch (e) {
+         showNotification("Failed to read raw offsets: " + e.message, "danger");
+       }
+     });
+ 
+-    document.getElementById("btnApplyFineTune").addEventListener("click", async () => {
++    document.getElementById("btnApplyFineTuneSave").addEventListener("click", async () => {
+       if (!hidDevice || isClone) return;
+       try {
+-        const lx = parseInt(document.getElementById("ftLeftX").value) || 0;
+-        const ly = parseInt(document.getElementById("ftLeftY").value) || 0;
+-        const rx = parseInt(document.getElementById("ftRightX").value) || 0;
+-        const ry = parseInt(document.getElementById("ftRightY").value) || 0;
+-
+-        const payload = new Uint8Array(9);
+-        payload[0] = 0x05;
++        const payload = new Uint8Array(25);
++        payload[0] = 0x05; // Or 0x82 depending on the report map. Wait, the old code used 0x05 but report ID 0x82.
+         
+         const dv = new DataView(payload.buffer);
+-        dv.setInt16(1, lx, true);
+-        dv.setInt16(3, ly, true);
+-        dv.setInt16(5, rx, true);
+-        dv.setInt16(7, ry, true);
++        finetuneInputs.forEach((suffix, i) => {
++          const el = document.getElementById("finetune" + suffix);
++          const val = el ? parseInt(el.value) || 0 : 0;
++          dv.setInt16(1 + i * 2, val, true);
++        });
+ 
+         await sendFeatureReport(hidDevice, 0x82, payload);
+         showNotification("Fine-tune values written successfully!");
++        
++        // Close modal
++        const modalEl = document.getElementById('finetuneModal');
++        const modal = bootstrap.Modal.getInstance(modalEl);
++        if (modal) modal.hide();
+       } catch (e) {
+         showNotification("Failed to write offsets: " + e.message, "danger");
+       }
+@@ -4567,9 +4792,12 @@
+       document.getElementById("footerModelName").innerText = "Demo Controller (Gamepad API Simulated)";
+       document.getElementById("overviewDevStatus").innerText = "Running in browser Demo Mode.";
+       
+-      document.getElementById("overviewInfoCard").classList.remove("opacity-50");
+-      document.getElementById("calibrationOptionsCard").classList.remove("opacity-50");
+-      document.getElementById("driftResultsRow").classList.remove("opacity-50");
++      const overviewCard = document.getElementById("overviewInfoCard");
++      if (overviewCard) overviewCard.classList.remove("opacity-50");
++      const calibCard = document.getElementById("calibrationOptionsCard");
++      if (calibCard) calibCard.classList.remove("opacity-50");
++      const driftRow = document.getElementById("driftResultsRow");
++      if (driftRow) driftRow.classList.remove("opacity-50");
+ 
+       document.getElementById("infoGenuineBadge").innerHTML = `<span class="badge-custom badge-success"><i class="fa-solid fa-circle-play"></i> Demo Mode</span>`;
+       document.getElementById("infoConnectionType").innerText = "Keyboard Sim";

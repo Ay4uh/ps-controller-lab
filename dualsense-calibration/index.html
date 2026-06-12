@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free DualSense Calibration Tool Online | Controller Diagnostic Lab</title>
+  <meta name="description" content="Calibrate your PS5 DualSense analog sticks for free in Chrome. Fix drift without opening the controller. No install needed.">
+  <link rel="canonical" href="https://ay5uh.com/dualsense-calibration/" />
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Google Fonts - Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --accent: #0070d1;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+    }
+    .navbar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+    }
+    .navbar-brand {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 1.5rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+      border-radius: 16px;
+      margin-bottom: 3rem;
+    }
+    .hero h1 {
+      font-weight: 800;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .content-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    h2 {
+      font-weight: 700;
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    ul.steps {
+      list-style: none;
+      padding: 0;
+    }
+    ul.steps li {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    ul.steps li i {
+      color: var(--accent);
+      font-size: 1.25rem;
+      width: 24px;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .cta-container {
+      text-align: center;
+      margin: 4rem 0;
+    }
+    .btn-cta {
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      font-size: 1.25rem;
+      padding: 1rem 3rem;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-block;
+      box-shadow: 0 8px 16px rgba(0, 112, 209, 0.25);
+    }
+    .btn-cta:hover {
+      background: #0058a8;
+      color: white;
+      transform: translateY(-2px);
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="https://ay5uh.com" class="navbar-brand">
+      <i class="fa-solid fa-gamepad"></i> Controller Diagnostic Lab
+    </a>
+  </nav>
+
+  <div class="container-lg my-5">
+    
+    <div class="hero">
+      <h1>Free DualSense Calibration Tool</h1>
+      <p class="fs-5 text-light opacity-75">Hardware-level analog stick calibration running entirely in your browser.</p>
+    </div>
+
+    <div class="content-section">
+      <h2>What is DualSense Calibration?</h2>
+      <p>DualSense calibration is a low-level hardware process that adjusts the absolute center point and maximum outer range of your analog sticks. Unlike deadzones configured in-game, which are purely software layers applied over faulty inputs, true calibration accesses your controller's Non-Volatile Storage (NVS) memory mirror. By reading and analyzing the physical resting state of worn carbon potentiometers, this process updates the controller's internal geometry. This forces the controller to fundamentally correct its own data output before it even reaches your console or PC, permanently eliminating mild-to-moderate stick drift.</p>
+    </div>
+
+    <div class="content-section">
+      <h2>Center Calibration vs Range Calibration</h2>
+      <ul class="steps">
+        <li>
+          <i class="fa-solid fa-circle-dot"></i>
+          <div>
+            <strong>Center Calibration</strong> aligns the resting point of your sticks back to a true absolute (0,0) center. It is designed to fix standard stick drift, where your controller slowly inputs diagonal or lateral movement even when entirely untouched.
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-arrows-spin"></i>
+          <div>
+            <strong>Range Calibration</strong> (or Circularity Calibration) adjusts the outer boundary mapping of your analog sticks. It fixes unresponsive movement edges, where pushing the stick fully forward might only register as a sluggish 85% input in-game.
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>How to Calibrate Your DualSense</h2>
+      <ul class="steps">
+        <li><i class="fa-solid fa-usb"></i> <strong>Step 1:</strong> Connect your DualSense via a USB data cable to your PC or Mac.</li>
+        <li><i class="fa-brands fa-chrome"></i> <strong>Step 2:</strong> Open <a href="https://ay5uh.com">ay5uh.com</a> in Google Chrome or Microsoft Edge.</li>
+        <li><i class="fa-solid fa-link"></i> <strong>Step 3:</strong> Click "Connect Controller" and grant the browser permission.</li>
+        <li><i class="fa-solid fa-wrench"></i> <strong>Step 4:</strong> Navigate to the "Calibration" tab and select your preferred mode (Center or Range).</li>
+        <li><i class="fa-solid fa-rotate-right"></i> <strong>Step 5:</strong> Follow the on-screen instructions to rotate and release the sticks, and click Calibrate to write the new curve.</li>
+      </ul>
+    </div>
+    
+    <div class="content-section">
+      <h2>Is Calibration Safe?</h2>
+      <p>Yes, but it must be performed with care. Controller Diagnostic Lab writes directly to the NVS memory mirror on the controller's motherboard. While the tool employs standard and tested DualSense calibration protocols to calculate the new offset curves, interrupting the USB connection during an active memory write sequence could theoretically corrupt the controller's profile. Always ensure the USB cable is firmly plugged in and avoid disconnecting the controller during the 5-second calibration window.</p>
+    </div>
+
+    <div class="cta-container">
+      <a href="https://ay5uh.com" class="btn-cta">Calibrate My DualSense &rarr;</a>
+    </div>
+
+  </div>
+
+  <footer>
+    &copy; 2026 Controller Diagnostic Lab. Not affiliated with Sony Interactive Entertainment Inc.
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,992 @@
+
+
+      <!-- Hero / Onboarding Section -->
+      <div class="mb-4 p-4 rounded-3" style="background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border: 1px solid #bfdbfe;">
+        <div class="row align-items-center g-3">
+          <div class="col-md-8">
+            <h5 class="fw-bold mb-1" style="color:#1e40af;"><i class="fa-solid fa-gamepad me-2"></i>What is Controller Diagnostic Lab?</h5>
+            <p class="mb-2 small" style="color:#374151; line-height:1.65">
+              A free, browser-based tool to <strong>diagnose, calibrate, and repair</strong> your PS4 or PS5 DualSense/DualShock 4 controller — no software install needed.
+              Test every button, check analog stick drift, run haptic vibration tests, read raw HID data, and write calibration offsets directly to your controller's memory.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge rounded-pill" style="background:#dbeafe;color:#1d4ed8;font-size:0.75rem;"><i class="fa-solid fa-wrench me-1"></i>Calibration</span>
+              <span class="badge rounded-pill" style="background:#dcfce7;color:#166534;font-size:0.75rem;"><i class="fa-solid fa-keyboard me-1"></i>Input Tester</span>
+              <span class="badge rounded-pill" style="background:#fef3c7;color:#92400e;font-size:0.75rem;"><i class="fa-solid fa-water me-1"></i>Vibration</span>
+              <span class="badge rounded-pill" style="background:#fce7f3;color:#9d174d;font-size:0.75rem;"><i class="fa-solid fa-compass me-1"></i>Drift Check</span>
+              <span class="badge rounded-pill" style="background:#f3e8ff;color:#6b21a8;font-size:0.75rem;"><i class="fa-solid fa-microchip me-1"></i>Sensor Lab</span>
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div style="font-size:4rem; line-height:1;">🎮</div>
+            <div class="small mt-1" style="color:#6b7280">Works over USB · No install · Free forever</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connection Required Screen -->
+      <div id="connectionRequiredScreen" class="d-flex flex-column align-items-center justify-content-center text-center py-5 my-5">
+        <div class="card-custom p-5 d-flex flex-column align-items-center" style="max-width: 550px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow);">
+          <!-- DualSense Line-Art Illustration -->
+          <div class="mb-4" style="width:120px;height:80px;margin:0 auto;animation:floatCtrl 3s ease-in-out infinite;filter:drop-shadow(0 6px 18px rgba(0,112,209,0.18));">
+            <svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" width="120" height="80" aria-hidden="true">
+              <style>
+                .ds-line { fill:none; stroke:#0070d1; stroke-linecap:round; stroke-linejoin:round; }
+                @keyframes floatCtrl {
+                  0%,100% { transform:translateY(0); }
+                  50%      { transform:translateY(-7px); }
+                }
+              </style>
+
+              <!-- Main body outline -->
+              <path class="ds-line" stroke-width="4"
+                d="M72,88
+                   Q34,88 28,112
+                   Q22,140 40,148
+                   Q58,156 72,136
+                   L86,108
+                   Q96,90 120,88
+                   Q144,90 154,108
+                   L168,136
+                   Q182,156 200,148
+                   Q218,140 212,112
+                   Q206,88 168,88
+                   Q152,72 138,52
+                   Q129,38 120,36
+                   Q111,38 102,52
+                   Q88,72 72,88 Z"/>
+
+              <!-- Left grip shadow-line -->
+              <path class="ds-line" stroke-width="2.5" opacity="0.45"
+                d="M44,118 Q38,132 44,148 Q52,156 66,144 L80,114"/>
+
+              <!-- Right grip shadow-line -->
+              <path class="ds-line" stroke-width="2.5" opacity="0.45"
+                d="M196,118 Q202,132 196,148 Q188,156 174,144 L160,114"/>
+
+              <!-- L1 bumper -->
+              <path class="ds-line" stroke-width="3"
+                d="M70,84 Q84,62 102,68 L98,80 Q88,76 76,92"/>
+
+              <!-- R1 bumper -->
+              <path class="ds-line" stroke-width="3"
+                d="M170,84 Q156,62 138,68 L142,80 Q152,76 164,92"/>
+
+              <!-- L2 trigger -->
+              <path class="ds-line" stroke-width="3"
+                d="M72,80 Q80,56 100,62"/>
+
+              <!-- R2 trigger -->
+              <path class="ds-line" stroke-width="3"
+                d="M168,80 Q160,56 140,62"/>
+
+              <!-- Touchpad -->
+              <rect class="ds-line" stroke-width="3" x="98" y="58" width="44" height="30" rx="7"/>
+              <!-- Touchpad centre split line -->
+              <line class="ds-line" stroke-width="1.5" opacity="0.5" x1="120" y1="60" x2="120" y2="86"/>
+
+              <!-- D-pad cross -->
+              <rect class="ds-line" stroke-width="2.5" x="76" y="96" width="9" height="24" rx="2.5"/>
+              <rect class="ds-line" stroke-width="2.5" x="68" y="104" width="24" height="9" rx="2.5"/>
+
+              <!-- Face buttons (△ ○ × □) -->
+              <!-- Triangle -->
+              <polygon class="ds-line" stroke-width="2.5" points="176,92 172,100 180,100"/>
+              <!-- Circle -->
+              <circle class="ds-line" stroke-width="2.5" cx="186" cy="104" r="5"/>
+              <!-- Cross -->
+              <line class="ds-line" stroke-width="2.5" x1="169" y1="101" x2="177" y2="109"/>
+              <line class="ds-line" stroke-width="2.5" x1="177" y1="101" x2="169" y2="109"/>
+              <!-- Square -->
+              <rect class="ds-line" stroke-width="2.5" x="169" y="113" width="10" height="10" rx="2"/>
+
+              <!-- PS button -->
+              <circle class="ds-line" stroke-width="3" cx="120" cy="112" r="8"/>
+              <circle fill="#0070d1" cx="120" cy="112" r="4" opacity="0.7"/>
+
+              <!-- Create button (left of PS) -->
+              <rect class="ds-line" stroke-width="2" x="100" y="109" width="10" height="6" rx="2"/>
+              <!-- Options button (right of PS) -->
+              <rect class="ds-line" stroke-width="2" x="130" y="109" width="10" height="6" rx="2"/>
+
+              <!-- Left analog stick ring -->
+              <circle class="ds-line" stroke-width="2.5" cx="92" cy="120" r="10"/>
+              <!-- Right analog stick ring -->
+              <circle class="ds-line" stroke-width="2.5" cx="148" cy="120" r="10"/>
+
+              <!-- USB-C port -->
+              <rect class="ds-line" stroke-width="2" x="113" y="149" width="14" height="5" rx="2.5"/>
+            </svg>
+          </div>
+
+          <h2 class="fw-bold mb-2" style="color: var(--text);">No Controller Connected</h2>
+          <p class="text-muted small mb-4">Controller Diagnostic Lab requires an active WebHID or Gamepad API connection to run diagnostics. Please connect your advanced controller over USB or Bluetooth.</p>
+          
+          <div class="w-100 text-start bg-light-border p-3 mb-4 rounded-3 small" style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 8px;">
+            <h6 class="fw-bold mb-2 text-dark"><i class="fa-solid fa-circle-info text-accent"></i> How to get started:</h6>
+            <ol class="ps-3 mb-0 text-muted">
+              <li class="mb-1">Connect your controller to this computer via a <strong>USB cable</strong> (recommended for calibration) or Bluetooth.</li>
+              <li class="mb-1">Click the <strong>Connect Controller</strong> button below.</li>
+              <li>Select your device from the browser popup list and click <strong>Connect</strong>.</li>
+            </ol>
+          </div>
+          
+          <button class="btn-custom-primary btn-lg w-100" id="btnConnectRequired"><i class="fa-solid fa-plus"></i> Connect Controller</button>
+          <button class="btn-custom-secondary btn-lg w-100 mt-2 text-center d-flex justify-content-center align-items-center" id="btnDemoRequired"><i class="fa-solid fa-circle-play text-warning"></i> Launch Virtual Simulator (Demo Mode)</button>
+          
+          <div class="mt-3 w-100" style="text-align:left; font-size:0.7rem; color:var(--text-muted); line-height:1.5; border-top:1px solid var(--border); padding-top:0.75rem;">
+            <strong style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em;">Disclaimer</strong> &mdash;
+            Independent diagnostic utility. Not affiliated with Sony Interactive Entertainment, PlayStation, or their subsidiaries.
+            All trademarks are property of their respective owners.
+          </div>
+        </div>
+      </div>
+
+      <div id="appDashboardContent" class="d-none">
+      
+        <!-- Banner for Clone Controllers -->
+        <div class="alert alert-warning d-none" id="cloneWarningBanner" role="alert" style="border-left: 4px solid #ea580c;">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-circle-exclamation mt-1" style="color:#ea580c"></i>
+            <div>
+              <strong>Possible clone or third-party controller detected.</strong>
+              Calibration write commands may not work correctly on non-Sony controllers and have been disabled by default to protect your device.
+              <div class="mt-2">
+                <a href="#" id="btnBypassClone" class="btn btn-sm btn-outline-warning">
+                  <i class="fa-solid fa-unlock"></i> Unlock calibration anyway (I have a genuine controller)
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      <!-- Banner for Bluetooth Connection -->
+      <div class="alert alert-warning d-none" id="bluetoothWarningBanner" role="alert">
+        <i class="fa-solid fa-circle-exclamation"></i> <strong>Bluetooth Connection Detected!</strong> Calibration features (Center, Range, and Fine-tune) are disabled over Bluetooth. Please disconnect and reconnect your controller using a <strong>USB cable</strong> to perform calibration.
+      </div>
+
+      <!-- Banner for DualSense Edge Users -->
+      <div class="alert alert-warning d-none" id="edgeWarningBanner" role="alert">
+        <i class="fa-solid fa-circle-exclamation"></i> <strong>DualSense Edge Owner:</strong> Writing permanent changes to NVS requires a physical hardware modification (+1.8V applied to the internal test point).
+      </div>
+
+      <!-- 1. OVERVIEW PANEL -->
+      <section class="tab-panel active" id="tab-overview">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-network-wired"></i> Controller Connection</h2>
+              <div class="d-flex flex-column justify-content-between gap-3">
+                <div>
+                  <h4 class="mb-1" id="overviewDevName">No Controller Connected</h4>
+                  <p class="text-muted mb-0" id="overviewDevStatus">Please connect a PlayStation controller using USB or Bluetooth and click Connect.</p>
+                </div>
+                <div class="d-flex gap-2 mt-2">
+                  <button class="btn-custom-primary" id="btnConnect"><i class="fa-solid fa-plus"></i> Connect Controller</button>
+                  <button class="btn-custom-danger d-none" id="btnDisconnect"><i class="fa-solid fa-circle-xmark"></i> Disconnect</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controller Info Summary Card -->
+            <div class="card-custom opacity-50" id="overviewInfoCard">
+              <h2 class="card-title-custom"><i class="fa-solid fa-circle-info"></i> Device Overview</h2>
+              <div class="row g-3">
+                <div class="col-sm-6">
+                  <div class="text-muted small">Status</div>
+                  <div class="fw-bold" id="infoGenuineBadge"><span class="badge-custom badge-muted">Not Connected</span></div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="text-muted small">Connection Type</div>
+                  <div class="fw-bold" id="infoConnectionType">-</div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="text-muted small">Battery</div>
+                  <div class="fw-bold" id="infoBattery"><i class="fa-solid fa-battery-empty text-muted"></i> -</div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="text-muted small">MAC Address</div>
+                  <div class="fw-bold font-monospace" id="infoMac">-</div>
+                </div>
+                <div class="col-sm-6 d-none" id="ds4BoardModelContainer">
+                  <div class="text-muted small">Board Model</div>
+                  <div class="fw-bold" id="infoBoardModel">-</div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="text-muted small">Build Date</div>
+                  <div class="fw-bold" id="infoBuildDate">-</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-circle-question"></i> Help & Quick Start</h2>
+              <ol class="ps-3 text-muted text-start" style="font-size: 0.9rem;">
+                <li class="mb-2">Ensure your controller is connected to this computer via a <strong>USB cable</strong> (recommended for calibration accuracy) or Bluetooth.</li>
+                <li class="mb-2">Click <strong>Connect Controller</strong> in the sidebar or landing page to trigger the browser's pairing prompt.</li>
+                <li class="mb-2">Select your controller from the list (e.g. "Wireless Controller") and click <strong>Connect</strong>.</li>
+                <li class="mb-2">Use the sidebar tabs to navigate through stick drift analysis, trigger force feedback, RGB lightbar pickers, haptic patterns, and EEPROM calibration.</li>
+              </ol>
+              <div class="text-center mt-3 d-none" id="demoModeIndicator">
+                <span class="badge-custom badge-warning"><i class="fa-solid fa-circle-play"></i> Running in Demo Mode</span>
+                <p class="text-muted small mt-2">Use WASD/Arrow keys & Space/Enter on your keyboard to simulate controller inputs.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card-custom text-center">
+              <h2 class="card-title-custom text-start"><i class="fa-solid fa-gamepad"></i> Controller Live View</h2>
+              <div id="overviewControllerContainer" class="controller-svg-container">
+                <!-- SVG injected dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Overview Disclaimer Footer -->
+      <footer style="background:#f8f9fa;border-top:1px solid #e2e8f0;padding:16px 24px;font-size:12px;color:#6b7280;text-align:left;line-height:1.6;width:100%;">
+        <strong style="color:#374151;">Disclaimer</strong> &mdash;
+        Controller Diagnostic Lab is an independent open-source utility. Not affiliated with, endorsed by, or connected to Sony Interactive Entertainment Inc. or PlayStation.
+        &ldquo;PlayStation&rdquo;, &ldquo;DualShock&rdquo;, and &ldquo;DualSense&rdquo; are registered trademarks of Sony Interactive Entertainment Inc. All other product names and trademarks are property of their respective owners.
+      </footer>
+
+
+      <section class="tab-panel" id="tab-calibration">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card-custom" id="calibrationOptionsCard">
+              <h2 class="card-title-custom"><i class="fa-solid fa-wrench"></i> Calibration Tools</h2>
+              <p class="text-muted">Recalibrate the stick center, range, or fine-tune individual potentiometer outputs. Note: Calibration writes directly to the controller's permanent storage (NVS) mirror. Use with care.</p>
+              
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="border border-secondary rounded p-3 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                      <h5>Analog Stick Center</h5>
+                      <p class="text-muted small">Aligns drifts or offset center positions of both analog sticks. Standard 4-step sampling routine.</p>
+                    </div>
+                    <button class="btn-custom-primary w-100" id="btnCalibrateCenter" disabled><i class="fa-solid fa-circle-dot"></i> Calibrate Center</button>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="border border-secondary rounded p-3 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                      <h5>Analog Stick Range</h5>
+                      <p class="text-muted small">Calibrates the maximum circular bounds by rotating sticks to outer edges. Ensures 100% outer range coverage.</p>
+                    </div>
+                    <button class="btn-custom-primary w-100" id="btnCalibrateRange" disabled><i class="fa-solid fa-circle-notch"></i> Calibrate Range</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row mt-3">
+                <div class="col-12">
+                  <button type="button" class="btn-custom-primary w-100" data-bs-toggle="modal" data-bs-target="#finetuneModal" id="btnFinetuneModal">
+                    <i class="fa-solid fa-sliders"></i> Finetune Stick Calibration
+                  </button>
+                </div>
+              </div>
+              
+              <!-- NVS Lock status & save button -->
+              <div class="mt-4 pt-3 border-top border-secondary d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                  <span class="text-muted small d-block">Controller NVS Storage State:</span>
+                  <div class="fw-bold mt-1" id="nvsStatusText"><span class="badge-custom badge-muted">Not Checked</span></div>
+                </div>
+                <button class="btn-custom-primary" id="btnSavePermanently" disabled><i class="fa-solid fa-floppy-disk"></i> Save Permanently (Unlock NVS)</button>
+              </div>
+            </div>
+
+            <!-- Fine Tune DualSense Only -->
+            <div class="card-custom d-none" id="dualsenseFineTuneCard">
+              <h2 class="card-title-custom"><i class="fa-solid fa-sliders"></i> DualSense Fine-Tune Calibration</h2>
+              <p class="text-muted small">Manually input raw calibration values to adjust potentiometer offsets on the DualSense controller.</p>
+              
+              <div class="row g-3 mb-3">
+                <div class="col-sm-6">
+                  <h6 class="border-bottom border-secondary pb-2">Left Stick Offsets</h6>
+                  <div class="row g-2 align-items-center mb-2">
+                    <div class="col-4 text-muted small">X Axis (Horizontal)</div>
+                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftLeftX" value="0"></div>
+                  </div>
+                  <div class="row g-2 align-items-center">
+                    <div class="col-4 text-muted small">Y Axis (Vertical)</div>
+                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftLeftY" value="0"></div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <h6 class="border-bottom border-secondary pb-2">Right Stick Offsets</h6>
+                  <div class="row g-2 align-items-center mb-2">
+                    <div class="col-4 text-muted small">X Axis (Horizontal)</div>
+                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftRightX" value="0"></div>
+                  </div>
+                  <div class="row g-2 align-items-center">
+                    <div class="col-4 text-muted small">Y Axis (Vertical)</div>
+                    <div class="col-8"><input type="number" class="form-control bg-dark text-white border-secondary" id="ftRightY" value="0"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <button class="btn-custom-secondary" id="btnReadFineTune"><i class="fa-solid fa-arrows-rotate"></i> Read Raw Values (0x83)</button>
+                <button class="btn-custom-primary" id="btnApplyFineTune"><i class="fa-solid fa-check"></i> Write Fine-Tune</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card-custom text-center">
+              <h2 class="card-title-custom text-start"><i class="fa-solid fa-gamepad"></i> Controller Live View & Drift</h2>
+              <div id="calibrationControllerContainer" class="controller-svg-container">
+                <!-- SVG injected dynamically -->
+              </div>
+              
+              <!-- Real-time drift status display -->
+              <div class="mt-3 p-3 border border-secondary rounded text-start bg-black bg-opacity-25">
+                <h6 class="mb-2"><i class="fa-solid fa-triangle-exclamation text-warning"></i> Real-time Center Offsets:</h6>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <span class="small text-muted">Left Stick:</span>
+                    <div class="fw-bold font-monospace" id="calibDriftLeft">X: 0.00 | Y: 0.00</div>
+                    <div class="mt-1" id="calibBadgeLeft"><span class="badge-custom badge-success" style="font-size:0.7rem; padding:2px 8px;">✓ OK</span></div>
+                  </div>
+                  <div class="col-6">
+                    <span class="small text-muted">Right Stick:</span>
+                    <div class="fw-bold font-monospace" id="calibDriftRight">X: 0.00 | Y: 0.00</div>
+                    <div class="mt-1" id="calibBadgeRight"><span class="badge-custom badge-success" style="font-size:0.7rem; padding:2px 8px;">✓ OK</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-triangle-exclamation"></i> Warning & Guide</h2>
+              <div class="text-warning small mb-3">
+                <i class="fa-solid fa-triangle-exclamation"></i> DO NOT move the controller sticks while starting Center Calibration!
+              </div>
+              <ul class="text-muted small ps-3">
+                <li class="mb-2">Unlocking NVS allows permanent writing to EEPROM storage.</li>
+                <li class="mb-2">Clones and Edge models have write limitations.</li>
+                <li class="mb-2">Run the **Drift Check** tab to store permanent glowing drift markers on the controller sticks.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. INPUT TESTER PANEL -->
+      <section class="tab-panel" id="tab-tester">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-gamepad"></i> Controller Map</h2>
+              <div id="testerControllerContainer" class="controller-svg-container">
+                <!-- SVG injected dynamically -->
+              </div>
+            </div>
+
+            <!-- Buttons pressed details -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-circle-check"></i> Button Grid & Counts</h2>
+              <div class="button-grid" id="testerButtonsGrid">
+                <!-- dynamically generated -->
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <!-- Sticks Coordinate Visualizer -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-compass"></i> Analog Sticks Coordinates</h2>
+              <div class="stick-visualizer-container">
+                <div class="stick-card">
+                  <h6>Left Stick</h6>
+                  <canvas class="stick-canvas" id="canvasLeftStick" width="150" height="150"></canvas>
+                  <div class="small fw-bold text-muted" id="txtLeftStickVal">X: 0.00 | Y: 0.00</div>
+                </div>
+                <div class="stick-card">
+                  <h6>Right Stick</h6>
+                  <canvas class="stick-canvas" id="canvasRightStick" width="150" height="150"></canvas>
+                  <div class="small fw-bold text-muted" id="txtRightStickVal">X: 0.00 | Y: 0.00</div>
+                </div>
+              </div>
+              
+              <!-- Trigger analog bars -->
+              <div class="mt-4 pt-3 border-top border-secondary">
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="small fw-bold">L2 (Left Trigger)</span>
+                    <span class="small font-monospace" id="txtL2">0% (0)</span>
+                  </div>
+                  <div class="progress bg-dark" style="height: 10px;">
+                    <div class="progress-bar bg-primary" id="progressL2" style="width: 0%;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="small fw-bold">R2 (Right Trigger)</span>
+                    <span class="small font-monospace" id="txtR2">0% (0)</span>
+                  </div>
+                  <div class="progress bg-dark" style="height: 10px;">
+                    <div class="progress-bar bg-success" id="progressR2" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input History Log Row -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card-custom">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="card-title-custom mb-0" style="border:none; padding:0;"><i class="fa-solid fa-list"></i> Input History (Last 30 Events)</h2>
+                <button class="btn btn-sm btn-outline-secondary" id="btnClearHistory">Clear Log</button>
+              </div>
+              <div class="history-log" id="testerHistoryLog">
+                <div class="text-muted text-center pt-5">Waiting for button presses...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. VIBRATION PANEL -->
+      <section class="tab-panel" id="tab-vibration">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-water"></i> Direct Motor Controls</h2>
+              
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <span>Vibration Support Status:</span>
+                <span id="vibrationSupportBadge"><span class="badge-custom badge-danger"><i class="fa-solid fa-circle-xmark"></i> Unsupported</span></span>
+              </div>
+
+              <!-- Slider Left Motor -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="sliderLeftMotor" class="fw-bold"><i class="fa-solid fa-dharmachakra"></i> Left Motor (Heavy/Strong)</label>
+                  <span class="font-monospace" id="txtLeftMotorVal">0%</span>
+                </div>
+                <input type="range" class="form-range" id="sliderLeftMotor" min="0" max="100" value="0">
+              </div>
+
+              <!-- Slider Right Motor -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="sliderRightMotor" class="fw-bold"><i class="fa-solid fa-dharmachakra"></i> Right Motor (Light/Weak)</label>
+                  <span class="font-monospace" id="txtRightMotorVal">0%</span>
+                </div>
+                <input type="range" class="form-range" id="sliderRightMotor" min="0" max="100" value="0">
+              </div>
+
+              <div class="d-flex gap-2">
+                <button class="btn-custom-primary flex-fill" id="btnTestBothMotors"><i class="fa-solid fa-play"></i> Test Both (1s)</button>
+                <button class="btn-custom-danger" id="btnStopMotors"><i class="fa-solid fa-stop"></i> Stop Motors</button>
+              </div>
+            </div>
+
+            <!-- Presets Card -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-music"></i> Haptic Presets</h2>
+              <div class="row g-2">
+                <div class="col-6">
+                  <button class="vibration-preset-btn" data-preset="gentle">
+                    <div>
+                      <div>Gentle Pulse</div>
+                      <div class="vibration-preset-desc">3 soft pulses</div>
+                    </div>
+                    <i class="fa-solid fa-volume-off text-muted"></i>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button class="vibration-preset-btn" data-preset="hard">
+                    <div>
+                      <div>Hard Rumble</div>
+                      <div class="vibration-preset-desc">100% force, 600ms</div>
+                    </div>
+                    <i class="fa-solid fa-volume-high text-muted"></i>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button class="vibration-preset-btn" data-preset="heartbeat">
+                    <div>
+                      <div>Heartbeat</div>
+                      <div class="vibration-preset-desc">Triple double-beats</div>
+                    </div>
+                    <i class="fa-solid fa-heartbeat text-muted"></i>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button class="vibration-preset-btn" data-preset="racing">
+                    <div>
+                      <div>Racing Gear</div>
+                      <div class="vibration-preset-desc">Rapid alternating L/R</div>
+                    </div>
+                    <i class="fa-solid fa-car text-muted"></i>
+                  </button>
+                </div>
+                <div class="col-12">
+                  <button class="vibration-preset-btn" data-preset="explosion">
+                    <div>
+                      <div>Explosion</div>
+                      <div class="vibration-preset-desc">Max jolt to gradual decay</div>
+                    </div>
+                    <i class="fa-solid fa-burst text-muted"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <!-- Custom Pattern Builder -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-sliders"></i> Custom Pattern Builder</h2>
+              <p class="text-muted small">Design sequences of motor vibrations. Define the duration of each phase and how much power goes to the left and right rumble motors.</p>
+              
+              <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                <table class="table table-dark custom-pattern-table align-middle">
+                  <thead>
+                    <tr>
+                      <th style="width: 35%;">Duration (ms)</th>
+                      <th style="width: 25%;">Left Motor %</th>
+                      <th style="width: 25%;">Right Motor %</th>
+                      <th style="width: 15%;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="patternBuilderRows">
+                    <!-- dynamically generated -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-3 d-flex flex-wrap gap-2 justify-content-between">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary" id="btnAddPatternRow"><i class="fa-solid fa-plus"></i> Add Row</button>
+                  <button class="btn btn-sm btn-outline-danger" id="btnClearPattern"><i class="fa-solid fa-trash"></i> Clear</button>
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-custom-secondary" id="btnSavePatternLocal"><i class="fa-solid fa-download"></i> Save Set</button>
+                  <button class="btn btn-sm btn-custom-secondary" id="btnLoadPatternLocal"><i class="fa-solid fa-upload"></i> Load Set</button>
+                  <button class="btn btn-sm btn-custom-primary" id="btnPlayCustomPattern"><i class="fa-solid fa-play"></i> Play Pattern</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. TOUCHPAD PANEL -->
+      <section class="tab-panel" id="tab-touchpad">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="card-custom text-center">
+              <h2 class="card-title-custom text-start"><i class="fa-solid fa-fingerprint"></i> DualShock 4 / DualSense Touchpad</h2>
+              <p class="text-muted text-start small">Draw on the controller's touchpad area. Visualizes up to 2 coordinates with touch trail tracking. Recreated using absolute coordinates read directly from the HID input reports.</p>
+              
+              <div class="touchpad-canvas-container">
+                <div class="touchpad-canvas-wrapper" id="touchpadWrapper">
+                  <canvas class="touchpad-canvas" id="canvasTouchpad" width="1920" height="942" style="width: 100%; aspect-ratio: 1920/942;"></canvas>
+                </div>
+                <div class="mt-3 w-100 d-flex justify-content-between align-items-center">
+                  <div class="text-muted small text-start">
+                    <span id="touchpadPos1">Finger 1: -</span> | <span id="touchpadPos2">Finger 2: -</span>
+                  </div>
+                  <div class="d-flex gap-2 align-items-center">
+                    <span class="badge-custom badge-muted d-none" id="touchpadClickIndicator"><i class="fa-solid fa-mouse"></i> Clicked</span>
+                    <button class="btn-custom-secondary" id="btnClearTouchpad"><i class="fa-solid fa-eraser"></i> Clear Trail</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-info"></i> Touchpad Diagnostics</h2>
+              <div class="text-muted small">
+                <p>The PlayStation touchpad operates with absolute coordinate grids:</p>
+                <ul>
+                  <li><strong>Width (X):</strong> 0 to 1919</li>
+                  <li><strong>Height (Y):</strong> 0 to 943</li>
+                </ul>
+                <p class="mb-0">Touch coordinates are extracted from byte offsets 33-42 of the raw HID input reports on USB, enabling 12-bit absolute mapping precision.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. DRIFT CHECK PANEL -->
+      <section class="tab-panel" id="tab-drift">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-compass"></i> Stick Drift Checker</h2>
+              <p class="text-muted">Test the stability and precision of your analog sticks. Keep the controller on a flat surface, release both analog sticks, and click <strong>Check for Drift</strong>. The test will record 180 samples over 3 seconds to calculate maximum center deviations.</p>
+              
+              <div class="mb-4 d-flex align-items-center gap-3 justify-content-center" style="max-width: 420px; margin: 0 auto;">
+                <label for="selectDriftThreshold" class="small fw-bold text-muted text-nowrap mb-0"><i class="fa-solid fa-sliders text-accent"></i> Target Deadzone:</label>
+                <select id="selectDriftThreshold" class="form-select form-select-sm" style="border-radius: 8px; border-color: var(--border);">
+                  <option value="0.03">3% (Tight/Competitive)</option>
+                  <option value="0.05" selected>5% (Standard Default)</option>
+                  <option value="0.08">8% (Moderate)</option>
+                  <option value="0.10">10% (Loose)</option>
+                  <option value="0.15">15% (Generous)</option>
+                </select>
+              </div>
+
+              <div class="d-flex flex-column align-items-center py-3">
+                <button class="btn-custom-primary btn-lg px-5 mb-4" id="btnRunDriftCheck"><i class="fa-solid fa-play"></i> Check for Drift</button>
+                
+                <div class="w-100 px-4 d-none" id="driftCheckProgressContainer">
+                  <div class="text-center small mb-1 fw-bold" id="driftCheckProgressLabel">Running drift analysis... 3s remaining</div>
+                  <div class="progress bg-dark" style="height: 10px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" id="progressDriftCheck" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Results Cards -->
+              <div class="row g-3 mt-2 opacity-50" id="driftResultsRow">
+                <div class="col-md-6">
+                  <div class="border border-secondary rounded p-3 text-center">
+                    <h5>Left Analog Stick</h5>
+                    <div class="display-6 fw-bold mt-2 font-monospace" id="driftValLeft">0.000</div>
+                    <div class="text-muted small mb-2">Max Deviation from Center</div>
+                    <div id="driftBadgeLeft"><span class="badge-custom badge-muted">Not Tested</span></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="border border-secondary rounded p-3 text-center">
+                    <h5>Right Analog Stick</h5>
+                    <div class="display-6 fw-bold mt-2 font-monospace" id="driftValRight">0.000</div>
+                    <div class="text-muted small mb-2">Max Deviation from Center</div>
+                    <div id="driftBadgeRight"><span class="badge-custom badge-muted">Not Tested</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Affiliate Links (Shown on Severe Drift) -->
+              <div id="affiliateSuggestions" class="mt-4 p-3 bg-light rounded d-none" style="border: 1px solid var(--border);">
+                  <h6 class="fw-bold text-dark"><i class="fa-solid fa-tools text-warning me-2"></i> Need a hardware replacement?</h6>
+                  <p class="small text-muted mb-3">Severe mechanical drift usually requires a physical replacement. Support our free tool by using our affiliate links:</p>
+                  <div class="d-flex gap-2 flex-wrap">
+                      <a href="https://www.amazon.ca/s?k=ps5+replacement+joystick&tag=ay5uh-20" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fa-brands fa-amazon me-1"></i> PS5 Replacement Joysticks</a>
+                      <a href="https://www.amazon.ca/s?k=ps5+controller&tag=ay5uh-20" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fa-brands fa-amazon me-1"></i> New DualSense Controller</a>
+                  </div>
+              </div>
+
+              <!-- Repair Options Container -->
+              <div id="repairOptionsContainer" class="mt-4 d-none"></div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-circle-question"></i> Drift Severity Index</h2>
+              <div class="d-flex flex-column gap-3 text-muted small">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="badge-custom badge-success" style="width: 80px; justify-content: center;">✓ OK</span>
+                  <span id="spanThresholdOk">Max deviation &le; 0.05. The stick centers perfectly.</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="badge-custom badge-warning" style="width: 80px; justify-content: center;">⚠️ Drift</span>
+                  <span id="spanThresholdWarning">Deviation 0.05 to 0.15. Minor drift detected. Calibrate center or adjust deadzone in games.</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="badge-custom badge-danger" style="width: 80px; justify-content: center;">❌ Severe</span>
+                  <span id="spanThresholdSevere">Deviation &gt; 0.15. Heavy drift. Potentiometer physical wear. Consider calibration or replacement.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. SENSOR LAB PANEL -->
+      <section class="tab-panel" id="tab-sensors">
+        <div class="row">
+          <!-- Left Column -->
+          <div class="col-lg-6">
+            <!-- IMU Visualization Card -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-arrows-spin"></i> 3-Axis Gyroscope & Accelerometer</h2>
+              <p class="text-muted small">Visualizes motion sensors in real-time. Hover mouse or move the controller to rotate the 3D projection wireframe cube below.</p>
+              
+              <div class="d-flex flex-column align-items-center mb-3">
+                <canvas id="imuCanvas3D" width="220" height="220" style="background: rgba(0,0,0,0.02); border-radius: 12px; border: 1px solid var(--border);"></canvas>
+              </div>
+
+              <!-- Real-time Axes Meters -->
+              <div class="row g-3 text-center small font-monospace mb-3">
+                <div class="col-4">
+                  <span class="d-block text-muted">Gyro X (Pitch)</span>
+                  <strong id="valGyroX" class="d-block mb-1">0.00</strong>
+                  <div class="position-relative" style="height: 6px; background: rgba(0,0,0,0.08); border-radius: 3px; overflow: hidden;">
+                    <div class="position-absolute bg-secondary opacity-50" style="left: 50%; width: 1px; height: 100%; z-index: 2;"></div>
+                    <div id="meterGyroX" class="position-absolute bg-primary h-100" style="left: 50%; width: 0%; transition: width 0.05s, left 0.05s; border-radius: 3px;"></div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <span class="d-block text-muted">Gyro Y (Roll)</span>
+                  <strong id="valGyroY" class="d-block mb-1">0.00</strong>
+                  <div class="position-relative" style="height: 6px; background: rgba(0,0,0,0.08); border-radius: 3px; overflow: hidden;">
+                    <div class="position-absolute bg-secondary opacity-50" style="left: 50%; width: 1px; height: 100%; z-index: 2;"></div>
+                    <div id="meterGyroY" class="position-absolute bg-primary h-100" style="left: 50%; width: 0%; transition: width 0.05s, left 0.05s; border-radius: 3px;"></div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <span class="d-block text-muted">Gyro Z (Yaw)</span>
+                  <strong id="valGyroZ" class="d-block mb-1">0.00</strong>
+                  <div class="position-relative" style="height: 6px; background: rgba(0,0,0,0.08); border-radius: 3px; overflow: hidden;">
+                    <div class="position-absolute bg-secondary opacity-50" style="left: 50%; width: 1px; height: 100%; z-index: 2;"></div>
+                    <div id="meterGyroZ" class="position-absolute bg-primary h-100" style="left: 50%; width: 0%; transition: width 0.05s, left 0.05s; border-radius: 3px;"></div>
+                  </div>
+                </div>
+                <div class="col-4 mt-2">
+                  <span class="d-block text-muted">Accel X (Tilt)</span>
+                  <strong id="valAccelX" class="d-block mb-1">0.00</strong>
+                  <div class="position-relative" style="height: 6px; background: rgba(0,0,0,0.08); border-radius: 3px; overflow: hidden;">
+                    <div class="position-absolute bg-secondary opacity-50" style="left: 50%; width: 1px; height: 100%; z-index: 2;"></div>
+                    <div id="meterAccelX" class="position-absolute bg-success h-100" style="left: 50%; width: 0%; transition: width 0.05s, left 0.05s; border-radius: 3px;"></div>
+                  </div>
+                </div>
+                <div class="col-4 mt-2">
+                  <span class="d-block text-muted">Accel Y (Tilt)</span>
+                  <strong id="valAccelY" class="d-block mb-1">0.00</strong>
+                  <div class="position-relative" style="height: 6px; background: rgba(0,0,0,0.08); border-radius: 3px; overflow: hidden;">
+                    <div class="position-absolute bg-secondary opacity-50" style="left: 50%; width: 1px; height: 100%; z-index: 2;"></div>
+                    <div id="meterAccelY" class="position-absolute bg-success h-100" style="left: 50%; width: 0%; transition: width 0.05s, left 0.05s; border-radius: 3px;"></div>
+                  </div>
+                </div>
+                <div class="col-4 mt-2">
+                  <span class="d-block text-muted">Accel Z (Gravity)</span>
+                  <strong id="valAccelZ" class="d-block mb-1">0.00</strong>
+                  <div class="position-relative" style="height: 6px; background: rgba(0,0,0,0.08); border-radius: 3px; overflow: hidden;">
+                    <div class="position-absolute bg-secondary opacity-50" style="left: 50%; width: 1px; height: 100%; z-index: 2;"></div>
+                    <div id="meterAccelZ" class="position-absolute bg-success h-100" style="left: 50%; width: 0%; transition: width 0.05s, left 0.05s; border-radius: 3px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls and Diagnostics Trigger -->
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 mt-3 pt-3 border-top border-secondary border-opacity-10">
+                <div class="form-check form-switch small">
+                  <input class="form-check-input" type="checkbox" id="chkImuAutoRotate" checked>
+                  <label class="form-check-label text-muted small" for="chkImuAutoRotate">Auto-Rotate Cube</label>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" id="btnImuDiag"><i class="fa-solid fa-microchip"></i> Run Static Sensor Test</button>
+              </div>
+
+              <!-- Diagnostic Progress & Results Panel -->
+              <div id="imuDiagPanel" class="d-none alert alert-light border p-3 mb-1 rounded shadow-sm">
+                <div id="imuDiagProgress" class="text-center">
+                  <div class="spinner-border spinner-border-sm text-primary mb-1" role="status"></div>
+                  <div class="small fw-bold text-muted" id="imuDiagStatusText">Analyzing... Keep controller flat and still.</div>
+                  <div class="progress mt-2" style="height: 4px;">
+                    <div id="imuDiagProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%;"></div>
+                  </div>
+                </div>
+                <div id="imuDiagResult" class="d-none">
+                  <h6 class="fw-bold mb-2 text-dark d-flex align-items-center justify-content-between">
+                    <span class="small font-monospace fw-bold text-uppercase">Diagnostic Report</span>
+                    <span id="imuDiagReportBadge" class="badge-custom badge-success">✓ Healthy</span>
+                  </h6>
+                  <ul class="list-unstyled mb-0 small text-muted font-monospace" style="font-size: 0.75rem;">
+                    <li class="d-flex justify-content-between border-bottom pb-1 mb-1">
+                      <span>Gyro Noise (X/Y/Z SD):</span>
+                      <strong id="txtImuDiagGyroNoise" class="text-dark">0.00 / 0.00 / 0.00</strong>
+                    </li>
+                    <li class="d-flex justify-content-between border-bottom pb-1 mb-1">
+                      <span>Accel Noise (X/Y/Z SD):</span>
+                      <strong id="txtImuDiagAccelNoise" class="text-dark">0.00 / 0.00 / 0.00</strong>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <span>Gravity Vector Magnitude:</span>
+                      <strong id="txtImuDiagGravity" class="text-dark">1.00 G</strong>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Adaptive Trigger Calibration & Resistance -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-gauge-high"></i> DualSense Adaptive Triggers (L2 / R2)</h2>
+              <p class="text-muted small">Configure and test force-feedback resistance profiles on the triggers (requires DualSense over USB).</p>
+              
+              <div class="mb-3">
+                <label for="selectTriggerTarget" class="small fw-bold mb-1">Target Trigger</label>
+                <select id="selectTriggerTarget" class="form-select">
+                  <option value="both">Both Triggers</option>
+                  <option value="left">L2 (Left Trigger)</option>
+                  <option value="right">R2 (Right Trigger)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="selectTriggerMode" class="small fw-bold mb-1">Resistance Mode</label>
+                <select id="selectTriggerMode" class="form-select">
+                  <option value="0">Off (Default/No resistance)</option>
+                  <option value="1">Feedback (Continuous resistance)</option>
+                  <option value="2">Weapon / Trigger Stop (Jolt & click)</option>
+                </select>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label for="sliderTriggerStart" class="small fw-bold mb-1">Force Start Position: <span id="txtTriggerStart">4</span></label>
+                  <input type="range" class="form-range" id="sliderTriggerStart" min="0" max="9" value="4">
+                </div>
+                <div class="col-6">
+                  <label for="sliderTriggerForce" class="small fw-bold mb-1">Force Intensity: <span id="txtTriggerForce">5</span></label>
+                  <input type="range" class="form-range" id="sliderTriggerForce" min="0" max="8" value="5">
+                </div>
+              </div>
+
+              <button class="btn-custom-primary w-100" id="btnApplyTriggerEffect"><i class="fa-solid fa-paper-plane"></i> Apply Adaptive Effect</button>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="col-lg-6">
+            <!-- Lightbar RGB Controller -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-lightbulb"></i> LED Lightbar Status Indicator</h2>
+              <p class="text-muted small">Test the RGB LED lightbar. Click presets or select a custom color.</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-sm btn-outline-danger btn-led-color" data-color="#ff0000">Red</button>
+                <button class="btn btn-sm btn-outline-success btn-led-color" data-color="#00ff00">Green</button>
+                <button class="btn btn-sm btn-outline-primary btn-led-color" data-color="#0000ff">Blue</button>
+                <button class="btn btn-sm btn-outline-warning btn-led-color" data-color="#ffaa00">Orange</button>
+                <button class="btn btn-sm btn-outline-info btn-led-color" data-color="#00ffff">Cyan</button>
+                <button class="btn btn-sm btn-outline-light btn-led-color" data-color="#ffffff">White</button>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <label for="ledColorPicker" class="small fw-bold">Custom LED Color:</label>
+                <input type="color" id="ledColorPicker" class="form-control form-control-color border-0 bg-transparent p-0" style="width: 50px; height: 35px;" value="#0070d1">
+              </div>
+              <!-- Live preview swatch -->
+              <div class="d-flex align-items-center gap-3 mt-3">
+                <div id="ledColorSwatch" style="width:52px;height:52px;border-radius:50%;background:#0070d1;box-shadow:0 0 12px 4px #0070d188;transition:background 0.2s,box-shadow 0.2s;border:2px solid rgba(255,255,255,0.15);"></div>
+                <div>
+                  <div class="small fw-bold" style="opacity:0.7;">Active Color Preview</div>
+                  <div id="ledColorSwatchLabel" class="small" style="font-family:monospace;opacity:0.85;">RGB(0, 112, 209)</div>
+                  <div class="small text-muted mt-1">Connect via USB to apply to controller</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Speaker & Microphone Labs -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-volume-high"></i> Built-in Speaker & Microphone Diagnostics</h2>
+              
+              <!-- Speaker -->
+              <div class="mb-4 pb-3 border-bottom border-secondary border-opacity-10">
+                <h6 class="fw-bold mb-1"><i class="fa-solid fa-bullhorn text-accent"></i> Speaker Diagnostic Tone</h6>
+                <p class="text-muted small">Generates diagnostic audio frequencies. Ensure your system audio is outputting to the controller speaker device.</p>
+                <div class="d-flex gap-2">
+                  <button class="btn-custom-secondary btn-sm" id="btnPlaySpeakerTone"><i class="fa-solid fa-play"></i> Play Test Tone</button>
+                  <button class="btn-custom-danger btn-sm d-none" id="btnStopSpeakerTone"><i class="fa-solid fa-stop"></i> Stop Tone</button>
+                </div>
+              </div>
+
+              <!-- Microphone -->
+              <div>
+                <h6 class="fw-bold mb-1"><i class="fa-solid fa-microphone text-success"></i> Microphone Oscilloscope</h6>
+                <p class="text-muted small">Captures and visualizes vocal frequency patterns. Speak into the controller mic to verify input.</p>
+                <div class="d-flex flex-column align-items-center mb-3">
+                  <canvas id="micOscilloscope" width="300" height="100" style="background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px solid var(--border); width: 100%;"></canvas>
+                </div>
+                <button class="btn-custom-primary btn-sm" id="btnToggleMicTest"><i class="fa-solid fa-microphone"></i> Test Microphone Input</button>
+              </div>
+            </div>
+
+            <!-- Connection & Port Diagnostics -->
+            <div class="card-custom">
+              <h2 class="card-title-custom"><i class="fa-solid fa-bolt"></i> Port & Connectivity Details</h2>
+              <div class="row g-3 small">
+                <div class="col-sm-6">
+                  <span class="text-muted d-block">USB-C Power Port Connection</span>
+                  <strong id="valUsbCConnection"><i class="fa-solid fa-plug text-accent"></i> Connected (USB Mode)</strong>
+                </div>
+                <div class="col-sm-6">
+                  <span class="text-muted d-block">Charging Status</span>
+                  <strong id="valChargingStatus"><i class="fa-solid fa-battery-three-quarters text-success"></i> Charging (85%)</strong>
+                </div>
+                <div class="col-sm-6">
+                  <span class="text-muted d-block">Bluetooth Link Quality</span>
+                  <strong id="valBtSignal"><i class="fa-solid fa-wifi text-muted"></i> No Signal (USB active)</strong>
+                </div>
+                <div class="col-sm-6">
+                  <span class="text-muted d-block">Capacitive Touchpad Link</span>
+                  <strong id="valTouchpadPortStatus">✓ Active (1920x942 Grid)</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Documentation Panel -->
+      <section class="tab-panel" id="tab-docs">
+        <div class="card-custom">
+          <h2 class="card-title-custom"><i class="fa-solid fa-book"></i> Professional Documentation</h2>
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <h5>Reading Analog Drift Values</h5>
+              <p class="text-muted small">Analog stick values range from 0 to 255 in raw 8-bit output, with 128 representing the center. Any deviation from 128 when the stick is untouched is considered "drift." Small deviations (124-132) are normal and typically mitigated by in-game deadzones. Values frequently fluctuating beyond this range indicate potentiometer wear.</p>
+            </div>
+            <div class="col-md-6 mb-4">
+              <h5>Vibration Diagnostics</h5>
+              <p class="text-muted small">The vibration tester allows you to send precise pulse-width modulation (PWM) signals to the Left (Heavy) and Right (Light) ERM motors or Voice Coil Actuators (VCAs). Use this to identify rattling, loose counterweights, or weak motor responses across different frequency patterns.</p>
+            </div>
+            <div class="col-md-6 mb-4">
+              <h5>NVS Calibration Warning</h5>
+              <p class="text-muted small">Non-Volatile Storage (NVS) writing modifies the controller's factory flash memory to alter analog center offsets. This is useful for correcting physical drift without replacing the potentiometer. <strong>Warning:</strong> Always ensure the controller has sufficient battery before writing. Do not disconnect the controller during an active NVS write cycle.</p>
+            </div>
+            <div class="col-md-6 mb-4">
+              <h5>Adaptive Triggers</h5>
+              <p class="text-muted small">Adaptive triggers rely on a geared DC motor. The force-feedback test sends resistance profiles (Continuous, Rigid, Pulse) directly to the trigger motors. A grinding noise indicates gear tooth wear, while no response indicates a failed flex cable or burnt motor.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Info & Logs Panel -->
+      <section class="tab-panel" id="tab-info">
+        <div class="card-custom">
+          <h2 class="card-title-custom"><i class="fa-solid fa-bug"></i> Raw HID Reports Log</h2>
+          <p class="text-muted small">Real-time dump of packets and bytes received over the WebHID interface. Useful for testing firmware responses and reverse engineering.</p>
+          <div class="history-log" id="rawHidReportsLog" style="height: 350px;">
+            <div class="text-muted text-center pt-5">Waiting for HID interface actions...</div>
+          </div>
+          <div class="text-end mt-2">
+            <button class="btn btn-sm btn-outline-secondary" id="btnClearRawLog">Clear Raw Log</button>
+          </div>
+        </div>
+
+        <!-- Legal Compliance & Disclaimer Card -->
+        <div class="card-custom mt-4">
+          <h2 class="card-title-custom"><i class="fa-solid fa-scale-balanced text-accent"></i> Legal Compliance & Terms</h2>
+          <div class="small text-muted" style="line-height: 1.6;">
+            <p><strong>Independent Utility:</strong> This application is an entirely independent, open-source hardware diagnostic utility. It is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Sony Interactive Entertainment Inc., Sony Group Corporation, PlayStation, or any of their subsidiaries or affiliates. All product names, logos, and brands are property of their respective owners.</p>
+            <p><strong>Open Web Standards (No Proprietary Code):</strong> This utility is built solely upon standard Web APIs (WebHID, Web Audio, and Web Gamepad API) to communicate with connected devices. It does not distribute, execute, host, or package any copyrighted firmware, binaries, encryption keys, or Sony intellectual property. All device interactions are compliant with standard client-side hardware repair protocols.</p>
+            <p><strong>Right to Repair Compliance:</strong> The stick calibration and register modification capabilities are designed in accordance with global Right to Repair standards, enabling consumers and independent repair technicians to service, calibrate, and extend the lifespan of their analog controller hardware locally and safely.</p>
+            <p><strong>Privacy & Security:</strong> Zero data is transmitted to external servers. All diagnostics, calibration readings, and log events are processed locally on your machine within the browser sandbox.</p>
+            <p class="text-muted mt-4" style="font-size: 0.75rem; border-top: 1px solid var(--border); padding-top: 10px;">
+              <strong>Disclaimer:</strong> This tool is not affiliated with, maintained, authorized, endorsed, or sponsored by Sony Interactive Entertainment or any of its affiliates. "PlayStation", "DualShock", "DualSense", and the action button symbols are registered trademarks of Sony Interactive Entertainment. All product and company names are the registered trademarks of their original owners.
+            </p>
+          </div>
+        </div>
+      </section>
+    

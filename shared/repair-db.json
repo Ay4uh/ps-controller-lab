@@ -1,0 +1,45 @@
+{
+  "keyboard": {
+    "cleaning": { "cost": 35, "label": "Keyboard cleaning" },
+    "replacement_macbook": { "cost": 199, "label": "MacBook keyboard replacement" },
+    "replacement_windows": { "cost": 89, "label": "Windows laptop keyboard replacement" }
+  },
+  "trackpad": {
+    "replacement_macbook": { "cost": 149, "label": "MacBook trackpad replacement" },
+    "replacement_windows": { "cost": 79, "label": "Windows trackpad replacement" }
+  },
+  "speaker": {
+    "macbook_single": { "cost": 89, "label": "Single speaker replacement" },
+    "macbook_both": { "cost": 159, "label": "Both speakers replaced" }
+  },
+  "webcam": {
+    "macbook": { "cost": 149, "label": "MacBook webcam replacement" },
+    "external_usb": { "cost": 49.99, "label": "External USB webcam", "affiliate": true, "link": "https://ay5uh.com/store/webcam" }
+  },
+  "display": {
+    "macbook_13": { "cost": 299, "label": "MacBook 13\" screen replacement" },
+    "macbook_14": { "cost": 399, "label": "MacBook 14\" screen replacement" },
+    "macbook_16": { "cost": 499, "label": "MacBook 16\" screen replacement" },
+    "dead_pixel": { "cost": 199, "label": "Dead pixel repair" }
+  },
+  "thermal": {
+    "paste_basic": { "cost": 49.99, "label": "Thermal paste replacement" },
+    "full_service": { "cost": 89.99, "label": "Full thermal service" },
+    "advanced": { "cost": 149.99, "label": "Advanced thermal + liquid metal" }
+  },
+  "storage": {
+    "ssd_1tb": { "cost": 89.99, "label": "1TB SSD upgrade + install" },
+    "ssd_2tb": { "cost": 129.99, "label": "2TB SSD upgrade + install" },
+    "ssd_4tb": { "cost": 209.99, "label": "4TB SSD upgrade + install" },
+    "migration": { "cost": 35, "label": "Data migration service" }
+  },
+  "ram": {
+    "upgrade_16gb": { "cost": 89.99, "label": "16GB RAM upgrade + install" },
+    "upgrade_32gb": { "cost": 164.99, "label": "32GB RAM upgrade + install" }
+  },
+  "battery": {
+    "macbook_air": { "cost": 124.99, "label": "MacBook Air battery replacement" },
+    "macbook_pro": { "cost": 179.99, "label": "MacBook Pro battery replacement" },
+    "windows_generic": { "cost": 89.99, "label": "Windows laptop battery replacement" }
+  }
+}
