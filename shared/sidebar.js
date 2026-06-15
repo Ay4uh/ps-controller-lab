@@ -107,9 +107,29 @@ function injectSidebar(activeToolId = null) {
   const sidebar = document.getElementById('globalSidebar');
   
   if (hamburger && sidebar) {
+    let sidebarTimeout;
+
+    const closeSidebar = () => {
+      sidebar.classList.remove('open');
+      clearTimeout(sidebarTimeout);
+    };
+
+    const resetTimer = () => {
+      clearTimeout(sidebarTimeout);
+      if (sidebar.classList.contains('open')) {
+        sidebarTimeout = setTimeout(closeSidebar, 5000);
+      }
+    };
+
     hamburger.addEventListener('click', () => {
       sidebar.classList.toggle('open');
+      resetTimer();
     });
+
+    // Reset timer on interaction with the sidebar
+    sidebar.addEventListener('touchstart', resetTimer, { passive: true });
+    sidebar.addEventListener('mousemove', resetTimer, { passive: true });
+    sidebar.addEventListener('scroll', resetTimer, { passive: true });
 
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', (e) => {
@@ -117,7 +137,7 @@ function injectSidebar(activeToolId = null) {
           !sidebar.contains(e.target) && 
           !hamburger.contains(e.target) && 
           sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
+        closeSidebar();
       }
     });
   }
