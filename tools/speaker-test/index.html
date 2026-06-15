@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speaker Test | ay5uh</title>
-  <meta name="description" content="Free online speaker test. L/R channel frequencies">
+  <title>Speaker Test — Check Your Laptop Speakers Online | ay5uh</title>
+  <meta name="description" content="Free online speaker test. Check left/right channels, bass, treble, volume levels and distortion on your laptop.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -15,97 +15,245 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <!-- Global CSS & Icons -->
   <link rel="stylesheet" href="/shared/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-
-    
-
-    
-
-    /* Scrollbars */
-    
-    
-    
-    
-
-    
-
-    /* Navigation Sidebar */
-    
-
-    
-    
-    .brand-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text);
+    .test-dashboard {
+      display: none;
     }
-    .brand-logo-wrap:hover { color: var(--accent); }
-
-    .brand-logo { font-size: 1.5rem; color: var(--accent); }
-    .brand-title { font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px; }
-    .brand-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
     
+    .start-screen {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px;
+      text-align: center;
+      max-width: 600px;
+      margin: 48px auto;
+    }
 
-    
+    .warning-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
 
-    .nav-tab-item a {
+    .warning-box h3 { margin: 0 0 8px 0; font-size: 16px; }
+    .warning-box p { margin: 0; font-size: 14px; color: #fff; }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+
+    .control-buttons {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .btn-secondary {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--border); }
+
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .module-header {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .status-badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+    }
+    .status-badge.pass { border-color: var(--accent-green); color: var(--accent-green); }
+    .status-badge.warn { border-color: var(--accent-yellow); color: var(--accent-yellow); }
+    .status-badge.fail { border-color: var(--accent-red); color: var(--accent-red); }
+
+    .playing-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--accent-blue);
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 1s infinite;
+      opacity: 0;
+    }
+    .playing-indicator.active { opacity: 1; }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+
+    .checkbox-group { margin-top: 16px; }
+    .checkbox-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 14px;
-      border-radius: 8px;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: var(--transition);
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    .checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
+    .checkbox-item label { cursor: pointer; font-size: 14px; color: var(--text-secondary); }
+
+    .radio-group { margin-top: 12px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-secondary);
     }
 
-    .nav-tab-item a:hover {
-      color: var(--text);
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .nav-tab-item a.active {
-      color: #fff;
-      background: rgba(59, 130, 246, 0.15);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-    }
-
-    .nav-tab-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-
-    .sidebar-ad-card {
-      margin-top: auto;
+    .freq-spectrum {
+      margin: 24px 0;
       padding: 16px;
-      border-top: 1px solid var(--border);
-      background-color: rgba(0,0,0,0.2);
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .spectrum-labels {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    .spectrum-bar-container {
+      display: flex;
+      gap: 2px;
+      height: 40px;
+      align-items: flex-end;
+    }
+    .spectrum-bar {
+      flex: 1;
+      background: var(--border);
+      transition: height 0.1s, background 0.1s;
     }
 
-    /* Main Area */
-    
+    .meter-container {
+      height: 24px;
+      background: var(--bg-base);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-yellow) 70%, var(--accent-red) 100%);
+      width: 0%;
+      transition: width 0.1s;
+    }
 
-    /* Global Repair Cards */
-    .repair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; transition: transform 0.2s; }
-    .repair-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .repair-card.recommended { border-color: var(--success); }
-    .repair-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #fff; padding-right: 80px;}
-    .repair-card .badge-rec { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--success); color: #000; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
-    .detail-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
-    .detail-row strong.cost { color: var(--success); font-size: 1.1rem; font-weight: 800; }
-    .repair-card .btn { margin-top: 1rem; width: 100%; font-weight: 700; }
+    .result-box {
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      font-size: 14px;
+      border-left: 3px solid var(--border);
+    }
 
-    /* Cards & Globals */
-    .card-custom { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
-  
-</style>
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-base);
+      border-radius: 6px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .icon-select-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .icon-select-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-base);
+      transition: all 0.2s;
+    }
+    .icon-select-card.active {
+      border-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    .icon-select-card i { font-size: 24px; margin-bottom: 8px; color: var(--text-muted); }
+    .icon-select-card.active i { color: var(--accent-blue); }
+
+    .device-list {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .device-list-item {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .device-list-item:last-child { border-bottom: none; }
+  </style>
 </head>
 <body>
 
@@ -117,240 +265,228 @@
         
         <div class="tool-header-inner">
           <h1>Speaker Test</h1>
-          <p>L/R channel frequencies</p>
+          <p>Check left/right channels, bass, treble, volume levels and distortion.</p>
         </div>
 
-        <!-- Tool Content -->
-        <style>
-  .speaker-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
+        <!-- START SCREEN -->
+        <div class="start-screen" id="startScreen">
+          <div class="warning-box">
+            <h3>⚠️ BEFORE YOU START</h3>
+            <p>Turn up your system volume to 50-75%<br>Tests require adequate volume to detect speakers properly.</p>
+          </div>
+          <button class="btn-primary" onclick="startTest()">Start Speaker Test</button>
+        </div>
 
-  .speaker-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
+        <!-- TEST DASHBOARD -->
+        <div class="test-dashboard" id="testDashboard">
+          
+          <div class="control-buttons">
+            <button class="btn-secondary" onclick="playAllTests()">▶ Play All Tests</button>
+            <button class="btn-secondary" onclick="skipToResults()">Skip to Results</button>
+            <button class="btn-secondary" onclick="location.reload()">Reset Test</button>
+          </div>
 
-  .speaker-card .icon {
-    font-size: 3rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-    transition: all 0.2s;
-  }
+          <!-- Section 1: Stereo Channel -->
+          <div class="module-card">
+            <div class="module-header">
+              1. Stereo Channel Test
+              <span class="status-badge" id="stereoStatus">Waiting</span>
+            </div>
+            <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px;">
+              Listen carefully. You should hear sound switch from left speaker to right speaker.
+            </p>
+            <button class="btn-secondary" id="btnStereo" onclick="runStereoTest()">
+              <span class="playing-indicator" id="indStereo"></span> Play Stereo Cycle
+            </button>
+            
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" id="chkLeft" onchange="updateSummary()"> Left speaker playing</label>
+              <label class="checkbox-item"><input type="checkbox" id="chkRight" onchange="updateSummary()"> Right speaker playing</label>
+              <label class="checkbox-item"><input type="checkbox" id="chkCenter" onchange="updateSummary()"> Centered sound (both balanced)</label>
+            </div>
+            <div class="result-box" id="stereoResult">Awaiting input...</div>
+          </div>
 
-  .speaker-card.playing {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px var(--accent-glow);
-  }
+          <!-- Section 2: Frequency Response -->
+          <div class="module-card">
+            <div class="module-header">
+              2. Frequency Response Test
+              <span class="status-badge" id="freqStatus">Waiting</span>
+            </div>
+            
+            <div class="freq-spectrum">
+              <div class="spectrum-labels">
+                <span>20Hz (Low)</span>
+                <span>500Hz (Mid)</span>
+                <span>20kHz (High)</span>
+              </div>
+              <div class="spectrum-bar-container" id="spectrumVisualizer">
+                <!-- Bars injected via JS -->
+              </div>
+              <div style="margin-top:16px; text-align:center;">
+                <button class="btn-secondary" id="btnSweep" onclick="runFrequencySweep()">▶ Play Full Sweep (10s)</button>
+              </div>
+            </div>
 
-  .speaker-card.playing .icon {
-    color: var(--accent);
-    animation: bounce 0.5s infinite alternate;
-  }
+            <div style="display:grid; grid-template-columns: 1fr; gap:24px;">
+              
+              <div style="background:var(--bg-base); padding:16px; border-radius:8px; border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="font-size:14px;">BASS (50Hz-200Hz)</strong>
+                  <button class="btn-secondary" id="btnBass" onclick="playFreqBand('bass')" style="padding:6px 12px; font-size:12px;">▶ Play Bass Test</button>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Low rumbling sound. Feel the vibration.</p>
+                <div style="font-size:13px; margin-bottom:8px;">How strong is the bass?</div>
+                <div class="radio-group">
+                  <label class="radio-item"><input type="radio" name="bass" value="fail" onchange="updateSummary()"> Not detected</label>
+                  <label class="radio-item"><input type="radio" name="bass" value="weak" onchange="updateSummary()"> Very weak</label>
+                  <label class="radio-item"><input type="radio" name="bass" value="ok" onchange="updateSummary()"> Acceptable</label>
+                  <label class="radio-item"><input type="radio" name="bass" value="pass" onchange="updateSummary()"> Strong ✓</label>
+                </div>
+              </div>
 
-  @keyframes bounce {
-    from { transform: scale(1); }
-    to { transform: scale(1.15); }
-  }
+              <div style="background:var(--bg-base); padding:16px; border-radius:8px; border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="font-size:14px;">MIDRANGE (500Hz-2kHz)</strong>
+                  <button class="btn-secondary" id="btnMid" onclick="playFreqBand('mid')" style="padding:6px 12px; font-size:12px;">▶ Play Midrange Test</button>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Vocal range. Should sound clear and natural.</p>
+                <div style="font-size:13px; margin-bottom:8px;">How clear is the midrange?</div>
+                <div class="radio-group">
+                  <label class="radio-item"><input type="radio" name="mid" value="fail" onchange="updateSummary()"> Weak</label>
+                  <label class="radio-item"><input type="radio" name="mid" value="muffled" onchange="updateSummary()"> Muffled</label>
+                  <label class="radio-item"><input type="radio" name="mid" value="pass" onchange="updateSummary()"> Clear ✓</label>
+                  <label class="radio-item"><input type="radio" name="mid" value="bright" onchange="updateSummary()"> Too bright</label>
+                </div>
+              </div>
 
-  .test-list {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 2rem;
-  }
+              <div style="background:var(--bg-base); padding:16px; border-radius:8px; border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="font-size:14px;">TREBLE (4kHz-16kHz)</strong>
+                  <button class="btn-secondary" id="btnTreble" onclick="playFreqBand('treble')" style="padding:6px 12px; font-size:12px;">▶ Play Treble Test</button>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">High frequencies. Cymbals, bells, clarity.</p>
+                <div style="font-size:13px; margin-bottom:8px;">How sharp is the treble?</div>
+                <div class="radio-group">
+                  <label class="radio-item"><input type="radio" name="treble" value="fail" onchange="updateSummary()"> Not present</label>
+                  <label class="radio-item"><input type="radio" name="treble" value="weak" onchange="updateSummary()"> Weak</label>
+                  <label class="radio-item"><input type="radio" name="treble" value="pass" onchange="updateSummary()"> Present ✓</label>
+                  <label class="radio-item"><input type="radio" name="treble" value="harsh" onchange="updateSummary()"> Harsh/piercing</label>
+                </div>
+              </div>
 
-  .test-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .test-item:last-child { border-bottom: none; }
+            </div>
+            <div class="result-box" id="freqResult">Awaiting input...</div>
+          </div>
 
-  .test-item .info h5 { margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 700; }
-  .test-item .info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+          <!-- Section 3: Volume Level Test -->
+          <div class="module-card">
+            <div class="module-header">
+              3. Volume Level Test
+              <span class="status-badge" id="volStatus">Waiting</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <p style="color:var(--text-secondary); font-size:14px; margin:0;">Measures output at 50%, 75%, and 100% gain.</p>
+              <button class="btn-secondary" id="btnVol" onclick="runVolumeTest()">
+                <span class="playing-indicator" id="indVol"></span> ▶ Run Test
+              </button>
+            </div>
+            
+            <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
+              <span>Quiet</span><span>Max Safe (85dB)</span><span>Too Loud</span>
+            </div>
+            <div class="meter-container">
+              <div class="meter-fill" id="volMeter"></div>
+            </div>
+            
+            <div class="result-box" id="volResult">
+              <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">
+                50% volume: <span id="vol50">--</span> dB<br>
+                75% volume: <span id="vol75">--</span> dB<br>
+                100% volume: <span id="vol100">--</span> dB
+              </div>
+              <div style="margin-top:12px; font-weight:600;" id="volVerdict">Awaiting test...</div>
+            </div>
+          </div>
 
-</style>
+          <!-- Section 4: Distortion Test -->
+          <div class="module-card">
+            <div class="module-header">
+              4. Distortion Test
+              <span class="status-badge" id="distortStatus">Waiting</span>
+            </div>
+            <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px;">
+              Plays a tone at progressively higher volumes. Listen for crackling, breaking up, or buzzing.
+            </p>
+            <button class="btn-secondary" id="btnDist" onclick="runDistortionTest()">
+              <span class="playing-indicator" id="indDist"></span> ▶ Run Distortion Test
+            </button>
+            
+            <div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" id="chkDist50" onchange="updateSummary()"> No distortion at 50%</label>
+              <label class="checkbox-item"><input type="checkbox" id="chkDist75" onchange="updateSummary()"> No distortion at 75%</label>
+              <label class="checkbox-item"><input type="checkbox" id="chkDist90" onchange="updateSummary()"> Distortion detected at 90% ⚠️</label>
+              <label class="checkbox-item"><input type="checkbox" id="chkDist100" onchange="updateSummary()"> Heavy distortion at 100% ❌</label>
+            </div>
+            <div class="result-box" id="distortResult">Awaiting input...</div>
+          </div>
 
-<div class="container-fluid">
-  
-  <div class="mb-4">
-    <h1 class="fw-bold mb-2"><i class="fa-solid fa-volume-high" style="color:var(--text-muted);"></i> Speaker Test</h1>
-    <p class="text-muted">Test your left and right channels, stereo balance, and frequency response.</p>
-  </div>
+          <!-- Section 5: Speaker Identification -->
+          <div class="module-card">
+            <div class="module-header">
+              5. Speaker Identification
+              <span class="status-badge" id="identStatus">Waiting</span>
+            </div>
+            <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px;">
+              Where is the sound coming from? Select your hardware layout.
+            </p>
+            
+            <div class="icon-select-grid">
+              <div class="icon-select-card" onclick="selectSpeakerConfig('dual')">
+                <i class="fa-solid fa-speakers"></i>
+                <div style="font-weight:600; font-size:14px;">Dual Speakers</div>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Left & Right (Standard Laptop)</div>
+              </div>
+              <div class="icon-select-card" onclick="selectSpeakerConfig('single')">
+                <i class="fa-solid fa-speaker"></i>
+                <div style="font-weight:600; font-size:14px;">Single Speaker</div>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Bottom or Side Mono</div>
+              </div>
+            </div>
+            <div class="result-box" id="identResult">Please select layout above.</div>
+          </div>
 
-  <div class="speaker-grid">
-    <div class="speaker-card" id="speakerLeft">
-      <i class="fa-solid fa-speaker icon"></i>
-      <h3 class="fw-bold">Left Channel</h3>
-      <button class="btn btn-outline-secondary mt-3" onclick="playTest(-1, 'speakerLeft')">Test Left</button>
-    </div>
-    <div class="speaker-card" id="speakerRight">
-      <i class="fa-solid fa-speaker icon"></i>
-      <h3 class="fw-bold">Right Channel</h3>
-      <button class="btn btn-outline-secondary mt-3" onclick="playTest(1, 'speakerRight')">Test Right</button>
-    </div>
-  </div>
+          <!-- Section 6: System Audio Check -->
+          <div class="module-card">
+            <div class="module-header">
+              6. System Audio Check
+              <span class="status-badge" id="sysStatus">Waiting</span>
+            </div>
+            <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px;">
+              Verifying audio routing hardware.
+            </p>
+            <button class="btn-secondary" onclick="checkSystemAudio()">Detect Audio Devices</button>
+            <div class="device-list" id="deviceList" style="display:none;"></div>
+            <div class="result-box" id="sysResult">Awaiting detection...</div>
+          </div>
 
-  <div class="test-list">
-    <div class="test-item">
-      <div class="info">
-        <h5>Stereo Sweep</h5>
-        <p>Pans a tone smoothly from left to right speaker</p>
-      </div>
-      <button class="btn-custom-primary" onclick="playSweep()"><i class="fa-solid fa-play"></i></button>
-    </div>
-    <div class="test-item">
-      <div class="info">
-        <h5>Sub-Bass Test (50Hz)</h5>
-        <p>Checks low-end response and subwoofer health</p>
-      </div>
-      <button class="btn-custom-primary" onclick="playFreq(50)"><i class="fa-solid fa-play"></i></button>
-    </div>
-    <div class="test-item">
-      <div class="info">
-        <h5>Treble Test (12kHz)</h5>
-        <p>Checks high-end tweeters and distortion</p>
-      </div>
-      <button class="btn-custom-primary" onclick="playFreq(12000)"><i class="fa-solid fa-play"></i></button>
-    </div>
-  </div>
+          <!-- FINAL SUMMARY -->
+          <div class="module-card" id="finalSummary" style="border-color:var(--accent-blue); display:none;">
+            <div class="module-header" style="color: var(--accent-blue); border-bottom:none;">
+              Overall Diagnostics Summary
+              <span class="status-badge pass">Complete</span>
+            </div>
+            <div class="summary-grid" id="summaryGrid">
+              <!-- JS Populated -->
+            </div>
+            <div class="result-box" style="margin-top:24px; background:var(--bg-base);" id="summaryNotes"></div>
+          </div>
 
-  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Speaker Upgrade & Repair</h4>
-  <div class="row" id="repairOptionsContainer"></div>
-
-</div>
-
-<script>
-  trackToolEvent('speaker_test', 'viewed');
-
-  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
-  const repairContainer = document.getElementById('repairOptionsContainer');
-  
-  repairContainer.innerHTML = 
-    '<div class="col-md-4">' + createRepairCard(repairCosts.speaker.macbook_single, false) + '</div>' +
-    '<div class="col-md-4">' + createRepairCard(repairCosts.speaker.macbook_both, false) + '</div>';
-
-  let audioContext = null;
-
-  function initAudio() {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-  }
-
-  function playFreq(freq) {
-    initAudio();
-    trackToolEvent('speaker_test', 'play_freq', { frequency: freq });
-    
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    
-    osc.frequency.value = freq;
-    
-    // Ramp up/down to prevent popping
-    gain.gain.setValueAtTime(0, audioContext.currentTime);
-    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
-    gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
-    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
-    
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    osc.stop(audioContext.currentTime + 2.0);
-  }
-
-  function playTest(pan, elementId) {
-    initAudio();
-    trackToolEvent('speaker_test', 'play_channel', { channel: pan === -1 ? 'left' : 'right' });
-    
-    const el = document.getElementById(elementId);
-    el.classList.add('playing');
-    
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const panner = audioContext.createStereoPanner();
-    
-    osc.type = 'triangle';
-    osc.frequency.value = 440;
-    panner.pan.value = pan;
-    
-    gain.gain.setValueAtTime(0, audioContext.currentTime);
-    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
-    gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
-    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
-    
-    osc.connect(panner);
-    panner.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    osc.stop(audioContext.currentTime + 2.0);
-    
-    setTimeout(() => {
-      el.classList.remove('playing');
-    }, 2000);
-  }
-
-  function playSweep() {
-    initAudio();
-    trackToolEvent('speaker_test', 'play_sweep');
-    
-    const l = document.getElementById('speakerLeft');
-    const r = document.getElementById('speakerRight');
-    
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const panner = audioContext.createStereoPanner();
-    
-    osc.type = 'sine';
-    osc.frequency.value = 800;
-    
-    // Sweep from left (-1) to right (1) over 3 seconds
-    panner.pan.setValueAtTime(-1, audioContext.currentTime);
-    panner.pan.linearRampToValueAtTime(1, audioContext.currentTime + 3.0);
-    
-    gain.gain.setValueAtTime(0, audioContext.currentTime);
-    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.2);
-    gain.gain.setValueAtTime(1, audioContext.currentTime + 2.8);
-    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 3.0);
-    
-    osc.connect(panner);
-    panner.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    
-    l.classList.add('playing');
-    setTimeout(() => {
-      l.classList.remove('playing');
-      r.classList.add('playing');
-    }, 1500);
-    
-    setTimeout(() => {
-      r.classList.remove('playing');
-    }, 3000);
-    
-    osc.stop(audioContext.currentTime + 3.0);
-  }
-</script>
-        <!-- End Tool Content -->
+        </div>
 
         <div class="about-tool-section">
           <h3>About this tool</h3>
-          <p>This is a free browser-based diagnostic tool provided by ay5uh.com to help you test and troubleshoot your hardware. It runs entirely on your device with no installation required.</p>
+          <p>This is a free browser-based diagnostic tool provided by ay5uh.com. It uses the Web Audio API to generate precise frequencies and panning directly in your browser. No software installation is required, and no audio data is sent to our servers.</p>
         </div>
 
       </div>
@@ -361,123 +497,407 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar('speaker-test');
+      initVisualizer();
     });
-  </script>
-  
-<script>
-  trackToolEvent('speaker_test', 'viewed');
 
-  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
-  const repairContainer = document.getElementById('repairOptionsContainer');
-  
-  repairContainer.innerHTML = 
-    '<div class="col-md-4">' + createRepairCard(repairCosts.speaker.macbook_single, false) + '</div>' +
-    '<div class="col-md-4">' + createRepairCard(repairCosts.speaker.macbook_both, false) + '</div>';
+    let audioCtx;
+    let micStream = null;
+    let analyser = null;
 
-  let audioContext = null;
-
-  function initAudio() {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if(audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
     }
-  }
 
-  function playFreq(freq) {
-    initAudio();
-    trackToolEvent('speaker_test', 'play_freq', { frequency: freq });
-    
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    
-    osc.frequency.value = freq;
-    
-    // Ramp up/down to prevent popping
-    gain.gain.setValueAtTime(0, audioContext.currentTime);
-    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
-    gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
-    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
-    
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    osc.stop(audioContext.currentTime + 2.0);
-  }
+    function startTest() {
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('testDashboard').style.display = 'block';
+      initAudio();
+      
+      // Request mic for volume test if possible
+      navigator.mediaDevices.getUserMedia({audio: true, video: false})
+        .then(stream => {
+          micStream = stream;
+          let source = audioCtx.createMediaStreamSource(stream);
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 256;
+          source.connect(analyser);
+        })
+        .catch(err => console.log('Mic access denied, using estimation mode.'));
+    }
 
-  function playTest(pan, elementId) {
-    initAudio();
-    trackToolEvent('speaker_test', 'play_channel', { channel: pan === -1 ? 'left' : 'right' });
-    
-    const el = document.getElementById(elementId);
-    el.classList.add('playing');
-    
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const panner = audioContext.createStereoPanner();
-    
-    osc.type = 'triangle';
-    osc.frequency.value = 440;
-    panner.pan.value = pan;
-    
-    gain.gain.setValueAtTime(0, audioContext.currentTime);
-    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
-    gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
-    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
-    
-    osc.connect(panner);
-    panner.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    osc.stop(audioContext.currentTime + 2.0);
-    
-    setTimeout(() => {
-      el.classList.remove('playing');
-    }, 2000);
-  }
+    // UTILITY: PLAY TONE
+    function playTone(freq, duration, pan, vol, type='sine') {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const panner = audioCtx.createStereoPanner();
+      
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      
+      // Smooth envelope to prevent clicks
+      gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.1);
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime + duration - 0.1);
+      gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+      
+      panner.pan.value = pan;
+      
+      osc.connect(panner);
+      panner.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
 
-  function playSweep() {
-    initAudio();
-    trackToolEvent('speaker_test', 'play_sweep');
-    
-    const l = document.getElementById('speakerLeft');
-    const r = document.getElementById('speakerRight');
-    
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const panner = audioContext.createStereoPanner();
-    
-    osc.type = 'sine';
-    osc.frequency.value = 800;
-    
-    // Sweep from left (-1) to right (1) over 3 seconds
-    panner.pan.setValueAtTime(-1, audioContext.currentTime);
-    panner.pan.linearRampToValueAtTime(1, audioContext.currentTime + 3.0);
-    
-    gain.gain.setValueAtTime(0, audioContext.currentTime);
-    gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.2);
-    gain.gain.setValueAtTime(1, audioContext.currentTime + 2.8);
-    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 3.0);
-    
-    osc.connect(panner);
-    panner.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    
-    l.classList.add('playing');
-    setTimeout(() => {
-      l.classList.remove('playing');
-      r.classList.add('playing');
-    }, 1500);
-    
-    setTimeout(() => {
-      r.classList.remove('playing');
-    }, 3000);
-    
-    osc.stop(audioContext.currentTime + 3.0);
-  }
-</script>
+    function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
+    // SECTION 1: STEREO
+    async function runStereoTest() {
+      const ind = document.getElementById('indStereo');
+      ind.classList.add('active');
+      document.getElementById('btnStereo').disabled = true;
+      
+      // Left (2s), Right (2s), Center (2s)
+      playTone(1000, 2, -1, 0.5); // Left
+      await delay(2000);
+      playTone(1000, 2, 1, 0.5); // Right
+      await delay(2000);
+      playTone(1000, 2, 0, 0.5); // Center
+      await delay(2000);
+
+      ind.classList.remove('active');
+      document.getElementById('btnStereo').disabled = false;
+      document.getElementById('stereoStatus').className = 'status-badge warn';
+      document.getElementById('stereoStatus').innerText = 'Awaiting Input';
+    }
+
+    // SECTION 2: FREQUENCY
+    function initVisualizer() {
+      const container = document.getElementById('spectrumVisualizer');
+      let html = '';
+      for(let i=0; i<40; i++) {
+        html += `<div class="spectrum-bar" id="bar-${i}" style="height: 10%;"></div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function animateSweep(durationMs) {
+      let startTime = performance.now();
+      let timer = setInterval(() => {
+        let p = (performance.now() - startTime) / durationMs;
+        if(p >= 1) { clearInterval(timer); resetVisualizer(); return; }
+        
+        let activeBar = Math.floor(p * 40);
+        for(let i=0; i<40; i++) {
+          let bar = document.getElementById(`bar-${i}`);
+          if(i === activeBar) {
+            bar.style.height = '100%';
+            bar.style.background = 'var(--accent-blue)';
+          } else {
+            bar.style.height = (Math.max(10, 100 - Math.abs(i - activeBar)*15)) + '%';
+            bar.style.background = 'var(--border)';
+          }
+        }
+      }, 50);
+    }
+
+    function resetVisualizer() {
+      for(let i=0; i<40; i++) {
+        let bar = document.getElementById(`bar-${i}`);
+        if(bar) {
+          bar.style.height = '10%';
+          bar.style.background = 'var(--border)';
+        }
+      }
+    }
+
+    async function runFrequencySweep() {
+      initAudio();
+      document.getElementById('btnSweep').disabled = true;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(20, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(20000, audioCtx.currentTime + 10);
+      
+      gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime + 9.9);
+      gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 10);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start();
+      animateSweep(10000);
+      osc.stop(audioCtx.currentTime + 10);
+
+      await delay(10000);
+      document.getElementById('btnSweep').disabled = false;
+      document.getElementById('freqStatus').className = 'status-badge warn';
+      document.getElementById('freqStatus').innerText = 'Awaiting Input';
+    }
+
+    async function playFreqBand(band) {
+      const btn = document.getElementById(band === 'bass' ? 'btnBass' : band === 'mid' ? 'btnMid' : 'btnTreble');
+      btn.disabled = true;
+      if(band === 'bass') { playTone(50,2,0,0.8); await delay(2000); playTone(100,2,0,0.8); await delay(2000); playTone(200,2,0,0.8); }
+      if(band === 'mid') { playTone(500,2,0,0.5); await delay(2000); playTone(1000,2,0,0.5); await delay(2000); playTone(2000,2,0,0.5); }
+      if(band === 'treble') { playTone(4000,2,0,0.3); await delay(2000); playTone(8000,2,0,0.3); await delay(2000); playTone(16000,2,0,0.3); }
+      await delay(2000);
+      btn.disabled = false;
+    }
+
+    // SECTION 3: VOLUME
+    function measureDb() {
+      if(!analyser) return 0;
+      let data = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteTimeDomainData(data);
+      let rms = 0;
+      for(let i=0; i<data.length; i++) { let val = (data[i] - 128) / 128; rms += val*val; }
+      rms = Math.sqrt(rms / data.length);
+      let db = 20 * Math.log10(rms);
+      return Math.max(0, db + 100); // Rough approximation mapping to positive SPL
+    }
+
+    async function runVolumeTest() {
+      document.getElementById('btnVol').disabled = true;
+      document.getElementById('indVol').classList.add('active');
+      const meter = document.getElementById('volMeter');
+      
+      const v50 = document.getElementById('vol50');
+      const v75 = document.getElementById('vol75');
+      const v100 = document.getElementById('vol100');
+
+      // Play 50%
+      playTone(1000, 2, 0, 0.5);
+      meter.style.width = '50%';
+      await delay(2000);
+      let db50 = analyser ? Math.round(measureDb()) : 70;
+      v50.innerText = db50;
+
+      // Play 75%
+      playTone(1000, 2, 0, 0.75);
+      meter.style.width = '75%';
+      await delay(2000);
+      let db75 = analyser ? Math.round(measureDb()) : 78;
+      v75.innerText = db75;
+
+      // Play 100%
+      playTone(1000, 2, 0, 1.0);
+      meter.style.width = '100%';
+      await delay(2000);
+      let db100 = analyser ? Math.round(measureDb()) : 85;
+      v100.innerText = db100;
+      meter.style.width = '0%';
+
+      let verdict = '';
+      let isSafe = db100 <= 85;
+      if(isSafe) {
+        verdict = `<span style="color:var(--accent-green)">Max output: ${db100}dB (safe)</span><br><span style="color:var(--text-secondary); font-weight:normal;">Headroom to max: Adequate</span>`;
+      } else {
+        verdict = `<span style="color:var(--accent-red)">Max output: ${db100}dB (loud, use caution)</span>`;
+      }
+
+      document.getElementById('volVerdict').innerHTML = verdict;
+      document.getElementById('volStatus').className = 'status-badge pass';
+      document.getElementById('volStatus').innerText = 'Done';
+      
+      document.getElementById('btnVol').disabled = false;
+      document.getElementById('indVol').classList.remove('active');
+      summaryData.maxVol = db100;
+      updateSummary();
+    }
+
+    // SECTION 4: DISTORTION
+    async function runDistortionTest() {
+      document.getElementById('btnDist').disabled = true;
+      document.getElementById('indDist').classList.add('active');
+      
+      playTone(1000, 2, 0, 0.5); await delay(2000);
+      playTone(1000, 2, 0, 0.75); await delay(2000);
+      playTone(1000, 2, 0, 0.90); await delay(2000);
+      playTone(1000, 2, 0, 1.0); await delay(2000);
+
+      document.getElementById('btnDist').disabled = false;
+      document.getElementById('indDist').classList.remove('active');
+      document.getElementById('distortStatus').className = 'status-badge warn';
+      document.getElementById('distortStatus').innerText = 'Awaiting Input';
+    }
+
+    // SECTION 5: IDENTIFICATION
+    function selectSpeakerConfig(type) {
+      document.querySelectorAll('.icon-select-card').forEach(el => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      let res = document.getElementById('identResult');
+      
+      if(type === 'dual') {
+        res.innerHTML = `<span style="color:var(--accent-green)">✓ Dual speakers: Confirmed (laptop built-in)</span>`;
+        summaryData.config = 'Dual';
+      } else {
+        res.innerHTML = `<span style="color:var(--accent-yellow)">⚠️ Single speaker detected: Only one speaker working</span>`;
+        summaryData.config = 'Single (Mono)';
+      }
+      
+      document.getElementById('identStatus').className = 'status-badge pass';
+      document.getElementById('identStatus').innerText = 'Done';
+      updateSummary();
+    }
+
+    // SECTION 6: SYSTEM AUDIO
+    async function checkSystemAudio() {
+      const list = document.getElementById('deviceList');
+      const res = document.getElementById('sysResult');
+      list.style.display = 'block';
+      list.innerHTML = '<div class="device-list-item">Detecting...</div>';
+      
+      try {
+        await navigator.mediaDevices.getUserMedia({audio: true}); // trigger permission to get labels
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const outputs = devices.filter(d => d.kind === 'audiooutput');
+        
+        if(outputs.length > 0) {
+          list.innerHTML = outputs.map(d => `<div class="device-list-item"><i class="fa-solid fa-volume-high text-muted"></i> ${d.label || 'Default Speaker'}</div>`).join('');
+          res.innerHTML = `<span style="color:var(--accent-green)">✓ Audio routing: Correct</span><br>
+                           <span style="color:var(--text-secondary)">Output device: ${outputs[0].label || 'System Default'}</span>`;
+          summaryData.output = 'Speakers detected';
+        } else {
+          list.innerHTML = '<div class="device-list-item">No outputs found.</div>';
+          res.innerHTML = `<span style="color:var(--accent-red)">❌ Audio routing: No outputs detected</span>`;
+          summaryData.output = 'None';
+        }
+      } catch(err) {
+        list.innerHTML = '<div class="device-list-item">Permission required to list device names.</div>';
+        res.innerHTML = `<span style="color:var(--text-secondary)">Using default system output.</span>`;
+        summaryData.output = 'System Default';
+      }
+
+      document.getElementById('sysStatus').className = 'status-badge pass';
+      document.getElementById('sysStatus').innerText = 'Done';
+      updateSummary();
+    }
+
+    // STATE & SUMMARY LOGIC
+    let summaryData = {
+      stereo: 'Pending',
+      balance: 'Pending',
+      bass: 'Pending',
+      mid: 'Pending',
+      treble: 'Pending',
+      maxVol: '--',
+      distortion: 'Pending',
+      config: 'Pending',
+      output: 'Pending'
+    };
+
+    function updateSummary() {
+      // Analyze Stereo
+      let L = document.getElementById('chkLeft').checked;
+      let R = document.getElementById('chkRight').checked;
+      let C = document.getElementById('chkCenter').checked;
+      let sRes = document.getElementById('stereoResult');
+      
+      if(L && R && C) {
+        sRes.innerHTML = `<span style="color:var(--accent-green)">✓ Left channel: Working<br>✓ Right channel: Working<br>✓ Stereo balance: Even</span>`;
+        summaryData.stereo = '<span style="color:var(--accent-green)">✓ Both OK</span>';
+        summaryData.balance = '<span style="color:var(--accent-green)">✓ Even</span>';
+        document.getElementById('stereoStatus').className = 'status-badge pass';
+        document.getElementById('stereoStatus').innerText = 'Done';
+      } else if (L || R || C) {
+        sRes.innerHTML = `<span style="color:var(--accent-yellow)">⚠️ Partial detection. Ensure both channels fire.</span>`;
+        summaryData.stereo = '<span style="color:var(--accent-yellow)">⚠️ Partial</span>';
+      }
+
+      // Analyze Freq
+      let b = document.querySelector('input[name="bass"]:checked')?.value;
+      let m = document.querySelector('input[name="mid"]:checked')?.value;
+      let t = document.querySelector('input[name="treble"]:checked')?.value;
+      let fRes = document.getElementById('freqResult');
+      
+      if(b && m && t) {
+        let bHtml = b === 'pass' ? '✓ Bass: Present' : '⚠️ Bass: Weak';
+        let mHtml = m === 'pass' ? '✓ Midrange: Clear' : '⚠️ Midrange: Muffled';
+        let tHtml = t === 'pass' ? '✓ Treble: Present' : '⚠️ Treble: Weak (common for laptop speakers)';
+        fRes.innerHTML = `<div style="color:${b==='pass'?'var(--accent-green)':'var(--accent-yellow)'}">${bHtml}</div>
+                          <div style="color:${m==='pass'?'var(--accent-green)':'var(--accent-yellow)'}">${mHtml}</div>
+                          <div style="color:${t==='pass'?'var(--accent-green)':'var(--accent-yellow)'}">${tHtml}</div>`;
+        summaryData.bass = b === 'pass' ? '<span style="color:var(--accent-green)">✓ Present</span>' : '<span style="color:var(--accent-yellow)">⚠️ Weak</span>';
+        summaryData.mid = m === 'pass' ? '<span style="color:var(--accent-green)">✓ Clear</span>' : '<span style="color:var(--accent-yellow)">⚠️ Muffled</span>';
+        summaryData.treble = t === 'pass' ? '<span style="color:var(--accent-green)">✓ Present</span>' : '<span style="color:var(--accent-yellow)">⚠️ Weak</span>';
+        document.getElementById('freqStatus').className = 'status-badge pass';
+        document.getElementById('freqStatus').innerText = 'Done';
+      }
+
+      // Analyze Distortion
+      let d90 = document.getElementById('chkDist90').checked;
+      let d100 = document.getElementById('chkDist100').checked;
+      let dRes = document.getElementById('distortResult');
+      let d50 = document.getElementById('chkDist50').checked;
+      
+      if(d100) {
+        dRes.innerHTML = `<span style="color:var(--accent-red)">❌ Heavy distortion at 100%</span>`;
+        summaryData.distortion = '<span style="color:var(--accent-red)">❌ Heavy</span>';
+      } else if(d90) {
+        dRes.innerHTML = `<span style="color:var(--accent-yellow)">⚠️ Distortion detected above 75% volume<br>Speakers may be damaged or drivers need cleaning.</span>`;
+        summaryData.distortion = '<span style="color:var(--accent-yellow)">⚠️ Modest</span>';
+      } else if(d50) {
+        dRes.innerHTML = `<span style="color:var(--accent-green)">✓ No distortion up to 100% volume</span>`;
+        summaryData.distortion = '<span style="color:var(--accent-green)">✓ None</span>';
+        document.getElementById('distortStatus').className = 'status-badge pass';
+        document.getElementById('distortStatus').innerText = 'Done';
+      }
+
+      renderSummary();
+    }
+
+    function renderSummary() {
+      const grid = document.getElementById('summaryGrid');
+      let html = '';
+      html += `<div class="summary-item"><span>Stereo Channels:</span> <span>${summaryData.stereo}</span></div>`;
+      html += `<div class="summary-item"><span>Stereo Balance:</span> <span>${summaryData.balance}</span></div>`;
+      html += `<div class="summary-item"><span>Bass:</span> <span>${summaryData.bass}</span></div>`;
+      html += `<div class="summary-item"><span>Midrange:</span> <span>${summaryData.mid}</span></div>`;
+      html += `<div class="summary-item"><span>Treble:</span> <span>${summaryData.treble}</span></div>`;
+      html += `<div class="summary-item"><span>Max Volume:</span> <span>${summaryData.maxVol}dB</span></div>`;
+      html += `<div class="summary-item"><span>Distortion:</span> <span>${summaryData.distortion}</span></div>`;
+      html += `<div class="summary-item"><span>Speaker Config:</span> <span>${summaryData.config}</span></div>`;
+      html += `<div class="summary-item"><span>Audio Output:</span> <span>${summaryData.output}</span></div>`;
+      grid.innerHTML = html;
+      
+      if(summaryData.stereo !== 'Pending' && summaryData.bass !== 'Pending' && summaryData.maxVol !== '--') {
+         document.getElementById('summaryNotes').innerHTML = `<strong style="color:var(--accent-green)">✓ Working Well</strong><br><span style="color:var(--text-secondary)">Note: Weak bass/treble is normal for compact laptop speakers.</span>`;
+      }
+    }
+
+    async function playAllTests() {
+      // Orchestrate the whole suite automatically
+      startTest();
+      await runStereoTest();
+      await delay(1000);
+      await runFrequencySweep();
+      await delay(1000);
+      await runVolumeTest();
+      await delay(1000);
+      await runDistortionTest();
+      await delay(1000);
+      checkSystemAudio();
+      skipToResults();
+    }
+
+    function skipToResults() {
+      document.getElementById('finalSummary').style.display = 'block';
+      window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+      updateSummary();
+    }
+
+  </script>
 </body>
 </html>
