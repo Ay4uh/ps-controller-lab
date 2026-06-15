@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speaker Test | ay5uh</title>
-  <meta name="description" content="Free browser-based hardware diagnostics.">
+  <title>Speaker Test — Check Left/Right Audio | ay5uh</title>
+  <meta name="description" content="Free online speaker test. Test your left and right channels, stereo balance, and frequency response.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -15,80 +15,251 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <link rel="stylesheet" href="/shared/styles.css?v=4">
+  <link rel="stylesheet" href="/shared/styles.css?v=5">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    .placeholder-card {
+    .speaker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .speaker-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 48px 32px;
-      max-width: 500px;
-      margin: 48px auto;
+      padding: 32px;
       text-align: center;
+      transition: all 0.2s;
     }
-    .placeholder-title {
-      font-size: 24px;
-      margin: 0 0 16px 0;
-      color: var(--text-primary);
+
+    .speaker-card .icon {
+      font-size: 48px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      transition: all 0.2s;
     }
-    .placeholder-desc {
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin: 0 0 32px 0;
+
+    .speaker-card.playing {
+      border-color: var(--accent-blue);
+      background: var(--bg-hover);
     }
-    .live-tools-list {
-      text-align: left;
+
+    .speaker-card.playing .icon {
+      color: var(--accent-blue);
+      animation: bounce 0.5s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: scale(1); }
+      to { transform: scale(1.15); }
+    }
+
+    .test-list {
       background: var(--bg-base);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
     }
-    .live-tools-list a {
-      display: block;
-      color: var(--text-primary);
-      text-decoration: none;
-      padding: 8px 0;
+
+    .test-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
       border-bottom: 1px solid var(--border);
     }
-    .live-tools-list a:last-child {
-      border-bottom: none;
+    .test-item:last-child { border-bottom: none; }
+
+    .test-item .info h5 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .test-item .info p { margin: 0; font-size: 13px; color: var(--text-secondary); }
+
+    .btn-custom-primary {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .live-tools-list a:hover {
-      color: var(--accent-blue);
+    .btn-custom-primary:hover { background: #2563eb; }
+
+    .btn-outline-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 8px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline-secondary:hover {
+      background: var(--bg-hover);
     }
   </style>
 </head>
 <body>
-
   <div class="app-layout">
     <main class="main-content">
-      <div class="container">
-        <a href="/" class="hero-cta" style="background:transparent; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; margin-top:24px; display:inline-block;">&larr; Back to all tools</a>
+      <div class="container pb-5">
+        <a href="/" class="hero-cta" style="background:transparent; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; margin:24px 0; display:inline-block;">&larr; Back to all tools</a>
 
-        <div class="placeholder-card">
-          <h1 class="placeholder-title">🔊 Speaker Test</h1>
-          
-          <div class="placeholder-desc">
-            🔨 This tool is being built.
+        <div class="mb-4 d-flex justify-content-between align-items-center" style="display:flex; justify-content:space-between; margin-bottom:24px;">
+          <div>
+            <h1 class="page-title"><i class="fa-solid fa-volume-high text-accent"></i> Speaker Test</h1>
+            <p class="page-subtitle">Test your left and right channels, stereo balance, and frequency response.</p>
           </div>
-
-          <div class="live-tools-list">
-            <p style="margin:0 0 12px 0; color:var(--text-muted); font-size:12px; text-transform:uppercase; font-weight:700;">Check back soon or try:</p>
-            <a href="/tools/controller-lab/">→ Controller Lab (live now)</a>
-            <a href="/tools/keyboard-test/">→ Keyboard Test (live now)</a>
-            <a href="/tools/battery-tester/">→ Battery Health (live now)</a>
-          </div>
-
         </div>
+
+        <div class="speaker-grid">
+          <div class="speaker-card" id="speakerLeft">
+            <i class="fa-solid fa-speaker icon"></i>
+            <h3 style="margin: 0 0 16px 0; font-size: 20px; color: var(--text-primary);">Left Channel</h3>
+            <button class="btn-outline-secondary" onclick="playTest(-1, 'speakerLeft')">Test Left</button>
+          </div>
+          <div class="speaker-card" id="speakerRight">
+            <i class="fa-solid fa-speaker icon"></i>
+            <h3 style="margin: 0 0 16px 0; font-size: 20px; color: var(--text-primary);">Right Channel</h3>
+            <button class="btn-outline-secondary" onclick="playTest(1, 'speakerRight')">Test Right</button>
+          </div>
+        </div>
+
+        <div class="test-list">
+          <div class="test-item">
+            <div class="info">
+              <h5>Stereo Sweep</h5>
+              <p>Pans a tone smoothly from left to right speaker</p>
+            </div>
+            <button class="btn-custom-primary" onclick="playSweep()"><i class="fa-solid fa-play"></i> Play</button>
+          </div>
+          <div class="test-item">
+            <div class="info">
+              <h5>Sub-Bass Test (50Hz)</h5>
+              <p>Checks low-end response and subwoofer health</p>
+            </div>
+            <button class="btn-custom-primary" onclick="playFreq(50)"><i class="fa-solid fa-play"></i> Play</button>
+          </div>
+          <div class="test-item">
+            <div class="info">
+              <h5>Treble Test (12kHz)</h5>
+              <p>Checks high-end tweeters and distortion</p>
+            </div>
+            <button class="btn-custom-primary" onclick="playFreq(12000)"><i class="fa-solid fa-play"></i> Play</button>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
 
-  <script src="/shared/sidebar.js?v=4"></script>
+  <script src="/shared/sidebar.js?v=5"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar('speaker-test');
     });
+
+    let audioContext = null;
+
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playFreq(freq) {
+      initAudio();
+      
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      
+      osc.frequency.value = freq;
+      
+      gain.gain.setValueAtTime(0, audioContext.currentTime);
+      gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
+      gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
+      gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
+      
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      
+      osc.start();
+      osc.stop(audioContext.currentTime + 2.0);
+    }
+
+    function playTest(pan, elementId) {
+      initAudio();
+      
+      const el = document.getElementById(elementId);
+      el.classList.add('playing');
+      
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const panner = audioContext.createStereoPanner();
+      
+      osc.type = 'triangle';
+      osc.frequency.value = 440;
+      panner.pan.value = pan;
+      
+      gain.gain.setValueAtTime(0, audioContext.currentTime);
+      gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
+      gain.gain.setValueAtTime(1, audioContext.currentTime + 1.5);
+      gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
+      
+      osc.connect(panner);
+      panner.connect(gain);
+      gain.connect(audioContext.destination);
+      
+      osc.start();
+      osc.stop(audioContext.currentTime + 2.0);
+
+      setTimeout(() => el.classList.remove('playing'), 2000);
+    }
+
+    function playSweep() {
+      initAudio();
+      
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const panner = audioContext.createStereoPanner();
+      
+      osc.type = 'sine';
+      osc.frequency.value = 440;
+      
+      panner.pan.setValueAtTime(-1, audioContext.currentTime);
+      panner.pan.linearRampToValueAtTime(1, audioContext.currentTime + 2.0);
+      
+      gain.gain.setValueAtTime(0, audioContext.currentTime);
+      gain.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.1);
+      gain.gain.setValueAtTime(1, audioContext.currentTime + 1.9);
+      gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.0);
+      
+      osc.connect(panner);
+      panner.connect(gain);
+      gain.connect(audioContext.destination);
+      
+      osc.start();
+      osc.stop(audioContext.currentTime + 2.0);
+
+      // UI Feedback
+      const l = document.getElementById('speakerLeft');
+      const r = document.getElementById('speakerRight');
+      
+      l.classList.add('playing');
+      setTimeout(() => {
+        l.classList.remove('playing');
+        r.classList.add('playing');
+      }, 1000);
+      setTimeout(() => r.classList.remove('playing'), 2000);
+    }
   </script>
 </body>
 </html>

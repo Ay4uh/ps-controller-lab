@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Display Test | ay5uh</title>
-  <meta name="description" content="Free browser-based hardware diagnostics.">
+  <title>Display Test — Refresh Rate & Resolution | ay5uh</title>
+  <meta name="description" content="Free online monitor test. Accurately measure your monitor's true refresh rate (Hz), resolution, and color profile.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -15,80 +15,201 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <link rel="stylesheet" href="/shared/styles.css?v=4">
+  <link rel="stylesheet" href="/shared/styles.css?v=5">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    .placeholder-card {
+    .hero-box {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 48px 32px;
-      max-width: 500px;
-      margin: 48px auto;
       text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
     }
-    .placeholder-title {
-      font-size: 24px;
-      margin: 0 0 16px 0;
-      color: var(--text-primary);
+    .hz-display {
+      font-size: 80px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 8px;
+      color: var(--accent-blue);
     }
-    .placeholder-desc {
+    .hz-label {
+      font-size: 18px;
+      font-weight: 700;
       color: var(--text-secondary);
-      line-height: 1.6;
-      margin: 0 0 32px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
-    .live-tools-list {
-      text-align: left;
-      background: var(--bg-base);
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .status-item {
+      background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 16px;
+      padding: 20px;
     }
-    .live-tools-list a {
-      display: block;
+    .status-item .label {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 13px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .status-item .val {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
       color: var(--text-primary);
-      text-decoration: none;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
     }
-    .live-tools-list a:last-child {
-      border-bottom: none;
+
+    /* Ufo Animation to visually show Hz */
+    .ufo-track {
+      background: var(--bg-hover);
+      height: 40px;
+      border-radius: 20px;
+      margin: 32px auto 0;
+      max-width: 800px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
     }
-    .live-tools-list a:hover {
-      color: var(--accent-blue);
+    .ufo {
+      width: 30px;
+      height: 30px;
+      background: var(--accent-blue);
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 0;
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
     }
   </style>
 </head>
 <body>
-
   <div class="app-layout">
     <main class="main-content">
-      <div class="container">
-        <a href="/" class="hero-cta" style="background:transparent; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; margin-top:24px; display:inline-block;">&larr; Back to all tools</a>
+      <div class="container pb-5">
+        <a href="/" class="hero-cta" style="background:transparent; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; margin:24px 0; display:inline-block;">&larr; Back to all tools</a>
 
-        <div class="placeholder-card">
-          <h1 class="placeholder-title">🖥️ Display Test</h1>
-          
-          <div class="placeholder-desc">
-            🔨 This tool is being built.
+        <div class="mb-4 d-flex justify-content-between align-items-center" style="display:flex; justify-content:space-between; margin-bottom:24px;">
+          <div>
+            <h1 class="page-title"><i class="fa-solid fa-desktop text-accent"></i> Display & Refresh Rate Test</h1>
+            <p class="page-subtitle">Accurately measure your monitor's true refresh rate, resolution, and color profile.</p>
           </div>
-
-          <div class="live-tools-list">
-            <p style="margin:0 0 12px 0; color:var(--text-muted); font-size:12px; text-transform:uppercase; font-weight:700;">Check back soon or try:</p>
-            <a href="/tools/controller-lab/">→ Controller Lab (live now)</a>
-            <a href="/tools/keyboard-test/">→ Keyboard Test (live now)</a>
-            <a href="/tools/battery-tester/">→ Battery Health (live now)</a>
-          </div>
-
         </div>
+
+        <div class="hero-box">
+          <div class="hz-display" id="hzDisplay">--</div>
+          <div class="hz-label">Hz Detected</div>
+          <div style="color:var(--text-muted); margin-top:8px; font-size:13px;">Based on hardware requestAnimationFrame timing</div>
+          
+          <div class="ufo-track">
+            <div class="ufo" id="ufoBox"></div>
+          </div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">Smoothness Visualizer (600px/sec)</div>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="label">Native Resolution</div>
+            <div class="val" id="valRes">--</div>
+          </div>
+          <div class="status-item">
+            <div class="label">Device Pixel Ratio</div>
+            <div class="val" id="valDpr">--</div>
+          </div>
+          <div class="status-item">
+            <div class="label">Color Gamut</div>
+            <div class="val" id="valColor" style="color:var(--accent-green);">--</div>
+          </div>
+          <div class="status-item">
+            <div class="label">Color Depth</div>
+            <div class="val" id="valDepth">--</div>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
 
-  <script src="/shared/sidebar.js?v=4"></script>
+  <script src="/shared/sidebar.js?v=5"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar('display-test');
     });
+
+    // Display Specs
+    const w = window.screen.width;
+    const h = window.screen.height;
+    const dpr = window.devicePixelRatio || 1;
+    
+    document.getElementById('valRes').innerText = `${w * dpr} x ${h * dpr}`;
+    document.getElementById('valDpr').innerText = `${dpr}x ${dpr > 1 ? '(HiDPI/Retina)' : ''}`;
+    document.getElementById('valDepth').innerText = `${window.screen.colorDepth}-bit`;
+    
+    // Color Gamut detection (approximate via CSS media queries)
+    let gamut = "Standard (sRGB)";
+    if (window.matchMedia("(color-gamut: p3)").matches) {
+      gamut = "Wide (Display P3)";
+    } else if (window.matchMedia("(color-gamut: rec2020)").matches) {
+      gamut = "Ultra Wide (Rec.2020)";
+    }
+    document.getElementById('valColor').innerText = gamut;
+
+    // Hz Detection via requestAnimationFrame
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let lastUfoTime = performance.now();
+    let fpsHistory = [];
+    const display = document.getElementById('hzDisplay');
+    
+    // UFO Visualizer
+    let ufoPos = 0;
+    const ufo = document.getElementById('ufoBox');
+
+    function measureRefresh(time) {
+      frameCount++;
+      
+      // UFO Logic: move 600px per second independent of framerate
+      const dt = time - lastUfoTime;
+      lastUfoTime = time;
+      ufoPos += (600 * (dt / 1000));
+      if (ufoPos > 800) ufoPos = -30;
+      ufo.style.transform = `translateX(${ufoPos}px)`;
+
+      // FPS Calculation (every ~0.5 seconds)
+      if (time - lastTime >= 500) {
+        const fps = Math.round((frameCount * 1000) / (time - lastTime));
+        fpsHistory.push(fps);
+        if (fpsHistory.length > 5) fpsHistory.shift();
+        
+        // Use max to filter out minor browser stutter drops, cap at common Hz
+        let maxFps = Math.max(...fpsHistory);
+        
+        // Snap to common refresh rates to avoid "59Hz" or "143Hz"
+        const common = [30, 60, 75, 90, 120, 144, 165, 240, 360];
+        let snapped = common.reduce((prev, curr) => 
+          Math.abs(curr - maxFps) <= 3 ? curr : prev
+        , maxFps);
+        
+        display.innerText = snapped;
+        
+        frameCount = 0;
+        lastTime = time;
+      }
+      
+      requestAnimationFrame(measureRefresh);
+    }
+    
+    requestAnimationFrame(measureRefresh);
   </script>
 </body>
 </html>
