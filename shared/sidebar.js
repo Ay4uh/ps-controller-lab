@@ -70,6 +70,14 @@ function injectSidebar(activeToolId = null) {
     </aside>
   `;
 
+  // Inject FontAwesome if missing
+  if (!document.querySelector('link[href*="font-awesome"]')) {
+    const faLink = document.createElement('link');
+    faLink.rel = 'stylesheet';
+    faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+    document.head.appendChild(faLink);
+  }
+
   // Inject sidebar inside app-layout
   const layout = document.querySelector('.app-layout');
   if (layout && !document.querySelector('.global-sidebar')) {
