@@ -43,18 +43,6 @@ function injectSidebar(activeToolId = null) {
             <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test">
               <i class="fa-solid fa-camera nav-icon"></i> Webcam Test
             </a></li>
-            <li class="nav-item"><a href="/tools/battery-tester/" id="nav-battery-tester">
-              <i class="fa-solid fa-battery-half nav-icon"></i> Battery Health
-            </a></li>
-            <li class="nav-item"><a href="/tools/thermal-test/" id="nav-thermal-test">
-              <i class="fa-solid fa-temperature-half nav-icon"></i> Thermal Profiler
-            </a></li>
-            <li class="nav-item"><a href="/tools/ssd-test/" id="nav-ssd-test">
-              <i class="fa-solid fa-hard-drive nav-icon"></i> SSD Health
-            </a></li>
-            <li class="nav-item"><a href="/tools/ram-test/" id="nav-ram-test">
-              <i class="fa-solid fa-memory nav-icon"></i> RAM Test
-            </a></li>
           </ul>
         </div>
 
