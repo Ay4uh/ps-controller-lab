@@ -610,7 +610,9 @@ async function runVibrationTest() {
       <div style="padding:40px; text-align:center;">
         <h3 style="color:var(--text-primary)">Vibration Motor</h3>
         <p style="color:var(--text-secondary)">Does not work on iOS devices or some Android browsers.</p>
-        <button class="btn btn-primary" id="btnVibrate" style="margin-bottom:20px;">Vibrate Now</button>
+        <button class="btn btn-primary" id="btnVibrate" style="margin-bottom:20px; font-size:18px; padding:15px 30px;">📳 Vibrate Now</button>
+        <br><br>
+        <button class="btn btn-run" id="btnVibDone" style="background:var(--bg-hover); color:var(--text-primary); border:1px solid var(--border);">Done Testing</button>
       </div>
     `;
     
@@ -622,7 +624,9 @@ async function runVibrationTest() {
       }
     };
     
-    setTimeout(() => promptPassFail(resolve), 500);
+    document.getElementById('btnVibDone').onclick = () => {
+      promptPassFail(resolve);
+    };
   });
 }
 
