@@ -7,6 +7,8 @@
   <meta name="description" content="Free browser-based tools to test your laptop, keyboard, mouse, mic, display and more. No install needed.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -16,53 +18,169 @@
   </script>
 
   <!-- Global CSS -->
-  <link rel="stylesheet" href="/shared/styles.css?v=7">
+  <link rel="stylesheet" href="/shared/styles.css?v=8">
   
   <style>
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+    
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
+    /* Hero Section */
     .hero {
-      padding: 64px 0 48px 0;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 48px;
+      padding: 80px 0 60px 0;
+      position: relative;
+    }
+    
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at top right, rgba(0, 112, 209, 0.03), transparent 60%);
+      pointer-events: none;
     }
     
     .hero-title {
-      font-size: 32px;
-      font-weight: 700;
+      font-size: 42px;
+      font-weight: 800;
       color: var(--text-primary);
       margin: 0 0 16px 0;
-      letter-spacing: -0.5px;
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+    
+    .hero-title span {
+      background: linear-gradient(135deg, var(--accent-blue), #00a8e8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     
     .hero-subtitle {
-      font-size: 16px;
+      font-size: 18px;
       color: var(--text-secondary);
       margin: 0 0 8px 0;
       max-width: 600px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    .hero-cta {
-      display: inline-block;
-      margin-top: 24px;
-      background-color: var(--accent-blue);
-      color: #fff;
+    /* Dashboard Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      padding-bottom: 64px;
+    }
+    
+    /* Premium Cards */
+    .dashboard-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    
+    .dashboard-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(0, 112, 209, 0.05), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent-blue);
+      box-shadow: 0 20px 25px -5px rgba(0, 112, 209, 0.1), 0 10px 10px -5px rgba(0, 112, 209, 0.04);
+    }
+    
+    .dashboard-card:hover::before {
+      opacity: 1;
+    }
+    
+    .card-icon-container {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: var(--bg-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 28px;
+      color: var(--accent-blue);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
+    }
+    
+    .dashboard-card:hover .card-icon-container {
+      transform: scale(1.1) rotate(-5deg);
+      background: rgba(0, 112, 209, 0.1);
+    }
+    
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 12px 0;
+      letter-spacing: -0.5px;
+    }
+    
+    .card-desc {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 24px 0;
+      flex: 1;
+    }
+    
+    .card-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-blue);
       font-weight: 600;
       font-size: 14px;
-      transition: background-color 0.2s;
+      margin-top: auto;
+      transition: gap 0.3s ease;
     }
-    .hero-cta:hover {
-      background-color: #2563eb;
+    
+    .dashboard-card:hover .card-action {
+      gap: 12px;
     }
 
+    /* Footer */
     .homepage-footer {
       border-top: 1px solid var(--border);
       padding: 48px 0;
-      margin-top: 64px;
+      margin-top: auto;
       color: var(--text-muted);
-      font-size: 12px;
+      font-size: 13px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -70,10 +188,14 @@
       gap: 16px;
     }
 
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
     .footer-links a {
       color: var(--text-secondary);
       text-decoration: none;
-      margin: 0 12px;
       font-weight: 600;
       transition: color 0.2s;
     }
@@ -81,6 +203,22 @@
     .footer-links a:hover {
       color: var(--text-primary);
     }
+    
+    /* Device specific colors */
+    .card-gamepad:hover { border-color: #0ea5e9; box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.1); }
+    .card-gamepad .card-icon-container { color: #0ea5e9; }
+    .card-gamepad:hover .card-icon-container { background: rgba(14, 165, 233, 0.1); }
+    .card-gamepad .card-action { color: #0ea5e9; }
+    
+    .card-laptop:hover { border-color: #8b5cf6; box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1); }
+    .card-laptop .card-icon-container { color: #8b5cf6; }
+    .card-laptop:hover .card-icon-container { background: rgba(139, 92, 246, 0.1); }
+    .card-laptop .card-action { color: #8b5cf6; }
+    
+    .card-phone:hover { border-color: #10b981; box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.1); }
+    .card-phone .card-icon-container { color: #10b981; }
+    .card-phone:hover .card-icon-container { background: rgba(16, 185, 129, 0.1); }
+    .card-phone .card-action { color: #10b981; }
   </style>
 </head>
 <body>
@@ -88,48 +226,62 @@
   <div class="app-layout">
     <main class="main-content">
       
-      <div class="hero">
+      <div class="hero animate-fade-in-up">
         <div class="container">
-          <h1 class="hero-title">ay5uh — Free Hardware Diagnostics</h1>
-          <p class="hero-subtitle">Test your devices entirely in your browser.</p>
+          <h1 class="hero-title">ay5uh — <span>Free Hardware Diagnostics</span></h1>
+          <p class="hero-subtitle">Test your devices entirely in your browser without downloading any software. Open source, secure, and blazing fast.</p>
         </div>
       </div>
 
-      <div class="container" style="display:flex; flex-direction:column; gap:24px; padding-bottom:64px;">
+      <div class="container dashboard-grid">
         
-        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:32px;">
-          <div style="font-size:32px; margin-bottom:16px;">🎮</div>
-          <h2 style="margin:0 0 12px 0; font-size:24px;">GAMEPAD TESTER</h2>
-          <p style="color:var(--text-secondary); margin:0 0 24px 0; font-size:16px; line-height:1.5;">Diagnose and calibrate PS5/PS4 controllers</p>
-          <a href="/tools/controller-lab/" class="hero-cta" style="margin-top:0;">Open Controller Lab &rarr;</a>
-        </div>
+        <!-- Gamepad Card -->
+        <a href="/tools/controller-lab/" class="dashboard-card card-gamepad animate-fade-in-up delay-1">
+          <div class="card-icon-container">
+            <i class="fa-solid fa-gamepad"></i>
+          </div>
+          <h2 class="card-title">Controller Lab</h2>
+          <p class="card-desc">Diagnose, test, and calibrate PlayStation and Xbox controllers. Read raw HID data, test haptics, and check for stick drift.</p>
+          <div class="card-action">
+            Open Controller Lab <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
 
-        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:32px;">
-          <div style="font-size:32px; margin-bottom:16px;">💻</div>
-          <h2 style="margin:0 0 12px 0; font-size:24px;">LAPTOP/MACBOOK TESTER</h2>
-          <p style="color:var(--text-secondary); margin:0 0 24px 0; font-size:16px; line-height:1.5;">Test MacBook and Windows laptops for hardware issues</p>
-          <a href="/tools/keyboard-test/" class="hero-cta" style="margin-top:0;">See Tools &rarr;</a>
-        </div>
+        <!-- Laptop Card -->
+        <a href="/tools/keyboard-test/" class="dashboard-card card-laptop animate-fade-in-up delay-2">
+          <div class="card-icon-container">
+            <i class="fa-solid fa-laptop"></i>
+          </div>
+          <h2 class="card-title">Laptop / PC Diagnostics</h2>
+          <p class="card-desc">Comprehensive suite for testing your computer. Includes Keyboard, Mouse, Microphone, Speaker, Webcam, and Display tools.</p>
+          <div class="card-action">
+            View PC Tools <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
 
-        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:32px;">
-          <div style="font-size:32px; margin-bottom:16px;">📱</div>
-          <h2 style="margin:0 0 12px 0; font-size:24px;">PHONE TESTER</h2>
-          <p style="color:var(--text-secondary); margin:0 0 24px 0; font-size:16px; line-height:1.5;">Test iOS and Android device hardware directly in your browser</p>
-          <a href="/tools/phone-diagnostics/" class="hero-cta" style="margin-top:0;">Start Phone Test &rarr;</a>
-        </div>
+        <!-- Phone Card -->
+        <a href="/tools/phone-diagnostics/" class="dashboard-card card-phone animate-fade-in-up delay-3">
+          <div class="card-icon-container">
+            <i class="fa-solid fa-mobile-screen"></i>
+          </div>
+          <h2 class="card-title">Phone Tester</h2>
+          <p class="card-desc">Scan your iOS or Android smartphone for hardware defects. Test touchscreen digitizers, haptics, cameras, and dead pixels.</p>
+          <div class="card-action">
+            Start Phone Test <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
 
       </div>
       
       <!-- Footer -->
-      <footer class="homepage-footer">
-        <div>ay5uh · Free Hardware Diagnostics</div>
+      <footer class="homepage-footer animate-fade-in-up delay-3">
         <div class="footer-links">
           <a href="/about/">About</a>
           <a href="/privacy-policy/">Privacy Policy</a>
           <a href="/contact/">Contact</a>
         </div>
         <div>
-          © 2026 · All tools run in your browser<br>
+          © 2026 ay5uh · All tools run locally in your browser.<br>
           No data collection. No signup. Free forever.
         </div>
       </footer>
@@ -137,7 +289,7 @@
     </main>
   </div>
 
-  <script src="/shared/sidebar.js?v=7"></script>
+  <script src="/shared/sidebar.js?v=8"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar(null);
