@@ -63,7 +63,7 @@ function injectSidebar(activeToolId = null) {
       </div>
 
       <div class="nav-section">
-        <div class="nav-category">PHONE (Coming Soon)</div>
+        <div class="nav-category">PHONE</div>
         <ul class="nav-list">
           <li class="nav-item"><a href="/tools/phone-diagnostics/" id="nav-phone-diagnostics">
             <div class="nav-item-left"><span class="nav-icon">📱</span> Phone Diagnostics</div>
