@@ -2,18 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
 
 :root {
-  --bg-base: #0a0a0a;
-  --bg-card: #111111;
-  --bg-hover: #1a1a1a;
-  --border: #222222;
-  --border-active: #3b82f6;
-  --text-primary: #ffffff;
-  --text-secondary: #aaaaaa;
-  --text-muted: #555555;
-  --accent-blue: #3b82f6;
-  --accent-green: #22c55e;
-  --accent-red: #ef4444;
-  --accent-yellow: #f59e0b;
+  --bg-base: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --border-active: #0070d1;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --accent-blue: #0070d1;
+  --accent-green: #00a83c;
+  --accent-red: #dc2626;
+  --accent-yellow: #ea580c;
   --accent-gold: #d97706;
   
   --font-body: 'Inter', system-ui, sans-serif;
@@ -48,7 +48,7 @@ body {
   position: sticky;
   top: 0;
   height: var(--header-height);
-  background-color: var(--bg-base);
+  background-color: var(--bg-card);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -97,7 +97,7 @@ body {
 /* Sidebar */
 .global-sidebar {
   width: var(--sidebar-width);
-  background-color: var(--bg-base);
+  background-color: var(--bg-card);
   border-right: 1px solid var(--border);
   position: fixed;
   top: var(--header-height);
@@ -155,8 +155,9 @@ body {
 
 .nav-item a.active {
   color: var(--accent-blue);
-  border-left: 2px solid var(--accent-blue);
-  background-color: var(--bg-hover);
+  background-color: rgba(0, 112, 209, 0.08);
+  font-weight: 600;
+  border-radius: 6px;
 }
 
 .nav-item a.active .nav-icon {
@@ -224,11 +225,13 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .tool-card:hover {
   border-color: var(--accent-blue);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .tool-icon-large {
