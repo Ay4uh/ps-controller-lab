@@ -349,7 +349,7 @@
             </div>
 
             <!-- 5. DPI Estimator -->
-            <div class="module-card">
+            <div class="module-card" id="dpiModule">
               <div class="module-header">
                 5. DPI Estimator
                 <span class="status-badge" id="dpiStatus">Waiting</span>
@@ -465,6 +465,39 @@
       
       if(type === 'macbook') {
         document.getElementById('trackpadModule').style.display = 'block';
+        
+        // Hide DPI Estimator for Trackpads
+        const dpiMod = document.getElementById('dpiModule');
+        if (dpiMod) dpiMod.style.display = 'none';
+
+        // Transform Mouse Diagram into Trackpad Diagram
+        const md = document.getElementById('mouseDiagram');
+        md.style.width = '260px';
+        md.style.height = '160px';
+        md.style.borderRadius = '16px';
+        md.style.border = '2px solid var(--border)';
+        
+        // Hide mouse-specific buttons
+        document.getElementById('zone1').style.display = 'none'; // Mid
+        document.getElementById('zone3').style.display = 'none'; // Back
+        document.getElementById('zone4').style.display = 'none'; // Fwd
+        document.getElementById('zoneScroll').style.display = 'none'; // Scroll
+        
+        // Resize Left and Right zones to split the trackpad
+        const z0 = document.getElementById('zone0');
+        z0.style.width = '50%';
+        z0.style.height = '100%';
+        z0.style.borderRadius = '16px 0 0 16px';
+        z0.innerHTML = 'LEFT CLICK';
+
+        const z2 = document.getElementById('zone2');
+        z2.style.width = '50%';
+        z2.style.height = '100%';
+        z2.style.top = '0';
+        z2.style.right = '0';
+        z2.style.borderRadius = '0 16px 16px 0';
+        z2.innerHTML = 'RIGHT CLICK<br>(2-Finger Tap)';
+
         initTrackpadTests();
       }
 
