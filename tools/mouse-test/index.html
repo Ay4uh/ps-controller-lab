@@ -368,26 +368,47 @@
             <!-- 6. Trackpad Specifics (Hidden for mouse) -->
             <div class="module-card" id="trackpadModule" style="display:none; grid-column: 1 / -1;">
               <div class="module-header">
-                6. Trackpad Tests
+                6. Trackpad Diagnostics & Gestures
                 <span class="status-badge" id="tpStatus">Waiting</span>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+              <p style="font-size:13px; color:var(--text-secondary); margin-top:-10px; margin-bottom:16px;">Test raw multi-touch input, gesture recognition (pinch, pan, swipe), and force touch pressure sensors.</p>
+              
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
                 
-                <div>
-                  <h4 style="font-size:14px; margin-top:0;">Multi-Touch</h4>
-                  <div class="touch-area" id="touchArea">
-                    <span style="color:var(--text-muted); font-size:12px; pointer-events:none; z-index:10;">Place 1-5 fingers</span>
+                <!-- Sandbox Area -->
+                <div class="touch-area" id="touchArea" style="height:250px; background:var(--bg-hover); position:relative; overflow:hidden; border-color:var(--accent-blue);">
+                  <div id="tpMessage" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:var(--text-muted); font-size:14px; pointer-events:none; text-align:center;">
+                    Interact with trackpad here<br><span style="font-size:11px;">(Pinch, Swipe, Force Click, Multi-touch)</span>
                   </div>
-                  <div class="result-list" id="tpTouchResults"></div>
                 </div>
 
-                <div>
-                  <h4 style="font-size:14px; margin-top:0;">Force Touch / Palm</h4>
-                  <div class="touch-area" id="forceArea">
-                    <span style="color:var(--text-muted); font-size:12px; pointer-events:none; z-index:10;">Press firmly</span>
-                    <div id="forceIndicator" style="position:absolute; bottom:0; left:0; height:4px; background:var(--accent-blue); width:0%;"></div>
+                <!-- Live Data & Results -->
+                <div style="background:var(--bg-base); border:1px solid var(--border); border-radius:8px; padding:20px; display:flex; flex-direction:column; gap:16px; font-family:var(--font-mono); font-size:14px;">
+                  
+                  <div>
+                    <strong style="color:var(--text-primary); font-size:11px;">FINGERS DETECTED</strong>
+                    <div style="display:flex; align-items:baseline; gap:12px;">
+                      <span id="tpFingers" style="font-size:28px; color:var(--accent-blue); font-weight:700;">0</span>
+                      <span style="color:var(--text-muted); font-size:12px;">Peak: <span id="tpMaxFingers">0</span></span>
+                    </div>
                   </div>
-                  <div class="result-list" id="tpForceResults"></div>
+                  
+                  <div>
+                    <strong style="color:var(--text-primary); font-size:11px;">ACTIVE GESTURE</strong>
+                    <div id="tpGesture" style="color:var(--accent-green); font-size:18px; font-weight:600;">None</div>
+                  </div>
+
+                  <div>
+                    <strong style="color:var(--text-primary); font-size:11px;">FORCE / PRESSURE SENSOR</strong>
+                    <div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
+                      <div style="flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden;">
+                        <div id="forceIndicator" style="height:100%; background:var(--accent-red); width:0%; transition:width 0.05s linear;"></div>
+                      </div>
+                      <span id="forceValue" style="min-width:40px; text-align:right;">0%</span>
+                    </div>
+                  </div>
+                  
+                  <div class="result-list" id="tpTouchResults" style="margin-top:auto;"></div>
                 </div>
 
               </div>
@@ -697,60 +718,127 @@
     function initTrackpadTests() {
       const touchArea = document.getElementById('touchArea');
       const tpRes = document.getElementById('tpTouchResults');
+      const tpFingers = document.getElementById('tpFingers');
+      const tpMaxFingers = document.getElementById('tpMaxFingers');
+      const tpGesture = document.getElementById('tpGesture');
+      const tpMessage = document.getElementById('tpMessage');
+      const forceInd = document.getElementById('forceIndicator');
+      const forceVal = document.getElementById('forceValue');
       
       let maxFingers = 0;
+      let initialDist = 0;
       
       touchArea.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        touchArea.innerHTML = ''; // clear markers
+        tpMessage.style.display = 'none';
+        
         let count = e.touches.length;
-        if(count > maxFingers) maxFingers = count;
+        tpFingers.innerText = count;
+        
+        if(count > maxFingers) {
+          maxFingers = count;
+          tpMaxFingers.innerText = maxFingers;
+        }
         summaryData.trackpad.touches = maxFingers;
 
-        for(let i=0; i<count; i++) {
+        if(count === 2) {
+          let dx = e.touches[0].clientX - e.touches[1].clientX;
+          let dy = e.touches[0].clientY - e.touches[1].clientY;
+          initialDist = Math.hypot(dx, dy);
+        }
+
+        renderTouches(e);
+      }, {passive: false});
+
+      touchArea.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        let count = e.touches.length;
+        
+        if(count === 2 && initialDist > 0) {
+          let dx = e.touches[0].clientX - e.touches[1].clientX;
+          let dy = e.touches[0].clientY - e.touches[1].clientY;
+          let currentDist = Math.hypot(dx, dy);
+          
+          if(Math.abs(currentDist - initialDist) > 20) {
+            tpGesture.innerText = currentDist > initialDist ? 'Pinch Out (Zoom)' : 'Pinch In';
+            tpGesture.style.color = 'var(--accent-blue)';
+          } else {
+            tpGesture.innerText = '2-Finger Pan';
+            tpGesture.style.color = 'var(--accent-green)';
+          }
+        } else if(count === 3) {
+          tpGesture.innerText = '3-Finger Swipe';
+          tpGesture.style.color = '#9c27b0';
+        } else if(count >= 4) {
+          tpGesture.innerText = count + '-Finger Gesture';
+          tpGesture.style.color = '#e91e63';
+        }
+        
+        renderTouches(e);
+      }, {passive: false});
+
+      touchArea.addEventListener('touchend', (e) => {
+        let count = e.touches.length;
+        tpFingers.innerText = count;
+        if(count === 0) {
+           tpMessage.style.display = 'block';
+           tpGesture.innerText = 'None';
+           tpGesture.style.color = 'var(--accent-green)';
+           touchArea.innerHTML = tpMessage.outerHTML;
+        } else {
+           renderTouches(e);
+        }
+        
+        if(maxFingers > 0) {
+           tpRes.innerHTML = `<div style="color:var(--accent-green)">✓ Peak ${maxFingers} fingers detected</div>`;
+           document.getElementById('tpStatus').className = 'status-badge pass';
+           document.getElementById('tpStatus').innerText = 'Active';
+        }
+      });
+
+      function renderTouches(e) {
+        touchArea.innerHTML = tpMessage.outerHTML; // Keep message div but hide it
+        for(let i=0; i<e.touches.length; i++) {
            let t = e.touches[i];
            let rect = touchArea.getBoundingClientRect();
            let el = document.createElement('div');
            el.className = 'touch-point';
            el.style.left = (t.clientX - rect.left) + 'px';
            el.style.top = (t.clientY - rect.top) + 'px';
+           
+           // Map pressure if available
+           let force = t.force || 0;
+           let size = 40 + (force * 60);
+           el.style.width = size + 'px';
+           el.style.height = size + 'px';
+           
            touchArea.appendChild(el);
         }
-
-        tpRes.innerHTML = `<div style="color:var(--accent-green)">✓ ${maxFingers} fingers detected</div>`;
-        document.getElementById('tpStatus').className = 'status-badge pass';
-        document.getElementById('tpStatus').innerText = 'Active';
-      }, {passive: false});
-
-      touchArea.addEventListener('touchmove', (e) => e.preventDefault(), {passive: false});
-      touchArea.addEventListener('touchend', (e) => {
-        if(e.touches.length === 0) touchArea.innerHTML = '<span style="color:var(--text-muted); font-size:12px; pointer-events:none; z-index:10;">Place 1-5 fingers</span>';
-      });
-
-      // Force Touch
-      const forceArea = document.getElementById('forceArea');
-      const ind = document.getElementById('forceIndicator');
-      const fRes = document.getElementById('tpForceResults');
+      }
 
       function handleForce(force) {
         if(force > 0) {
-          ind.style.width = (force * 100) + '%';
+          let pct = Math.round(force * 100);
+          forceInd.style.width = pct + '%';
+          forceVal.innerText = pct + '%';
+          
           if(force > 0.5 && !summaryData.trackpad.force) {
              summaryData.trackpad.force = true;
-             fRes.innerHTML = `<div style="color:var(--accent-green)">✓ Force click / Pressure detected</div>`;
+             tpRes.innerHTML += `<div style="color:var(--accent-green)">✓ Force touch detected</div>`;
           }
         } else {
-          ind.style.width = '0%';
+          forceInd.style.width = '0%';
+          forceVal.innerText = '0%';
         }
       }
 
       // Pointer Events (Standard)
-      forceArea.addEventListener('pointerdown', e => handleForce(e.pressure));
-      forceArea.addEventListener('pointermove', e => handleForce(e.pressure));
-      forceArea.addEventListener('pointerup', () => handleForce(0));
+      touchArea.addEventListener('pointerdown', e => handleForce(e.pressure));
+      touchArea.addEventListener('pointermove', e => handleForce(e.pressure));
+      touchArea.addEventListener('pointerup', () => handleForce(0));
 
       // Touch Events (Safari Force Touch fallback)
-      forceArea.addEventListener('touchforcechange', e => {
+      touchArea.addEventListener('touchforcechange', e => {
         e.preventDefault();
         handleForce(e.touches[0].force);
       }, {passive: false});
