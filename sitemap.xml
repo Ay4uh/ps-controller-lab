@@ -6,21 +6,6 @@
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://ay5uh.com/tools/battery-tester/</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ay5uh.com/tools/thermal-test/</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ay5uh.com/tools/ssd-test/</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
     <loc>https://ay5uh.com/tools/ram-test/</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>

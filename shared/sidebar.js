@@ -17,15 +17,6 @@ function injectSidebar(activeToolId = null) {
       <div class="nav-section">
         <div class="nav-category">Laptop</div>
         <ul class="nav-list">
-          <li class="nav-item"><a href="/tools/battery-tester/" id="nav-battery-tester">
-            <div class="nav-item-left"><span class="nav-icon">🔋</span> Battery</div>
-          </a></li>
-          <li class="nav-item"><a href="/tools/thermal-test/" id="nav-thermal-test">
-            <div class="nav-item-left"><span class="nav-icon">🌡️</span> Thermal</div>
-          </a></li>
-          <li class="nav-item"><a href="/tools/ssd-test/" id="nav-ssd-test">
-            <div class="nav-item-left"><span class="nav-icon">💾</span> SSD</div>
-          </a></li>
           <li class="nav-item"><a href="/tools/ram-test/" id="nav-ram-test">
             <div class="nav-item-left"><span class="nav-icon">🧠</span> RAM</div>
           </a></li>
