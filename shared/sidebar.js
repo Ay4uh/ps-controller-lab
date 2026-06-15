@@ -15,70 +15,60 @@ function injectSidebar(activeToolId = null) {
     <aside class="global-sidebar" id="globalSidebar">
       
       <div class="nav-section">
-        <div class="nav-category">System Performance</div>
-        <ul class="nav-list">
-          <li class="nav-item"><a href="/tools/ram-test/" id="nav-ram-test">
-            <div class="nav-item-left"><span class="nav-icon">🧠</span> RAM</div>
-          </a></li>
-          <li class="nav-item"><a href="/tools/benchmark/" id="nav-benchmark">
-            <div class="nav-item-left"><span class="nav-icon">⚡</span> Benchmark</div>
-          </a></li>
-        </ul>
-      </div>
-
-      <div class="nav-section">
-        <div class="nav-category">Input Devices</div>
+        <div class="nav-category">GAMEPAD</div>
         <ul class="nav-list">
           <li class="nav-item"><a href="/tools/controller-lab/" id="nav-controller-lab">
-            <div class="nav-item-left"><span class="nav-icon">🎮</span> Controller</div>
-            <span class="badge-sidebar">★</span>
+            <div class="nav-item-left"><span class="nav-icon">🎮</span> Controller Lab</div>
           </a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-category">LAPTOP/MACBOOK</div>
+        <ul class="nav-list">
           <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test">
-            <div class="nav-item-left"><span class="nav-icon">⌨️</span> Keyboard</div>
+            <div class="nav-item-left"><span class="nav-icon">⌨️</span> Keyboard Test</div>
           </a></li>
           <li class="nav-item"><a href="/tools/mouse-test/" id="nav-mouse-test">
-            <div class="nav-item-left"><span class="nav-icon">🖱️</span> Mouse</div>
-          </a></li>
-        </ul>
-      </div>
-
-      <div class="nav-section">
-        <div class="nav-category">Audio & Video</div>
-        <ul class="nav-list">
-          <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test">
-            <div class="nav-item-left"><span class="nav-icon">🔊</span> Speaker</div>
+            <div class="nav-item-left"><span class="nav-icon">🖱️</span> Mouse Test</div>
           </a></li>
           <li class="nav-item"><a href="/tools/mic-test/" id="nav-mic-test">
-            <div class="nav-item-left"><span class="nav-icon">🎤</span> Mic</div>
+            <div class="nav-item-left"><span class="nav-icon">🎤</span> Mic Test</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test">
+            <div class="nav-item-left"><span class="nav-icon">🔊</span> Speaker Test</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/display-test/" id="nav-display-test">
+            <div class="nav-item-left"><span class="nav-icon">🖥️</span> Display Test</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/dead-pixel-test/" id="nav-dead-pixel-test">
+            <div class="nav-item-left"><span class="nav-icon">💀</span> Dead Pixel Test</div>
           </a></li>
           <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test">
-            <div class="nav-item-left"><span class="nav-icon">📷</span> Webcam</div>
+            <div class="nav-item-left"><span class="nav-icon">📷</span> Webcam Test</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/battery-tester/" id="nav-battery-tester">
+            <div class="nav-item-left"><span class="nav-icon">🔋</span> Battery Health</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/thermal-test/" id="nav-thermal-test">
+            <div class="nav-item-left"><span class="nav-icon">🌡️</span> Thermal Profiler</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/ssd-test/" id="nav-ssd-test">
+            <div class="nav-item-left"><span class="nav-icon">💾</span> SSD Health</div>
+          </a></li>
+          <li class="nav-item"><a href="/tools/ram-test/" id="nav-ram-test">
+            <div class="nav-item-left"><span class="nav-icon">🧠</span> RAM Test</div>
           </a></li>
         </ul>
       </div>
 
       <div class="nav-section">
-        <div class="nav-category">Display Controls</div>
+        <div class="nav-category">PHONE (Coming Soon)</div>
         <ul class="nav-list">
-          <li class="nav-item"><a href="/tools/display-test/" id="nav-display-test">
-            <div class="nav-item-left"><span class="nav-icon">🖥️</span> Display</div>
-          </a></li>
-          <li class="nav-item"><a href="/tools/dead-pixel-test/" id="nav-dead-pixel-test">
-            <div class="nav-item-left"><span class="nav-icon">💀</span> Dead Pixel</div>
+          <li class="nav-item"><a href="/tools/phone-diagnostics/" id="nav-phone-diagnostics">
+            <div class="nav-item-left"><span class="nav-icon">📱</span> Phone Diagnostics</div>
           </a></li>
         </ul>
-      </div>
-
-      <div class="sidebar-ad">
-        <ins class="adsbygoogle"
-             style="display:block;width:100%;height:250px;"
-             data-ad-client="ca-pub-4806235756537260"
-             data-ad-slot="8013321574"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        </script>
       </div>
     </aside>
   `;

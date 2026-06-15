@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phone Diagnostics | ay5uh</title>
+  <meta name="description" content="Free browser-based phone diagnostics coming soon.">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <link rel="stylesheet" href="/shared/styles.css?v=3">
+  <style>
+    .placeholder-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 32px;
+      max-width: 600px;
+      margin: 48px auto;
+      text-align: center;
+    }
+    .placeholder-icon {
+      font-size: 48px;
+      margin-bottom: 24px;
+    }
+    .placeholder-title {
+      font-size: 24px;
+      margin: 0 0 16px 0;
+      color: var(--text-primary);
+    }
+    .placeholder-desc {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0 0 32px 0;
+      text-align: left;
+    }
+    .placeholder-desc ul {
+      margin-top: 16px;
+      padding-left: 20px;
+    }
+    .placeholder-desc li {
+      margin-bottom: 8px;
+    }
+    .email-form {
+      display: flex;
+      gap: 12px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .email-input {
+      flex: 1;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+    }
+    .email-input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+    .notify-btn {
+      background: var(--text-primary);
+      color: var(--bg-base);
+      border: none;
+      padding: 0 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .notify-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container">
+        <a href="/" class="hero-cta" style="background:transparent; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; margin-top:24px; display:inline-block;">&larr; Back to all tools</a>
+
+        <div class="placeholder-card">
+          <div class="placeholder-icon">📱</div>
+          <h1 class="placeholder-title">Phone Diagnostics Coming Soon</h1>
+          
+          <div class="placeholder-desc">
+            We're building free diagnostic tools for:
+            <ul>
+              <li>iPhone battery health</li>
+              <li>Android sensor tests</li>
+              <li>Camera quality check</li>
+              <li>Speaker & mic tests</li>
+              <li>Display & screen tests</li>
+            </ul>
+          </div>
+
+          <p style="color:var(--text-primary); font-weight:600; margin-bottom:16px;">Get notified when ready:</p>
+          <form class="email-form" onsubmit="event.preventDefault(); alert('Thanks! We will notify you.'); this.reset();">
+            <input type="email" class="email-input" placeholder="Enter your email" required>
+            <button type="submit" class="notify-btn">Notify Me</button>
+          </form>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/shared/sidebar.js?v=3"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      injectSidebar('phone-diagnostics');
+    });
+  </script>
+</body>
+</html>

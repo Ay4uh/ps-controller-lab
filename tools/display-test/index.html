@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Display Test | ay5uh</title>
-  <meta name="description" content="Free online display test. Monitor Hz and tearing">
+  <meta name="description" content="Free browser-based hardware diagnostics.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -15,324 +15,71 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <!-- Global CSS & Icons -->
   <link rel="stylesheet" href="/shared/styles.css?v=3">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-
-    
-
-    
-
-    /* Scrollbars */
-    
-    
-    
-    
-
-    
-
-    /* Navigation Sidebar */
-    
-
-    
-    
-    .brand-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text);
+    .placeholder-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 32px;
+      max-width: 500px;
+      margin: 48px auto;
+      text-align: center;
     }
-    .brand-logo-wrap:hover { color: var(--accent); }
-
-    .brand-logo { font-size: 1.5rem; color: var(--accent); }
-    .brand-title { font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px; }
-    .brand-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    
-
-    
-
-    .nav-tab-item a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
+    .placeholder-title {
+      font-size: 24px;
+      margin: 0 0 16px 0;
+      color: var(--text-primary);
+    }
+    .placeholder-desc {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0 0 32px 0;
+    }
+    .live-tools-list {
+      text-align: left;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: var(--transition);
-    }
-
-    .nav-tab-item a:hover {
-      color: var(--text);
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .nav-tab-item a.active {
-      color: #fff;
-      background: rgba(59, 130, 246, 0.15);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-    }
-
-    .nav-tab-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-
-    .sidebar-ad-card {
-      margin-top: auto;
       padding: 16px;
-      border-top: 1px solid var(--border);
-      background-color: rgba(0,0,0,0.2);
     }
-
-    /* Main Area */
-    
-
-    /* Global Repair Cards */
-    .repair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; transition: transform 0.2s; }
-    .repair-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .repair-card.recommended { border-color: var(--success); }
-    .repair-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #fff; padding-right: 80px;}
-    .repair-card .badge-rec { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--success); color: #000; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
-    .detail-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
-    .detail-row strong.cost { color: var(--success); font-size: 1.1rem; font-weight: 800; }
-    .repair-card .btn { margin-top: 1rem; width: 100%; font-weight: 700; }
-
-    /* Cards & Globals */
-    .card-custom { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
-  
-</style>
+    .live-tools-list a {
+      display: block;
+      color: var(--text-primary);
+      text-decoration: none;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .live-tools-list a:last-child {
+      border-bottom: none;
+    }
+    .live-tools-list a:hover {
+      color: var(--accent-blue);
+    }
+  </style>
 </head>
 <body>
 
   <div class="app-layout">
     <main class="main-content">
       <div class="container">
-        
-        <a href="/" class="tool-back-link">&larr; Back to all tools</a>
-        
-        <div class="tool-header-inner">
-          <h1>Display Test</h1>
-          <p>Monitor Hz and tearing</p>
+        <a href="/" class="hero-cta" style="background:transparent; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; margin-top:24px; display:inline-block;">&larr; Back to all tools</a>
+
+        <div class="placeholder-card">
+          <h1 class="placeholder-title">🖥️ Display Test</h1>
+          
+          <div class="placeholder-desc">
+            🔨 This tool is being built.
+          </div>
+
+          <div class="live-tools-list">
+            <p style="margin:0 0 12px 0; color:var(--text-muted); font-size:12px; text-transform:uppercase; font-weight:700;">Check back soon or try:</p>
+            <a href="/tools/controller-lab/">→ Controller Lab (live now)</a>
+            <a href="/tools/keyboard-test/">→ Keyboard Test (live now)</a>
+            <a href="/tools/battery-tester/">→ Battery Health (live now)</a>
+          </div>
+
         </div>
-
-        <!-- Tool Content -->
-        <style>
-  .hero-box {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 3rem 2rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .hz-display {
-    font-size: 5rem;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--accent) 0%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .hz-label {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-
-  .status-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .status-item {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem;
-  }
-  .status-item .label {
-    font-weight: 600;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  .status-item .val {
-    font-family: monospace;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  /* Ufo Animation to visually show Hz */
-  .ufo-track {
-    background: rgba(255,255,255,0.05);
-    height: 40px;
-    border-radius: 20px;
-    margin: 2rem auto 0;
-    max-width: 800px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .ufo {
-    width: 30px;
-    height: 30px;
-    background: var(--accent);
-    border-radius: 50%;
-    position: absolute;
-    top: 4px;
-    left: 0;
-    box-shadow: 0 0 15px var(--accent-glow);
-  }
-
-</style>
-
-<div class="container-fluid">
-  
-  <div class="mb-4">
-    <h1 class="fw-bold mb-2"><i class="fa-solid fa-desktop" style="color:var(--text-muted);"></i> Display & Refresh Rate Test</h1>
-    <p class="text-muted">Accurately measure your monitor's true refresh rate, resolution, and color profile.</p>
-  </div>
-
-  <div class="hero-box">
-    <div class="hz-display" id="hzDisplay">--</div>
-    <div class="hz-label">Hz Detected</div>
-    <div class="text-muted mt-2 small">Based on hardware requestAnimationFrame timing</div>
-    
-    <div class="ufo-track">
-      <div class="ufo" id="ufoBox"></div>
-    </div>
-    <div class="small text-muted mt-2">Smoothness Visualizer (600px/sec)</div>
-  </div>
-
-  <div class="status-grid">
-    <div class="status-item">
-      <div class="label">Native Resolution</div>
-      <div class="val" id="valRes">--</div>
-    </div>
-    <div class="status-item">
-      <div class="label">Device Pixel Ratio</div>
-      <div class="val" id="valDpr">--</div>
-    </div>
-    <div class="status-item">
-      <div class="label">Color Gamut</div>
-      <div class="val text-success" id="valColor">--</div>
-    </div>
-    <div class="status-item">
-      <div class="label">Color Depth</div>
-      <div class="val" id="valDepth">--</div>
-    </div>
-  </div>
-
-  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Screen Upgrades & Repair</h4>
-  <div class="row" id="repairOptionsContainer"></div>
-
-</div>
-
-<script>
-  trackToolEvent('display_test', 'viewed');
-
-  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
-  const repairContainer = document.getElementById('repairOptionsContainer');
-  
-  repairContainer.innerHTML = 
-    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_14, false) + '</div>' +
-    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_16, false) + '</div>';
-
-  // Display Specs
-  const w = window.screen.width;
-  const h = window.screen.height;
-  const dpr = window.devicePixelRatio || 1;
-  
-  document.getElementById('valRes').innerText = `${w * dpr} x ${h * dpr}`;
-  document.getElementById('valDpr').innerText = `${dpr}x ${dpr > 1 ? '(HiDPI/Retina)' : ''}`;
-  document.getElementById('valDepth').innerText = `${window.screen.colorDepth}-bit`;
-  
-  // Color Gamut detection (approximate via CSS media queries)
-  let gamut = "Standard (sRGB)";
-  if (window.matchMedia("(color-gamut: p3)").matches) {
-    gamut = "Wide (Display P3)";
-  } else if (window.matchMedia("(color-gamut: rec2020)").matches) {
-    gamut = "Ultra Wide (Rec.2020)";
-  }
-  document.getElementById('valColor').innerText = gamut;
-
-  // Hz Detection via requestAnimationFrame
-  let frameCount = 0;
-  let lastTime = performance.now();
-  let fpsHistory = [];
-  const display = document.getElementById('hzDisplay');
-  
-  // UFO Visualizer
-  let ufoPos = 0;
-  const ufo = document.getElementById('ufoBox');
-
-  function measureRefresh(time) {
-    frameCount++;
-    
-    // UFO Logic: move 600px per second independent of framerate
-    const dt = time - (lastUfoTime || time);
-    lastUfoTime = time;
-    ufoPos += (600 * (dt / 1000));
-    if (ufoPos > 800) ufoPos = -30;
-    ufo.style.transform = `translateX(${ufoPos}px)`;
-
-    // FPS Calculation (every ~0.5 seconds)
-    if (time - lastTime >= 500) {
-      const fps = Math.round((frameCount * 1000) / (time - lastTime));
-      fpsHistory.push(fps);
-      if (fpsHistory.length > 5) fpsHistory.shift();
-      
-      // Average the last few readings for stability
-      const avgFps = Math.round(fpsHistory.reduce((a,b)=>a+b)/fpsHistory.length);
-      
-      // Snap to standard refresh rates if within 2Hz margin of error
-      let finalHz = avgFps;
-      const standards = [60, 75, 90, 100, 120, 144, 165, 240, 360];
-      for (const std of standards) {
-        if (Math.abs(avgFps - std) <= 2) {
-          finalHz = std;
-          break;
-        }
-      }
-      
-      display.innerText = finalHz;
-      
-      if (frameCount > 60 && fpsHistory.length === 5 && !window.trackedHz) {
-        window.trackedHz = true;
-        trackToolEvent('display_test', 'hz_detected', { hz: finalHz });
-      }
-
-      frameCount = 0;
-      lastTime = time;
-    }
-    
-    requestAnimationFrame(measureRefresh);
-  }
-  
-  let lastUfoTime = performance.now();
-  requestAnimationFrame(measureRefresh);
-
-</script>
-        <!-- End Tool Content -->
-
-        <div class="about-tool-section">
-          <h3>About this tool</h3>
-          <p>This is a free browser-based diagnostic tool provided by ay5uh.com to help you test and troubleshoot your hardware. It runs entirely on your device with no installation required.</p>
-        </div>
-
       </div>
     </main>
   </div>
@@ -343,92 +90,5 @@
       injectSidebar('display-test');
     });
   </script>
-  
-<script>
-  trackToolEvent('display_test', 'viewed');
-
-  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
-  const repairContainer = document.getElementById('repairOptionsContainer');
-  
-  repairContainer.innerHTML = 
-    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_14, false) + '</div>' +
-    '<div class="col-md-4">' + createRepairCard(repairCosts.display.macbook_16, false) + '</div>';
-
-  // Display Specs
-  const w = window.screen.width;
-  const h = window.screen.height;
-  const dpr = window.devicePixelRatio || 1;
-  
-  document.getElementById('valRes').innerText = `${w * dpr} x ${h * dpr}`;
-  document.getElementById('valDpr').innerText = `${dpr}x ${dpr > 1 ? '(HiDPI/Retina)' : ''}`;
-  document.getElementById('valDepth').innerText = `${window.screen.colorDepth}-bit`;
-  
-  // Color Gamut detection (approximate via CSS media queries)
-  let gamut = "Standard (sRGB)";
-  if (window.matchMedia("(color-gamut: p3)").matches) {
-    gamut = "Wide (Display P3)";
-  } else if (window.matchMedia("(color-gamut: rec2020)").matches) {
-    gamut = "Ultra Wide (Rec.2020)";
-  }
-  document.getElementById('valColor').innerText = gamut;
-
-  // Hz Detection via requestAnimationFrame
-  let frameCount = 0;
-  let lastTime = performance.now();
-  let fpsHistory = [];
-  const display = document.getElementById('hzDisplay');
-  
-  // UFO Visualizer
-  let ufoPos = 0;
-  const ufo = document.getElementById('ufoBox');
-
-  function measureRefresh(time) {
-    frameCount++;
-    
-    // UFO Logic: move 600px per second independent of framerate
-    const dt = time - (lastUfoTime || time);
-    lastUfoTime = time;
-    ufoPos += (600 * (dt / 1000));
-    if (ufoPos > 800) ufoPos = -30;
-    ufo.style.transform = `translateX(${ufoPos}px)`;
-
-    // FPS Calculation (every ~0.5 seconds)
-    if (time - lastTime >= 500) {
-      const fps = Math.round((frameCount * 1000) / (time - lastTime));
-      fpsHistory.push(fps);
-      if (fpsHistory.length > 5) fpsHistory.shift();
-      
-      // Average the last few readings for stability
-      const avgFps = Math.round(fpsHistory.reduce((a,b)=>a+b)/fpsHistory.length);
-      
-      // Snap to standard refresh rates if within 2Hz margin of error
-      let finalHz = avgFps;
-      const standards = [60, 75, 90, 100, 120, 144, 165, 240, 360];
-      for (const std of standards) {
-        if (Math.abs(avgFps - std) <= 2) {
-          finalHz = std;
-          break;
-        }
-      }
-      
-      display.innerText = finalHz;
-      
-      if (frameCount > 60 && fpsHistory.length === 5 && !window.trackedHz) {
-        window.trackedHz = true;
-        trackToolEvent('display_test', 'hz_detected', { hz: finalHz });
-      }
-
-      frameCount = 0;
-      lastTime = time;
-    }
-    
-    requestAnimationFrame(measureRefresh);
-  }
-  
-  let lastUfoTime = performance.now();
-  requestAnimationFrame(measureRefresh);
-
-</script>
-
 </body>
 </html>

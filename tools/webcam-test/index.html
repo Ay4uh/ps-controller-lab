@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webcam Test | ay5uh</title>
-  <meta name="description" content="Free online webcam test. Test camera feed and res">
+  <meta name="description" content="Free browser-based hardware diagnostics.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -15,307 +15,71 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <!-- Global CSS & Icons -->
   <link rel="stylesheet" href="/shared/styles.css?v=3">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-
-    
-
-    
-
-    /* Scrollbars */
-    
-    
-    
-    
-
-    
-
-    /* Navigation Sidebar */
-    
-
-    
-    
-    .brand-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text);
+    .placeholder-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 32px;
+      max-width: 500px;
+      margin: 48px auto;
+      text-align: center;
     }
-    .brand-logo-wrap:hover { color: var(--accent); }
-
-    .brand-logo { font-size: 1.5rem; color: var(--accent); }
-    .brand-title { font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px; }
-    .brand-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    
-
-    
-
-    .nav-tab-item a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
+    .placeholder-title {
+      font-size: 24px;
+      margin: 0 0 16px 0;
+      color: var(--text-primary);
+    }
+    .placeholder-desc {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0 0 32px 0;
+    }
+    .live-tools-list {
+      text-align: left;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: var(--transition);
-    }
-
-    .nav-tab-item a:hover {
-      color: var(--text);
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .nav-tab-item a.active {
-      color: #fff;
-      background: rgba(59, 130, 246, 0.15);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-    }
-
-    .nav-tab-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-
-    .sidebar-ad-card {
-      margin-top: auto;
       padding: 16px;
-      border-top: 1px solid var(--border);
-      background-color: rgba(0,0,0,0.2);
     }
-
-    /* Main Area */
-    
-
-    /* Global Repair Cards */
-    .repair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; transition: transform 0.2s; }
-    .repair-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .repair-card.recommended { border-color: var(--success); }
-    .repair-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #fff; padding-right: 80px;}
-    .repair-card .badge-rec { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--success); color: #000; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
-    .detail-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
-    .detail-row strong.cost { color: var(--success); font-size: 1.1rem; font-weight: 800; }
-    .repair-card .btn { margin-top: 1rem; width: 100%; font-weight: 700; }
-
-    /* Cards & Globals */
-    .card-custom { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
-  
-</style>
+    .live-tools-list a {
+      display: block;
+      color: var(--text-primary);
+      text-decoration: none;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .live-tools-list a:last-child {
+      border-bottom: none;
+    }
+    .live-tools-list a:hover {
+      color: var(--accent-blue);
+    }
+  </style>
 </head>
 <body>
 
   <div class="app-layout">
     <main class="main-content">
       <div class="container">
-        
-        <a href="/" class="tool-back-link">&larr; Back to all tools</a>
-        
-        <div class="tool-header-inner">
-          <h1>Webcam Test</h1>
-          <p>Test camera feed and res</p>
+        <a href="/" class="hero-cta" style="background:transparent; border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; margin-top:24px; display:inline-block;">&larr; Back to all tools</a>
+
+        <div class="placeholder-card">
+          <h1 class="placeholder-title">📷 Webcam Test</h1>
+          
+          <div class="placeholder-desc">
+            🔨 This tool is being built.
+          </div>
+
+          <div class="live-tools-list">
+            <p style="margin:0 0 12px 0; color:var(--text-muted); font-size:12px; text-transform:uppercase; font-weight:700;">Check back soon or try:</p>
+            <a href="/tools/controller-lab/">→ Controller Lab (live now)</a>
+            <a href="/tools/keyboard-test/">→ Keyboard Test (live now)</a>
+            <a href="/tools/battery-tester/">→ Battery Health (live now)</a>
+          </div>
+
         </div>
-
-        <!-- Tool Content -->
-        <style>
-  .webcam-container {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    position: relative;
-    margin-bottom: 2rem;
-    overflow: hidden;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #000;
-  }
-
-  .webcam-video {
-    width: 100%;
-    height: auto;
-    max-height: 70vh;
-    display: none;
-    background: #000;
-  }
-
-  .cam-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 10;
-    transition: opacity 0.3s;
-  }
-
-  .cam-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .cam-overlay p {
-    color: var(--text-muted);
-    max-width: 400px;
-    text-align: center;
-    margin-top: 1rem;
-  }
-
-  .status-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .status-item {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem;
-  }
-
-  .status-item .label {
-    font-weight: 600;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-
-  .status-item .val {
-    font-family: monospace;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-</style>
-
-<div class="container-fluid">
-  
-  <div class="mb-4 d-flex justify-content-between align-items-center">
-    <div>
-      <h1 class="fw-bold mb-2"><i class="fa-solid fa-camera" style="color:var(--text-muted);"></i> Webcam Test</h1>
-      <p class="text-muted">Check your camera resolution, framerate, and video quality.</p>
-    </div>
-  </div>
-
-  <div class="webcam-container">
-    <div class="cam-overlay" id="camOverlay">
-      <button class="btn-custom-primary btn-lg" onclick="startWebcam()">
-        <i class="fa-solid fa-video me-2"></i> Enable Webcam
-      </button>
-      <p>Your browser will ask for camera permission. We do not record or save any video data—everything stays strictly on your device.</p>
-    </div>
-    <video id="webcamVideo" class="webcam-video" autoplay playsinline></video>
-  </div>
-
-  <div class="status-grid">
-    <div class="status-item">
-      <div class="label">Camera Name</div>
-      <div class="val text-truncate" id="valName">--</div>
-    </div>
-    <div class="status-item">
-      <div class="label">Resolution</div>
-      <div class="val" id="valRes">--</div>
-    </div>
-    <div class="status-item">
-      <div class="label">Framerate (FPS)</div>
-      <div class="val" id="valFps">--</div>
-    </div>
-    <div class="status-item">
-      <div class="label">Aspect Ratio</div>
-      <div class="val" id="valAspect">--</div>
-    </div>
-  </div>
-
-  <h4 class="fw-bold mt-5 mb-3 border-bottom border-secondary pb-2">Webcam Upgrades & Repair</h4>
-  <div class="row" id="repairOptionsContainer"></div>
-
-</div>
-
-<script>
-  trackToolEvent('webcam_test', 'viewed');
-
-  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
-  const repairContainer = document.getElementById('repairOptionsContainer');
-  
-  repairContainer.innerHTML = 
-    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.macbook, false) + '</div>' +
-    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.external_usb, true) + '</div>';
-
-  async function startWebcam() {
-    try {
-      // Request maximum resolution to see what the hardware supports
-      const constraints = {
-        video: {
-          width: { ideal: 4096 },
-          height: { ideal: 2160 }
-        },
-        audio: false
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      
-      const video = document.getElementById('webcamVideo');
-      video.srcObject = stream;
-      video.style.display = 'block';
-      
-      document.getElementById('camOverlay').classList.add('hidden');
-      trackToolEvent('webcam_test', 'started');
-
-      const track = stream.getVideoTracks()[0];
-      const settings = track.getSettings();
-      
-      document.getElementById('valName').innerText = track.label || 'Default Camera';
-      document.getElementById('valName').title = track.label || '';
-      
-      // Update when video has loaded metadata to get actual resolution rendered
-      video.onloadedmetadata = () => {
-        const w = video.videoWidth;
-        const h = video.videoHeight;
-        
-        let resText = `${w}x${h}`;
-        if (w >= 3840) resText += ' (4K)';
-        else if (w >= 2560) resText += ' (1440p)';
-        else if (w >= 1920) resText += ' (1080p)';
-        else if (w >= 1280) resText += ' (720p)';
-        else resText += ' (SD)';
-        
-        document.getElementById('valRes').innerText = resText;
-        
-        if (settings.frameRate) {
-          document.getElementById('valFps').innerText = Math.round(settings.frameRate);
-        } else {
-          document.getElementById('valFps').innerText = 'Unknown';
-        }
-        
-        const gcd = (a, b) => b ? gcd(b, a % b) : a;
-        const div = gcd(w, h);
-        document.getElementById('valAspect').innerText = `${w/div}:${h/div}`;
-      };
-
-    } catch (err) {
-      console.error(err);
-      alert('Camera access denied or no camera found. Please allow camera permissions in your browser.');
-    }
-  }
-</script>
-        <!-- End Tool Content -->
-
-        <div class="about-tool-section">
-          <h3>About this tool</h3>
-          <p>This is a free browser-based diagnostic tool provided by ay5uh.com to help you test and troubleshoot your hardware. It runs entirely on your device with no installation required.</p>
-        </div>
-
       </div>
     </main>
   </div>
@@ -326,74 +90,5 @@
       injectSidebar('webcam-test');
     });
   </script>
-  
-<script>
-  trackToolEvent('webcam_test', 'viewed');
-
-  const repairCosts = JSON.parse(document.getElementById('repairCosts').textContent);
-  const repairContainer = document.getElementById('repairOptionsContainer');
-  
-  repairContainer.innerHTML = 
-    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.macbook, false) + '</div>' +
-    '<div class="col-md-4">' + createRepairCard(repairCosts.webcam.external_usb, true) + '</div>';
-
-  async function startWebcam() {
-    try {
-      // Request maximum resolution to see what the hardware supports
-      const constraints = {
-        video: {
-          width: { ideal: 4096 },
-          height: { ideal: 2160 }
-        },
-        audio: false
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      
-      const video = document.getElementById('webcamVideo');
-      video.srcObject = stream;
-      video.style.display = 'block';
-      
-      document.getElementById('camOverlay').classList.add('hidden');
-      trackToolEvent('webcam_test', 'started');
-
-      const track = stream.getVideoTracks()[0];
-      const settings = track.getSettings();
-      
-      document.getElementById('valName').innerText = track.label || 'Default Camera';
-      document.getElementById('valName').title = track.label || '';
-      
-      // Update when video has loaded metadata to get actual resolution rendered
-      video.onloadedmetadata = () => {
-        const w = video.videoWidth;
-        const h = video.videoHeight;
-        
-        let resText = `${w}x${h}`;
-        if (w >= 3840) resText += ' (4K)';
-        else if (w >= 2560) resText += ' (1440p)';
-        else if (w >= 1920) resText += ' (1080p)';
-        else if (w >= 1280) resText += ' (720p)';
-        else resText += ' (SD)';
-        
-        document.getElementById('valRes').innerText = resText;
-        
-        if (settings.frameRate) {
-          document.getElementById('valFps').innerText = Math.round(settings.frameRate);
-        } else {
-          document.getElementById('valFps').innerText = 'Unknown';
-        }
-        
-        const gcd = (a, b) => b ? gcd(b, a % b) : a;
-        const div = gcd(w, h);
-        document.getElementById('valAspect').innerText = `${w/div}:${h/div}`;
-      };
-
-    } catch (err) {
-      console.error(err);
-      alert('Camera access denied or no camera found. Please allow camera permissions in your browser.');
-    }
-  }
-</script>
-
 </body>
 </html>
