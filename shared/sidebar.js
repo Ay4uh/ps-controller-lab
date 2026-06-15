@@ -15,7 +15,7 @@ function injectSidebar(activeToolId = null) {
     <aside class="global-sidebar" id="globalSidebar">
       
       <div class="nav-section">
-        <div class="nav-category">Laptop</div>
+        <div class="nav-category">System Performance</div>
         <ul class="nav-list">
           <li class="nav-item"><a href="/tools/ram-test/" id="nav-ram-test">
             <div class="nav-item-left"><span class="nav-icon">🧠</span> RAM</div>
@@ -27,7 +27,7 @@ function injectSidebar(activeToolId = null) {
       </div>
 
       <div class="nav-section">
-        <div class="nav-category">Peripherals</div>
+        <div class="nav-category">Input Devices</div>
         <ul class="nav-list">
           <li class="nav-item"><a href="/tools/controller-lab/" id="nav-controller-lab">
             <div class="nav-item-left"><span class="nav-icon">🎮</span> Controller</div>
@@ -39,26 +39,32 @@ function injectSidebar(activeToolId = null) {
           <li class="nav-item"><a href="/tools/mouse-test/" id="nav-mouse-test">
             <div class="nav-item-left"><span class="nav-icon">🖱️</span> Mouse</div>
           </a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-category">Audio & Video</div>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test">
+            <div class="nav-item-left"><span class="nav-icon">🔊</span> Speaker</div>
+          </a></li>
           <li class="nav-item"><a href="/tools/mic-test/" id="nav-mic-test">
             <div class="nav-item-left"><span class="nav-icon">🎤</span> Mic</div>
           </a></li>
-          <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test">
-            <div class="nav-item-left"><span class="nav-icon">🔊</span> Speaker</div>
+          <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test">
+            <div class="nav-item-left"><span class="nav-icon">📷</span> Webcam</div>
           </a></li>
         </ul>
       </div>
 
       <div class="nav-section">
-        <div class="nav-category">Display</div>
+        <div class="nav-category">Display Controls</div>
         <ul class="nav-list">
           <li class="nav-item"><a href="/tools/display-test/" id="nav-display-test">
             <div class="nav-item-left"><span class="nav-icon">🖥️</span> Display</div>
           </a></li>
           <li class="nav-item"><a href="/tools/dead-pixel-test/" id="nav-dead-pixel-test">
             <div class="nav-item-left"><span class="nav-icon">💀</span> Dead Pixel</div>
-          </a></li>
-          <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test">
-            <div class="nav-item-left"><span class="nav-icon">📷</span> Webcam</div>
           </a></li>
         </ul>
       </div>
