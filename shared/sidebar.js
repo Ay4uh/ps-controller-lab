@@ -18,6 +18,9 @@ function injectSidebar(activeToolId = null) {
   const topNavHTML = `
     <nav class="top-navbar">
       <div class="topnav-left">
+        <button id="sidebarToggle" class="sidebar-toggle-btn desktop-only" title="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
         <a href="/" class="topnav-brand">
           <i class="fa-solid fa-screwdriver-wrench text-accent"></i>
           <span>TechTest</span>
@@ -54,11 +57,6 @@ function injectSidebar(activeToolId = null) {
     <button class="mobile-menu-btn" id="hamburgerBtn" style="position: absolute; top: 68px; left: 16px; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-primary); font-size: 20px; display: none;">☰</button>
 
     <aside class="global-sidebar" id="globalSidebar">
-      <button id="sidebarToggle" class="sidebar-toggle-btn"><i class="fa-solid fa-chevron-left"></i></button>
-      <div class="brand-container">
-        <div class="brand-logo"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-        <a href="/" class="brand-title" style="text-decoration:none;"><span class="item-text">TechTest</span></a>
-      </div>
       
       <div class="sidebar-scroll-area">
         <div class="nav-section">
@@ -133,11 +131,6 @@ function injectSidebar(activeToolId = null) {
     const savedState = localStorage.getItem('ay5uh_sidebar_state');
     if (savedState === 'collapsed') {
       document.body.classList.add('sidebar-collapsed');
-      const btnIcon = document.querySelector('#sidebarToggle i');
-      if (btnIcon) {
-        btnIcon.classList.remove('fa-chevron-left');
-        btnIcon.classList.add('fa-chevron-right');
-      }
     }
 
     // Highlight active tool
@@ -149,21 +142,13 @@ function injectSidebar(activeToolId = null) {
     }
 
     // Toggle button event listener
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    if (sidebarToggle) {
-      sidebarToggle.addEventListener('click', () => {
+    // Desktop sidebar toggle
+    const toggleBtn = document.getElementById('sidebarToggle');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
         document.body.classList.toggle('sidebar-collapsed');
         const isCollapsed = document.body.classList.contains('sidebar-collapsed');
         localStorage.setItem('ay5uh_sidebar_state', isCollapsed ? 'collapsed' : 'expanded');
-        
-        const btnIcon = sidebarToggle.querySelector('i');
-        if (isCollapsed) {
-          btnIcon.classList.remove('fa-chevron-left');
-          btnIcon.classList.add('fa-chevron-right');
-        } else {
-          btnIcon.classList.remove('fa-chevron-right');
-          btnIcon.classList.add('fa-chevron-left');
-        }
       });
     }
 
