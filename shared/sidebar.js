@@ -22,17 +22,31 @@ function injectSidebar(activeToolId = null) {
           <i class="fa-solid fa-screwdriver-wrench text-accent"></i>
           <span>TechTest</span>
         </a>
+        <div class="topnav-divider"></div>
         <div class="topnav-links">
-          <a href="/tools/laptop/" class="topnav-link ${isToolsPath ? 'active' : ''}">Tools</a>
-          <a href="/blog/" class="topnav-link ${window.location.pathname.startsWith('/blog/') ? 'active' : ''}">Blog</a>
+          <a href="/" class="topnav-link ${window.location.pathname === '/' || window.location.pathname.startsWith('/tools/') ? 'active' : ''}">Tools</a>
           <a href="/repair-guides/" class="topnav-link ${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
+          <a href="/blog/" class="topnav-link ${window.location.pathname.startsWith('/blog/') ? 'active' : ''}">Blog</a>
         </div>
       </div>
       <div class="topnav-right">
-        <button class="topnav-search"><i class="fa-solid fa-search"></i></button>
-        <a href="/service/" class="topnav-cta">Book a Service <i class="fa-solid fa-caret-right"></i></a>
+        <button class="topnav-search" id="btnToggleSearch"><i class="fa-solid fa-search"></i></button>
+        <button class="topnav-hamburger" id="btnToggleMobileMenu"><i class="fa-solid fa-bars"></i></button>
       </div>
     </nav>
+    
+    <!-- Search Drawer -->
+    <div class="search-drawer" id="searchDrawer">
+      <i class="fa-solid fa-search" style="color: #9CA3AF; margin-right: 12px;"></i>
+      <input type="text" id="searchInput" placeholder="Search devices, repair guides, tools...">
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div class="mobile-dropdown" id="mobileDropdown">
+      <a href="/" class="${window.location.pathname === '/' || window.location.pathname.startsWith('/tools/') ? 'active' : ''}">Tools</a>
+      <a href="/repair-guides/" class="${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
+      <a href="/blog/" class="${window.location.pathname.startsWith('/blog/') ? 'active' : ''}">Blog</a>
+    </div>
   `;
 
   const sidebarHTML = `
@@ -190,6 +204,59 @@ function injectSidebar(activeToolId = null) {
         }
       });
     }
+
+    // Top Navbar Logic
+    const btnToggleSearch = document.getElementById('btnToggleSearch');
+    const searchDrawer = document.getElementById('searchDrawer');
+    const searchInput = document.getElementById('searchInput');
+    const btnToggleMobileMenu = document.getElementById('btnToggleMobileMenu');
+    const mobileDropdown = document.getElementById('mobileDropdown');
+
+    if (btnToggleSearch && searchDrawer) {
+      btnToggleSearch.addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchDrawer.classList.toggle('open');
+        if (searchDrawer.classList.contains('open')) {
+          setTimeout(() => searchInput.focus(), 50);
+        }
+      });
+
+      // Close search on click outside
+      document.addEventListener('click', (e) => {
+        if (!searchDrawer.contains(e.target) && e.target !== btnToggleSearch) {
+          searchDrawer.classList.remove('open');
+        }
+      });
+
+      // Close search on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          searchDrawer.classList.remove('open');
+        }
+      });
+    }
+
+    if (btnToggleMobileMenu && mobileDropdown) {
+      btnToggleMobileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileDropdown.classList.toggle('open');
+      });
+
+      // Close dropdown when clicking a link
+      mobileDropdown.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileDropdown.classList.remove('open');
+        });
+      });
+
+      // Close dropdown on click outside
+      document.addEventListener('click', (e) => {
+        if (!mobileDropdown.contains(e.target) && e.target !== btnToggleMobileMenu) {
+          mobileDropdown.classList.remove('open');
+        }
+      });
+    }
+
   } else if (!isToolsPath && layout) {
     layout.classList.add('no-sidebar');
   }
