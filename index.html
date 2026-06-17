@@ -81,9 +81,15 @@
     /* Dashboard Layout */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: 1fr;
       gap: 24px;
       padding-bottom: 64px;
+    }
+    
+    @media (min-width: 992px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
     
     /* Premium Cards */
@@ -155,8 +161,39 @@
       color: var(--text-secondary);
       font-size: 15px;
       line-height: 1.6;
-      margin: 0 0 24px 0;
+      margin: 0 0 16px 0;
+    }
+    
+    .card-count-badge {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: var(--bg-hover);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+    }
+    
+    .tool-preview-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
       flex: 1;
+      align-content: flex-start;
+    }
+    
+    .tool-preview-tags span {
+      font-size: 11px;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
     }
     
     .card-action {
@@ -230,6 +267,11 @@
         <div class="container">
           <h1 class="hero-title">ay5uh — <span>Free Hardware Diagnostics</span></h1>
           <p class="hero-subtitle">Test your devices entirely in your browser without downloading any software. Open source, secure, and blazing fast.</p>
+          <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+            <span style="background: rgba(0, 112, 209, 0.1); color: var(--accent-blue); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;"><i class="fa-solid fa-check" style="margin-right: 4px;"></i> No signup required</span>
+            <span style="background: rgba(0, 112, 209, 0.1); color: var(--accent-blue); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;"><i class="fa-solid fa-check" style="margin-right: 4px;"></i> No software to install</span>
+            <span style="background: rgba(0, 112, 209, 0.1); color: var(--accent-blue); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;"><i class="fa-solid fa-check" style="margin-right: 4px;"></i> 100% runs in browser</span>
+          </div>
         </div>
       </div>
 
@@ -240,8 +282,12 @@
           <div class="card-icon-container">
             <i class="fa-solid fa-gamepad"></i>
           </div>
+          <span class="card-count-badge">6 tests</span>
           <h2 class="card-title">Controller Lab</h2>
           <p class="card-desc">Diagnose, test, and calibrate PlayStation and Xbox controllers. Read raw HID data, test haptics, and check for stick drift.</p>
+          <div class="tool-preview-tags">
+            <span>Calibration</span><span>Input Tester</span><span>Vibration</span><span>Drift Check</span>
+          </div>
           <div class="card-action">
             Open Controller Lab <i class="fa-solid fa-arrow-right"></i>
           </div>
@@ -252,8 +298,12 @@
           <div class="card-icon-container">
             <i class="fa-solid fa-laptop"></i>
           </div>
+          <span class="card-count-badge">7 tools</span>
           <h2 class="card-title">Laptop / PC Diagnostics</h2>
           <p class="card-desc">Comprehensive suite for testing your computer. Includes Keyboard, Mouse, Microphone, Speaker, Webcam, and Display tools.</p>
+          <div class="tool-preview-tags">
+            <span>Keyboard</span><span>Mouse</span><span>Mic</span><span>Speaker</span><span>Display</span><span>Dead Pixel</span><span>Webcam</span>
+          </div>
           <div class="card-action">
             View PC Tools <i class="fa-solid fa-arrow-right"></i>
           </div>
@@ -264,8 +314,12 @@
           <div class="card-icon-container">
             <i class="fa-solid fa-mobile-screen"></i>
           </div>
+          <span class="card-count-badge">6 tests</span>
           <h2 class="card-title">Phone Tester</h2>
           <p class="card-desc">Scan your iOS or Android smartphone for hardware defects. Test touchscreen digitizers, haptics, cameras, and dead pixels.</p>
+          <div class="tool-preview-tags">
+            <span>Dead Pixel</span><span>Touch</span><span>Multi-Touch</span><span>Speaker</span><span>Mic</span><span>Camera</span>
+          </div>
           <div class="card-action">
             Start Phone Test <i class="fa-solid fa-arrow-right"></i>
           </div>

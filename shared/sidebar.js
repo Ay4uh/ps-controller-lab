@@ -11,7 +11,7 @@ function injectSidebar(activeToolId = null) {
       
       <div class="sidebar-scroll-area">
         <div class="nav-section">
-          <div class="nav-category">GAMEPAD</div>
+          <div class="nav-category"><span>GAMEPAD</span> <span class="nav-category-pill">1</span></div>
           <ul class="nav-list">
             <li class="nav-item"><a href="/tools/controller-lab/" id="nav-controller-lab">
               <i class="fa-solid fa-gamepad nav-icon"></i> Controller Lab
@@ -20,7 +20,7 @@ function injectSidebar(activeToolId = null) {
         </div>
 
         <div class="nav-section">
-          <div class="nav-category">LAPTOP / MACBOOK</div>
+          <div class="nav-category"><span>LAPTOP / MACBOOK</span> <span class="nav-category-pill">7</span></div>
           <ul class="nav-list">
             <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test">
               <i class="fa-solid fa-keyboard nav-icon"></i> Keyboard Test
@@ -47,7 +47,7 @@ function injectSidebar(activeToolId = null) {
         </div>
 
         <div class="nav-section">
-          <div class="nav-category">PHONE</div>
+          <div class="nav-category"><span>PHONE</span> <span class="nav-category-pill">1</span></div>
           <ul class="nav-list">
             <li class="nav-item"><a href="/tools/phone-diagnostics/" id="nav-phone-diagnostics">
               <i class="fa-solid fa-mobile-screen nav-icon"></i> Phone Diagnostics

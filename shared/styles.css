@@ -102,8 +102,26 @@ body {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 0 16px;
-  margin-bottom: 8px;
+  padding: 16px 16px 0 16px;
+  margin-bottom: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-category:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.nav-category-pill {
+  background: var(--border);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
 }
 
 .nav-list {
