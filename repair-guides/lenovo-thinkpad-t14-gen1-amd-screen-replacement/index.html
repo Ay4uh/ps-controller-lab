@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lenovo ThinkPad T14 Gen 1 AMD — Screen Replacement Guide | TechTest</title>
+  <meta name="description" content="Step-by-step guide to replacing the screen on a Lenovo ThinkPad T14 Gen 1 AMD (20UD, 20UE).">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/shared/styles.css?v=13">
+  <style>
+    /* Repair Guide Styles */
+    .guide-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    .guide-content h1 { font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; }
+    .guide-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    .guide-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; }
+    .guide-content p { margin-bottom: 1.2rem; color: var(--text-secondary); }
+    .guide-content ul, .guide-content ol { margin-bottom: 1.5rem; padding-left: 24px; color: var(--text-secondary); }
+    .guide-content li { margin-bottom: 0.5rem; }
+    .guide-content strong { color: var(--text-primary); font-weight: 600; }
+    .guide-content hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .guide-content a { color: var(--accent-blue); text-decoration: none; }
+    .guide-content a:hover { text-decoration: underline; }
+    
+    /* Tables */
+    .guide-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background: var(--bg-card);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .guide-content th, .guide-content td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .guide-content th { background: var(--bg-hover); font-weight: 600; color: var(--text-primary); }
+    .guide-content td { color: var(--text-secondary); }
+    .guide-content tr:last-child td { border-bottom: none; }
+    
+    /* Alerts / Callouts */
+    .guide-content blockquote {
+      margin: 1.5rem 0;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--border);
+      background: var(--bg-hover);
+    }
+    .guide-content blockquote p { margin-bottom: 0; color: var(--text-primary); }
+    .guide-content blockquote.warning { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.05); }
+    .guide-content blockquote.info { border-left-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+    .guide-content blockquote.success { border-left-color: #10b981; background: rgba(16, 185, 129, 0.05); }
+    
+    /* Breadcrumb */
+    .breadcrumb {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text-primary); }
+    
+    /* Photo Placeholder */
+    .photo-placeholder {
+      background: var(--bg-hover);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-style: italic;
+      margin: 1.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="guide-content">
+        
+        <div class="breadcrumb">
+          <a href="/repair-guides/">Repair Guides</a> &rarr; Laptops &rarr; Lenovo &rarr; ThinkPad T14 Gen 1 &rarr; Screen Replacement
+        </div>
+
+        <h1>Lenovo ThinkPad T14 Gen 1 AMD — Screen Replacement Guide</h1>
+        
+        <h2>Guide Metadata (for template fields)</h2>
+        <table>
+          <tbody>
+            <tr><td><strong>Device</strong></td><td>Lenovo ThinkPad T14 Gen 1 AMD</td></tr>
+            <tr><td><strong>Covered models</strong></td><td>20UD, 20UE (includes 20UDS, 20UE0, 20UES08Q0R and all 20UE/20UD variants)</td></tr>
+            <tr><td><strong>Repair type</strong></td><td>Screen Replacement</td></tr>
+            <tr><td><strong>Difficulty</strong></td><td>⚡ Intermediate</td></tr>
+            <tr><td><strong>Time estimate</strong></td><td>30–50 minutes</td></tr>
+            <tr><td><strong>Step count</strong></td><td>9 steps</td></tr>
+            <tr><td><strong>Warranty impact</strong></td><td>⚠️ May void remaining warranty</td></tr>
+            <tr><td><strong>Risk level</strong></td><td>Low — if careful with ribbon cables</td></tr>
+            <tr><td><strong>Diagnostic link</strong></td><td><a href="/tools/display-test/">/tools/display-test/</a></td></tr>
+            <tr><td><strong>URL slug</strong></td><td>/repair-guides/lenovo-thinkpad-t14-gen1-amd-screen-replacement/</td></tr>
+            <tr><td><strong>Category</strong></td><td>Screen &amp; Display</td></tr>
+            <tr><td><strong>Tags</strong></td><td>Lenovo, ThinkPad, T14, Screen, LCD, IPS, 14 inch, AMD</td></tr>
+          </tbody>
+        </table>
+
+        <hr>
+
+        <h2>Before You Start</h2>
+        <blockquote class="info">
+          <p>🔍 <strong>Not sure if your screen is broken?</strong><br>
+          Run our free <a href="/tools/display-test/">Display Test &rarr;</a> and <a href="/tools/dead-pixel-test/">Dead Pixel Test &rarr;</a> first to confirm the issue before buying parts.</p>
+        </blockquote>
+
+        <p><strong>Common symptoms this guide fixes:</strong></p>
+        <ul>
+          <li>Cracked or shattered screen glass</li>
+          <li>Black screen with backlight (can see image with flashlight)</li>
+          <li>Vertical or horizontal lines across the display</li>
+          <li>Half the screen is dark or discoloured</li>
+          <li>Dead pixels or large dead zones</li>
+          <li>Screen flickers or goes black randomly</li>
+        </ul>
+
+        <p><strong>This guide does NOT fix:</strong></p>
+        <ul>
+          <li>No display at all (could be GPU or motherboard issue — run diagnostics first)</li>
+          <li>Backlight-only issues without physical damage (may be cable, not panel)</li>
+          <li>External display works but internal doesn't (likely cable fault, not panel)</li>
+        </ul>
+
+        <hr>
+
+        <h2>Tools Required</h2>
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Phillips #0 screwdriver</td><td>For bottom panel and hinge screws</td></tr>
+            <tr><td>Plastic pry tool / spudger</td><td>For opening the bezel — do NOT use metal</td></tr>
+            <tr><td>Plastic opening picks</td><td>2–3 guitar pick style, to run along bezel edges</td></tr>
+            <tr><td>Tweezers</td><td>For handling the display cable connector</td></tr>
+            <tr><td>Microfibre cloth</td><td>To protect the new screen while working</td></tr>
+            <tr><td>Anti-static wrist strap</td><td>Recommended — protects against ESD damage</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Estimated tool cost if buying:</strong> $15–25 CAD (iFixit toolkit or Amazon)</p>
+
+        <hr>
+
+        <h2>Parts Required</h2>
+        <h3>Compatible Replacement Screens</h3>
+        <p>All three panels below are confirmed compatible with the ThinkPad T14 Gen 1 AMD (20UD/20UE). They use the same <strong>30-pin eDP connector</strong> and fit the existing cable and chassis without modification.</p>
+
+        <table>
+          <thead>
+            <tr><th>Panel</th><th>Resolution</th><th>Brightness</th><th>Type</th><th>Approx. Price (CAD)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>AUO B140HAN05.7</strong> ⭐ Recommended</td><td>1920×1080 FHD</td><td>300 nits</td><td>IPS Anti-glare</td><td>$55–75</td></tr>
+            <tr><td>BOE NV140FHM-N3B</td><td>1920×1080 FHD</td><td>250 nits</td><td>IPS Anti-glare</td><td>$45–65</td></tr>
+            <tr><td>Innolux N140HCA-EAC</td><td>1920×1080 FHD</td><td>300 nits</td><td>IPS Anti-glare</td><td>$50–70</td></tr>
+          </tbody>
+        </table>
+
+        <blockquote class="info">
+          <p>💡 <strong>Upgrading from HD to FHD?</strong> If your original screen is 1366×768 (HD), you can upgrade to a FHD panel using any of the above. The existing LCD cable supports both resolutions — no cable swap needed.</p>
+        </blockquote>
+
+        <p><strong>Where to buy (Canada):</strong></p>
+        <ul>
+          <li>Amazon.ca — search the panel model number exactly</li>
+          <li>AliExpress — 2–3 week shipping, lowest price</li>
+          <li>eBay.ca — check seller ratings carefully</li>
+          <li>Canada Computers — call ahead, limited stock</li>
+        </ul>
+
+        <blockquote class="warning">
+          <p>⚠️ <strong>Before ordering:</strong> Confirm your current panel model. Open the lid slightly and shine a flashlight at the bottom edge of the screen bezel — the panel model number sticker is usually visible on the metal frame. Match it to your replacement choice.</p>
+        </blockquote>
+
+        <hr>
+
+        <h2>Safety Warnings</h2>
+        <blockquote class="warning"><p>⚠️ <strong>Power off completely</strong> — do not just close the lid. Hold power button 5 seconds if needed.</p></blockquote>
+        <blockquote class="warning"><p>⚠️ <strong>Remove the battery</strong> before disconnecting any cables. ThinkPad T14 Gen 1 has an internal battery — there is a battery disconnect option in BIOS (see Step 2).</p></blockquote>
+        <blockquote class="warning"><p>⚠️ <strong>Never force the bezel</strong> — it clips on with plastic tabs. Forcing it cracks the bezel permanently.</p></blockquote>
+        <blockquote class="warning"><p>⚠️ <strong>Handle the display cable gently</strong> — it is a thin ZIF (zero insertion force) ribbon. Pulling it at an angle tears it.</p></blockquote>
+        <blockquote class="warning"><p>⚠️ <strong>ESD precaution</strong> — touch a grounded metal surface or wear an anti-static wrist strap before handling the new panel.</p></blockquote>
+
+        <hr>
+
+        <h2>Step-by-Step Guide</h2>
+        
+        <h3>Step 1 — Disable the built-in battery</h3>
+        <p><strong>Why:</strong> The ThinkPad T14 Gen 1 has a non-removable internal battery. Lenovo provides a BIOS option to safely disconnect it before service.</p>
+        <ol>
+          <li>Power on the laptop normally</li>
+          <li>Immediately press <strong>F1</strong> repeatedly to enter BIOS (ThinkPad Setup)</li>
+          <li>Navigate to <strong>Config &rarr; Power &rarr; Disable Built-in Battery</strong></li>
+          <li>Press <strong>Enter</strong> to confirm — the laptop will power off automatically</li>
+          <li>The battery is now safely disconnected</li>
+        </ol>
+        <blockquote class="success"><p>✅ You can now work safely without risk of electrical shorts.</p></blockquote>
+        <div class="photo-placeholder">[Photo placeholder: BIOS screen showing "Disable Built-in Battery" option highlighted]</div>
+
+        <h3>Step 2 — Remove the bottom panel</h3>
+        <ol>
+          <li>Place the laptop upside down on a soft surface (use a microfibre cloth to protect the screen underneath)</li>
+          <li>Locate the <strong>5 Phillips #0 screws</strong> on the bottom panel — they are captive screws (they won't fall out when loose, just turn until you feel resistance stop)</li>
+          <li>Insert a plastic pry tool into the seam between the bottom panel and chassis, starting at a rear corner</li>
+          <li>Work the pick around all four edges — you will hear/feel clips releasing</li>
+          <li>Lift the bottom panel away and set aside</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: Bottom of laptop showing 5 screw locations circled in red]</div>
+        <blockquote class="warning"><p>⚠️ The screws are captive — do not try to pull them all the way out. Turn until loose and leave them in the panel.</p></blockquote>
+
+        <h3>Step 3 — Locate and identify the LCD cable</h3>
+        <ol>
+          <li>With the bottom panel removed, you can see the main board, battery, and SSD</li>
+          <li>The <strong>LCD cable</strong> runs from the motherboard up through the left hinge into the display assembly</li>
+          <li>You do NOT need to disconnect it from the motherboard end — you will disconnect it from the screen end in Step 6</li>
+          <li>Take a moment to visually trace the cable path so you know how to re-route it later</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: Inside of T14 Gen 1 with LCD cable highlighted/traced in yellow]</div>
+
+        <h3>Step 4 — Open the display assembly and remove the bezel</h3>
+        <ol>
+          <li>Flip the laptop right-side up and open the lid fully (180 degrees flat if possible)</li>
+          <li>Starting at a <strong>bottom corner</strong> of the screen bezel, insert a plastic pick between the bezel and the display chassis</li>
+          <li>Gently work the pick along the <strong>bottom edge</strong> first — you will hear clips releasing every 2–3 cm</li>
+          <li>Continue along both <strong>side edges</strong></li>
+          <li>Finish at the <strong>top edge</strong> — be extra careful near the webcam module at the top centre</li>
+          <li>Once all clips are released, carefully lift the bezel off — it is held by clips only, no screws</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: Plastic pick being inserted at bottom-left corner of bezel]</div>
+        <div class="photo-placeholder">[Photo placeholder: Bezel halfway removed showing clip positions]</div>
+        <blockquote class="warning"><p>⚠️ If a section resists, do not force it — move the pick closer to that spot and try again. Forcing cracks the bezel plastic.</p></blockquote>
+        <blockquote class="warning"><p>⚠️ Near the webcam (top centre), slow down. There is a thin webcam cable just behind the bezel — do not snag it.</p></blockquote>
+
+        <h3>Step 5 — Remove the screen mounting screws</h3>
+        <ol>
+          <li>With the bezel removed, the screen panel is now visible — held by a <strong>metal frame</strong> screwed to the display chassis</li>
+          <li>Locate the <strong>4 Phillips #0 screws</strong> on the metal brackets — 2 on the left side, 2 on the right side of the panel</li>
+          <li>Remove all 4 screws and set aside safely (use a magnetic tray or tape them to the work surface)</li>
+          <li>Carefully tilt the top of the panel forward toward you — like opening a book forward</li>
+          <li>Rest the panel face-down on the keyboard (place the microfibre cloth first to protect both surfaces)</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: Panel with 4 bracket screws circled in red]</div>
+        <div class="photo-placeholder">[Photo placeholder: Panel tilted forward resting on keyboard with cloth]</div>
+
+        <h3>Step 6 — Disconnect the LCD cable</h3>
+        <p>This is the most critical step — be slow and deliberate.</p>
+        <ol>
+          <li>With the panel face-down on the keyboard, look at the back of the panel — you will see a <strong>flat ribbon cable</strong> connected to a small circuit board at the bottom of the panel</li>
+          <li>The cable is held by a small piece of <strong>black adhesive tape</strong> — carefully peel it back (do not discard it — you will reuse it)</li>
+          <li>The cable connector is a <strong>ZIF (Zero Insertion Force)</strong> type:
+            <ul>
+              <li>Locate the small <strong>flip-up locking tab</strong> on the connector</li>
+              <li>Use a fingernail or a spudger tip to gently flip the locking tab <strong>upward</strong> (it rotates 90°)</li>
+              <li>Once unlocked, the ribbon cable slides straight out — do NOT pull at an angle</li>
+            </ul>
+          </li>
+          <li>Set the old panel aside</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: Back of panel showing ribbon cable and adhesive tape]</div>
+        <div class="photo-placeholder">[Photo placeholder: Close-up of ZIF connector with locking tab visible]</div>
+        <div class="photo-placeholder">[Photo placeholder: Locking tab flipped up, cable sliding out]</div>
+        <blockquote class="warning"><p>⚠️ If the cable does not slide out easily after unlocking, stop and check the locking tab again. Forcing a locked ZIF connector tears the cable.</p></blockquote>
+
+        <h3>Step 7 — Connect the new screen</h3>
+        <ol>
+          <li>Take the new replacement panel out of its packaging — handle it by the edges only, do not touch the screen surface</li>
+          <li>Place the new panel face-down on the keyboard (same orientation as the old one)</li>
+          <li>Slide the ribbon cable into the ZIF connector on the back of the new panel — it should slide in smoothly with no force</li>
+          <li>Press the <strong>locking tab back down</strong> (rotate 90° until it clicks flat) to secure the cable</li>
+          <li>Re-apply the black adhesive tape over the connector to hold the cable in place</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: New panel face-down, cable being inserted into connector]</div>
+        <div class="photo-placeholder">[Photo placeholder: Locking tab pressed down flat, tape being re-applied]</div>
+        <blockquote class="success"><p>✅ Give the cable a gentle tug to confirm it is locked — it should not move.</p></blockquote>
+
+        <h3>Step 8 — Test before closing up</h3>
+        <p><strong>Always test before reassembling — saves you from opening it again.</strong></p>
+        <ol>
+          <li>Carefully tilt the new panel upright (lean it against something steady, or have someone hold it)</li>
+          <li>Reconnect the battery: power on the laptop (the BIOS battery disable resets after each boot)</li>
+          <li>The screen should light up during boot</li>
+          <li>Check for: correct brightness, no lines, no dead zones, full colour</li>
+          <li>If anything looks wrong — power off and check the cable connection before continuing</li>
+          <li>If everything looks good — power off and proceed to reassembly</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: Laptop booting with new screen during test, screen lit up]</div>
+        <blockquote class="success"><p>✅ If the screen is black but you can hear the boot sound, the cable is likely not fully seated — open the lock tab and reinsert.</p></blockquote>
+
+        <h3>Step 9 — Reassemble</h3>
+        <ol>
+          <li><strong>Screw in the 4 panel bracket screws</strong> — snug but do not overtighten (these are small threads)</li>
+          <li><strong>Re-attach the bezel</strong> — align it at the top first, then press firmly along all edges until you hear each clip click in. Work bottom last.</li>
+          <li><strong>Replace the bottom panel</strong> — align the clips around all edges, press down firmly, then tighten the 5 captive screws</li>
+          <li>Power on the laptop and run a final display check</li>
+        </ol>
+        <div class="photo-placeholder">[Photo placeholder: Bottom panel being pressed back into place]</div>
+
+        <hr>
+
+        <h2>After the Repair</h2>
+        <p><strong>Run these diagnostics to confirm the repair:</strong></p>
+        <ul>
+          <li><a href="/tools/display-test/">Display Test &rarr;</a> — checks brightness, colour uniformity, contrast</li>
+          <li><a href="/tools/dead-pixel-test/">Dead Pixel Test &rarr;</a> — confirms no dead pixels on the new panel</li>
+          <li><a href="/tools/webcam-test/">Webcam Test &rarr;</a> — confirms webcam cable was not disturbed</li>
+        </ul>
+        <p><strong>Expected result:</strong> Full 1920×1080 display, no dead pixels, consistent brightness edge to edge.</p>
+
+        <hr>
+
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Black screen after reassembly</td><td>Cable not fully seated or lock tab not engaged</td><td>Re-open, reseat cable</td></tr>
+            <tr><td>Flickering display</td><td>Cable pinched in hinge when closing</td><td>Check cable routing through hinge</td></tr>
+            <tr><td>Half the screen has lines</td><td>Cable seated at angle</td><td>Re-open ZIF connector, reinsert straight</td></tr>
+            <tr><td>Webcam not working</td><td>Webcam cable snagged during bezel removal</td><td>Re-open bezel, check webcam cable</td></tr>
+            <tr><td>Screen dims then brightens</td><td>Normal — Windows auto-brightness adjusting</td><td>Disable adaptive brightness in Display Settings</td></tr>
+            <tr><td>Wrong resolution shown</td><td>Driver issue</td><td>Right-click desktop &rarr; Display Settings &rarr; set to 1920×1080</td></tr>
+          </tbody>
+        </table>
+
+        <hr>
+
+        <h2>Related Guides</h2>
+        <ul>
+          <li><a href="#">Lenovo ThinkPad T14 Gen 1 — Battery Replacement</a></li>
+          <li><a href="#">Lenovo ThinkPad T14 Gen 1 — Keyboard Replacement</a></li>
+          <li><a href="#">Lenovo ThinkPad T14 Gen 1 — SSD Upgrade</a></li>
+          <li><a href="#">How to identify your ThinkPad T14 generation</a></li>
+        </ul>
+
+        <hr>
+
+        <h2>Parts &amp; Tools (Affiliate Links — Canada)</h2>
+        <p><em>Links below help support TechTest at no extra cost to you.</em></p>
+        <ul>
+          <li><a href="#">AUO B140HAN05.7 — Amazon.ca</a></li>
+          <li><a href="#">BOE NV140FHM-N3B — Amazon.ca</a></li>
+          <li><a href="#">iFixit Pro Tech Toolkit — Amazon.ca</a></li>
+          <li><a href="#">Anti-static wrist strap — Amazon.ca</a></li>
+        </ul>
+
+        <hr>
+        
+        <p><em>Guide accuracy verified: June 2026<br>Applies to: ThinkPad T14 Gen 1 AMD (20UD, 20UE) — all sub-variants including 20UES08Q0R</em></p>
+
+      </div>
+    </main>
+  </div>
+  <script src="/shared/sidebar.js?v=13"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      injectSidebar(null);
+    });
+  </script>
+</body>
+</html>
