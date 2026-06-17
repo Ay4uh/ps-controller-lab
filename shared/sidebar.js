@@ -1,5 +1,18 @@
-function injectSidebar(activeToolId = null) {
-  const sidebarHTML = `
+  const subnavHTML = activeToolId === 'controller-lab' ? \`
+    <ul class="nav-list" style="margin-top: 4px; padding-left: 16px;">
+      <li class="nav-item"><button class="tab-btn active" data-tab="tab-overview" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-sliders" style="width:14px; text-align:center;"></i> Overview</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-calibration" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-wrench" style="width:14px; text-align:center;"></i> Calibration</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-tester" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-keyboard" style="width:14px; text-align:center;"></i> Input Tester</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-vibration" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-water" style="width:14px; text-align:center;"></i> Vibration</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-touchpad" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-fingerprint" style="width:14px; text-align:center;"></i> Touchpad</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-drift" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-compass" style="width:14px; text-align:center;"></i> Drift Check</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-sensors" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-microchip" style="width:14px; text-align:center;"></i> Sensor Lab</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-info" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-info" style="width:14px; text-align:center;"></i> Info & Logs</button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-docs" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-book" style="width:14px; text-align:center;"></i> Documentation</button></li>
+    </ul>
+  \` : '';
+
+  const sidebarHTML = \`
     <!-- Mobile Hamburger Toggle -->
     <button class="mobile-menu-btn" id="hamburgerBtn" style="position: absolute; top: 16px; left: 16px; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-primary); font-size: 20px; display: none;">☰</button>
 
@@ -17,6 +30,7 @@ function injectSidebar(activeToolId = null) {
               <i class="fa-solid fa-gamepad nav-icon"></i> Controller Lab
             </a></li>
           </ul>
+          \${subnavHTML}
         </div>
 
         <div class="nav-section">

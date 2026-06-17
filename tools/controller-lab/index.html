@@ -1237,76 +1237,6 @@
   </div>
 
   <div class="app-container">
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="brand-container">
-        <i class="fa-solid fa-gamepad brand-logo"></i>
-        <div class="brand-title">Controller Diagnostic Lab</div>
-      </div>
-      <ul class="nav-tabs-custom">
-        <li class="nav-tab-item">
-          <button class="tab-btn active" data-tab="tab-overview">
-            <i class="fa-solid fa-sliders"></i> Overview
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-calibration">
-            <i class="fa-solid fa-wrench"></i> Calibration
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-tester">
-            <i class="fa-solid fa-keyboard"></i> Input Tester
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-vibration">
-            <i class="fa-solid fa-water"></i> Vibration
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-touchpad">
-            <i class="fa-solid fa-fingerprint"></i> Touchpad
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-drift">
-            <i class="fa-solid fa-compass"></i> Drift Check
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-sensors">
-            <i class="fa-solid fa-microchip"></i> Sensor Lab
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-info">
-            <i class="fa-solid fa-circle-info"></i> Info & Logs
-          </button>
-        </li>
-        <li class="nav-tab-item">
-          <button class="tab-btn" data-tab="tab-docs">
-            <i class="fa-solid fa-book"></i> Documentation
-          </button>
-        </li>
-      </ul>
-      
-
-      
-      <!-- Sidebar Advertisement Panel -->
-      <div class="sidebar-ad-card">
-        <div style="font-size: 0.6rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px; opacity: 0.6;">Ad · keeps this tool free</div>
-        <ins class="adsbygoogle"
-             style="display:block;width:100%;min-height:90px;"
-             data-ad-client="ca-pub-4806235756537260"
-             data-ad-slot="8013321574"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        </script>
-      </div>
-    </aside>
 
     <!-- Main Content Panel -->
     <main class="main-content">
@@ -6521,6 +6451,12 @@
       }
     });
 
+  </script>
+  <script src="/shared/sidebar.js?v=9"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      injectSidebar('controller-lab');
+    });
   </script>
 </body>
 </html>

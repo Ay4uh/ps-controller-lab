@@ -242,17 +242,20 @@
     }
     
     /* Device specific colors */
-    .card-gamepad:hover { border-color: #0ea5e9; box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.1); }
+    .card-gamepad { border-left: 3px solid #3B82F6; }
+    .card-gamepad:hover { border-color: #0ea5e9; box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.1); border-left-color: #0ea5e9; }
     .card-gamepad .card-icon-container { color: #0ea5e9; }
     .card-gamepad:hover .card-icon-container { background: rgba(14, 165, 233, 0.1); }
     .card-gamepad .card-action { color: #0ea5e9; }
     
-    .card-laptop:hover { border-color: #8b5cf6; box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1); }
+    .card-laptop { border-left: 3px solid #8B5CF6; }
+    .card-laptop:hover { border-color: #8b5cf6; box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1); border-left-color: #8b5cf6; }
     .card-laptop .card-icon-container { color: #8b5cf6; }
     .card-laptop:hover .card-icon-container { background: rgba(139, 92, 246, 0.1); }
     .card-laptop .card-action { color: #8b5cf6; }
     
-    .card-phone:hover { border-color: #10b981; box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.1); }
+    .card-phone { border-left: 3px solid #10B981; }
+    .card-phone:hover { border-color: #10b981; box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.1); border-left-color: #10b981; }
     .card-phone .card-icon-container { color: #10b981; }
     .card-phone:hover .card-icon-container { background: rgba(16, 185, 129, 0.1); }
     .card-phone .card-action { color: #10b981; }
@@ -294,7 +297,7 @@
         </a>
 
         <!-- Laptop Card -->
-        <a href="/tools/keyboard-test/" class="dashboard-card card-laptop animate-fade-in-up delay-2">
+        <a href="/tools/laptop/" class="dashboard-card card-laptop animate-fade-in-up delay-2">
           <div class="card-icon-container">
             <i class="fa-solid fa-laptop"></i>
           </div>
