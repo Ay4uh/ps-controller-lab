@@ -1,61 +1,85 @@
-  const subnavHTML = activeToolId === 'controller-lab' ? \`
-    <ul class="nav-list" style="margin-top: 4px; padding-left: 16px;">
-      <li class="nav-item"><button class="tab-btn active" data-tab="tab-overview" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-sliders" style="width:14px; text-align:center;"></i> Overview</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-calibration" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-wrench" style="width:14px; text-align:center;"></i> Calibration</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-tester" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-keyboard" style="width:14px; text-align:center;"></i> Input Tester</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-vibration" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-water" style="width:14px; text-align:center;"></i> Vibration</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-touchpad" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-fingerprint" style="width:14px; text-align:center;"></i> Touchpad</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-drift" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-compass" style="width:14px; text-align:center;"></i> Drift Check</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-sensors" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-microchip" style="width:14px; text-align:center;"></i> Sensor Lab</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-info" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-info" style="width:14px; text-align:center;"></i> Info & Logs</button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-docs" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-book" style="width:14px; text-align:center;"></i> Documentation</button></li>
-    </ul>
-  \` : '';
+function injectSidebar(activeToolId = null) {
+  const isToolsPath = window.location.pathname.startsWith('/tools/') || activeToolId !== null;
 
-  const sidebarHTML = \`
+  const subnavHTML = activeToolId === 'controller-lab' ? `
+    <ul class="nav-list" style="margin-top: 4px; padding-left: 16px;">
+      <li class="nav-item"><button class="tab-btn active" data-tab="tab-overview" title="Overview" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-sliders" style="width:14px; text-align:center;"></i> <span class="item-text">Overview</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-calibration" title="Calibration" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-wrench" style="width:14px; text-align:center;"></i> <span class="item-text">Calibration</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-tester" title="Input Tester" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-keyboard" style="width:14px; text-align:center;"></i> <span class="item-text">Input Tester</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-vibration" title="Vibration" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-water" style="width:14px; text-align:center;"></i> <span class="item-text">Vibration</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-touchpad" title="Touchpad" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-fingerprint" style="width:14px; text-align:center;"></i> <span class="item-text">Touchpad</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-drift" title="Drift Check" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-compass" style="width:14px; text-align:center;"></i> <span class="item-text">Drift Check</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-sensors" title="Sensor Lab" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-microchip" style="width:14px; text-align:center;"></i> <span class="item-text">Sensor Lab</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-info" title="Info & Logs" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-info" style="width:14px; text-align:center;"></i> <span class="item-text">Info & Logs</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-docs" title="Documentation" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; text-align:left; width:100%; padding:4px 8px; border-radius:4px; font-size:13px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-book" style="width:14px; text-align:center;"></i> <span class="item-text">Documentation</span></button></li>
+    </ul>
+  ` : '';
+
+  const topNavHTML = `
+    <nav class="top-navbar">
+      <div class="topnav-left">
+        <a href="/" class="topnav-brand">
+          <i class="fa-solid fa-screwdriver-wrench text-accent"></i>
+          <span>ay5uh</span>
+        </a>
+        <div class="topnav-links">
+          <a href="/tools/laptop/" class="topnav-link ${isToolsPath ? 'active' : ''}">Tools</a>
+          <a href="/blog/" class="topnav-link ${window.location.pathname.startsWith('/blog/') ? 'active' : ''}">Blog</a>
+          <a href="/repair-guides/" class="topnav-link ${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
+        </div>
+      </div>
+      <div class="topnav-right">
+        <button class="topnav-search"><i class="fa-solid fa-search"></i></button>
+        <a href="/service/" class="topnav-cta">Book a Service <i class="fa-solid fa-caret-right"></i></a>
+      </div>
+    </nav>
+  `;
+
+  const sidebarHTML = `
     <!-- Mobile Hamburger Toggle -->
-    <button class="mobile-menu-btn" id="hamburgerBtn" style="position: absolute; top: 16px; left: 16px; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-primary); font-size: 20px; display: none;">☰</button>
+    <button class="mobile-menu-btn" id="hamburgerBtn" style="position: absolute; top: 68px; left: 16px; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-primary); font-size: 20px; display: none;">☰</button>
 
     <aside class="global-sidebar" id="globalSidebar">
+      <button id="sidebarToggle" class="sidebar-toggle-btn"><i class="fa-solid fa-chevron-left"></i></button>
       <div class="brand-container">
         <div class="brand-logo"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-        <a href="/" class="brand-title" style="text-decoration:none;">ay5uh</a>
+        <a href="/" class="brand-title" style="text-decoration:none;"><span class="item-text">ay5uh</span></a>
       </div>
       
       <div class="sidebar-scroll-area">
         <div class="nav-section">
           <div class="nav-category"><span>GAMEPAD</span> <span class="nav-category-pill">1</span></div>
           <ul class="nav-list">
-            <li class="nav-item"><a href="/tools/controller-lab/" id="nav-controller-lab">
-              <i class="fa-solid fa-gamepad nav-icon"></i> Controller Lab
+            <li class="nav-item"><a href="/tools/controller-lab/" id="nav-controller-lab" title="Controller Lab">
+              <i class="fa-solid fa-gamepad nav-icon"></i> <span class="item-text">Controller Lab</span>
             </a></li>
           </ul>
-          \${subnavHTML}
+          ${subnavHTML}
         </div>
 
         <div class="nav-section">
           <div class="nav-category"><span>LAPTOP / MACBOOK</span> <span class="nav-category-pill">7</span></div>
           <ul class="nav-list">
-            <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test">
-              <i class="fa-solid fa-keyboard nav-icon"></i> Keyboard Test
+            <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test" title="Keyboard Test">
+              <i class="fa-solid fa-keyboard nav-icon"></i> <span class="item-text">Keyboard Test</span>
             </a></li>
-            <li class="nav-item"><a href="/tools/mouse-test/" id="nav-mouse-test">
-              <i class="fa-solid fa-computer-mouse nav-icon"></i> Mouse & Trackpad
+            <li class="nav-item"><a href="/tools/mouse-test/" id="nav-mouse-test" title="Mouse & Trackpad">
+              <i class="fa-solid fa-computer-mouse nav-icon"></i> <span class="item-text">Mouse & Trackpad</span>
             </a></li>
-            <li class="nav-item"><a href="/tools/mic-test/" id="nav-mic-test">
-              <i class="fa-solid fa-microphone nav-icon"></i> Mic Test
+            <li class="nav-item"><a href="/tools/mic-test/" id="nav-mic-test" title="Mic Test">
+              <i class="fa-solid fa-microphone nav-icon"></i> <span class="item-text">Mic Test</span>
             </a></li>
-            <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test">
-              <i class="fa-solid fa-volume-high nav-icon"></i> Speaker Test
+            <li class="nav-item"><a href="/tools/speaker-test/" id="nav-speaker-test" title="Speaker Test">
+              <i class="fa-solid fa-volume-high nav-icon"></i> <span class="item-text">Speaker Test</span>
             </a></li>
-            <li class="nav-item"><a href="/tools/display-test/" id="nav-display-test">
-              <i class="fa-solid fa-desktop nav-icon"></i> Display Test
+            <li class="nav-item"><a href="/tools/display-test/" id="nav-display-test" title="Display Test">
+              <i class="fa-solid fa-desktop nav-icon"></i> <span class="item-text">Display Test</span>
             </a></li>
-            <li class="nav-item"><a href="/tools/dead-pixel-test/" id="nav-dead-pixel-test">
-              <i class="fa-solid fa-border-all nav-icon"></i> Dead Pixel Test
+            <li class="nav-item"><a href="/tools/dead-pixel-test/" id="nav-dead-pixel-test" title="Dead Pixel Test">
+              <i class="fa-solid fa-border-all nav-icon"></i> <span class="item-text">Dead Pixel Test</span>
             </a></li>
-            <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test">
-              <i class="fa-solid fa-camera nav-icon"></i> Webcam Test
+            <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test" title="Webcam Test">
+              <i class="fa-solid fa-camera nav-icon"></i> <span class="item-text">Webcam Test</span>
             </a></li>
           </ul>
         </div>
@@ -63,8 +87,8 @@
         <div class="nav-section">
           <div class="nav-category"><span>PHONE</span> <span class="nav-category-pill">1</span></div>
           <ul class="nav-list">
-            <li class="nav-item"><a href="/tools/phone-diagnostics/" id="nav-phone-diagnostics">
-              <i class="fa-solid fa-mobile-screen nav-icon"></i> Phone Diagnostics
+            <li class="nav-item"><a href="/tools/phone-diagnostics/" id="nav-phone-diagnostics" title="Phone Diagnostics">
+              <i class="fa-solid fa-mobile-screen nav-icon"></i> <span class="item-text">Phone Diagnostics</span>
             </a></li>
           </ul>
         </div>
@@ -80,56 +104,94 @@
     document.head.appendChild(faLink);
   }
 
-  // Inject sidebar inside app-layout
+  // Inject Top Navbar
+  if (!document.querySelector('.top-navbar')) {
+    document.body.insertAdjacentHTML('afterbegin', topNavHTML);
+  }
+
   const layout = document.querySelector('.app-layout');
-  if (layout && !document.querySelector('.global-sidebar')) {
-    layout.insertAdjacentHTML('afterbegin', sidebarHTML);
-  }
-
-  // Highlight active tool
-  if (activeToolId) {
-    const activeLink = document.getElementById(`nav-${activeToolId}`);
-    if (activeLink) {
-      activeLink.classList.add('active');
-    }
-  }
-
-  // Setup mobile hamburger toggle
-  const hamburger = document.getElementById('hamburgerBtn');
-  const sidebar = document.getElementById('globalSidebar');
   
-  if (hamburger && sidebar) {
-    let sidebarTimeout;
+  if (isToolsPath && layout && !document.querySelector('.global-sidebar')) {
+    // Inject sidebar
+    layout.insertAdjacentHTML('afterbegin', sidebarHTML);
 
-    const closeSidebar = () => {
-      sidebar.classList.remove('open');
-      clearTimeout(sidebarTimeout);
-    };
-
-    const resetTimer = () => {
-      clearTimeout(sidebarTimeout);
-      if (sidebar.classList.contains('open')) {
-        sidebarTimeout = setTimeout(closeSidebar, 5000);
+    // Apply saved collapse state
+    const savedState = localStorage.getItem('ay5uh_sidebar_state');
+    if (savedState === 'collapsed') {
+      document.body.classList.add('sidebar-collapsed');
+      const btnIcon = document.querySelector('#sidebarToggle i');
+      if (btnIcon) {
+        btnIcon.classList.remove('fa-chevron-left');
+        btnIcon.classList.add('fa-chevron-right');
       }
-    };
+    }
 
-    hamburger.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      resetTimer();
-    });
-
-    sidebar.addEventListener('touchstart', resetTimer, { passive: true });
-    sidebar.addEventListener('mousemove', resetTimer, { passive: true });
-    sidebar.addEventListener('scroll', resetTimer, { passive: true });
-
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 768 && 
-          !sidebar.contains(e.target) && 
-          !hamburger.contains(e.target) && 
-          sidebar.classList.contains('open')) {
-        closeSidebar();
+    // Highlight active tool
+    if (activeToolId) {
+      const activeLink = document.getElementById(`nav-${activeToolId}`);
+      if (activeLink) {
+        activeLink.classList.add('active');
       }
-    });
+    }
+
+    // Toggle button event listener
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-collapsed');
+        const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+        localStorage.setItem('ay5uh_sidebar_state', isCollapsed ? 'collapsed' : 'expanded');
+        
+        const btnIcon = sidebarToggle.querySelector('i');
+        if (isCollapsed) {
+          btnIcon.classList.remove('fa-chevron-left');
+          btnIcon.classList.add('fa-chevron-right');
+        } else {
+          btnIcon.classList.remove('fa-chevron-right');
+          btnIcon.classList.add('fa-chevron-left');
+        }
+      });
+    }
+
+    // Setup mobile hamburger toggle
+    const hamburger = document.getElementById('hamburgerBtn');
+    const sidebar = document.getElementById('globalSidebar');
+    
+    if (hamburger && sidebar) {
+      let sidebarTimeout;
+
+      const closeSidebar = () => {
+        sidebar.classList.remove('open');
+        clearTimeout(sidebarTimeout);
+      };
+
+      const resetTimer = () => {
+        clearTimeout(sidebarTimeout);
+        if (sidebar.classList.contains('open')) {
+          sidebarTimeout = setTimeout(closeSidebar, 5000);
+        }
+      };
+
+      hamburger.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        resetTimer();
+      });
+
+      sidebar.addEventListener('touchstart', resetTimer, { passive: true });
+      sidebar.addEventListener('mousemove', resetTimer, { passive: true });
+      sidebar.addEventListener('scroll', resetTimer, { passive: true });
+
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(e.target) && 
+            !hamburger.contains(e.target) && 
+            sidebar.classList.contains('open')) {
+          closeSidebar();
+        }
+      });
+    }
+  } else if (!isToolsPath && layout) {
+    layout.classList.add('no-sidebar');
   }
 }
 

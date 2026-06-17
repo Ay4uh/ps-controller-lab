@@ -20,6 +20,7 @@
   --font-mono: 'JetBrains Mono', monospace;
   
   --sidebar-width: 220px;
+  --sidebar-collapsed-width: 56px;
   --content-padding: 32px;
   --card-gap: 16px;
   --section-gap: 48px;
@@ -54,13 +55,36 @@ body {
   background-color: var(--bg-hover);
   border-right: 1px solid var(--border);
   position: fixed;
-  top: 0;
+  top: 52px; /* For top nav */
   bottom: 0;
   left: 0;
   z-index: 900;
-  transition: transform 0.3s ease;
+  transition: width 200ms ease;
   display: flex;
   flex-direction: column;
+}
+
+.sidebar-toggle-btn {
+  position: absolute;
+  top: 8px;
+  right: -14px;
+  width: 28px;
+  height: 28px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 910;
+  color: var(--text-secondary);
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: color 0.2s, background 0.2s;
+}
+.sidebar-toggle-btn:hover {
+  color: var(--accent-blue);
 }
 
 .brand-container {
@@ -163,14 +187,143 @@ body {
   box-shadow: 0 0 15px rgba(0, 112, 209, 0.08);
 }
 
+/* Collapsed Sidebar State */
+.sidebar-collapsed .global-sidebar {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .main-content {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .brand-title,
+.sidebar-collapsed .nav-category span:not(.nav-icon),
+.sidebar-collapsed .nav-item span.item-text,
+.sidebar-collapsed .nav-category-pill,
+.sidebar-collapsed .item-text {
+  display: none !important;
+}
+
+.sidebar-collapsed .brand-container {
+  padding: 16px 0;
+  justify-content: center;
+}
+
+.sidebar-collapsed .nav-icon {
+  margin-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 18px;
+}
+
+.sidebar-collapsed .nav-item a {
+  padding: 12px;
+  justify-content: center;
+}
+
+.sidebar-collapsed .tab-btn {
+  justify-content: center !important;
+  padding: 12px !important;
+}
+
+.sidebar-collapsed .tab-btn i {
+  margin: 0 !important;
+}
+
+.sidebar-collapsed .nav-category {
+  justify-content: center;
+  padding-top: 12px;
+}
+
+/* Hide toggle icon switch via CSS or JS. We'll do JS. */
+
 /* Main Content Area */
 .main-content {
   flex: 1;
   margin-left: var(--sidebar-width);
+  margin-top: 52px;
   padding: var(--content-padding);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - 52px);
+  transition: margin-left 200ms ease;
+}
+
+.no-sidebar .main-content {
+  margin-left: 0;
+}
+
+/* Top Navbar */
+.top-navbar {
+  height: 52px;
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.topnav-left, .topnav-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.topnav-brand {
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.topnav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.topnav-link {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.topnav-link:hover, .topnav-link.active {
+  color: var(--accent-blue);
+}
+
+.topnav-cta {
+  background: var(--accent-blue);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.topnav-cta:hover {
+  opacity: 0.9;
+  color: white;
+}
+
+.topnav-search {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .container {
