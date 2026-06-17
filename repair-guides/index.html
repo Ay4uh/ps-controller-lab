@@ -3,46 +3,249 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Repair Guides | TechTest</title>
+  <title>Repair Guides Catalog | TechTest</title>
+  <meta name="description" content="Browse repair guides for your devices. Step-by-step instructions to fix laptops, phones, and gaming consoles.">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/shared/styles.css?v=13">
+  <link rel="stylesheet" href="/shared/styles.css?v=14">
 </head>
 <body>
 
   <div class="app-layout">
-    <main class="main-content">
-      <div class="container pb-5 pt-5 text-center" style="margin-top: 100px;">
-        <i class="fa-solid fa-wrench text-accent mb-4" style="font-size: 48px; color: var(--accent-blue);"></i>
-        <h1 class="fw-bold mb-3">Repair Guides</h1>
-        <p class="text-muted fs-5 mb-5">Step-by-step guides to fix your hardware.</p>
-        
-        <div class="row text-start" style="max-width: 800px; margin: 0 auto;">
-          <div class="col-12">
-            <div class="card-custom mb-3" style="transition: transform 0.2s, box-shadow 0.2s;">
-              <a href="/repair-guides/lenovo-thinkpad-t14-gen1-amd-screen-replacement/" style="text-decoration: none; color: inherit; display: block;">
-                <h3 class="h5 fw-bold mb-2 text-primary">Lenovo ThinkPad T14 Gen 1 AMD — Screen Replacement</h3>
-                <p class="text-muted mb-2">Step-by-step guide to replacing the screen on a Lenovo ThinkPad T14 Gen 1 AMD (20UD, 20UE).</p>
-                <div class="d-flex gap-2 text-secondary" style="font-size: 0.85rem;">
-                  <span><i class="fa-solid fa-clock"></i> 30–50 mins</span>
-                  <span>&bull;</span>
-                  <span><i class="fa-solid fa-bolt"></i> Intermediate</span>
-                </div>
-              </a>
-            </div>
+    <main class="main-content" style="padding: 0; display: flex; flex-direction: column; background: var(--bg);">
+      
+      <!-- Zone 1: Search -->
+      <div class="catalog-top-zone">
+        <div class="search-container">
+          <i class="fa-solid fa-search search-icon"></i>
+          <input type="text" id="catalogSearch" placeholder="e.g. MacBook Air M2, Dell XPS 13, ROG Strix G15" autocomplete="off">
+          <button id="clearSearch" class="clear-btn" style="display: none;"><i class="fa-solid fa-times"></i></button>
+        </div>
+      </div>
+
+      <div class="catalog-main-zone">
+        <!-- Zone 2: Brand Sidebar -->
+        <aside class="catalog-sidebar">
+          <div class="sidebar-category">LAPTOPS</div>
+          <div class="brand-link active" data-brand="lenovo">Lenovo</div>
+          <div class="brand-link" data-brand="apple">Apple</div>
+          <div class="brand-link" data-brand="dell">Dell</div>
+          <div class="brand-link" data-brand="hp">HP</div>
+          <div class="brand-link" data-brand="asus">ASUS</div>
+          <div class="brand-link" data-brand="acer">Acer</div>
+          <div class="brand-link" data-brand="microsoft">Microsoft</div>
+          <div class="brand-link" data-brand="gateway">Gateway</div>
+
+          <div class="sidebar-category mt-4">PHONES & TABLETS</div>
+          <div class="brand-link" data-brand="samsung">Samsung</div>
+          <div class="brand-link" data-brand="apple-iphone">Apple iPhone</div>
+          <div class="brand-link" data-brand="google">Google</div>
+
+          <div class="sidebar-category mt-4">GAMING</div>
+          <div class="brand-link" data-brand="playstation">PlayStation</div>
+          <div class="brand-link" data-brand="xbox">Xbox</div>
+          <div class="brand-link" data-brand="nintendo">Nintendo</div>
+        </aside>
+
+        <!-- Zone 3: Model Grid -->
+        <div class="catalog-grid-wrapper">
+          <div class="catalog-grid" id="catalogGrid">
+            <!-- Rendered by JS -->
           </div>
         </div>
-        
-        <a href="/" class="btn btn-outline-secondary mt-5" style="border: 1px solid var(--border); color: var(--text-primary); padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Back to Tools</a>
       </div>
+
     </main>
   </div>
 
-  <script src="/shared/sidebar.js?v=13"></script>
+  <script src="/shared/sidebar.js?v=14"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar(null);
+      initCatalog();
     });
+
+    const catalogData = {
+      lenovo: {
+        name: 'Lenovo',
+        slug: 'lenovo',
+        series: [
+          { name: 'ThinkPad T Series', models: [
+            { name: 'ThinkPad T14 Gen 1 AMD', slug: 'thinkpad-t14-gen1-amd', hasGuide: true },
+            { name: 'ThinkPad T14 Gen 2', slug: 'thinkpad-t14-gen2', hasGuide: false },
+            { name: 'ThinkPad T14s Gen 1', slug: 'thinkpad-t14s-gen1', hasGuide: false },
+            { name: 'ThinkPad T490', slug: 'thinkpad-t490', hasGuide: false }
+          ]},
+          { name: 'ThinkPad X Series', models: [
+            { name: 'ThinkPad X1 Carbon Gen 9', slug: 'thinkpad-x1-carbon-gen9', hasGuide: false },
+            { name: 'ThinkPad X13 Gen 2', slug: 'thinkpad-x13-gen2', hasGuide: false },
+            { name: 'ThinkPad X390', slug: 'thinkpad-x390', hasGuide: false }
+          ]},
+          { name: 'IdeaPad', models: [
+            { name: 'IdeaPad Flex 5', slug: 'ideapad-flex-5', hasGuide: false },
+            { name: 'IdeaPad Slim 7', slug: 'ideapad-slim-7', hasGuide: false },
+            { name: 'IdeaPad Gaming 3', slug: 'ideapad-gaming-3', hasGuide: false }
+          ]},
+          { name: 'Legion', models: [
+            { name: 'Legion 5 Pro', slug: 'legion-5-pro', hasGuide: false },
+            { name: 'Legion 7', slug: 'legion-7', hasGuide: false },
+            { name: 'Legion Y540', slug: 'legion-y540', hasGuide: false }
+          ]}
+        ]
+      },
+      apple: {
+        name: 'Apple',
+        slug: 'apple',
+        series: [
+          { name: 'MacBook Air', models: [
+            { name: 'MacBook Air M2', slug: 'macbook-air-m2', hasGuide: false },
+            { name: 'MacBook Air M1', slug: 'macbook-air-m1', hasGuide: false },
+            { name: 'MacBook Air (Intel)', slug: 'macbook-air-intel', hasGuide: false }
+          ]},
+          { name: 'MacBook Pro', models: [
+            { name: 'MacBook Pro 14" M2', slug: 'macbook-pro-14-m2', hasGuide: false },
+            { name: 'MacBook Pro 16" M1', slug: 'macbook-pro-16-m1', hasGuide: false },
+            { name: 'MacBook Pro 13" (Touch Bar)', slug: 'macbook-pro-13-touch', hasGuide: false }
+          ]},
+          { name: 'Mac Mini', models: [
+            { name: 'Mac Mini M2', slug: 'mac-mini-m2', hasGuide: false },
+            { name: 'Mac Mini M1', slug: 'mac-mini-m1', hasGuide: false }
+          ]}
+        ]
+      },
+      dell: { name: 'Dell', slug: 'dell', series: [{ name: 'XPS', models: [{ name: 'XPS 13 9310', slug: 'xps-13-9310', hasGuide: false }] }, { name: 'Inspiron', models: [{ name: 'Inspiron 15', slug: 'inspiron-15', hasGuide: false }] }, { name: 'Latitude', models: [{ name: 'Latitude 7420', slug: 'latitude-7420', hasGuide: false }] }] },
+      hp: { name: 'HP', slug: 'hp', series: [{ name: 'Pavilion', models: [{ name: 'Pavilion Aero 13', slug: 'pavilion-aero-13', hasGuide: false }] }, { name: 'EliteBook', models: [{ name: 'EliteBook 840 G8', slug: 'elitebook-840-g8', hasGuide: false }] }, { name: 'Spectre', models: [{ name: 'Spectre x360 14', slug: 'spectre-x360-14', hasGuide: false }] }] },
+      asus: { name: 'ASUS', slug: 'asus', series: [{ name: 'ZenBook', models: [{ name: 'ZenBook 14 UX425', slug: 'zenbook-14-ux425', hasGuide: false }] }, { name: 'VivoBook', models: [{ name: 'VivoBook 15', slug: 'vivobook-15', hasGuide: false }] }, { name: 'ROG', models: [{ name: 'ROG Zephyrus G14', slug: 'rog-zephyrus-g14', hasGuide: false }, { name: 'ROG Strix G15', slug: 'rog-strix-g15', hasGuide: false }] }] },
+      acer: { name: 'Acer', slug: 'acer', series: [{ name: 'Aspire', models: [{ name: 'Aspire 5', slug: 'aspire-5', hasGuide: false }] }, { name: 'Swift', models: [{ name: 'Swift 3', slug: 'swift-3', hasGuide: false }] }, { name: 'Nitro', models: [{ name: 'Nitro 5', slug: 'nitro-5', hasGuide: false }] }] },
+      microsoft: { name: 'Microsoft', slug: 'microsoft', series: [{ name: 'Surface Laptop', models: [{ name: 'Surface Laptop 4', slug: 'surface-laptop-4', hasGuide: false }] }, { name: 'Surface Pro', models: [{ name: 'Surface Pro 8', slug: 'surface-pro-8', hasGuide: false }] }] },
+      gateway: { name: 'Gateway', slug: 'gateway', series: [{ name: 'Chromebooks', models: [{ name: 'Gateway 11.6" Chromebook', slug: 'gateway-11-chromebook', hasGuide: false }] }] },
+      samsung: { name: 'Samsung', slug: 'samsung', series: [{ name: 'Galaxy Book', models: [{ name: 'Galaxy Book3 Pro', slug: 'galaxy-book3-pro', hasGuide: false }] }, { name: 'Galaxy S Series', models: [{ name: 'Galaxy S23 Ultra', slug: 'galaxy-s23-ultra', hasGuide: false }] }] },
+      'apple-iphone': { name: 'Apple iPhone', slug: 'apple-iphone', series: [{ name: 'iPhone 14 Series', models: [{ name: 'iPhone 14 Pro Max', slug: 'iphone-14-pro-max', hasGuide: false }] }, { name: 'iPhone 13 Series', models: [{ name: 'iPhone 13 Pro', slug: 'iphone-13-pro', hasGuide: false }] }] },
+      google: { name: 'Google', slug: 'google', series: [{ name: 'Pixel phones', models: [{ name: 'Pixel 7 Pro', slug: 'pixel-7-pro', hasGuide: false }, { name: 'Pixel 6a', slug: 'pixel-6a', hasGuide: false }] }] },
+      playstation: { name: 'PlayStation', slug: 'playstation', series: [{ name: 'PS5', models: [{ name: 'PlayStation 5 (Disc)', slug: 'ps5-disc', hasGuide: false }] }, { name: 'PS4', models: [{ name: 'PlayStation 4 Pro', slug: 'ps4-pro', hasGuide: false }] }, { name: 'PS4 controller', models: [{ name: 'DualShock 4 V2', slug: 'dualshock-4-v2', hasGuide: false }] }] },
+      xbox: { name: 'Xbox', slug: 'xbox', series: [{ name: 'Series X', models: [{ name: 'Xbox Series X', slug: 'xbox-series-x', hasGuide: false }] }, { name: 'Series S', models: [{ name: 'Xbox Series S', slug: 'xbox-series-s', hasGuide: false }] }, { name: 'Xbox One controller', models: [{ name: 'Xbox Wireless Controller', slug: 'xbox-wireless-controller', hasGuide: false }] }] },
+      nintendo: { name: 'Nintendo', slug: 'nintendo', series: [{ name: 'Switch', models: [{ name: 'Nintendo Switch OLED', slug: 'switch-oled', hasGuide: false }] }, { name: 'Switch Lite', models: [{ name: 'Nintendo Switch Lite', slug: 'switch-lite', hasGuide: false }] }, { name: 'Joy-Con', models: [{ name: 'Joy-Con (L/R)', slug: 'joy-con', hasGuide: false }] }] }
+    };
+
+    let activeBrandId = 'lenovo';
+
+    function initCatalog() {
+      const searchInput = document.getElementById('catalogSearch');
+      const clearBtn = document.getElementById('clearSearch');
+      const brandLinks = document.querySelectorAll('.brand-link');
+
+      // Brand click
+      brandLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          brandLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+          activeBrandId = link.dataset.brand;
+          searchInput.value = '';
+          clearBtn.style.display = 'none';
+          renderGrid(activeBrandId, '');
+        });
+      });
+
+      // Search
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        if (query.length > 0) {
+          clearBtn.style.display = 'block';
+          brandLinks.forEach(l => l.classList.remove('active'));
+          renderGrid(null, query);
+        } else {
+          clearBtn.style.display = 'none';
+          document.querySelector(`.brand-link[data-brand="${activeBrandId}"]`).classList.add('active');
+          renderGrid(activeBrandId, '');
+        }
+      });
+
+      // Clear search
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        document.querySelector(`.brand-link[data-brand="${activeBrandId}"]`).classList.add('active');
+        renderGrid(activeBrandId, '');
+      });
+
+      // Initial render
+      renderGrid(activeBrandId, '');
+    }
+
+    function renderGrid(brandId, searchQuery) {
+      const grid = document.getElementById('catalogGrid');
+      grid.innerHTML = '';
+
+      let dataToRender = [];
+
+      if (searchQuery) {
+        // Search across all brands
+        Object.values(catalogData).forEach(brand => {
+          let matchedSeries = [];
+          brand.series.forEach(series => {
+            const matchedModels = series.models.filter(model => 
+              model.name.toLowerCase().includes(searchQuery) ||
+              series.name.toLowerCase().includes(searchQuery) ||
+              brand.name.toLowerCase().includes(searchQuery)
+            );
+            if (matchedModels.length > 0) {
+              matchedSeries.push({ name: series.name, models: matchedModels });
+            }
+          });
+          if (matchedSeries.length > 0) {
+            dataToRender.push({ brandSlug: brand.slug, brandName: brand.name, series: matchedSeries });
+          }
+        });
+      } else if (brandId) {
+        // Single brand
+        const brand = catalogData[brandId];
+        if (brand) {
+          dataToRender.push({ brandSlug: brand.slug, brandName: null, series: brand.series });
+        }
+      }
+
+      if (dataToRender.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-muted);">No devices found matching your search.</div>';
+        return;
+      }
+
+      dataToRender.forEach(brandData => {
+        brandData.series.forEach(series => {
+          const col = document.createElement('div');
+          col.className = 'series-column';
+          
+          const title = document.createElement('h3');
+          title.className = 'series-title';
+          title.textContent = brandData.brandName ? `${brandData.brandName} ${series.name}` : series.name;
+          col.appendChild(title);
+
+          series.models.forEach(model => {
+            const item = document.createElement('a');
+            item.className = `model-item ${model.hasGuide ? 'has-guide' : 'no-guide'}`;
+            // All point to their path, even if it doesn't exist yet, as per prompt logic
+            item.href = `/repair-guides/${brandData.brandSlug}/${model.slug}/`;
+            
+            const dot = document.createElement('span');
+            dot.className = 'guide-dot';
+            item.appendChild(dot);
+            
+            const text = document.createElement('span');
+            text.textContent = model.name;
+            item.appendChild(text);
+            
+            col.appendChild(item);
+          });
+
+          const viewAll = document.createElement('a');
+          viewAll.className = 'view-all-link';
+          viewAll.href = '#';
+          viewAll.textContent = `View all ${series.name} →`;
+          col.appendChild(viewAll);
+
+          grid.appendChild(col);
+        });
+      });
+    }
   </script>
 </body>
 </html>

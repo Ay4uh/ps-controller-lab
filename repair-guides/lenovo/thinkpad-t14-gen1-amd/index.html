@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lenovo ThinkPad T14 Gen 1 AMD Repair | TechTest</title>
+  <meta name="description" content="Repair guides and diagnostics for the Lenovo ThinkPad T14 Gen 1 AMD.">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/shared/styles.css?v=14">
+  <style>
+    .device-header {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 48px;
+      align-items: flex-start;
+      background: var(--bg-card);
+      padding: 32px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .device-image {
+      width: 200px;
+      height: 200px;
+      background: var(--bg-hover);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: var(--text-muted);
+      border: 1px dashed var(--border);
+      flex-shrink: 0;
+    }
+    .device-info h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .device-meta {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .device-meta strong {
+      color: var(--text-primary);
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .guide-card {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .guide-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-color: var(--accent-blue);
+    }
+    .guide-card.coming-soon {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .guide-icon {
+      font-size: 24px;
+      color: var(--accent-blue);
+      margin-right: 20px;
+      width: 32px;
+      text-align: center;
+    }
+    .guide-card.coming-soon .guide-icon {
+      color: var(--text-muted);
+    }
+    .guide-details {
+      flex: 1;
+    }
+    .guide-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .guide-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .guide-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      align-items: center;
+      margin-left: 24px;
+    }
+    .guide-cta {
+      margin-left: 24px;
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+    .guide-card.coming-soon .guide-cta {
+      pointer-events: auto;
+      color: var(--text-primary);
+      background: var(--bg-hover);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .guide-card.coming-soon .guide-cta:hover {
+      background: var(--border);
+    }
+    .diagnostics-section {
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 48px;
+    }
+    .diag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .diag-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 8px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: border-color 0.2s;
+    }
+    .diag-btn:hover {
+      border-color: var(--accent-blue);
+    }
+    .diag-btn i {
+      color: var(--accent-blue);
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content" style="padding: 40px; max-width: 1000px; margin: 0 auto;">
+      
+      <a href="/repair-guides/" style="display: inline-block; margin-bottom: 24px; color: var(--text-secondary); text-decoration: none; font-weight: 500;">
+        <i class="fa-solid fa-arrow-left me-2"></i> Back to Repair Guides
+      </a>
+
+      <!-- Device Header -->
+      <div class="device-header">
+        <div class="device-image">
+          <i class="fa-solid fa-laptop"></i>
+        </div>
+        <div class="device-info">
+          <h1>Lenovo ThinkPad T14 Gen 1 AMD</h1>
+          <div class="device-meta">
+            <div><strong>Models covered:</strong> 20UD, 20UE (includes 20UDS, 20UE0, 20UES08Q0R)</div>
+            <div><strong>Released:</strong> 2020</div>
+            <div><strong>Category:</strong> Laptops &rarr; Lenovo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Guides -->
+      <h2 class="section-title">Available Repair Guides</h2>
+      
+      <a href="/repair-guides/lenovo/thinkpad-t14-gen1-amd/screen-replacement/" class="guide-card">
+        <div class="guide-icon"><i class="fa-solid fa-desktop"></i></div>
+        <div class="guide-details">
+          <div class="guide-title">Screen Replacement</div>
+          <div class="guide-desc">Step-by-step guide to replacing the LCD panel (30-pin eDP).</div>
+        </div>
+        <div class="guide-meta">
+          <span><i class="fa-solid fa-clock"></i> 30–50 mins</span>
+          <span><i class="fa-solid fa-bolt"></i> Intermediate</span>
+        </div>
+        <div class="guide-cta">Open Guide &rarr;</div>
+      </a>
+
+      <!-- Coming Soon -->
+      <h2 class="section-title" style="margin-top: 48px;">Coming Soon</h2>
+      
+      <div class="guide-card coming-soon">
+        <div class="guide-icon"><i class="fa-solid fa-battery-full"></i></div>
+        <div class="guide-details">
+          <div class="guide-title">Battery Replacement</div>
+          <div class="guide-desc">Replace a degraded or swollen internal battery.</div>
+        </div>
+        <div class="guide-meta">
+          <span><i class="fa-solid fa-clock"></i> 15 mins</span>
+          <span><i class="fa-solid fa-bolt"></i> Easy</span>
+        </div>
+        <button class="guide-cta" onclick="alert('Notification set!')">Notify me</button>
+      </div>
+
+      <div class="guide-card coming-soon">
+        <div class="guide-icon"><i class="fa-solid fa-keyboard"></i></div>
+        <div class="guide-details">
+          <div class="guide-title">Keyboard Replacement</div>
+          <div class="guide-desc">Replace the keyboard assembly (includes trackpoint).</div>
+        </div>
+        <div class="guide-meta">
+          <span><i class="fa-solid fa-clock"></i> 20 mins</span>
+          <span><i class="fa-solid fa-bolt"></i> Easy</span>
+        </div>
+        <button class="guide-cta" onclick="alert('Notification set!')">Notify me</button>
+      </div>
+
+      <!-- Diagnostics -->
+      <div class="diagnostics-section">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Run Diagnostics on this device &rarr;</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 0;">Test hardware components directly in your browser before ordering parts.</p>
+        
+        <div class="diag-grid">
+          <a href="/tools/display-test/" class="diag-btn">
+            <i class="fa-solid fa-desktop"></i> Display Test
+          </a>
+          <a href="/tools/dead-pixel-test/" class="diag-btn">
+            <i class="fa-solid fa-border-all"></i> Dead Pixels
+          </a>
+          <a href="/tools/keyboard-test/" class="diag-btn">
+            <i class="fa-solid fa-keyboard"></i> Keyboard Test
+          </a>
+          <a href="/tools/webcam-test/" class="diag-btn">
+            <i class="fa-solid fa-camera"></i> Webcam Test
+          </a>
+          <a href="/tools/mic-test/" class="diag-btn">
+            <i class="fa-solid fa-microphone"></i> Mic Test
+          </a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  
+  <script src="/shared/sidebar.js?v=14"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      injectSidebar(null);
+    });
+  </script>
+</body>
+</html>
