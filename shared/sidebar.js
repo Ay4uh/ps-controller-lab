@@ -18,7 +18,7 @@ function injectSidebar(activeToolId = null) {
   const topNavHTML = `
     <nav class="top-navbar">
       <div class="topnav-left">
-        <button id="sidebarToggle" class="sidebar-toggle-btn desktop-only" title="Toggle Sidebar">
+        <button id="sidebarToggle" class="sidebar-toggle-btn desktop-only" title="Toggle Sidebar" style="${isToolsPath ? '' : 'display: none !important;'}">
           <i class="fa-solid fa-bars"></i>
         </button>
         <a href="/" class="topnav-brand">
