@@ -20,7 +20,7 @@ function injectSidebar(activeToolId = null) {
       <div class="topnav-left">
         <a href="/" class="topnav-brand">
           <i class="fa-solid fa-screwdriver-wrench text-accent"></i>
-          <span>ay5uh</span>
+          <span>TechTest</span>
         </a>
         <div class="topnav-links">
           <a href="/tools/laptop/" class="topnav-link ${isToolsPath ? 'active' : ''}">Tools</a>
@@ -43,7 +43,7 @@ function injectSidebar(activeToolId = null) {
       <button id="sidebarToggle" class="sidebar-toggle-btn"><i class="fa-solid fa-chevron-left"></i></button>
       <div class="brand-container">
         <div class="brand-logo"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-        <a href="/" class="brand-title" style="text-decoration:none;"><span class="item-text">ay5uh</span></a>
+        <a href="/" class="brand-title" style="text-decoration:none;"><span class="item-text">TechTest</span></a>
       </div>
       
       <div class="sidebar-scroll-area">

@@ -330,11 +330,6 @@
     }
 
     /* Layout */
-    .app-container {
-      display: flex;
-      flex: 1;
-      position: relative;
-    }
 
     /* Navigation Sidebar */
     .sidebar {
@@ -448,14 +443,6 @@
     }
 
     /* Main Area */
-    .main-content {
-      flex: 1;
-      padding: 30px;
-      background-color: var(--bg);
-      overflow-y: auto;
-      max-height: calc(100vh - 40px); /* Adjust for footer */
-    }
-
     .tab-panel {
       display: none;
     }
@@ -1077,9 +1064,6 @@
 
     /* Mobile view collapse */
     @media (max-width: 768px) {
-      .app-container {
-        flex-direction: column;
-      }
       .sidebar {
         width: 100%;
         border-right: none;
@@ -1236,7 +1220,7 @@
     </div>
   </div>
 
-  <div class="app-container">
+  <div class="app-layout">
 
     <!-- Main Content Panel -->
     <main class="main-content">
