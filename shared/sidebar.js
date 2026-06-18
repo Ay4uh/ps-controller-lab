@@ -253,8 +253,13 @@ function injectSidebar(activeToolId = null) {
         ❤️ ay5uh is free forever. If this tool helped you, consider buying through our affiliate links when you repair your device — it keeps the lights on.
       </div>
     `;
-    if (layout) {
-      layout.insertAdjacentHTML('beforeend', footerStripHTML);
+    const mainContent = document.querySelector('.main-content');
+    const existingFooter = document.querySelector('footer');
+    
+    if (existingFooter) {
+      existingFooter.insertAdjacentHTML('beforebegin', footerStripHTML);
+    } else if (mainContent) {
+      mainContent.insertAdjacentHTML('beforeend', footerStripHTML);
     } else {
       document.body.insertAdjacentHTML('beforeend', footerStripHTML);
     }
