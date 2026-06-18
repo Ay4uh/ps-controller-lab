@@ -1086,3 +1086,97 @@ body {
 .diag-btn-banner i {
   color: var(--accent-blue);
 }
+
+/* Monetization: Ads */
+.ad-slot {
+  background: #F3F4F6;
+  border: 1px dashed #D1D5DB;
+  color: #9CA3AF;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+.ad-300x250 {
+  width: 300px;
+  height: 250px;
+}
+.ad-728x90 {
+  width: 100%;
+  max-width: 728px;
+  height: 90px;
+}
+
+/* Monetization: Affiliate Sidebar */
+.affiliate-card {
+  background: white;
+  border: 1px solid #E5E7EB;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 24px;
+}
+.affiliate-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.affiliate-card hr {
+  margin: 8px 0 12px 0;
+  border: 0;
+  border-top: 1px solid #E5E7EB;
+}
+.affiliate-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.affiliate-item:last-child {
+  margin-bottom: 0;
+}
+.affiliate-buy {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+.affiliate-buy:hover {
+  text-decoration: underline;
+}
+.affiliate-disclaimer {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Monetization: Support Footer Strip */
+.support-footer-strip {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  text-align: center;
+  font-size: 14px;
+  padding: 12px 24px;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* Monetization: Guide Layout */
+.guide-page-layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 40px;
+  padding: 0 24px;
+}
+.guide-right-sidebar {
+  width: 300px;
+  position: sticky;
+  top: 80px;
+  height: max-content;
+  flex-shrink: 0;
+  padding-top: 40px;
+}

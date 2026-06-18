@@ -245,6 +245,33 @@ function injectSidebar(activeToolId = null) {
   } else if (!isToolsPath && layout) {
     layout.classList.add('no-sidebar');
   }
+
+  // Inject Global Support Footer Strip
+  if (!document.querySelector('.support-footer-strip')) {
+    const footerStripHTML = `
+      <div class="support-footer-strip">
+        ❤️ ay5uh is free forever. If this tool helped you, consider buying through our affiliate links when you repair your device — it keeps the lights on.
+      </div>
+    `;
+    if (layout) {
+      layout.insertAdjacentHTML('beforeend', footerStripHTML);
+    } else {
+      document.body.insertAdjacentHTML('beforeend', footerStripHTML);
+    }
+  }
+
+  // Inject Tool Page AdBlock
+  if (isToolsPath) {
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent && !document.getElementById('ad-tool-bottom')) {
+      const toolAdHTML = `
+        <div style="margin-top: 48px; margin-bottom: 24px;">
+          <div class="ad-slot ad-300x250" id="ad-tool-bottom">Advertisement</div>
+        </div>
+      `;
+      mainContent.insertAdjacentHTML('beforeend', toolAdHTML);
+    }
+  }
 }
 
 function trackToolEvent(toolName, eventType, data = {}) {
