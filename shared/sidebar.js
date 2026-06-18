@@ -246,25 +246,6 @@ function injectSidebar(activeToolId = null) {
     layout.classList.add('no-sidebar');
   }
 
-  // Inject Global Support Footer Strip
-  if (!document.querySelector('.support-footer-strip')) {
-    const footerStripHTML = `
-      <div class="support-footer-strip">
-        ❤️ ay5uh is free forever. If this tool helped you, consider buying through our affiliate links when you repair your device — it keeps the lights on.
-      </div>
-    `;
-    const mainContent = document.querySelector('.main-content');
-    const existingFooter = document.querySelector('footer');
-    
-    if (existingFooter) {
-      existingFooter.insertAdjacentHTML('beforebegin', footerStripHTML);
-    } else if (mainContent) {
-      mainContent.insertAdjacentHTML('beforeend', footerStripHTML);
-    } else {
-      document.body.insertAdjacentHTML('beforeend', footerStripHTML);
-    }
-  }
-
   // Inject Tool Page AdBlock
   if (isToolsPath) {
     const mainContent = document.querySelector('.main-content');
