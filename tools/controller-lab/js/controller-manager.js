@@ -2,7 +2,7 @@
 
 import { sleep } from './utils.js';
 import { l } from './translations.js';
-import { Storage } from './storage.js';
+import Storage from './storage.js';
 
 const NOT_GENUINE_SONY_CONTROLLER_MSG = "Your device might not be a genuine Sony controller. If it is not a clone then please report this issue.";
 

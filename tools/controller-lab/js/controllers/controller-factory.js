@@ -15,7 +15,7 @@ class ControllerFactory {
     const ds5 = { vendorId: 0x054c, productId: 0x0ce6 };
     const ds5edge = { vendorId: 0x054c, productId: 0x0df2 };
     const xbox = { vendorId: 0x045e, productId: 0x0b00 }; // Xbox Wireless Controller
-    const xbox Elite = { vendorId: 0x045e, productId: 0x0b05 }; // Xbox Elite Wireless Controller Series 2
+    const xboxElite = { vendorId: 0x045e, productId: 0x0b05 }; // Xbox Elite Wireless Controller Series 2
     const xboxAdaptive = { vendorId: 0x045e, productId: 0x0b06 }; // Xbox Adaptive Controller
     const xboxSeriesXS = { vendorId: 0x045e, productId: 0x0b12 }; // Xbox Series X|S Controller
     return [ds4v1, ds4v2, ds5, ds5edge, xbox, xboxElite, xboxAdaptive, xboxSeriesXS];

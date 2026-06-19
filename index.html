@@ -310,7 +310,7 @@
       <div class="hero animate-fade-in-up">
         <div class="container">
           <h1 class="hero-title">TechTest<br><span>Hardware Diagnostics</span></h1>
-          <p class="hero-subtitle">Test your devices entirely in your browser without downloading any software. Open source, secure, and blazing fast.</p>
+          <p class="hero-subtitle">Free browser-based hardware diagnostics and repair guides for laptops, phones, and gaming controllers. No signup. No software. No cost.</p>
         </div>
       </div>
 
@@ -335,10 +335,18 @@
       <script>
         // Load Devices Tested from localStorage
         document.addEventListener('DOMContentLoaded', () => {
-          const count = localStorage.getItem('techtest_devices_tested') || '0';
+          const count = localStorage.getItem('devices_tested') || '0';
           document.getElementById('stat-devices-tested').textContent = parseInt(count, 10).toLocaleString();
         });
       </script>
+
+      <!-- Homepage Search Bar -->
+      <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <form action="/repair-guides/" method="GET" style="display: flex; align-items: center; background: white; border: 1px solid #E5E7EB; border-radius: 9999px; height: 48px; padding: 0 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+          <i class="fa-solid fa-search" style="color: #9CA3AF; margin-right: 12px;"></i>
+          <input type="text" name="q" placeholder="Search guides, tools, or devices..." style="border: none; outline: none; width: 100%; font-size: 16px; background: transparent; color: var(--text-primary);">
+        </form>
+      </div>
 
       <div class="container dashboard-grid">
         
@@ -392,6 +400,57 @@
 
       </div>
       
+      <!-- Recent Repair Guides -->
+      <div class="container animate-fade-in-up delay-3" style="margin-top: 64px; margin-bottom: 48px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+          <h2 style="font-size: 24px; font-weight: 800; margin: 0;">Recent Repair Guides</h2>
+          <a href="/repair-guides/" style="color: #2563EB; font-weight: 600; text-decoration: none;">View all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
+          
+          <!-- Card 1 -->
+          <a href="/repair-guides/lenovo/thinkpad-t14-gen1-amd/screen-replacement/" style="text-decoration: none; color: inherit; display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); transition: box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+            <div style="width: 100%; aspect-ratio: 16/9; background: #E5E7EB; display: flex; align-items: center; justify-content: center; color: #9CA3AF;"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div style="padding: 20px;">
+              <span style="background: #FFF7ED; color: #EA580C; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 12px;">REPAIR GUIDES</span>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4;">ThinkPad T14 Gen 1 — Screen Replacement</h3>
+              <div style="color: #6B7280; font-size: 13px; font-weight: 500;">Intermediate &middot; 45 min</div>
+            </div>
+          </a>
+
+          <!-- Card 2 -->
+          <a href="/repair-guides/" style="text-decoration: none; color: inherit; display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); transition: box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+            <div style="width: 100%; aspect-ratio: 16/9; background: #E5E7EB; display: flex; align-items: center; justify-content: center; color: #9CA3AF;"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div style="padding: 20px;">
+              <span style="background: #FFF7ED; color: #EA580C; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 12px;">REPAIR GUIDES</span>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4;">IdeaPad 5 2-in-1 — Back Cover Replacement</h3>
+              <div style="color: #6B7280; font-size: 13px; font-weight: 500;">Beginner &middot; 20 min</div>
+            </div>
+          </a>
+
+          <!-- Card 3 -->
+          <a href="/repair-guides/" style="text-decoration: none; color: inherit; display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); transition: box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+            <div style="width: 100%; aspect-ratio: 16/9; background: #E5E7EB; display: flex; align-items: center; justify-content: center; color: #9CA3AF;"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div style="padding: 20px;">
+              <span style="background: #FFF7ED; color: #EA580C; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 12px;">REPAIR GUIDES</span>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4;">PS5 Controller — Stick Drift Fix</h3>
+              <div style="color: #6B7280; font-size: 13px; font-weight: 500;">Intermediate &middot; 30 min</div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Q&A Teaser -->
+      <div class="container animate-fade-in-up delay-3" style="margin-bottom: 64px;">
+        <div style="background: #EFF6FF; border-radius: 16px; padding: 48px; text-align: center; border: 1px solid #BFDBFE;">
+          <h2 style="font-size: 24px; font-weight: 800; color: #1E3A8A; margin: 0 0 12px 0;">Got a repair question?</h2>
+          <p style="font-size: 16px; color: #3B82F6; margin: 0 0 24px 0; font-weight: 500;">Ask the TechTest community — get answers from real fixers.</p>
+          <a href="/answers/" style="display: inline-block; background: #2563EB; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); transition: background 0.2s;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">Ask a Question <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
+        </div>
+      </div>
+
       <!-- Footer -->
       <footer class="homepage-footer animate-fade-in-up delay-3">
         <div class="footer-links">

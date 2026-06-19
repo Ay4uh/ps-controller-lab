@@ -3,7 +3,7 @@
 // Main entry point for the Controller Lab application
 import { initControllerManager } from './controller-manager.js';
 import ControllerFactory from './controllers/controller-factory.js';
-import { Storage } from './storage.js';
+import Storage from './storage.js';
 import { sleep } from './utils.js';
 import { l } from './translations.js';
 
@@ -152,8 +152,14 @@ async function handleConnect(device) {
   app.demoModeActive = false;
 
   // Hide connection required screen, show app content
-  document.getElementById("connectionRequiredScreen")?.classList.add("d-none");
-  document.getElementById("appDashboardContent")?.classList.remove("d-none");
+  const connectionRequiredScreen = document.getElementById("connectionRequiredScreen");
+  if (connectionRequiredScreen) {
+    connectionRequiredScreen.classList.add("d-none");
+  }
+  const appDashboardContent = document.getElementById("appDashboardContent");
+  if (appDashboardContent) {
+    appDashboardContent.classList.remove("d-none");
+  }
 
   // Reset variables
   app.btMacAddress = "";
@@ -167,10 +173,23 @@ async function handleConnect(device) {
   locateGamepadIndex(device);
 
   // Show/hide appropriate buttons
-  document.getElementById("btnDisconnect")?.classList.remove("d-none");
-  document.getElementById("btnConnect")?.classList.add("d-none");
-  document.getElementById("overviewInfoCard")?.classList.remove("opacity-50");
-  document.getElementById("driftResultsRow")?.classList.remove("opacity-50");
+  const btnDisconnect = document.getElementById("btnDisconnect");
+  const btnConnect = document.getElementById("btnConnect");
+  const overviewInfoCard = document.getElementById("overviewInfoCard");
+  const driftResultsRow = document.getElementById("driftResultsRow");
+
+  if (btnDisconnect) {
+    btnDisconnect.classList.remove("d-none");
+  }
+  if (btnConnect) {
+    btnConnect.classList.add("d-none");
+  }
+  if (overviewInfoCard) {
+    overviewInfoCard.classList.remove("opacity-50");
+  }
+  if (driftResultsRow) {
+    driftResultsRow.classList.remove("opacity-50");
+  }
 
   // Determine controller type
   const isDualSense = device.productId === 0x0CE6 || device.productId === 0x0DF2;
@@ -184,24 +203,39 @@ async function handleConnect(device) {
   if (device.productId === 0x0DF2) devName = "DualSense Edge";
 
   // Update device name in UI
-  document.getElementById("overviewDevName")?.innerText = devName;
-  document.getElementById("footerModelName")?.innerText = devName;
-  document.getElementById("overviewDevStatus")?.innerText = "Connected via WebHID interface.";
+  const overviewDevName = document.getElementById("overviewDevName");
+  if (overviewDevName) {
+    overviewDevName.innerText = devName;
+  }
+  const footerModelName = document.getElementById("footerModelName");
+  if (footerModelName) {
+    footerModelName.innerText = devName;
+  }
+  const overviewDevStatus = document.getElementById("overviewDevStatus");
+  if (overviewDevStatus) {
+    overviewDevStatus.innerText = "Connected via WebHID interface.";
+  }
 
   // Log connection
   console.log(`Connected: ${devName} (VID: 0x${device.vendorId.toString(16)}, PID: 0x${device.productId.toString(16)})`);
 
   // Show/hide Edge warning banner
-  if (app.isEdge) {
-    document.getElementById("edgeWarningBanner")?.classList.remove("d-none");
-  } else {
-    document.getElementById("edgeWarningBanner")?.classList.add("d-none");
+  const edgeWarningBanner = document.getElementById("edgeWarningBanner");
+  if (edgeWarningBanner) {
+    if (app.isEdge) {
+      edgeWarningBanner.classList.remove("d-none");
+    } else {
+      edgeWarningBanner.classList.add("d-none");
+    }
   }
 
   // Read reports to get details
   try {
     if (isDualShock) {
-      document.getElementById("ds4BoardModelContainer")?.classList.remove("d-none");
+      const ds4BoardModelContainer = document.getElementById("ds4BoardModelContainer");
+      if (ds4BoardModelContainer) {
+        ds4BoardModelContainer.classList.remove("d-none");
+      }
 
       // Read Bluetooth MAC Address from 0x12
       try {
@@ -213,7 +247,10 @@ async function handleConnect(device) {
             bytes.push(macData.getUint8(idx).toString(16).toUpperCase().padStart(2, '0'));
           }
           app.btMacAddress = bytes.join(':');
-          document.getElementById("infoMac")?.innerText = app.btMacAddress;
+          const infoMac = document.getElementById("infoMac");
+          if (infoMac) {
+            infoMac.innerText = app.btMacAddress;
+          }
         }
       } catch (e) {
         console.warn("Failed to read MAC address", e);
@@ -241,7 +278,10 @@ async function handleConnect(device) {
 
         app.compileDate = new TextDecoder("ascii").decode(dateBytes).replace(/\0/g, '').trim();
         app.compileTime = new TextDecoder("ascii").decode(timeBytes).replace(/\0/g, '').trim();
-        document.getElementById("infoBuildDate")?.innerText = `${app.compileDate} ${app.compileTime}`;
+        const infoBuildDate = document.getElementById("infoBuildDate");
+        if (infoBuildDate) {
+          infoBuildDate.innerText = `${app.compileDate} ${app.compileTime}`;
+        }
 
         // Hardware & software versions (little endian)
         const hwMajor = bytes[32] | (bytes[33] << 8);
@@ -264,7 +304,10 @@ async function handleConnect(device) {
         else if (hwUpperByte === 0xB4) { app.boardModel = "JDM-055 (Type V2)"; }
         else { app.boardModel = `Unknown (Upper: 0x${hwUpperByte.toString(16).toUpperCase()})`; }
 
-        document.getElementById("infoBoardModel")?.innerText = app.boardModel;
+        const infoBoardModel = document.getElementById("infoBoardModel");
+        if (infoBoardModel) {
+          infoBoardModel.innerText = app.boardModel;
+        }
       }
 
       // Clone detection 2: try report 0x81
@@ -275,8 +318,14 @@ async function handleConnect(device) {
         app.isClone = true;
       }
     } else if (isDualSense) {
-      document.getElementById("ds4BoardModelContainer")?.classList.add("d-none");
-      document.getElementById("dualsenseFineTuneCard")?.classList.remove("d-none");
+      const ds4BoardModelContainer = document.getElementById("ds4BoardModelContainer");
+      if (ds4BoardModelContainer) {
+        ds4BoardModelContainer.classList.add("d-none");
+      }
+      const dualsenseFineTuneCard = document.getElementById("dualsenseFineTuneCard");
+      if (dualsenseFineTuneCard) {
+        dualsenseFineTuneCard.classList.remove("d-none");
+      }
 
       // Read feature report 0x20
       let infoData = null;
@@ -300,7 +349,10 @@ async function handleConnect(device) {
 
         app.compileDate = new TextDecoder("ascii").decode(dateBytes).replace(/\0/g, '').trim();
         app.compileTime = new TextDecoder("ascii").decode(timeBytes).replace(/\0/g, '').trim();
-        document.getElementById("infoBuildDate")?.innerText = `${app.compileDate} ${app.compileTime}`;
+        const infoBuildDate = document.getElementById("infoBuildDate");
+        if (infoBuildDate) {
+          infoBuildDate.innerText = `${app.compileDate} ${app.compileTime}`;
+        }
 
         // Check if build date contains letters (months) to confirm validity
         if (!/[A-Za-z]/.test(app.compileDate) || app.compileDate.length < 5) {
@@ -325,7 +377,10 @@ async function handleConnect(device) {
               macBytes.push(macData.getUint8(idx).toString(16).toUpperCase().padStart(2, '0'));
             }
             app.btMacAddress = macBytes.join(':');
-            document.getElementById("infoMac")?.innerText = app.btMacAddress;
+            const infoMac = document.getElementById("infoMac");
+            if (infoMac) {
+              infoMac.innerText = app.btMacAddress;
+            }
           }
         } catch (e) {
           console.warn("Failed to read DualSense MAC address", e);
@@ -337,12 +392,17 @@ async function handleConnect(device) {
     if (isDualShock && !app.isClone) {
       await queryNvsStatus();
     } else {
-      document.getElementById("nvsStatusText")?.innerHTML = `<span class="badge-custom badge-success"><i class="fa-solid fa-lock-open"></i> Unlocked (Ready)</span>`;
+      const nvsStatusText = document.getElementById("nvsStatusText");
+      if (nvsStatusText) {
+        nvsStatusText.innerHTML = `<span class="badge-custom badge-success"><i class="fa-solid fa-lock-open"></i> Unlocked (Ready)</span>`;
+      }
       app.nvsState = 0;
     }
 
     // Register Touchpad inputs if connected via WebHID
-    device.addEventListener("inputreport", handleInputReport);
+    if (device) {
+      device.addEventListener("inputreport", handleInputReport);
+    }
 
     // Start Gamepad loop
     if (app.requestAnimationFrameId) cancelAnimationFrame(app.requestAnimationFrameId);
@@ -378,10 +438,22 @@ async function handleDisconnect() {
   close_all_modals();
 
   // Update UI
-  document.getElementById("offlinebar")?.show();
-  document.getElementById("onlinebar")?.hide();
-  document.getElementById("mainmenu")?.hide();
-  document.getElementById("aboutdrift")?.show();
+  const offlinebar = document.getElementById("offlinebar");
+  if (offlinebar) {
+    offlinebar.show();
+  }
+  const onlinebar = document.getElementById("onlinebar");
+  if (onlinebar) {
+    onlinebar.hide();
+  }
+  const mainmenu = document.getElementById("mainmenu");
+  if (mainmenu) {
+    mainmenu.hide();
+  }
+  const aboutdrift = document.getElementById("aboutdrift");
+  if (aboutdrift) {
+    aboutdrift.show();
+  }
   updateLastConnectedInfo();
 }
 
@@ -399,14 +471,20 @@ function locateGamepadIndex(hidDev) {
     if (gp) {
       if (gp.id.toLowerCase().includes("54c") || gp.id.toLowerCase().includes("playstation") || gp.id.toLowerCase().includes("sony")) {
         app.gamepadIndex = i;
-        document.getElementById("infoConnectionType")?.innerText = gp.id.includes("Bluetooth") ? "Bluetooth" : "USB";
+        const infoConnectionType = document.getElementById("infoConnectionType");
+        if (infoConnectionType) {
+          infoConnectionType.innerText = gp.id.includes("Bluetooth") ? "Bluetooth" : "USB";
+        }
         app.connectionType = gp.id.includes("Bluetooth") ? "Bluetooth" : "USB";
         return;
       }
     }
   }
   app.gamepadIndex = 0;
-  document.getElementById("infoConnectionType")?.innerText = "USB (Auto)";
+  const infoConnectionType = document.getElementById("infoConnectionType");
+  if (infoConnectionType) {
+    infoConnectionType.innerText = "USB (Auto)";
+  }
 }
 
 // Placeholder functions for features that would need to be implemented

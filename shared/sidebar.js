@@ -284,9 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   if ((path.startsWith('/tools/') || path.startsWith('/test/')) && path !== '/tools/' && path !== '/test/') {
     // We are on a tool page
-    let count = parseInt(localStorage.getItem('techtest_devices_tested') || '0', 10);
+    let count = parseInt(localStorage.getItem('devices_tested') || '0', 10);
     count += 1;
-    localStorage.setItem('techtest_devices_tested', count.toString());
+    localStorage.setItem('devices_tested', count.toString());
   }
 
   // Legal Consent Check
