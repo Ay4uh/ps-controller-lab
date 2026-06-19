@@ -314,6 +314,32 @@
         </div>
       </div>
 
+      <!-- Stats Bar -->
+      <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px;">
+        <div style="background: #F9FAFB; width: 100%; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-around; padding: 28px; text-align: center;">
+          <div>
+            <div id="stat-devices-tested" style="font-size: 32px; font-weight: bold; color: #2563EB;">0</div>
+            <div style="font-size: 14px; color: #6B7280; margin-top: 4px; font-weight: 500;">Devices Tested</div>
+          </div>
+          <div>
+            <div id="stat-repair-guides" style="font-size: 32px; font-weight: bold; color: #2563EB;"><!-- REPAIR_GUIDES_COUNT -->3</div>
+            <div style="font-size: 14px; color: #6B7280; margin-top: 4px; font-weight: 500;">Repair Guides</div>
+          </div>
+          <div>
+            <div style="font-size: 32px; font-weight: bold; color: #2563EB;">3</div>
+            <div style="font-size: 14px; color: #6B7280; margin-top: 4px; font-weight: 500;">Tool Categories</div>
+          </div>
+        </div>
+      </div>
+      
+      <script>
+        // Load Devices Tested from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+          const count = localStorage.getItem('techtest_devices_tested') || '0';
+          document.getElementById('stat-devices-tested').textContent = parseInt(count, 10).toLocaleString();
+        });
+      </script>
+
       <div class="container dashboard-grid">
         
         <!-- Gamepad Card -->

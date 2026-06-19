@@ -278,3 +278,19 @@ function trackToolEvent(toolName, eventType, data = {}) {
     });
   }
 }
+
+// Global hook to increment Devices Tested counter
+document.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname;
+  if ((path.startsWith('/tools/') || path.startsWith('/test/')) && path !== '/tools/' && path !== '/test/') {
+    // We are on a tool page
+    let count = parseInt(localStorage.getItem('techtest_devices_tested') || '0', 10);
+    
+    // To prevent rapid refreshing from spiking the number, we can store a session flag for this specific URL
+    // Or just increment by 1 every load. The prompt says "increment ... every time a user runs any tool"
+    // We'll just increment on load
+    count += 1;
+    localStorage.setItem('techtest_devices_tested', count.toString());
+  }
+});
+
