@@ -289,3 +289,22 @@
   padding: 12px;
   font-size: 16px;
 }
+
+/* Touch Grid Test */
+.touch-grid-container {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  background: #111;
+}
+
+.touch-grid-cell {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.1s;
+}
+
+.touch-grid-cell.touched {
+  background: var(--accent-green) !important;
+  border-color: var(--accent-green);
+}

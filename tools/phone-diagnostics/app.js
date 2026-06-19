@@ -255,67 +255,104 @@ function promptPassFail(resolve, customHtml = '') {
   document.getElementById('btnOverlayFail').onclick = () => { hideOverlay(); resolve('fail'); };
 }
 
-// 1. Dead Pixel
+// 1. Dead Pixel & Display
 async function runDeadPixelTest() {
   return new Promise((resolve) => {
-    showOverlay('Dead Pixel Test');
-    const colors = ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff'];
+    showOverlay('Display & Dead Pixel Test');
+    
+    const backgrounds = [
+      '#000000', // Black
+      '#ffffff', // White
+      '#ff0000', // Red
+      '#00ff00', // Green
+      '#0000ff', // Blue
+      '#00ffff', // Cyan
+      '#ff00ff', // Magenta
+      '#ffff00', // Yellow
+      'linear-gradient(to right, #000000, #ffffff)' // Banding test
+    ];
     let idx = 0;
     
-    overlayContent.innerHTML = `<div id="colorLayer" class="color-test-layer" style="background:${colors[idx]}">Tap to change color</div>`;
+    // Request fullscreen to hide UI
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(()=>{});
+    }
+    
+    overlayContent.innerHTML = `<div id="colorLayer" class="color-test-layer" style="background:${backgrounds[idx]}">Tap to cycle colors<br><span style="font-size:14px;opacity:0.7">(Look for stuck pixels or backlight bleed)</span></div>`;
     
     document.getElementById('colorLayer').addEventListener('click', () => {
       idx++;
-      if (idx < colors.length) {
-        document.getElementById('colorLayer').style.background = colors[idx];
+      if (idx < backgrounds.length) {
+        document.getElementById('colorLayer').style.background = backgrounds[idx];
+        if (idx > 0) document.getElementById('colorLayer').innerHTML = ''; // Hide text after first tap
       } else {
-        promptPassFail(resolve);
+        if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+        promptPassFail(resolve, '<p style="color:var(--text-secondary)">Did you spot any dead pixels, stuck colors, or severe color banding?</p>');
       }
     });
   });
 }
 
-// 2. Touch Draw
+// 2. Touch Draw (Grid Validation)
 async function runTouchDrawTest() {
   return new Promise((resolve) => {
-    showOverlay('Touch Screen Draw Test');
+    showOverlay('Touch Screen Grid Test');
+    
+    // Create an 8x12 grid
+    const cols = 8;
+    const rows = 12;
+    const totalCells = cols * rows;
+    
     overlayContent.innerHTML = `
-      <canvas id="touchCanvas" class="touch-canvas"></canvas>
-      <div class="overlay-instruction">Scribble everywhere. Tap Done when finished. <button id="btnTouchDone" class="btn btn-sm" style="margin-left:10px;">Done</button></div>
+      <div id="touchGrid" class="touch-grid-container" style="grid-template-columns: repeat(${cols}, 1fr); grid-template-rows: repeat(${rows}, 1fr);">
+        <div class="overlay-instruction" style="pointer-events:none; z-index:100; font-size:14px; padding:8px 16px;">Swipe all blocks to turn them green</div>
+      </div>
+      <button id="btnCancelTouch" class="btn btn-danger" style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:100;">Cancel</button>
     `;
     
-    const canvas = document.getElementById('touchCanvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.lineWidth = 10;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#00ff00';
+    const grid = document.getElementById('touchGrid');
+    let touchedCount = 0;
+    const touchedCells = new Set();
     
-    let isDrawing = false;
+    // Generate cells
+    for(let i=0; i<totalCells; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'touch-grid-cell';
+      cell.id = `cell-${i}`;
+      grid.appendChild(cell);
+    }
     
-    const startPos = (e) => { isDrawing = true; draw(e); };
-    const endPos = () => { isDrawing = false; ctx.beginPath(); };
-    const draw = (e) => {
-      if (!isDrawing) return;
+    const handleTouch = (e) => {
       e.preventDefault();
-      let touch = e.touches ? e.touches[0] : e;
-      const rect = canvas.getBoundingClientRect();
-      ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      const touches = e.touches ? e.touches : [e];
+      for(let i=0; i<touches.length; i++) {
+        const t = touches[i];
+        // Find the element under this touch point
+        const el = document.elementFromPoint(t.clientX, t.clientY);
+        if (el && el.classList.contains('touch-grid-cell') && !el.classList.contains('touched')) {
+          el.classList.add('touched');
+          touchedCells.add(el.id);
+          touchedCount = touchedCells.size;
+          
+          if (touchedCount === totalCells) {
+            // Auto pass
+            grid.removeEventListener('touchmove', handleTouch);
+            grid.removeEventListener('mousemove', handleTouch);
+            hideOverlay();
+            resolve('pass');
+          }
+        }
+      }
     };
     
-    canvas.addEventListener('mousedown', startPos);
-    canvas.addEventListener('mouseup', endPos);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('touchstart', startPos);
-    canvas.addEventListener('touchend', endPos);
-    canvas.addEventListener('touchmove', draw);
+    grid.addEventListener('touchmove', handleTouch);
+    grid.addEventListener('touchstart', handleTouch);
+    grid.addEventListener('mousemove', (e) => { if (e.buttons === 1) handleTouch(e); });
+    grid.addEventListener('mousedown', handleTouch);
     
-    document.getElementById('btnTouchDone').onclick = () => {
-      promptPassFail(resolve, `<img src="${canvas.toDataURL()}" style="max-height:200px; margin:auto; display:block; margin-bottom:20px;">`);
+    document.getElementById('btnCancelTouch').onclick = () => {
+      hideOverlay();
+      resolve('fail');
     };
   });
 }
@@ -365,47 +402,105 @@ async function runMultiTouchTest() {
   });
 }
 
-// 4. Frequency Sweep
+// 4. Stereo & Frequency Sweep
 async function runFrequencySweep() {
-  return new Promise((resolve) => {
-    showOverlay('Speaker Test (Sweep)');
+  return new Promise(async (resolve) => {
+    showOverlay('Stereo Speaker Test');
     overlayContent.innerHTML = `
       <div style="padding:40px; text-align:center;">
         <h3 style="color:var(--text-primary)">Turn up your volume!</h3>
-        <p style="color:var(--text-secondary)">Playing a sweep from 100Hz to 15,000Hz...</p>
-        <button id="btnStopAudio" class="btn btn-danger">Stop</button>
+        <p id="speakerStatus" style="color:var(--accent-blue); font-size:20px; font-weight:700; margin: 24px 0;">Preparing audio...</p>
+        <button id="btnStopAudio" class="btn btn-danger">Stop Test</button>
       </div>
     `;
     
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    let ctx, osc, gain, panner;
     
-    osc.type = 'sine';
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    osc.frequency.setValueAtTime(100, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(15000, ctx.currentTime + 3);
-    
-    gain.gain.setValueAtTime(0.5, ctx.currentTime);
-    
-    osc.start();
-    
-    const stopAudio = () => {
-      try { osc.stop(); ctx.close(); } catch(e){}
+    const playTone = (freq, panValue, duration, statusText) => {
+      return new Promise(res => {
+        document.getElementById('speakerStatus').innerText = statusText;
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        osc = ctx.createOscillator();
+        gain = ctx.createGain();
+        panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        
+        if (panner) {
+          panner.pan.value = panValue;
+          osc.connect(panner);
+          panner.connect(gain);
+        } else {
+          osc.connect(gain);
+        }
+        
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.8, ctx.currentTime + duration - 0.1);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+        
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + duration);
+        
+        setTimeout(() => {
+          ctx.close();
+          res();
+        }, duration * 1000 + 100);
+      });
     };
-    
-    setTimeout(() => {
-      stopAudio();
-      promptPassFail(resolve, '<h3 style="color:var(--text-primary)">Did you hear the sweep smoothly?</h3>');
-    }, 3500);
+
+    const playSweep = (duration) => {
+      return new Promise(res => {
+        document.getElementById('speakerStatus').innerText = '🎵 Full Frequency Sweep (Both Speakers)';
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        osc = ctx.createOscillator();
+        gain = ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.setValueAtTime(100, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(15000, ctx.currentTime + duration);
+        
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.5, ctx.currentTime + duration - 0.1);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+        
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + duration);
+        
+        setTimeout(() => {
+          ctx.close();
+          res();
+        }, duration * 1000 + 100);
+      });
+    };
+
+    const stopAudio = () => {
+      try { if (osc) osc.stop(); if (ctx) ctx.close(); } catch(e){}
+    };
     
     document.getElementById('btnStopAudio').onclick = () => {
       stopAudio();
       promptPassFail(resolve);
     };
+
+    try {
+      await playTone(440, -1, 1.5, '🔊 Playing LEFT Speaker...');
+      await new Promise(r => setTimeout(r, 500));
+      await playTone(440, 1, 1.5, '🔊 Playing RIGHT Speaker...');
+      await new Promise(r => setTimeout(r, 500));
+      await playSweep(3.0);
+      
+      promptPassFail(resolve, '<h3 style="color:var(--text-primary)">Did you hear Left, Right, and the Sweep?</h3>');
+    } catch(err) {
+      stopAudio();
+      promptPassFail(resolve);
+    }
   });
 }
 
@@ -416,26 +511,68 @@ async function runMicTest() {
     overlayContent.innerHTML = `
       <div style="padding:40px; text-align:center;">
         <h3 style="color:var(--text-primary)">Recording 3 seconds...</h3>
-        <div id="micStatus" style="font-size:24px; margin:20px 0;">🎙️ Speak now!</div>
+        <canvas id="micCanvas" width="300" height="100" style="background:#111; border-radius:8px; margin:20px auto; display:block;"></canvas>
+        <div id="micStatus" style="font-size:24px; color:var(--text-secondary);">🎙️ Speak now!</div>
       </div>
     `;
     
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioCtx = new AudioContext();
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      source.connect(analyser);
+      
+      const canvas = document.getElementById('micCanvas');
+      const canvasCtx = canvas.getContext('2d');
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      let drawVisual;
+      
+      const draw = () => {
+        drawVisual = requestAnimationFrame(draw);
+        analyser.getByteTimeDomainData(dataArray);
+        canvasCtx.fillStyle = '#111';
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'var(--accent-blue)';
+        canvasCtx.beginPath();
+        
+        const sliceWidth = canvas.width * 1.0 / bufferLength;
+        let x = 0;
+        for(let i = 0; i < bufferLength; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = v * canvas.height/2;
+          if(i === 0) canvasCtx.moveTo(x, y);
+          else canvasCtx.lineTo(x, y);
+          x += sliceWidth;
+        }
+        canvasCtx.lineTo(canvas.width, canvas.height/2);
+        canvasCtx.stroke();
+      };
+      draw();
+
       const mediaRecorder = new MediaRecorder(stream);
       let chunks = [];
       
       mediaRecorder.ondataavailable = e => chunks.push(e.data);
       mediaRecorder.onstop = () => {
+        cancelAnimationFrame(drawVisual);
+        audioCtx.close();
+        
         const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
         const audioURL = window.URL.createObjectURL(blob);
         
         overlayContent.innerHTML = `
           <div style="padding:40px; text-align:center;">
             <h3 style="color:var(--text-primary)">Playback</h3>
+            <p style="color:var(--text-secondary)">Did your voice record clearly?</p>
             <audio controls src="${audioURL}" style="margin:20px 0;"></audio>
             <br>
-            <button class="btn btn-primary" id="btnMicDone">Done</button>
+            <button class="btn btn-primary" id="btnMicDone">Evaluate</button>
           </div>
         `;
         document.getElementById('btnMicDone').onclick = () => {
@@ -460,21 +597,55 @@ async function runMicTest() {
 async function runCameraTest(facingMode) {
   return new Promise(async (resolve) => {
     showOverlay(facingMode === 'user' ? 'Front Camera' : 'Rear Camera');
+    
     overlayContent.innerHTML = `
       <video id="camVideo" class="camera-preview" autoplay playsinline></video>
-      <div class="overlay-instruction"><button id="btnCamDone" class="btn btn-primary">Done</button></div>
+      <div class="overlay-instruction" style="display:flex; gap:10px; align-items:center;">
+        <button id="btnCycleCam" class="btn btn-secondary" style="background:rgba(255,255,255,0.2); color:#fff; border:1px solid #fff;"><i class="fa-solid fa-rotate"></i> Cycle Camera</button>
+        <button id="btnCamDone" class="btn btn-primary">Done</button>
+      </div>
     `;
     
+    let currentStream = null;
+    let videoDevices = [];
+    let currentDeviceIndex = 0;
+    
+    const startStream = async (deviceId, facing) => {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+      try {
+        const constraints = deviceId ? { video: { deviceId: { exact: deviceId } } } : { video: { facingMode: facing } };
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        document.getElementById('camVideo').srcObject = currentStream;
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: facingMode }
-      });
-      document.getElementById('camVideo').srcObject = stream;
+      // initial request to trigger permissions
+      await startStream(null, facingMode);
+      
+      // then enumerate
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      videoDevices = devices.filter(d => d.kind === 'videoinput');
+      
+      // Try to match the initial facing mode with the enumerated devices if possible
+      if (videoDevices.length > 0) {
+        document.getElementById('btnCycleCam').onclick = async () => {
+          currentDeviceIndex = (currentDeviceIndex + 1) % videoDevices.length;
+          await startStream(videoDevices[currentDeviceIndex].deviceId, null);
+        };
+      } else {
+        document.getElementById('btnCycleCam').style.display = 'none';
+      }
       
       document.getElementById('btnCamDone').onclick = () => {
-        stream.getTracks().forEach(track => track.stop());
-        promptPassFail(resolve);
+        if (currentStream) currentStream.getTracks().forEach(track => track.stop());
+        promptPassFail(resolve, '<p style="color:var(--text-secondary)">Did the camera feed look clear without artifacts or spots?</p>');
       };
+      
     } catch(err) {
       promptPassFail(resolve, `<p style="color:var(--accent-red)">Camera Error: ${err.message}</p>`);
     }
@@ -506,37 +677,62 @@ async function runMotionTest() {
 
 function startSensors(resolve) {
   overlayContent.innerHTML = `
-    <div class="sensor-readings">
-      <div class="sensor-row"><span>Accel X:</span> <span id="accX">0</span></div>
-      <div class="sensor-row"><span>Accel Y:</span> <span id="accY">0</span></div>
-      <div class="sensor-row"><span>Accel Z:</span> <span id="accZ">0</span></div>
-      <div class="sensor-row"><span>Gyro Alpha:</span> <span id="gyrA">0</span></div>
-      <div class="sensor-row"><span>Gyro Beta:</span> <span id="gyrB">0</span></div>
-      <div class="sensor-row"><span>Gyro Gamma:</span> <span id="gyrG">0</span></div>
-      <button class="btn btn-primary w-100" id="btnSensorDone" style="margin-top:20px;">Stop & Evaluate</button>
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+      <h3 style="color:var(--text-primary); margin-bottom:10px;">Bubble Level</h3>
+      <p style="color:var(--text-secondary); margin-bottom:40px; text-align:center;">Tilt your phone. The bubble should move smoothly.</p>
+      
+      <div style="width:200px; height:200px; border-radius:50%; border:4px solid var(--border); position:relative; background:var(--bg-card); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+        <!-- Crosshairs -->
+        <div style="position:absolute; width:100%; height:1px; background:var(--border);"></div>
+        <div style="position:absolute; width:1px; height:100%; background:var(--border);"></div>
+        <!-- Bubble -->
+        <div id="tiltBubble" style="position:absolute; width:40px; height:40px; background:var(--accent-blue); border-radius:50%; transition: transform 0.1s ease-out;"></div>
+      </div>
+      
+      <div class="sensor-readings" style="margin-top:40px; width:100%; max-width:300px;">
+        <div class="sensor-row"><span>Accel X:</span> <span id="accX">0</span></div>
+        <div class="sensor-row"><span>Accel Y:</span> <span id="accY">0</span></div>
+        <div class="sensor-row"><span>Accel Z:</span> <span id="accZ">0</span></div>
+      </div>
+      
+      <button class="btn btn-primary" id="btnSensorDone" style="margin-top:auto; width:100%; max-width:300px;">Evaluate</button>
     </div>
   `;
   
+  const bubble = document.getElementById('tiltBubble');
+  const maxMove = 80; // pixels from center
+  
   const handleMotion = (e) => {
     if(e.accelerationIncludingGravity) {
-      document.getElementById('accX').innerText = (e.accelerationIncludingGravity.x||0).toFixed(2);
-      document.getElementById('accY').innerText = (e.accelerationIncludingGravity.y||0).toFixed(2);
-      document.getElementById('accZ').innerText = (e.accelerationIncludingGravity.z||0).toFixed(2);
+      const x = e.accelerationIncludingGravity.x || 0;
+      const y = e.accelerationIncludingGravity.y || 0;
+      const z = e.accelerationIncludingGravity.z || 0;
+      
+      document.getElementById('accX').innerText = x.toFixed(2);
+      document.getElementById('accY').innerText = y.toFixed(2);
+      document.getElementById('accZ').innerText = z.toFixed(2);
+      
+      // Calculate bubble position (invert X for natural feel, invert Y depending on OS)
+      // Usually X is left/right tilt (-9.8 to 9.8), Y is up/down tilt
+      let bx = (x / 9.8) * maxMove;
+      let by = (y / 9.8) * maxMove * -1; // inverted for natural bubble feel
+      
+      // Constrain to circle
+      const dist = Math.sqrt(bx*bx + by*by);
+      if (dist > maxMove) {
+        bx = (bx / dist) * maxMove;
+        by = (by / dist) * maxMove;
+      }
+      
+      bubble.style.transform = `translate(${bx}px, ${by}px)`;
     }
-  };
-  const handleOrientation = (e) => {
-    document.getElementById('gyrA').innerText = (e.alpha||0).toFixed(2);
-    document.getElementById('gyrB').innerText = (e.beta||0).toFixed(2);
-    document.getElementById('gyrG').innerText = (e.gamma||0).toFixed(2);
   };
   
   window.addEventListener('devicemotion', handleMotion);
-  window.addEventListener('deviceorientation', handleOrientation);
   
   document.getElementById('btnSensorDone').onclick = () => {
     window.removeEventListener('devicemotion', handleMotion);
-    window.removeEventListener('deviceorientation', handleOrientation);
-    promptPassFail(resolve);
+    promptPassFail(resolve, '<p style="color:var(--text-secondary)">Did the bubble move smoothly when tilting the phone?</p>');
   };
 }
 
