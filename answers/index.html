@@ -131,29 +131,29 @@
           row.href = '#';
 
           const boxClass = q.accepted ? 'q-box accepted' : (q.answers > 0 ? 'q-box has-answers' : 'q-box empty');
-          const pillHTML = q.accepted ? \`<div class="q-pill-accepted"><i class="fa-solid fa-check"></i> ACCEPTED</div>\` : '';
+          const pillHTML = q.accepted ? `<div class="q-pill-accepted"><i class="fa-solid fa-check"></i> ACCEPTED</div>` : '';
 
-          row.innerHTML = \`
+          row.innerHTML = `
             <div class="q-img">
               <i class="fa-solid fa-mobile-screen-button"></i>
             </div>
-            <div class="\${boxClass}">
-              <div class="q-count">\${q.answers}</div>
+            <div class="${boxClass}">
+              <div class="q-count">${q.answers}</div>
               <div class="q-label">ANSWERS</div>
             </div>
             <div class="q-content">
-              \${pillHTML}
-              <h3 class="q-title">\${q.title}</h3>
-              <div class="q-device">\${q.device}</div>
+              ${pillHTML}
+              <h3 class="q-title">${q.title}</h3>
+              <div class="q-device">${q.device}</div>
             </div>
             <div class="q-meta">
               <div class="q-avatar"><i class="fa-solid fa-user"></i></div>
               <div class="q-meta-text">
                 <div class="q-author">Tech User</div>
-                <div class="q-time">Answered \${q.time}</div>
+                <div class="q-time">Answered ${q.time}</div>
               </div>
             </div>
-          \`;
+          `;
           listEl.appendChild(row);
         });
       }
