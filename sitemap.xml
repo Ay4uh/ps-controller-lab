@@ -2,57 +2,174 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ay5uh.com/</loc>
-    <priority>1.0</priority>
-    <changefreq>daily</changefreq>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://ay5uh.com/tools/ram-test/</loc>
-    <priority>0.8</priority>
+    <loc>https://ay5uh.com/about/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/blog/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/controller-vibration-test/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/dualsense-calibration/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/fix-ps5-controller-drift/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/ps4-controller-drift-test/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/googlec4c2e36a49e62fa3.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/auto-calib-center-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/calib-center-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/calibration-history-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/donate-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/edge-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/edge-progress-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/faq-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/finetune-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/popup-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/quick-test-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/range-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/reference-repo/templates/welcome-modal.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/repair-guides/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/repair-guides/apple/macbook-air-13-m1/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/repair-guides/lenovo/thinkpad-t14-gen1-amd/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/repair-guides/lenovo/thinkpad-t14-gen1-amd/screen-replacement/</loc>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://ay5uh.com/tools/benchmark/</loc>
-    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/benchmark/app.html</loc>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://ay5uh.com/tools/controller-lab/</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ay5uh.com/tools/keyboard-test/</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ay5uh.com/tools/mouse-test/</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ay5uh.com/tools/mic-test/</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ay5uh.com/tools/speaker-test/</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ay5uh.com/tools/display-test/</loc>
-    <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://ay5uh.com/tools/dead-pixel-test/</loc>
-    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/dead-pixel-test/app.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/display-test/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/display-test/app.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/keyboard-test/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/laptop/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/mic-test/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/mic-test/app.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/mouse-test/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/mouse-test/app.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/phone-diagnostics/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/speaker-test/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/speaker-test/app.html</loc>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://ay5uh.com/tools/webcam-test/</loc>
-    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/webcam-test/app.html</loc>
     <changefreq>weekly</changefreq>
   </url>
 </urlset>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tech Repair & Diagnostics Blog | TechTest</title>
-  <meta name="description" content="Tips, guides, and advice on laptop repair, phone diagnostics, and hardware testing. Helping you fix your devices and save money.">
+  <title>TechTest Blog — Repair Tips, Buying Advice & How-To Guides</title>
+  <meta name="description" content="Repair guides, buying advice, and hardware how-to articles for laptops, phones, and gaming devices. Free tips from TechTest.">
   <meta name="keywords" content="laptop repair tips, tech blog, hardware diagnostics, DIY repair, phone fix guide">
   <meta name="robots" content="index, follow">
   <meta property="og:site_name" content="TechTest">
@@ -14,16 +14,137 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/shared/styles.css?v=18">
+
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "TechTest",
+    "url": "https://ay5uh.com",
+    "description": "Free browser-based hardware diagnostics for laptops, phones and controllers",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://ay5uh.com/repair-guides/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="TechTest Blog — Repair Tips, Buying Advice & How-To Guides">
+  <meta property="og:description" content="Repair guides, buying advice, and hardware how-to articles for laptops, phones, and gaming devices. Free tips from TechTest.">
+  <meta property="og:url" content="https://ay5uh.com/blog/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TechTest Blog — Repair Tips, Buying Advice & How-To Guides">
+  <meta name="twitter:description" content="Repair guides, buying advice, and hardware how-to articles for laptops, phones, and gaming devices. Free tips from TechTest.">
+  <meta name="twitter:image" content="https://ay5uh.com/og-image.png">
+
+  <!-- Sitemap reference -->
+  <link rel="sitemap" type="application/xml" href="https://ay5uh.com/sitemap.xml">
+
 </head>
 <body>
 
   <div class="app-layout">
     <main class="main-content">
-      <div class="container pb-5 pt-5 text-center" style="margin-top: 100px;">
-        <i class="fa-solid fa-pen-nib text-accent mb-4" style="font-size: 48px; color: var(--accent-blue);"></i>
-        <h1 class="fw-bold mb-3">Blog</h1>
-        <p class="text-muted fs-5">Coming soon! We're writing some great articles about hardware diagnostics.</p>
-        <a href="/" class="btn btn-primary mt-4" style="background: var(--accent-blue); color: white; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Back to Tools</a>
+      <div class="blog-container">
+        <div class="blog-hero">
+          <h1 class="blog-title">TechTest Blog</h1>
+          <p class="blog-subtitle">Repair tips, buying guides, and hardware advice.</p>
+        </div>
+
+        <div class="blog-filters">
+          <a href="#" class="blog-filter active">All</a>
+          <a href="#" class="blog-filter">Repair Guides</a>
+          <a href="#" class="blog-filter">Buying Advice</a>
+          <a href="#" class="blog-filter">How-To</a>
+          <a href="#" class="blog-filter">News</a>
+        </div>
+
+        <div class="blog-grid">
+          <!-- Card 1 -->
+          <a href="#" class="blog-card">
+            <div class="blog-card-img">
+              <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <div class="blog-card-content">
+              <span class="blog-category">How-To</span>
+              <h2 class="blog-card-title">How to Tell If Your PS5 Controller Has Stick Drift</h2>
+              <p class="blog-card-excerpt">Learn the simple steps to diagnose dualsense stick drift issues using our free online tool.</p>
+              <div class="blog-card-meta">June 15, 2026 · 5 min read</div>
+            </div>
+          </a>
+
+          <!-- Card 2 -->
+          <a href="#" class="blog-card">
+            <div class="blog-card-img">
+              <i class="fa-solid fa-laptop"></i>
+            </div>
+            <div class="blog-card-content">
+              <span class="blog-category">Buying Advice</span>
+              <h2 class="blog-card-title">Best Free Tools to Test Your MacBook Before Buying Used</h2>
+              <p class="blog-card-excerpt">Don't get scammed. Here are the essential diagnostic tests to run on any second-hand MacBook.</p>
+              <div class="blog-card-meta">June 12, 2026 · 6 min read</div>
+            </div>
+          </a>
+
+          <!-- Card 3 -->
+          <a href="#" class="blog-card">
+            <div class="blog-card-img">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+            </div>
+            <div class="blog-card-content">
+              <span class="blog-category">Repair Guides</span>
+              <h2 class="blog-card-title">Lenovo IdeaPad 5 2-in-1 Back Cover Replacement — Full Guide</h2>
+              <p class="blog-card-excerpt">A complete step-by-step teardown and reassembly guide for the IdeaPad 5 series.</p>
+              <div class="blog-card-meta">June 10, 2026 · 10 min read</div>
+            </div>
+          </a>
+
+          <!-- Card 4 -->
+          <a href="#" class="blog-card">
+            <div class="blog-card-img">
+              <i class="fa-solid fa-desktop"></i>
+            </div>
+            <div class="blog-card-content">
+              <span class="blog-category">How-To</span>
+              <h2 class="blog-card-title">How to Check for Dead Pixels on Any Laptop Screen</h2>
+              <p class="blog-card-excerpt">Spot stuck or dead pixels instantly with these simple browser-based tests.</p>
+              <div class="blog-card-meta">June 8, 2026 · 4 min read</div>
+            </div>
+          </a>
+
+          <!-- Card 5 -->
+          <a href="#" class="blog-card">
+            <div class="blog-card-img">
+              <i class="fa-solid fa-laptop-chromebook"></i>
+            </div>
+            <div class="blog-card-content">
+              <span class="blog-category">Buying Advice</span>
+              <h2 class="blog-card-title">Gateway Chromebook — Is It Worth Buying Used in 2026?</h2>
+              <p class="blog-card-excerpt">An honest look at budget Gateway devices and what to watch out for before purchasing.</p>
+              <div class="blog-card-meta">June 5, 2026 · 7 min read</div>
+            </div>
+          </a>
+
+          <!-- Card 6 -->
+          <a href="#" class="blog-card">
+            <div class="blog-card-img">
+              <i class="fa-solid fa-laptop-medical"></i>
+            </div>
+            <div class="blog-card-content">
+              <span class="blog-category">Repair Guides</span>
+              <h2 class="blog-card-title">ThinkPad T14 Gen 1 Screen Replacement — Compatible Panels</h2>
+              <p class="blog-card-excerpt">Everything you need to know about swapping the display on a ThinkPad T14 AMD model.</p>
+              <div class="blog-card-meta">June 1, 2026 · 8 min read</div>
+            </div>
+          </a>
+        </div>
       </div>
     </main>
   </div>
