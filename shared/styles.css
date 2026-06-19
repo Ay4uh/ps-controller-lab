@@ -1695,3 +1695,110 @@ body {
 .breadcrumb-item.active {
   color: var(--text-primary);
 }
+
+/* Legal Consent Modal */
+.legal-consent-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.legal-consent-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.legal-consent-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 600px;
+  padding: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.legal-consent-overlay.show .legal-consent-modal {
+  transform: translateY(0);
+}
+
+.legal-consent-modal h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.legal-consent-modal .legal-alert {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid #ef4444;
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+  margin: 0;
+}
+
+.legal-consent-modal p {
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 15px;
+}
+
+.legal-consent-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+.legal-btn-cancel {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.legal-btn-cancel:hover {
+  background: var(--bg-hover);
+}
+
+.legal-btn-agree {
+  background: #2563EB;
+  border: none;
+  color: white;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.legal-btn-agree:hover {
+  background: #1D4ED8;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}

@@ -279,18 +279,56 @@ function trackToolEvent(toolName, eventType, data = {}) {
   }
 }
 
-// Global hook to increment Devices Tested counter
+// Global hook to increment Devices Tested counter and check Legal Consent
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   if ((path.startsWith('/tools/') || path.startsWith('/test/')) && path !== '/tools/' && path !== '/test/') {
     // We are on a tool page
     let count = parseInt(localStorage.getItem('techtest_devices_tested') || '0', 10);
-    
-    // To prevent rapid refreshing from spiking the number, we can store a session flag for this specific URL
-    // Or just increment by 1 every load. The prompt says "increment ... every time a user runs any tool"
-    // We'll just increment on load
     count += 1;
     localStorage.setItem('techtest_devices_tested', count.toString());
   }
-});
 
+  // Legal Consent Check
+  if (!localStorage.getItem('techtest_legal_consent')) {
+    const modalHTML = `
+      <div class="legal-consent-overlay" id="legalConsentOverlay">
+        <div class="legal-consent-modal">
+          <h2><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Legal Disclaimer</h2>
+          <div class="legal-alert">
+            <p style="color: #b91c1c; font-weight: 700; margin-bottom: 4px;">WARNING: EXTREMELY IMPORTANT LIABILITY DISCLAIMER</p>
+            <p style="color: #991b1b; font-size: 14px;">By using this website, you agree that TechTest and its creators are NOT liable for any damages, hardware failure, data loss, or illegal activities resulting from the use of our tools or repair guides. All tools and guides are provided "AS IS" without warranty of any kind.</p>
+          </div>
+          <p>Please review our <a href="/policies/" target="_blank" style="color: var(--accent-blue);">Policies & Legal</a> terms. You must agree to these terms to use any of the diagnostic tools or guides provided on this platform.</p>
+          <div class="legal-consent-actions">
+            <button class="legal-btn-cancel" id="btnLegalCancel">Cancel</button>
+            <button class="legal-btn-agree" id="btnLegalAgree">Yes, I agree</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Give browser a moment to render HTML before adding the 'show' class for the fade-in transition
+    setTimeout(() => {
+      document.getElementById('legalConsentOverlay').classList.add('show');
+    }, 10);
+
+    document.getElementById('btnLegalAgree').addEventListener('click', () => {
+      localStorage.setItem('techtest_legal_consent', 'true');
+      const overlay = document.getElementById('legalConsentOverlay');
+      overlay.classList.remove('show');
+      setTimeout(() => overlay.remove(), 300);
+    });
+
+    document.getElementById('btnLegalCancel').addEventListener('click', () => {
+      // If history length > 1, they came from somewhere, so go back. Otherwise go to google.
+      if (window.history.length > 1 && document.referrer) {
+        window.history.back();
+      } else {
+        window.location.href = 'https://google.com';
+      }
+    });
+  }
+});
