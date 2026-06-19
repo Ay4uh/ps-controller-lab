@@ -101,6 +101,46 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://ay5uh.com/test/chromebook-keyboard/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/dell-xps-keyboard/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/lenovo-thinkpad-keyboard/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/logitech-g502-mouse/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/macbook-pro-keyboard/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/macbook-trackpad/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/nintendo-switch-pro-controller/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/ps4-dualshock-controller/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/ps5-controller-drift/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/test/xbox-series-x-controller/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
     <loc>https://ay5uh.com/tools/benchmark/</loc>
     <changefreq>weekly</changefreq>
   </url>
