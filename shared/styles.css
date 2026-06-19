@@ -755,7 +755,7 @@ body {
 .catalog-grid-wrapper {
   flex: 1;
   padding: 32px 48px;
-  background: var(--bg);
+  background: var(--bg-base);
   overflow-y: auto;
 }
 
@@ -768,6 +768,11 @@ body {
 .series-column {
   display: flex;
   flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .series-title {
@@ -775,8 +780,8 @@ body {
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
 }
 
 .model-item {
