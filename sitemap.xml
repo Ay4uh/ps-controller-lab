@@ -9,7 +9,7 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://ay5uh.com/blog/</loc>
+    <loc>https://ay5uh.com/answers/</loc>
     <changefreq>weekly</changefreq>
   </url>
   <url>
@@ -110,6 +110,10 @@
   </url>
   <url>
     <loc>https://ay5uh.com/tools/controller-lab/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/controller-lab/index.modular.html</loc>
     <changefreq>weekly</changefreq>
   </url>
   <url>

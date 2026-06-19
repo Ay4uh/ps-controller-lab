@@ -29,7 +29,7 @@ function injectSidebar(activeToolId = null) {
         <div class="topnav-links">
           <a href="/" class="topnav-link ${window.location.pathname === '/' || window.location.pathname.startsWith('/tools/') ? 'active' : ''}">Tools</a>
           <a href="/repair-guides/" class="topnav-link ${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
-          <a href="/blog/" class="topnav-link ${window.location.pathname.startsWith('/blog/') ? 'active' : ''}">Blog</a>
+          <a href="/answers/" class="topnav-link ${window.location.pathname.startsWith('/answers/') ? 'active' : ''}">Answers</a>
         </div>
       </div>
       <div class="topnav-right">
@@ -48,7 +48,7 @@ function injectSidebar(activeToolId = null) {
     <div class="mobile-dropdown" id="mobileDropdown">
       <a href="/" class="${window.location.pathname === '/' || window.location.pathname.startsWith('/tools/') ? 'active' : ''}">Tools</a>
       <a href="/repair-guides/" class="${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
-      <a href="/blog/" class="${window.location.pathname.startsWith('/blog/') ? 'active' : ''}">Blog</a>
+      <a href="/answers/" class="${window.location.pathname.startsWith('/answers/') ? 'active' : ''}">Answers</a>
     </div>
   `;
 

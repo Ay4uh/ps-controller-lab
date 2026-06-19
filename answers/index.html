@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Answers Forum — Tech Repair Help & Q&A | TechTest</title>
+  <meta name="description" content="Ask repair questions and get answers from the TechTest community. Free help for laptop, phone, and gaming controller issues.">
+  <link rel="canonical" href="https://ay5uh.com/answers/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:site_name" content="TechTest">
+  <meta property="og:type" content="website">
+  <meta name="author" content="TechTest">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/shared/styles.css?v=19">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "TechTest",
+    "url": "https://ay5uh.com",
+    "description": "Free browser-based hardware diagnostics for laptops, phones and controllers",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://ay5uh.com/repair-guides/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Answers Forum — Tech Repair Help & Q&A | TechTest">
+  <meta property="og:description" content="Ask repair questions and get answers from the TechTest community. Free help for laptop, phone, and gaming controller issues.">
+  <meta property="og:url" content="https://ay5uh.com/answers/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Answers Forum — Tech Repair Help & Q&A | TechTest">
+  <meta name="twitter:description" content="Ask repair questions and get answers from the TechTest community. Free help for laptop, phone, and gaming controller issues.">
+  <meta name="twitter:image" content="https://ay5uh.com/og-image.png">
+
+  <!-- Sitemap reference -->
+  <link rel="sitemap" type="application/xml" href="https://ay5uh.com/sitemap.xml">
+
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content" style="background: var(--bg-base);">
+      <div class="answers-container">
+        <div class="answers-header-row">
+          <h1 class="answers-h1">Answers Forum</h1>
+          <button class="btn-ask" id="btnAskQuestion">Ask a Question</button>
+        </div>
+        
+        <div class="answers-progress-box">
+          <div class="ap-text"><strong>21 of 33</strong> questions have no reply &rarr; Help answer them!</div>
+          <div class="ap-bar-bg">
+            <div class="ap-bar-fill" style="width: 36%;"></div>
+          </div>
+        </div>
+
+        <div class="answers-toolbar">
+          <div class="answers-filters">
+            <a href="#" class="ans-filter active">All</a>
+            <a href="#" class="ans-filter">Most Helpful</a>
+            <a href="#" class="ans-filter">Unanswered</a>
+            <a href="#" class="ans-filter">Newest</a>
+          </div>
+          <div class="answers-search">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" placeholder="Search answers...">
+          </div>
+        </div>
+
+        <div class="answers-list" id="answersList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Ask Question Modal -->
+  <div class="modal-overlay" id="askModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>What's your question?</h2>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Question Title</label>
+          <input type="text" id="qTitle" placeholder="e.g. Screen flickers on boot" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Device</label>
+          <input type="text" id="qDevice" placeholder="e.g. MacBook Air M2, PS5 Controller" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Describe the problem...</label>
+          <textarea id="qDesc" rows="4" class="form-input"></textarea>
+        </div>
+        <button class="btn-submit" id="btnSubmitQuestion">Submit Question</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/shared/sidebar.js?v=19"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      injectSidebar(null);
+      
+      const initialQuestions = [
+        { answers: 8, accepted: true, title: 'Stuck on "connect to mac or to a pc with itunes"', device: 'iPhone 11 Pro Max', time: '2h ago' },
+        { answers: 1, accepted: false, title: 'Battery pack is removed but percentage stuck at 10%', device: 'MacBook Pro 13"', time: '5h ago' },
+        { answers: 3, accepted: true, title: 'Left stick drifting upward after 6 months', device: 'PS5 DualSense', time: '1d ago' },
+        { answers: 0, accepted: false, title: 'Screen flickers then goes black randomly', device: 'Lenovo IdeaPad 5', time: '2d ago' },
+        { answers: 5, accepted: true, title: 'Keyboard keys not registering after water spill', device: 'MacBook Air M2', time: '3d ago' },
+        { answers: 2, accepted: false, title: 'Controller vibration stopped working', device: 'Xbox Series X controller', time: '4d ago' }
+      ];
+
+      const listEl = document.getElementById('answersList');
+
+      function renderQuestions() {
+        listEl.innerHTML = '';
+        initialQuestions.forEach(q => {
+          const row = document.createElement('a');
+          row.className = 'q-row';
+          row.href = '#';
+
+          const boxClass = q.accepted ? 'q-box accepted' : (q.answers > 0 ? 'q-box has-answers' : 'q-box empty');
+          const pillHTML = q.accepted ? \`<div class="q-pill-accepted"><i class="fa-solid fa-check"></i> ACCEPTED</div>\` : '';
+
+          row.innerHTML = \`
+            <div class="q-img">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <div class="\${boxClass}">
+              <div class="q-count">\${q.answers}</div>
+              <div class="q-label">ANSWERS</div>
+            </div>
+            <div class="q-content">
+              \${pillHTML}
+              <h3 class="q-title">\${q.title}</h3>
+              <div class="q-device">\${q.device}</div>
+            </div>
+            <div class="q-meta">
+              <div class="q-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="q-meta-text">
+                <div class="q-author">Tech User</div>
+                <div class="q-time">Answered \${q.time}</div>
+              </div>
+            </div>
+          \`;
+          listEl.appendChild(row);
+        });
+      }
+
+      renderQuestions();
+
+      // Modal Logic
+      const modal = document.getElementById('askModal');
+      const btnAsk = document.getElementById('btnAskQuestion');
+      const btnClose = document.getElementById('btnCloseModal');
+      const btnSubmit = document.getElementById('btnSubmitQuestion');
+
+      btnAsk.addEventListener('click', () => modal.classList.add('open'));
+      btnClose.addEventListener('click', () => modal.classList.remove('open'));
+      
+      btnSubmit.addEventListener('click', () => {
+        const t = document.getElementById('qTitle').value;
+        const d = document.getElementById('qDevice').value;
+        if(t && d) {
+          initialQuestions.unshift({ answers: 0, accepted: false, title: t, device: d, time: 'Just now' });
+          renderQuestions();
+          modal.classList.remove('open');
+          document.getElementById('qTitle').value = '';
+          document.getElementById('qDevice').value = '';
+          document.getElementById('qDesc').value = '';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
