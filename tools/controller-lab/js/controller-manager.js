@@ -16,6 +16,69 @@ class ControllerManager {
     this.has_changes_to_write = null;
     this.inputHandler = null; // Callback function for input processing
 
+    // Validation constants
+    this.VALID_PRESETS = ['off', 'light', 'medium', 'heavy'];
+    this.VIBRATION_MIN = 0;
+    this.VIBRATION_MAX = 255;
+    this.DURATION_MIN = 0;
+    this.DURATION_MAX = 60000; // 60 seconds max
+  }
+
+  /**
+   * Validate vibration parameters
+   * @param {number} value - Value to validate (0-255)
+   * @param {string} param - Parameter name for error message
+   * @throws {Error} If validation fails
+   */
+  _validateVibrationValue(value, param) {
+    if (typeof value !== 'number') {
+      throw new Error(`${param} must be a number, got ${typeof value}`);
+    }
+    if (value < this.VIBRATION_MIN || value > this.VIBRATION_MAX) {
+      throw new Error(`${param} must be between ${this.VIBRATION_MIN} and ${this.VIBRATION_MAX}, got ${value}`);
+    }
+  }
+
+  /**
+   * Validate duration parameter
+   * @param {number} duration - Duration to validate (milliseconds)
+   * @throws {Error} If validation fails
+   */
+  _validateDuration(duration) {
+    if (typeof duration !== 'number') {
+      throw new Error(`duration must be a number, got ${typeof duration}`);
+    }
+    if (duration < this.DURATION_MIN || duration > this.DURATION_MAX) {
+      throw new Error(`duration must be between ${this.DURATION_MIN} and ${this.DURATION_MAX}ms, got ${duration}`);
+    }
+  }
+
+  /**
+   * Validate preset name
+   * @param {string} preset - Preset to validate
+   * @throws {Error} If validation fails
+   */
+  _validatePreset(preset) {
+    if (typeof preset !== 'string') {
+      throw new Error(`preset must be a string, got ${typeof preset}`);
+    }
+    if (!this.VALID_PRESETS.includes(preset)) {
+      throw new Error(`Invalid preset "${preset}". Must be one of: ${this.VALID_PRESETS.join(', ')}`);
+    }
+  }
+
+  /**
+   * Validate callback function
+   * @param {Function} callback - Callback to validate
+   * @param {string} name - Callback name for error message
+   * @throws {Error} If validation fails
+   */
+  _validateCallback(callback, name = 'callback') {
+    if (callback !== null && typeof callback !== 'function') {
+      throw new Error(`${name} must be a function or null, got ${typeof callback}`);
+    }
+  }
+
     // Button and stick states for UI updates
     this.button_states = {
       // e.g. 'square': false, 'cross': false, ...
@@ -359,12 +422,31 @@ class ControllerManager {
   */
   async calibrateSticks(progressCallback) {
     if (!this.currentController) throw new Error("No controller connected");
+
+    // Validate progress callback if provided
+    if (progressCallback) {
+      this._validateCallback(progressCallback, 'progressCallback');
+    }
+
     try {
       // la("multi_calibrate_sticks");
 
-      if (progressCallback) progressCallback(20);
+      if (progressCallback) {
+        try {
+          progressCallback(20);
+        } catch (e) {
+          console.warn('Progress callback error:', e);
+        }
+      }
+
       await this.calibrateSticksBegin();
-      if (progressCallback) progressCallback(30);
+      if (progressCallback) {
+        try {
+          progressCallback(30);
+        } catch (e) {
+          console.warn('Progress callback error:', e);
+        }
+      }
 
       // Sample multiple times during the process
       const sampleCount = 5;
@@ -374,14 +456,31 @@ class ControllerManager {
 
         // Progress from 30% to 80% during sampling
         if (progressCallback) {
-          const sampleProgress = 30 + ((i + 1) / sampleCount) * 50;
-          progressCallback(Math.round(sampleProgress));
+          try {
+            const sampleProgress = 30 + ((i + 1) / sampleCount) * 50;
+            progressCallback(Math.round(sampleProgress));
+          } catch (e) {
+            console.warn('Progress callback error:', e);
+          }
         }
       }
 
-      if (progressCallback) progressCallback(90);
+      if (progressCallback) {
+        try {
+          progressCallback(90);
+        } catch (e) {
+          console.warn('Progress callback error:', e);
+        }
+      }
+
       await this.calibrateSticksEnd();
-      if (progressCallback) progressCallback(100);
+      if (progressCallback) {
+        try {
+          progressCallback(100);
+        } catch (e) {
+          console.warn('Progress callback error:', e);
+        }
+      }
 
       return { success: true, message: l("Stick calibration completed") };
     } catch (e) {
@@ -419,11 +518,12 @@ class ControllerManager {
 
   /**
    * Set left adaptive trigger with preset configurations (DS5 only)
-   * @param {string} preset - Preset name: 'light', 'medium', 'heavy', 'custom'
-   * @param {Object} customParams - Custom parameters for 'custom' preset {start, end, force}
+   * @param {Object} options - Preset options
+   * @param {string} options.left - Left trigger preset name: 'off', 'light', 'medium', 'heavy'
+   * @param {string} options.right - Right trigger preset name: 'off', 'light', 'medium', 'heavy'
    * @returns {Promise<Object>} Result object with success status and message
    */
-  async setAdaptiveTriggerPreset({left, right}/* , customParams = {} */) {
+  async setAdaptiveTriggerPreset({left, right}) {
     if (!this.currentController) {
       throw new Error(l("No controller connected"));
     }
@@ -433,27 +533,19 @@ class ControllerManager {
       throw new Error(l("Adaptive triggers are only supported on DualSense controllers"));
     }
 
+    // Validate input parameters
+    this._validatePreset(left);
+    this._validatePreset(right);
+
     const presets = {
       'off': { start: 0, end: 0, force: 0, mode: 'off' },
       'light': { start: 10, end: 80, force: 150, mode: 'single' },
       'medium': { start: 15, end: 100, force: 200, mode: 'single' },
       'heavy': { start: 20, end: 120, force: 255, mode: 'single' },
-      // 'custom': customParams
     };
-
-    if (!presets[left] || !presets[right]) {
-      throw new Error(`Invalid preset. Available presets: light, medium, heavy, custom. Got "${left}" and "${right}".`);
-    }
 
     const leftPreset = presets[left];
     const rightPreset = presets[right];
-
-    // if (preset === 'custom') {
-    //   // Validate custom parameters
-    //   if (typeof start !== 'number' || typeof end !== 'number' || typeof force !== 'number') {
-    //     throw new Error(l("Custom preset requires start, end, and force parameters"));
-    //   }
-    // }
 
     return await this.currentController.setAdaptiveTrigger(leftPreset, rightPreset);
   }
@@ -473,6 +565,14 @@ class ControllerManager {
     }
 
     try {
+      // Validate input parameters
+      this._validateVibrationValue(heavyLeft, 'heavyLeft');
+      this._validateVibrationValue(lightRight, 'lightRight');
+      if (duration > 0) {
+        this._validateDuration(duration);
+      }
+      this._validateCallback(doneCb, 'doneCb');
+
       await this.currentController.setVibration(heavyLeft, lightRight);
 
       // If duration is specified, automatically turn off vibration after the duration
@@ -482,8 +582,13 @@ class ControllerManager {
             if (doneCb) doneCb({success: true});
             return;
           }
-          await this.currentController.setVibration(0, 0); // Turn off vibration
-          if (doneCb) doneCb({success: true});
+          try {
+            await this.currentController.setVibration(0, 0); // Turn off vibration
+            if (doneCb) doneCb({success: true});
+          } catch (err) {
+            console.error('Failed to stop vibration:', err);
+            if (doneCb) doneCb({success: false, error: err.message});
+          }
         }, duration);
       }
     } catch (error) {
@@ -491,7 +596,7 @@ class ControllerManager {
         if (doneCb) doneCb({ success: false});
         return;
       }
-      if (duration && doneCb) doneCb({ success: false});
+      if (duration && doneCb) doneCb({ success: false, error: error.message});
       throw new Error(l("Failed to set vibration"), { cause: error });
     }
   }
@@ -509,6 +614,17 @@ class ControllerManager {
     }
 
     try {
+      // Validate input parameters
+      if (duration > 0) {
+        this._validateDuration(duration);
+      }
+      this._validateCallback(doneCb, 'doneCb');
+
+      const validOutputs = ['speaker', 'headphones'];
+      if (typeof output !== 'string' || !validOutputs.includes(output)) {
+        throw new Error(`output must be one of: ${validOutputs.join(', ')}, got "${output}"`);
+      }
+
       await this.currentController.setSpeakerTone(output);
 
       // If duration is specified, automatically reset speaker after the duration

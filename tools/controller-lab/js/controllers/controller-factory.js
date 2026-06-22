@@ -2,6 +2,7 @@
 
 import DS4Controller from './ds4-controller.js';
 import DS5Controller from './ds5-controller.js';
+import DS5EdgeController from './ds5-edge-controller.js';
 import XboxController from './xbox-controller.js';
 import { dec2hex } from '../utils.js';
 

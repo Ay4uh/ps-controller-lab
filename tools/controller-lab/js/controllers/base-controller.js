@@ -4,10 +4,29 @@
 * Base Controller class that provides common functionality for all controller types
 */
 class BaseController {
+  // Default timeout for HID operations (milliseconds)
+  static HID_OPERATION_TIMEOUT = 10000; // 10 seconds
+
   constructor(device) {
     this.device = device;
     this.model = "undefined"; // to be set by subclasses
     this.finetuneMaxValue; // to be set by subclasses
+  }
+
+  /**
+   * Wrap a promise with a timeout
+   * @param {Promise} promise - Promise to wrap
+   * @param {number} ms - Timeout in milliseconds
+   * @param {string} operation - Operation name for error message
+   * @returns {Promise} Promise that rejects if timeout exceeded
+   */
+  _withTimeout(promise, ms = BaseController.HID_OPERATION_TIMEOUT, operation = 'HID operation') {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(`${operation} timed out after ${ms}ms`)), ms)
+      )
+    ]);
   }
 
   getModel() {
@@ -65,30 +84,44 @@ class BaseController {
   }
 
   /**
-  * Send feature report to device
+  * Send feature report to device with timeout protection
   * @param {number} reportId Report ID
   * @param {ArrayBuffer|Array} data Data to send (if Array, will be processed through allocReq)
+  * @param {number} timeout Timeout in milliseconds (optional)
   */
-  async sendFeatureReport(reportId, data) {
+  async sendFeatureReport(reportId, data, timeout = BaseController.HID_OPERATION_TIMEOUT) {
     // If data is an array, use allocReq to create proper buffer
     if (Array.isArray(data)) {
       data = this.alloc_req(reportId, data);
     }
 
     try {
-      return await this.device.sendFeatureReport(reportId, data);
+      return await this._withTimeout(
+        this.device.sendFeatureReport(reportId, data),
+        timeout,
+        `sendFeatureReport(${reportId})`
+      );
     } catch (error) {
       // HID doesn't throw proper Errors with stack (stack is "name: message") so generate a new stack here
-      throw new Error(error.stack);
+      throw new Error(error.message || error.stack);
     }
   }
 
   /**
-  * Receive feature report from device
+  * Receive feature report from device with timeout protection
   * @param {number} reportId Report ID
+  * @param {number} timeout Timeout in milliseconds (optional)
   */
-  async receiveFeatureReport(reportId) {
-    return await this.device.receiveFeatureReport(reportId);
+  async receiveFeatureReport(reportId, timeout = BaseController.HID_OPERATION_TIMEOUT) {
+    try {
+      return await this._withTimeout(
+        this.device.receiveFeatureReport(reportId),
+        timeout,
+        `receiveFeatureReport(${reportId})`
+      );
+    } catch (error) {
+      throw new Error(error.message || error.stack);
+    }
   }
 
   /**

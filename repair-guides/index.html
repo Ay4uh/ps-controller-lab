@@ -68,7 +68,7 @@
       <div class="catalog-top-zone">
         <div class="search-container">
           <i class="fa-solid fa-search search-icon"></i>
-          <input type="text" id="catalogSearch" placeholder="e.g. MacBook Air M2, Dell XPS 13, ROG Strix G15" autocomplete="off">
+          <input type="text" id="catalogSearch" placeholder="e.g. MacBook Air M1, ThinkPad T14, PS5 Drift Fix" autocomplete="off">
           <button id="clearSearch" class="clear-btn" style="display: none;"><i class="fa-solid fa-times"></i></button>
         </div>
       </div>
@@ -79,22 +79,9 @@
           <div class="sidebar-category">LAPTOPS</div>
           <div class="brand-link active" data-brand="lenovo">Lenovo</div>
           <div class="brand-link" data-brand="apple">Apple</div>
-          <div class="brand-link" data-brand="dell">Dell</div>
-          <div class="brand-link" data-brand="hp">HP</div>
-          <div class="brand-link" data-brand="asus">ASUS</div>
-          <div class="brand-link" data-brand="acer">Acer</div>
-          <div class="brand-link" data-brand="microsoft">Microsoft</div>
-          <div class="brand-link" data-brand="gateway">Gateway</div>
-
-          <div class="sidebar-category mt-4">PHONES & TABLETS</div>
-          <div class="brand-link" data-brand="samsung">Samsung</div>
-          <div class="brand-link" data-brand="apple-iphone">Apple iPhone</div>
-          <div class="brand-link" data-brand="google">Google</div>
 
           <div class="sidebar-category mt-4">GAMING</div>
           <div class="brand-link" data-brand="playstation">PlayStation</div>
-          <div class="brand-link" data-brand="xbox">Xbox</div>
-          <div class="brand-link" data-brand="nintendo">Nintendo</div>
         </aside>
 
         <!-- Zone 3: Model Grid -->
@@ -149,7 +136,7 @@
         series: [
           { name: 'MacBook Air', models: [
             { name: 'MacBook Air M2', slug: 'macbook-air-m2', hasGuide: false },
-            { name: 'MacBook Air M1', slug: 'macbook-air-m1', hasGuide: false },
+            { name: 'MacBook Air 13" M1', slug: 'macbook-air-13-m1', hasGuide: true },
             { name: 'MacBook Air (Intel)', slug: 'macbook-air-intel', hasGuide: false }
           ]},
           { name: 'MacBook Pro', models: [
@@ -172,7 +159,16 @@
       samsung: { name: 'Samsung', slug: 'samsung', series: [{ name: 'Galaxy Book', models: [{ name: 'Galaxy Book3 Pro', slug: 'galaxy-book3-pro', hasGuide: false }] }, { name: 'Galaxy S Series', models: [{ name: 'Galaxy S23 Ultra', slug: 'galaxy-s23-ultra', hasGuide: false }] }] },
       'apple-iphone': { name: 'Apple iPhone', slug: 'apple-iphone', series: [{ name: 'iPhone 14 Series', models: [{ name: 'iPhone 14 Pro Max', slug: 'iphone-14-pro-max', hasGuide: false }] }, { name: 'iPhone 13 Series', models: [{ name: 'iPhone 13 Pro', slug: 'iphone-13-pro', hasGuide: false }] }] },
       google: { name: 'Google', slug: 'google', series: [{ name: 'Pixel phones', models: [{ name: 'Pixel 7 Pro', slug: 'pixel-7-pro', hasGuide: false }, { name: 'Pixel 6a', slug: 'pixel-6a', hasGuide: false }] }] },
-      playstation: { name: 'PlayStation', slug: 'playstation', series: [{ name: 'PS5', models: [{ name: 'PlayStation 5 (Disc)', slug: 'ps5-disc', hasGuide: false }] }, { name: 'PS4', models: [{ name: 'PlayStation 4 Pro', slug: 'ps4-pro', hasGuide: false }] }, { name: 'PS4 controller', models: [{ name: 'DualShock 4 V2', slug: 'dualshock-4-v2', hasGuide: false }] }] },
+      playstation: {
+        name: 'PlayStation',
+        slug: 'playstation',
+        series: [
+          { name: 'Controllers', models: [
+            { name: 'PS5 DualSense - Stick Drift Fix', slug: '../../fix-ps5-controller-drift', hasGuide: true },
+            { name: 'PS4 DualShock 4 - Stick Drift Test', slug: '../../ps4-controller-drift-test', hasGuide: true }
+          ]}
+        ]
+      },
       xbox: { name: 'Xbox', slug: 'xbox', series: [{ name: 'Series X', models: [{ name: 'Xbox Series X', slug: 'xbox-series-x', hasGuide: false }] }, { name: 'Series S', models: [{ name: 'Xbox Series S', slug: 'xbox-series-s', hasGuide: false }] }, { name: 'Xbox One controller', models: [{ name: 'Xbox Wireless Controller', slug: 'xbox-wireless-controller', hasGuide: false }] }] },
       nintendo: { name: 'Nintendo', slug: 'nintendo', series: [{ name: 'Switch', models: [{ name: 'Nintendo Switch OLED', slug: 'switch-oled', hasGuide: false }] }, { name: 'Switch Lite', models: [{ name: 'Nintendo Switch Lite', slug: 'switch-lite', hasGuide: false }] }, { name: 'Joy-Con', models: [{ name: 'Joy-Con (L/R)', slug: 'joy-con', hasGuide: false }] }] }
     };
@@ -234,9 +230,11 @@
           let matchedSeries = [];
           brand.series.forEach(series => {
             const matchedModels = series.models.filter(model => 
-              model.name.toLowerCase().includes(searchQuery) ||
-              series.name.toLowerCase().includes(searchQuery) ||
-              brand.name.toLowerCase().includes(searchQuery)
+              model.hasGuide && (
+                model.name.toLowerCase().includes(searchQuery) ||
+                series.name.toLowerCase().includes(searchQuery) ||
+                brand.name.toLowerCase().includes(searchQuery)
+              )
             );
             if (matchedModels.length > 0) {
               matchedSeries.push({ name: series.name, models: matchedModels });
@@ -250,7 +248,16 @@
         // Single brand
         const brand = catalogData[brandId];
         if (brand) {
-          dataToRender.push({ brandSlug: brand.slug, brandName: null, series: brand.series });
+          let matchedSeries = [];
+          brand.series.forEach(series => {
+            const matchedModels = series.models.filter(model => model.hasGuide);
+            if (matchedModels.length > 0) {
+              matchedSeries.push({ name: series.name, models: matchedModels });
+            }
+          });
+          if (matchedSeries.length > 0) {
+            dataToRender.push({ brandSlug: brand.slug, brandName: null, series: matchedSeries });
+          }
         }
       }
 
@@ -272,8 +279,16 @@
           series.models.forEach(model => {
             const item = document.createElement('a');
             item.className = `model-item ${model.hasGuide ? 'has-guide' : 'no-guide'}`;
-            // All point to their path, even if it doesn't exist yet, as per prompt logic
-            item.href = `/repair-guides/${brandData.brandSlug}/${model.slug}/`;
+            
+            // Resolve relative link if starts with '..'
+            if (model.slug.startsWith('..')) {
+              item.href = model.slug.replace(/^\.\.\/\.\.\//, '/');
+              if (!item.href.endsWith('/')) {
+                item.href += '/';
+              }
+            } else {
+              item.href = `/repair-guides/${brandData.brandSlug}/${model.slug}/`;
+            }
             
             const dot = document.createElement('span');
             dot.className = 'guide-dot';
@@ -285,12 +300,6 @@
             
             col.appendChild(item);
           });
-
-          const viewAll = document.createElement('a');
-          viewAll.className = 'view-all-link';
-          viewAll.href = '#';
-          viewAll.textContent = `View all ${series.name} →`;
-          col.appendChild(viewAll);
 
           grid.appendChild(col);
         });
