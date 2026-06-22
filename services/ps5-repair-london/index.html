@@ -76,6 +76,17 @@
     .faq-item h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
     .faq-item p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0; }
   </style>
+  <!-- Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
 </head>
 <body>
 

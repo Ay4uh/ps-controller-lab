@@ -173,6 +173,17 @@
   <!-- Sitemap reference -->
   <link rel="sitemap" type="application/xml" href="https://ay5uh.com/sitemap.xml">
 
+  <!-- Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
 </head>
 <body>
 

@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="monetag" content="7dd116f2a89c685f7b8b156e16940a0e">
-  <script src="https://quge5.com/88/tag.min.js" data-zone="251271" async data-cfasync="false"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TechTest — Free Hardware Diagnostics | No Download Required</title>
@@ -25,8 +23,20 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
+  <!-- Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
   <!-- Global CSS -->
-  <link rel="stylesheet" href="/shared/styles.css?v=21">
+  <link rel="stylesheet" href="/shared/styles.css">
   
   <style>
     /* Animations */
@@ -269,7 +279,6 @@
     .card-phone .card-action { color: #10b981; }
   </style>
 
-
   <!-- Structured Data -->
   <script type="application/ld+json">
   {
@@ -316,18 +325,18 @@
 
       <!-- Stats Bar -->
       <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px;">
-        <div style="background: #F9FAFB; width: 100%; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-around; padding: 28px; text-align: center;">
+        <div style="background: var(--bg-alt); width: 100%; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-around; padding: 28px; text-align: center;">
           <div>
             <div id="stat-devices-tested" style="font-size: 32px; font-weight: bold; color: #2563EB;">0</div>
-            <div style="font-size: 14px; color: #6B7280; margin-top: 4px; font-weight: 500;">Devices Tested</div>
+            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;">Devices Tested</div>
           </div>
           <div>
             <div id="stat-repair-guides" style="font-size: 32px; font-weight: bold; color: #2563EB;"><!-- REPAIR_GUIDES_COUNT -->3</div>
-            <div style="font-size: 14px; color: #6B7280; margin-top: 4px; font-weight: 500;">Repair Guides</div>
+            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;">Repair Guides</div>
           </div>
           <div>
             <div style="font-size: 32px; font-weight: bold; color: #2563EB;">3</div>
-            <div style="font-size: 14px; color: #6B7280; margin-top: 4px; font-weight: 500;">Tool Categories</div>
+            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;">Tool Categories</div>
           </div>
         </div>
       </div>
@@ -342,7 +351,7 @@
 
       <!-- Homepage Search Bar -->
       <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto;">
-        <form action="/repair-guides/" method="GET" style="display: flex; align-items: center; background: white; border: 1px solid #E5E7EB; border-radius: 9999px; height: 48px; padding: 0 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <form action="/repair-guides/" method="GET" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 9999px; height: 48px; padding: 0 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
           <i class="fa-solid fa-search" style="color: #9CA3AF; margin-right: 12px;"></i>
           <input type="text" name="q" placeholder="Search guides, tools, or devices..." style="border: none; outline: none; width: 100%; font-size: 16px; background: transparent; color: var(--text-primary);">
         </form>
@@ -444,9 +453,9 @@
 
       <!-- Q&A Teaser -->
       <div class="container animate-fade-in-up delay-3" style="margin-bottom: 64px;">
-        <div style="background: #EFF6FF; border-radius: 16px; padding: 48px; text-align: center; border: 1px solid #BFDBFE;">
-          <h2 style="font-size: 24px; font-weight: 800; color: #1E3A8A; margin: 0 0 12px 0;">Got a repair question?</h2>
-          <p style="font-size: 16px; color: #3B82F6; margin: 0 0 24px 0; font-weight: 500;">Ask the TechTest community — get answers from real fixers.</p>
+        <div class="qa-teaser">
+          <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 12px 0;">Got a repair question?</h2>
+          <p style="font-size: 16px; margin: 0 0 24px 0; font-weight: 500;">Ask the TechTest community — get answers from real fixers.</p>
           <a href="/answers/" style="display: inline-block; background: #2563EB; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); transition: background 0.2s;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">Ask a Question <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
         </div>
       </div>
@@ -470,7 +479,7 @@
     </main>
   </div>
 
-  <script src="/shared/sidebar.js?v=21"></script>
+  <script src="/shared/sidebar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar(null);

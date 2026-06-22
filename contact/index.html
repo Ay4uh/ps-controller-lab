@@ -10,6 +10,17 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/shared/styles.css?v=21">
+  <!-- Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
 </head>
 <body>
 

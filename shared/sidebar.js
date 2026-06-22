@@ -33,6 +33,7 @@ function injectSidebar(activeToolId = null) {
         </div>
       </div>
       <div class="topnav-right">
+        <button class="topnav-theme-toggle" id="btnToggleTheme" title="Toggle Theme" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; padding: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.2s;"><i class="fa-solid fa-moon"></i></button>
         <button class="topnav-search" id="btnToggleSearch"><i class="fa-solid fa-search"></i></button>
         <button class="topnav-hamburger" id="btnToggleMobileMenu"><i class="fa-solid fa-bars"></i></button>
       </div>
@@ -121,6 +122,85 @@ function injectSidebar(activeToolId = null) {
     document.body.insertAdjacentHTML('afterbegin', topNavHTML);
   }
 
+  // Hook up global navbar logic (drawer, mobile menu, dark mode)
+  const btnToggleSearch = document.getElementById('btnToggleSearch');
+  const searchDrawer = document.getElementById('searchDrawer');
+  const searchInput = document.getElementById('searchInput');
+  const btnToggleMobileMenu = document.getElementById('btnToggleMobileMenu');
+  const mobileDropdown = document.getElementById('mobileDropdown');
+  const btnToggleTheme = document.getElementById('btnToggleTheme');
+
+  if (btnToggleSearch && searchDrawer) {
+    btnToggleSearch.addEventListener('click', (e) => {
+      e.stopPropagation();
+      searchDrawer.classList.toggle('open');
+      if (searchDrawer.classList.contains('open')) {
+        setTimeout(() => searchInput.focus(), 50);
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!searchDrawer.contains(e.target) && e.target !== btnToggleSearch) {
+        searchDrawer.classList.remove('open');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchDrawer.classList.remove('open');
+      }
+    });
+  }
+
+  if (btnToggleMobileMenu && mobileDropdown) {
+    btnToggleMobileMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileDropdown.classList.toggle('open');
+    });
+
+    mobileDropdown.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileDropdown.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mobileDropdown.contains(e.target) && e.target !== btnToggleMobileMenu) {
+        mobileDropdown.classList.remove('open');
+      }
+    });
+  }
+
+  if (btnToggleTheme) {
+    const icon = btnToggleTheme.querySelector('i');
+    
+    const setTheme = (theme) => {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('techtest_theme', theme);
+      if (theme === 'dark') {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
+    };
+
+    // Initialize theme based on localStorage or system preferences
+    const savedTheme = localStorage.getItem('techtest_theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
+    }
+
+    btnToggleTheme.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+  }
+
   const layout = document.querySelector('.app-layout');
   
   if (isToolsPath && layout && !document.querySelector('.global-sidebar')) {
@@ -190,57 +270,7 @@ function injectSidebar(activeToolId = null) {
       });
     }
 
-    // Top Navbar Logic
-    const btnToggleSearch = document.getElementById('btnToggleSearch');
-    const searchDrawer = document.getElementById('searchDrawer');
-    const searchInput = document.getElementById('searchInput');
-    const btnToggleMobileMenu = document.getElementById('btnToggleMobileMenu');
-    const mobileDropdown = document.getElementById('mobileDropdown');
 
-    if (btnToggleSearch && searchDrawer) {
-      btnToggleSearch.addEventListener('click', (e) => {
-        e.stopPropagation();
-        searchDrawer.classList.toggle('open');
-        if (searchDrawer.classList.contains('open')) {
-          setTimeout(() => searchInput.focus(), 50);
-        }
-      });
-
-      // Close search on click outside
-      document.addEventListener('click', (e) => {
-        if (!searchDrawer.contains(e.target) && e.target !== btnToggleSearch) {
-          searchDrawer.classList.remove('open');
-        }
-      });
-
-      // Close search on escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          searchDrawer.classList.remove('open');
-        }
-      });
-    }
-
-    if (btnToggleMobileMenu && mobileDropdown) {
-      btnToggleMobileMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-        mobileDropdown.classList.toggle('open');
-      });
-
-      // Close dropdown when clicking a link
-      mobileDropdown.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          mobileDropdown.classList.remove('open');
-        });
-      });
-
-      // Close dropdown on click outside
-      document.addEventListener('click', (e) => {
-        if (!mobileDropdown.contains(e.target) && e.target !== btnToggleMobileMenu) {
-          mobileDropdown.classList.remove('open');
-        }
-      });
-    }
 
   } else if (!isToolsPath && layout) {
     layout.classList.add('no-sidebar');
@@ -291,44 +321,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Legal Consent Check
   if (!localStorage.getItem('techtest_legal_consent')) {
-    const modalHTML = `
-      <div class="legal-consent-overlay" id="legalConsentOverlay">
-        <div class="legal-consent-modal">
-          <h2><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Legal Disclaimer</h2>
-          <div class="legal-alert">
-            <p style="color: #b91c1c; font-weight: 700; margin-bottom: 4px;">WARNING: EXTREMELY IMPORTANT LIABILITY DISCLAIMER</p>
-            <p style="color: #991b1b; font-size: 14px;">By using this website, you agree that TechTest and its creators are NOT liable for any damages, hardware failure, data loss, or illegal activities resulting from the use of our tools or repair guides. All tools and guides are provided "AS IS" without warranty of any kind.</p>
-          </div>
-          <p>Please review our <a href="/policies/" target="_blank" style="color: var(--accent-blue);">Policies & Legal</a> terms. You must agree to these terms to use any of the diagnostic tools or guides provided on this platform.</p>
-          <div class="legal-consent-actions">
-            <button class="legal-btn-cancel" id="btnLegalCancel">Cancel</button>
-            <button class="legal-btn-agree" id="btnLegalAgree">Yes, I agree</button>
+    const isToolsPage = (path.startsWith('/tools/') || path.startsWith('/test/')) && path !== '/tools/' && path !== '/test/';
+    
+    if (isToolsPage) {
+      const modalHTML = `
+        <div class="legal-consent-overlay" id="legalConsentOverlay">
+          <div class="legal-consent-modal">
+            <h2><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Legal Disclaimer</h2>
+            <div class="legal-alert">
+              <p style="color: #b91c1c; font-weight: 700; margin-bottom: 4px;">WARNING: EXTREMELY IMPORTANT LIABILITY DISCLAIMER</p>
+              <p style="color: #991b1b; font-size: 14px;">By using this website, you agree that TechTest and its creators are NOT liable for any damages, hardware failure, data loss, or illegal activities resulting from the use of our tools or repair guides. All tools and guides are provided "AS IS" without warranty of any kind.</p>
+            </div>
+            <p>Please review our <a href="/policies/" target="_blank" style="color: var(--accent-blue);">Policies & Legal</a> terms. You must agree to these terms to use any of the diagnostic tools or guides provided on this platform.</p>
+            <div class="legal-consent-actions">
+              <button class="legal-btn-cancel" id="btnLegalCancel">Cancel</button>
+              <button class="legal-btn-agree" id="btnLegalAgree">Yes, I agree</button>
+            </div>
           </div>
         </div>
-      </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
-    // Give browser a moment to render HTML before adding the 'show' class for the fade-in transition
-    setTimeout(() => {
-      document.getElementById('legalConsentOverlay').classList.add('show');
-    }, 10);
+      `;
+      
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+      
+      setTimeout(() => {
+        document.getElementById('legalConsentOverlay').classList.add('show');
+      }, 10);
 
-    document.getElementById('btnLegalAgree').addEventListener('click', () => {
-      localStorage.setItem('techtest_legal_consent', 'true');
-      const overlay = document.getElementById('legalConsentOverlay');
-      overlay.classList.remove('show');
-      setTimeout(() => overlay.remove(), 300);
-    });
+      document.getElementById('btnLegalAgree').addEventListener('click', () => {
+        localStorage.setItem('techtest_legal_consent', 'true');
+        const overlay = document.getElementById('legalConsentOverlay');
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.remove(), 300);
+        
+        const banner = document.getElementById('legalConsentBanner');
+        if (banner) banner.remove();
+      });
 
-    document.getElementById('btnLegalCancel').addEventListener('click', () => {
-      // If history length > 1, they came from somewhere, so go back. Otherwise go to google.
-      if (window.history.length > 1 && document.referrer) {
-        window.history.back();
-      } else {
-        window.location.href = 'https://google.com';
-      }
-    });
+      document.getElementById('btnLegalCancel').addEventListener('click', () => {
+        if (window.history.length > 1 && document.referrer) {
+          window.history.back();
+        } else {
+          window.location.href = 'https://google.com';
+        }
+      });
+    } else {
+      const bannerHTML = `
+        <div class="legal-consent-banner" id="legalConsentBanner">
+          <div class="legal-banner-content">
+            <span class="legal-banner-title"><i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-yellow);"></i> Disclaimer Notice</span>
+            <p class="legal-banner-text">By using our services, you agree to our <a href="/policies/" target="_blank">Policies & Legal</a> terms. We are not liable for damages resulting from using our browser diagnostic tools or guides.</p>
+          </div>
+          <div class="legal-banner-actions">
+            <button class="legal-btn-agree-banner" id="btnLegalAgreeBanner">I Agree</button>
+            <button class="legal-btn-close-banner" id="btnLegalCloseBanner" title="Dismiss"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+      `;
+      
+      document.body.insertAdjacentHTML('beforeend', bannerHTML);
+      
+      setTimeout(() => {
+        const banner = document.getElementById('legalConsentBanner');
+        if (banner) banner.classList.add('show');
+      }, 10);
+
+      document.getElementById('btnLegalAgreeBanner').addEventListener('click', () => {
+        localStorage.setItem('techtest_legal_consent', 'true');
+        const banner = document.getElementById('legalConsentBanner');
+        if (banner) {
+          banner.classList.remove('show');
+          setTimeout(() => banner.remove(), 300);
+        }
+      });
+
+      document.getElementById('btnLegalCloseBanner').addEventListener('click', () => {
+        const banner = document.getElementById('legalConsentBanner');
+        if (banner) {
+          banner.classList.remove('show');
+          setTimeout(() => banner.remove(), 300);
+        }
+      });
+    }
   }
 });
+
+
