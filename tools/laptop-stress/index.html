@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta property="og:site_name" content="TechTest">
+  <meta property="og:type" content="website">
+  <meta name="author" content="TechTest">
+  <link rel="canonical" href="https://ay5uh.com/tools/laptop-stress/">
+  <title>Laptop Stress Test | CPU & GPU Hardware Benchmark | TechTest</title>
+  <meta name="description" content="Stress test your laptop or PC hardware in the browser. Run intensive CPU multi-threading and WebGL GPU shader benchmarks to test cooling stability.">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/shared/styles.css?v=21">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Breadcrumb Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://ay5uh.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tools",
+        "item": "https://ay5uh.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Laptop / PC Diagnostics",
+        "item": "https://ay5uh.com/tools/laptop/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Laptop Stress Test",
+        "item": "https://ay5uh.com/tools/laptop-stress/"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container pb-5">
+        
+        <!-- Breadcrumb Nav -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/">Tools</a></li>
+            <li class="breadcrumb-item"><a href="/tools/laptop/">Laptop / PC Diagnostics</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Laptop Stress Test</li>
+          </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg-hover); padding: 4px 10px; border-radius: 12px; display: inline-block; margin-bottom: 12px; border: 1px solid var(--border);">BENCHMARK</div>
+            <h1 class="fw-bold mb-2" style="margin: 0; color: var(--text-primary);">
+              <i class="fa-solid fa-gauge-high text-accent" style="margin-right: 8px;"></i> Laptop Stress Test
+            </h1>
+            <p class="text-muted" style="margin: 4px 0 0 0;">Test the thermal cooling capacity and stability of your CPU and GPU.</p>
+          </div>
+          
+          <div id="statusIndicator" class="status-indicator">
+            <span class="status-pulse"></span>
+            <span id="statusText">System Idle</span>
+          </div>
+        </div>
+
+        <hr style="border-color: var(--border); margin: 0 0 24px 0;">
+
+        <!-- Dashboard Grid Layout -->
+        <div class="stress-container">
+          
+          <!-- Column 1: Config & Specs -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Config Card -->
+            <div class="panel-card">
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0 0 20px 0; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-sliders" style="color: #3b82f6;"></i> Configure Test
+              </h2>
+              
+              <!-- Duration Selection -->
+              <div class="config-group">
+                <span class="config-label">Test Duration</span>
+                <div class="btn-pill-group">
+                  <button class="btn-pill duration-pill active" data-val="60">1 Min</button>
+                  <button class="btn-pill duration-pill" data-val="120">2 Min</button>
+                  <button class="btn-pill duration-pill" data-val="300">5 Min</button>
+                  <button class="btn-pill duration-pill" data-val="600">10 Min</button>
+                </div>
+              </div>
+
+              <!-- Intensity Selection -->
+              <div class="config-group" style="margin-bottom: 0;">
+                <span class="config-label">Stress Intensity</span>
+                <div class="btn-pill-group">
+                  <button class="btn-pill intensity-pill" data-val="0.5">Light</button>
+                  <button class="btn-pill intensity-pill" data-val="0.75">Medium</button>
+                  <button class="btn-pill intensity-pill active" data-val="1.0">Maximum</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Specs Card -->
+            <div class="panel-card">
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0 0 20px 0; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-microchip" style="color: #3b82f6;"></i> Hardware Detected
+              </h2>
+              <div class="hw-list">
+                <div class="hw-item">
+                  <span class="hw-name"><i class="fa-solid fa-gears"></i> CPU Cores</span>
+                  <span id="hw-cpu-cores" class="hw-val">Detecting...</span>
+                </div>
+                <div class="hw-item">
+                  <span class="hw-name"><i class="fa-solid fa-memory"></i> RAM Size</span>
+                  <span id="hw-cpu-ram" class="hw-val">Detecting...</span>
+                </div>
+                <div class="hw-item">
+                  <span class="hw-name"><i class="fa-solid fa-bolt"></i> Range Class</span>
+                  <span id="hw-cpu-type" class="hw-val">Detecting...</span>
+                </div>
+                <div class="hw-item">
+                  <span class="hw-name"><i class="fa-solid fa-vr-cardboard"></i> GPU Model</span>
+                  <span id="hw-gpu-model" class="hw-val">Detecting...</span>
+                </div>
+                <div class="hw-item">
+                  <span class="hw-name"><i class="fa-solid fa-database"></i> Est. VRAM</span>
+                  <span id="hw-gpu-vram" class="hw-val">Detecting...</span>
+                </div>
+                <div class="hw-item">
+                  <span class="hw-name"><i class="fa-solid fa-display"></i> GPU Type</span>
+                  <span id="hw-gpu-type" class="hw-val">Detecting...</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Column 2: Live Monitor -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Live Gauges Card -->
+            <div class="panel-card" style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 16px; font-weight: 700; margin: 0; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-chart-line" style="color: #3b82f6;"></i> Live Telemetry
+                </h2>
+                <span id="progressText" style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Waiting for trigger...</span>
+              </div>
+
+              <!-- Dashboard Telemetry Gauges -->
+              <div class="gauges-grid">
+                <!-- CPU Load Gauge -->
+                <div class="gauge-wrapper gauge-cpu">
+                  <svg class="gauge-svg" viewBox="0 0 120 120">
+                    <circle class="gauge-bg" cx="60" cy="60" r="50"></circle>
+                    <circle id="cpu-gauge-fill" class="gauge-fill" cx="60" cy="60" r="50"></circle>
+                  </svg>
+                  <div class="gauge-text">
+                    <span id="cpu-gauge-val" class="gauge-value">0%</span>
+                    <span class="gauge-label">CPU Load</span>
+                  </div>
+                </div>
+
+                <!-- CPU Temperature Gauge -->
+                <div class="gauge-wrapper gauge-temp">
+                  <svg class="gauge-svg" viewBox="0 0 120 120">
+                    <circle class="gauge-bg" cx="60" cy="60" r="50"></circle>
+                    <circle id="temp-gauge-fill" class="gauge-fill" cx="60" cy="60" r="50"></circle>
+                  </svg>
+                  <div class="gauge-text">
+                    <span id="temp-gauge-val" class="gauge-value">0°C</span>
+                    <span class="gauge-label">Temp</span>
+                  </div>
+                </div>
+
+                <!-- GPU FPS Gauge -->
+                <div class="gauge-wrapper gauge-gpu">
+                  <svg class="gauge-svg" viewBox="0 0 120 120">
+                    <circle class="gauge-bg" cx="60" cy="60" r="50"></circle>
+                    <circle id="gpu-gauge-fill" class="gauge-fill" cx="60" cy="60" r="50"></circle>
+                  </svg>
+                  <div class="gauge-text">
+                    <span id="gpu-gauge-val" class="gauge-value">0</span>
+                    <span class="gauge-label">GPU FPS</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Real-time SVG line chart plotter -->
+              <div class="chart-container">
+                <svg id="chartSvg" class="chart-svg">
+                  <!-- CPU load path (Blue) -->
+                  <path id="cpuPath" class="chart-line-cpu" d=""></path>
+                  <!-- Temperature path (Red) -->
+                  <path id="tempPath" class="chart-line-temp" d=""></path>
+                </svg>
+                
+                <!-- Legend badges -->
+                <div style="display: flex; gap: 16px; position: absolute; bottom: 8px; right: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase;">
+                  <span style="display: flex; align-items: center; gap: 4px; color: #3b82f6;"><span style="width: 8px; height: 8px; background: currentColor; border-radius: 2px;"></span> CPU LOAD</span>
+                  <span style="display: flex; align-items: center; gap: 4px; color: #ef4444;"><span style="width: 8px; height: 8px; background: currentColor; border-radius: 2px;"></span> TEMPERATURE</span>
+                </div>
+              </div>
+
+              <!-- Action triggers -->
+              <button id="btnAction" class="btn-action btn-start">
+                <i class="fa-solid fa-play"></i> Run All Stress Tests
+              </button>
+
+              <!-- Results Panel Box -->
+              <div id="resultsBox" class="results-box">
+                <!-- Rendered dynamically upon completion -->
+              </div>
+
+              <!-- Export Controls -->
+              <div id="exportBox" style="display: none; margin-top: 16px; text-align: center;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Export Results</span>
+                <button id="btnExportJson" class="btn-pill" style="margin-right: 8px;"><i class="fa-solid fa-file-code"></i> Save JSON</button>
+                <button id="btnExportCsv" class="btn-pill"><i class="fa-solid fa-file-csv"></i> Save CSV</button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Sidebar & Theme Scripts -->
+  <script src="/shared/sidebar.js?v=21"></script>
+  
+  <!-- Stress Test Core Components -->
+  <script src="js/cpu-detect.js"></script>
+  <script src="js/gpu-detect.js"></script>
+  <script src="js/thermal.js"></script>
+  <script src="js/cpu-stress.js"></script>
+  <script src="js/gpu-stress.js"></script>
+  <script src="js/report.js"></script>
+  <script src="js/app.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      injectSidebar('laptop');
+    });
+  </script>
+</body>
+</html>
