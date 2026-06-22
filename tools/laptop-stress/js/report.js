@@ -8,15 +8,24 @@ class Report {
 
   // Generate summary
   generate() {
-    const cpuPassed = this.cpuResult.score > 60;
-    const gpuPassed = this.gpuResult.score > 60;
-    const thermalOk = !this.thermalData.isThrottling(); // Fixed: invoke the function instead of checking function object
+    const cpuPassed = this.cpuResult ? this.cpuResult.score > 60 : true;
+    const gpuPassed = this.gpuResult ? this.gpuResult.score > 60 : true;
+    const thermalOk = !this.thermalData.isThrottling();
+
+    let overallScore = 0;
+    if (this.cpuResult && this.gpuResult) {
+      overallScore = Math.round((this.cpuResult.score + this.gpuResult.score) / 2);
+    } else if (this.cpuResult) {
+      overallScore = this.cpuResult.score;
+    } else if (this.gpuResult) {
+      overallScore = this.gpuResult.score;
+    }
 
     return {
       timestamp: this.timestamp,
       overall: {
         passed: cpuPassed && gpuPassed && thermalOk,
-        score: Math.round((this.cpuResult.score + this.gpuResult.score) / 2)
+        score: overallScore
       },
       cpu: this.cpuResult,
       gpu: this.gpuResult,
@@ -33,11 +42,11 @@ class Report {
   detectIssues() {
     const issues = [];
 
-    if (this.cpuResult.score < 60) {
+    if (this.cpuResult && this.cpuResult.score < 60) {
       issues.push('CPU performance below threshold');
     }
 
-    if (this.gpuResult.score < 60) {
+    if (this.gpuResult && this.gpuResult.score < 60) {
       issues.push('GPU performance below threshold');
     }
 
@@ -63,8 +72,12 @@ class Report {
     let csv = 'Metric,Value\n';
     csv += `Timestamp,${data.timestamp.toISOString()}\n`;
     csv += `Overall Score,${data.overall.score}\n`;
-    csv += `CPU Score,${data.cpu.score}\n`;
-    csv += `GPU Score,${data.gpu.score}\n`;
+    if (data.cpu) {
+      csv += `CPU Score,${data.cpu.score}\n`;
+    }
+    if (data.gpu) {
+      csv += `GPU Score,${data.gpu.score}\n`;
+    }
     csv += `Avg Temp,${data.thermal.avgTemp.toFixed(1)}\n`;
     csv += `Max Temp,${data.thermal.maxTemp.toFixed(1)}\n`;
     csv += `Throttled,${data.thermal.throttled}\n`;

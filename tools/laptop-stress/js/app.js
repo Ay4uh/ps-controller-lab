@@ -26,6 +26,10 @@ class StressTestApp {
     this.gpuInfo = getGPUInfo();
     this.thermalMonitor = new ThermalMonitor();
 
+    // Parse URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    this.testType = urlParams.get('test'); // 'cpu' or 'gpu' or null
+
     // Populate UI
     this.displayHardwareInfo();
     this.setupConfigControls();
@@ -35,6 +39,13 @@ class StressTestApp {
     // Setup action button
     const actionBtn = document.getElementById('btnAction');
     actionBtn.addEventListener('click', () => this.handleActionClick());
+
+    // Auto-trigger test if parameter is provided
+    if (this.testType === 'cpu' || this.testType === 'gpu') {
+      setTimeout(() => {
+        this.runSelectedTest();
+      }, 800);
+    }
   }
 
   displayHardwareInfo() {
@@ -46,6 +57,24 @@ class StressTestApp {
     document.getElementById('hw-gpu-model').textContent = gpuName;
     document.getElementById('hw-gpu-vram').textContent = this.gpuInfo.vram > 0 ? `${this.gpuInfo.vram} MB` : 'Dynamic';
     document.getElementById('hw-gpu-type').textContent = this.gpuInfo.type === 'discrete' ? 'Discrete GPU' : 'Integrated graphics';
+
+    // Adjust title/breadcrumbs based on testType
+    const titleEl = document.getElementById('page-title');
+    const descEl = document.getElementById('page-desc');
+    const breadcrumbEl = document.getElementById('active-breadcrumb');
+    const actionBtn = document.getElementById('btnAction');
+
+    if (this.testType === 'cpu') {
+      if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-microchip text-accent" style="margin-right: 8px;"></i> CPU Stress Test';
+      if (descEl) descEl.textContent = 'Stress test your processor cores with intensive background calculations to measure thermals.';
+      if (breadcrumbEl) breadcrumbEl.textContent = 'CPU Stress Test';
+      if (actionBtn) actionBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run CPU Stress Test';
+    } else if (this.testType === 'gpu') {
+      if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-gauge-high text-accent" style="margin-right: 8px;"></i> GPU Stress Test';
+      if (descEl) descEl.textContent = 'Stress test your graphics card with 3D WebGL fractal shaders to measure FPS and stability.';
+      if (breadcrumbEl) breadcrumbEl.textContent = 'GPU Stress Test';
+      if (actionBtn) actionBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run GPU Stress Test';
+    }
   }
 
   setupConfigControls() {
@@ -172,7 +201,13 @@ class StressTestApp {
       configPills.forEach(p => p.setAttribute('disabled', 'true'));
     } else {
       actionBtn.className = 'btn-action btn-start';
-      actionBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run All stress Tests';
+      if (this.testType === 'cpu') {
+        actionBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run CPU Stress Test';
+      } else if (this.testType === 'gpu') {
+        actionBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run GPU Stress Test';
+      } else {
+        actionBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run All Stress Tests';
+      }
       statusBox.classList.remove('status-active');
       statusText.textContent = 'System Idle';
       configPills.forEach(p => p.removeAttribute('disabled'));
@@ -185,7 +220,7 @@ class StressTestApp {
       this.abortTests();
     } else {
       // Start stress tests sequence
-      this.runAllTests();
+      this.runSelectedTest();
     }
   }
 
@@ -207,7 +242,101 @@ class StressTestApp {
     document.getElementById('exportBox').style.display = 'none';
   }
 
-  // Run sequential tests
+  async runSelectedTest() {
+    if (this.testType === 'cpu') {
+      await this.runCPUTest();
+    } else if (this.testType === 'gpu') {
+      await this.runGPUTest();
+    } else {
+      await this.runAllTests();
+    }
+  }
+
+  // Run CPU-only test
+  async runCPUTest() {
+    this.telemetryHistory = [];
+    document.getElementById('resultsBox').style.display = 'none';
+    document.getElementById('exportBox').style.display = 'none';
+    this.report = null;
+
+    this.setUIState(true, 'Stressing CPU...');
+    this.cpuStress = new CPUStress(this.cpuInfo.cores);
+    
+    // Start thermal monitor
+    this.thermalMonitor.start((temp) => {
+      this.updateGauge('temp', temp, '°C');
+    });
+
+    let cpuResult;
+    try {
+      cpuResult = await this.cpuStress.start(this.duration, this.intensity, (data) => {
+        document.getElementById('progressText').textContent = `Running CPU Stress... ${data.progress.toFixed(0)}%`;
+        this.updateGauge('cpu', data.load, '%');
+        this.pushTelemetryPoint(data.load, data.temp);
+      });
+    } catch (err) {
+      console.error(err);
+      this.abortTests();
+      return;
+    }
+
+    if (!this.cpuStress.running) return; // aborted
+
+    this.cpuStress.stop();
+    this.thermalMonitor.stop();
+    this.setUIState(false);
+    this.resetTelemetryGauges();
+
+    // Generate CPU-only report
+    this.report = new Report(cpuResult, null, this.thermalMonitor);
+    const summary = this.report.generate();
+    this.displayResults(summary);
+  }
+
+  // Run GPU-only test
+  async runGPUTest() {
+    this.telemetryHistory = [];
+    document.getElementById('resultsBox').style.display = 'none';
+    document.getElementById('exportBox').style.display = 'none';
+    this.report = null;
+
+    this.setUIState(true, 'Stressing GPU...');
+    this.gpuStress = new GPUStress();
+
+    // Start thermal monitor
+    this.thermalMonitor.start((temp) => {
+      this.updateGauge('temp', temp, '°C');
+    });
+
+    let gpuResult;
+    try {
+      gpuResult = await this.gpuStress.start(this.duration, (data) => {
+        document.getElementById('progressText').textContent = `Running GPU Stress... ${data.progress.toFixed(0)}%`;
+        this.updateGauge('gpu', data.fps, 'FPS');
+
+        const simLoad = 90 + Math.random() * 10;
+        const currentTemp = this.thermalMonitor.getMax();
+
+        this.updateGauge('cpu', simLoad, '%');
+        this.pushTelemetryPoint(simLoad, currentTemp);
+      });
+    } catch (err) {
+      console.error(err);
+      this.abortTests();
+      return;
+    }
+
+    this.thermalMonitor.stop();
+    this.setUIState(false);
+    this.resetTelemetryGauges();
+
+    // Generate GPU-only report
+    this.report = new Report(null, gpuResult, this.thermalMonitor);
+    const summary = this.report.generate();
+    this.displayResults(summary);
+  }
+
+  // Run sequential tests (CPU and GPU)
   async runAllTests() {
     this.telemetryHistory = [];
     document.getElementById('resultsBox').style.display = 'none';
@@ -220,7 +349,6 @@ class StressTestApp {
     
     // Start thermal monitor
     this.thermalMonitor.start((temp) => {
-      // Sync temp gauge
       this.updateGauge('temp', temp, '°C');
     });
 
@@ -228,11 +356,7 @@ class StressTestApp {
     try {
       cpuResult = await this.cpuStress.start(this.duration, this.intensity, (data) => {
         document.getElementById('progressText').textContent = `Running CPU Stress... ${data.progress.toFixed(0)}%`;
-        
-        // Sync gauges
         this.updateGauge('cpu', data.load, '%');
-        
-        // Push to telemetry plot
         this.pushTelemetryPoint(data.load, data.temp);
       });
     } catch (err) {
@@ -243,7 +367,6 @@ class StressTestApp {
 
     if (!this.cpuStress.running) return; // aborted
 
-    // Stop CPU stress workers
     this.cpuStress.stop();
     this.updateGauge('cpu', 0, '%');
 
@@ -255,13 +378,10 @@ class StressTestApp {
     try {
       gpuResult = await this.gpuStress.start(this.duration, (data) => {
         document.getElementById('progressText').textContent = `Running GPU Stress... ${data.progress.toFixed(0)}%`;
-        
-        // Sync gauges
         this.updateGauge('gpu', data.fps, 'FPS');
-        
-        // GPU load is high during rendering
+
         const simLoad = 90 + Math.random() * 10;
-        const currentTemp = this.thermalMonitor.getMax(); // fetch latest max temperature from thermal monitor
+        const currentTemp = this.thermalMonitor.getMax();
         
         this.updateGauge('cpu', simLoad, '%');
         this.pushTelemetryPoint(simLoad, currentTemp);
@@ -304,14 +424,18 @@ class StressTestApp {
           <div class="results-card-label">Overall Score</div>
           <div class="results-card-value" style="color: #3b82f6;">${summary.overall.score}/100</div>
         </div>
+        ${summary.cpu ? `
         <div class="results-card">
           <div class="results-card-label">CPU Score</div>
           <div class="results-card-value">${summary.cpu.score}/100</div>
         </div>
+        ` : ''}
+        ${summary.gpu ? `
         <div class="results-card">
           <div class="results-card-label">GPU Score</div>
           <div class="results-card-value">${summary.gpu.score}/100</div>
         </div>
+        ` : ''}
         <div class="results-card">
           <div class="results-card-label">Max Temp</div>
           <div class="results-card-value" style="color: ${summary.thermal.maxTemp > 85 ? '#ef4444' : 'var(--text-primary)'};">
