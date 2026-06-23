@@ -1,3 +1,344 @@
+// Global ad and auth stats management helpers
+window.incrementAdImpression = function() {
+  const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
+  const user = localStorage.getItem('techtest_user');
+  if (!adsenseEnabled || user) return;
+  const val = parseInt(localStorage.getItem('ad_stats_impressions') || '0', 10) + 1;
+  localStorage.setItem('ad_stats_impressions', val.toString());
+  window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+};
+
+window.incrementAdClick = function() {
+  const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
+  const user = localStorage.getItem('techtest_user');
+  if (!adsenseEnabled || user) return;
+  const val = parseInt(localStorage.getItem('ad_stats_clicks') || '0', 10) + 1;
+  localStorage.setItem('ad_stats_clicks', val.toString());
+  window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+};
+
+window.incrementAffiliateClick = function() {
+  const val = parseInt(localStorage.getItem('ad_stats_aff_clicks') || '0', 10) + 1;
+  localStorage.setItem('ad_stats_aff_clicks', val.toString());
+  
+  // Simulate a conversion randomly (10% chance) to log affiliate commission!
+  if (Math.random() < 0.10) {
+    const conversions = parseInt(localStorage.getItem('ad_stats_aff_conversions') || '0', 10) + 1;
+    localStorage.setItem('ad_stats_aff_conversions', conversions.toString());
+    const commission = parseFloat(localStorage.getItem('ad_stats_aff_commission') || '0.00') + 4.50; // $4.50 average commission
+    localStorage.setItem('ad_stats_aff_commission', commission.toFixed(2));
+  }
+  
+  window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+};
+
+// Inject Global Styles for Auth Modal and Ad Slots
+if (!document.getElementById('techtest-ads-styles')) {
+  const styleEl = document.createElement('style');
+  styleEl.id = 'techtest-ads-styles';
+  styleEl.innerHTML = `
+    /* Ad Slots styling */
+    .ad-slot {
+      background: var(--bg-hover) !important;
+      border: 1px dashed var(--border) !important;
+      border-radius: 8px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      padding: 16px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      min-height: 120px !important;
+      transition: all 0.2s ease !important;
+    }
+    .ad-slot::before {
+      content: 'SPONSORED' !important;
+      position: absolute !important;
+      top: 8px !important;
+      left: 12px !important;
+      font-size: 9px !important;
+      font-weight: 700 !important;
+      color: var(--text-muted) !important;
+      letter-spacing: 0.5px !important;
+    }
+    
+    /* Affiliate ad banner inside ad slot */
+    .ad-affiliate-banner {
+      width: 100% !important;
+      height: 100% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+      text-decoration: none !important;
+      color: var(--text-primary) !important;
+    }
+    .ad-affiliate-img {
+      font-size: 32px !important;
+      background: rgba(217, 119, 6, 0.1) !important;
+      color: var(--accent-gold) !important;
+      width: 50px !important;
+      height: 50px !important;
+      border-radius: 8px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+    }
+    .ad-affiliate-content {
+      flex: 1 !important;
+      text-align: left !important;
+    }
+    .ad-affiliate-title {
+      font-weight: 700 !important;
+      font-size: 14px !important;
+      margin: 0 0 4px 0 !important;
+    }
+    .ad-affiliate-desc {
+      font-size: 12px !important;
+      color: var(--text-secondary) !important;
+      margin: 0 !important;
+      line-height: 1.4 !important;
+    }
+    .ad-affiliate-btn {
+      background: var(--accent-gold) !important;
+      color: white !important;
+      padding: 8px 16px !important;
+      border-radius: 6px !important;
+      font-weight: 600 !important;
+      font-size: 12px !important;
+      border: none !important;
+      cursor: pointer !important;
+      flex-shrink: 0 !important;
+      transition: opacity 0.2s !important;
+    }
+    .ad-affiliate-btn:hover {
+      opacity: 0.9 !important;
+    }
+    
+    /* Auth Modal Overlay */
+    .auth-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .auth-modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .auth-modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 360px;
+      padding: 32px;
+      position: relative;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .auth-modal-overlay.show .auth-modal {
+      transform: translateY(0);
+    }
+    .auth-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+    .auth-modal-tabs {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .auth-tab {
+      background: none;
+      border: none;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding-bottom: 8px;
+      transition: all 0.2s;
+    }
+    .auth-tab.active {
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--text-primary);
+      font-weight: 700;
+    }
+    
+    .auth-form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .auth-form-group label {
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .auth-form-input {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      width: 100%;
+    }
+    .auth-submit-btn {
+      width: 100%;
+      background: var(--text-primary);
+      color: var(--bg-card);
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .auth-submit-btn:hover {
+      opacity: 0.9;
+    }
+  `;
+  document.head.appendChild(styleEl);
+}
+
+// Global modal management
+window.openAuthModal = function() {
+  let modalOverlay = document.getElementById('authModalOverlay');
+  if (!modalOverlay) {
+    const modalHTML = `
+      <div class="auth-modal-overlay" id="authModalOverlay">
+        <div class="auth-modal">
+          <button class="auth-modal-close" id="btnAuthClose">&times;</button>
+          
+          <div class="auth-modal-tabs">
+            <button id="authTabLogin" class="auth-tab active">Log In</button>
+            <button id="authTabSignup" class="auth-tab">Sign Up</button>
+          </div>
+          
+          <form id="authForm">
+            <div class="auth-form-group">
+              <label for="authUsername">Username</label>
+              <input type="text" id="authUsername" required placeholder="Enter username" class="auth-form-input">
+            </div>
+            <div class="auth-form-group">
+              <label for="authPassword">Password</label>
+              <input type="password" id="authPassword" required placeholder="Enter password" class="auth-form-input">
+            </div>
+            <button type="submit" id="authSubmitBtn" class="auth-submit-btn">Log In</button>
+          </form>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    modalOverlay = document.getElementById('authModalOverlay');
+    
+    const btnAuthClose = document.getElementById('btnAuthClose');
+    const authTabLogin = document.getElementById('authTabLogin');
+    const authTabSignup = document.getElementById('authTabSignup');
+    const authForm = document.getElementById('authForm');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    let isSignup = false;
+    
+    btnAuthClose.addEventListener('click', window.closeAuthModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) window.closeAuthModal();
+    });
+    
+    authTabLogin.addEventListener('click', () => {
+      isSignup = false;
+      authTabLogin.classList.add('active');
+      authTabSignup.classList.remove('active');
+      authSubmitBtn.textContent = 'Log In';
+    });
+    
+    authTabSignup.addEventListener('click', () => {
+      isSignup = true;
+      authTabSignup.classList.add('active');
+      authTabLogin.classList.remove('active');
+      authSubmitBtn.textContent = 'Sign Up';
+    });
+    
+    authForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('authUsername').value.trim();
+      if (username) {
+        localStorage.setItem('techtest_user', username);
+        localStorage.setItem('techtest_karma', isSignup ? '1' : '100');
+        window.updateNavbarUser();
+        window.closeAuthModal();
+        window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
+      }
+    });
+  }
+  
+  modalOverlay.classList.add('show');
+};
+
+window.closeAuthModal = function() {
+  const modalOverlay = document.getElementById('authModalOverlay');
+  if (modalOverlay) {
+    modalOverlay.classList.remove('show');
+  }
+};
+
+window.updateNavbarUser = function() {
+  const container = document.getElementById('userNavbarContainer');
+  if (!container) return;
+  
+  const user = localStorage.getItem('techtest_user');
+  const karma = localStorage.getItem('techtest_karma') || '100';
+  
+  if (user) {
+    container.innerHTML = `
+      <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
+        <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${user}</span>
+        <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${karma}</span>
+        <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </div>
+    `;
+    
+    document.getElementById('btnNavbarLogout').addEventListener('click', () => {
+      localStorage.removeItem('techtest_user');
+      localStorage.removeItem('techtest_karma');
+      window.updateNavbarUser();
+      window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
+    });
+  } else {
+    container.innerHTML = `
+      <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
+    `;
+    
+    document.getElementById('btnNavbarLogin').addEventListener('click', () => {
+      window.openAuthModal();
+    });
+  }
+};
+
 function injectSidebar(activeToolId = null) {
   const isToolsPath = window.location.pathname.startsWith('/tools/') || activeToolId !== null;
 
@@ -32,7 +373,8 @@ function injectSidebar(activeToolId = null) {
           <a href="/answers/" class="topnav-link ${window.location.pathname.startsWith('/answers/') ? 'active' : ''}">Answers</a>
         </div>
       </div>
-      <div class="topnav-right">
+      <div class="topnav-right" style="display: flex; align-items: center; gap: 8px;">
+        <div id="userNavbarContainer" style="display: inline-flex; align-items: center; gap: 8px;"></div>
         <button class="topnav-theme-toggle" id="btnToggleTheme" title="Toggle Theme" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; padding: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.2s;"><i class="fa-solid fa-moon"></i></button>
         <button class="topnav-search" id="btnToggleSearch"><i class="fa-solid fa-search"></i></button>
         <button class="topnav-hamburger" id="btnToggleMobileMenu"><i class="fa-solid fa-bars"></i></button>
@@ -121,6 +463,7 @@ function injectSidebar(activeToolId = null) {
   if (!document.querySelector('.top-navbar')) {
     document.body.insertAdjacentHTML('afterbegin', topNavHTML);
   }
+  window.updateNavbarUser();
 
   // Hook up global navbar logic (drawer, mobile menu, dark mode)
   const btnToggleSearch = document.getElementById('btnToggleSearch');
@@ -279,13 +622,52 @@ function injectSidebar(activeToolId = null) {
   // Inject Tool Page AdBlock
   if (isToolsPath) {
     const mainContent = document.querySelector('.main-content');
-    if (mainContent && !document.getElementById('ad-tool-bottom')) {
-      const toolAdHTML = `
-        <div style="margin-top: 48px; margin-bottom: 24px;">
-          <div class="ad-slot ad-300x250" id="ad-tool-bottom">Advertisement</div>
-        </div>
-      `;
-      mainContent.insertAdjacentHTML('beforeend', toolAdHTML);
+    if (mainContent) {
+      // Inject container if missing
+      let adContainer = document.getElementById('dynamic-tool-ad-container');
+      if (!adContainer) {
+        mainContent.insertAdjacentHTML('beforeend', `<div id="dynamic-tool-ad-container" style="margin-top: 48px; margin-bottom: 24px; display: flex; justify-content: center;"></div>`);
+        adContainer = document.getElementById('dynamic-tool-ad-container');
+      }
+      
+      const renderToolAd = () => {
+        const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
+        const user = localStorage.getItem('techtest_user');
+        
+        if (adsenseEnabled && !user) {
+          adContainer.innerHTML = `
+            <div class="ad-slot ad-300x250" id="ad-tool-bottom" style="cursor: pointer; width: 100%; max-width: 600px;">
+              <a href="https://www.amazon.com/Arctic-MX-6-Carbon-Based-Performance-Durability/dp/B09VDNKY14" target="_blank" class="ad-affiliate-banner" data-ad-id="mx6_paste_tool">
+                <div class="ad-affiliate-img">🧪</div>
+                <div class="ad-affiliate-content">
+                  <h4 class="ad-affiliate-title">Fix Thermal Throttling: ARCTIC MX-6 (4g)</h4>
+                  <p class="ad-affiliate-desc">Ultimate performance carbon-based thermal paste. Perfect for GPU/CPU repasting. 20% cooler temps guaranteed.</p>
+                </div>
+                <button class="ad-affiliate-btn">Buy on Amazon</button>
+              </a>
+            </div>
+          `;
+          
+          // Track impressions
+          if (window.incrementAdImpression) {
+            window.incrementAdImpression();
+          }
+          
+          // Add click listener
+          adContainer.querySelector('a').addEventListener('click', () => {
+            if (window.incrementAdClick) window.incrementAdClick();
+            if (window.incrementAffiliateClick) window.incrementAffiliateClick();
+          });
+        } else {
+          adContainer.innerHTML = '';
+        }
+      };
+      
+      renderToolAd();
+      
+      // Re-render when auth changes or ads settings change
+      window.addEventListener('authStateChanged', renderToolAd);
+      window.addEventListener('adsSettingsChanged', renderToolAd);
     }
   }
 }
