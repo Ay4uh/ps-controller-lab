@@ -13,6 +13,9 @@
   <link rel="canonical" href="https://ay5uh.com/">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -61,38 +64,36 @@
 
     /* Hero Section */
     .hero {
-      padding: 80px 0 60px 0;
+      padding: 80px 24px;
+      text-align: center;
       position: relative;
-    }
-    
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at top right, rgba(0, 112, 209, 0.03), transparent 60%);
-      pointer-events: none;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-base) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     
     .hero-title {
-      font-size: 42px;
-      font-weight: 800;
+      font-family: var(--font-title);
+      font-size: 56px;
+      font-weight: 700;
       color: var(--text-primary);
-      margin: 0 0 16px 0;
-      letter-spacing: -1px;
-      line-height: 1.1;
+      margin: 0 auto 24px auto;
+      line-height: 1.2;
+      max-width: 800px;
     }
     
-    .hero-title span {
-      background: linear-gradient(135deg, var(--accent-blue), #00a8e8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 36px;
+      }
     }
     
     .hero-subtitle {
       font-size: 18px;
       color: var(--text-secondary);
-      margin: 0 0 8px 0;
-      max-width: 600px;
+      margin: 0 auto 48px auto;
+      max-width: 700px;
       line-height: 1.6;
     }
 
@@ -104,7 +105,7 @@
       padding-bottom: 64px;
     }
     
-    @media (min-width: 992px) {
+    @media (min-width: 768px) {
       .dashboard-grid {
         grid-template-columns: repeat(3, 1fr);
       }
@@ -114,84 +115,57 @@
     .dashboard-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
+      border-radius: 8px;
+      padding: 40px 24px;
       position: relative;
       overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s ease;
       text-decoration: none;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    }
-    
-    .dashboard-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at top right, rgba(0, 112, 209, 0.05), transparent 70%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
+      align-items: center;
+      text-align: center;
     }
     
     .dashboard-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--accent-blue);
-      box-shadow: 0 20px 25px -5px rgba(0, 112, 209, 0.1), 0 10px 10px -5px rgba(0, 112, 209, 0.04);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      border-color: var(--border-active);
     }
     
-    .dashboard-card:hover::before {
-      opacity: 1;
-    }
-    
-    .card-icon-container {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      background: var(--bg-hover);
+    .card-emoji-container {
+      font-size: 40px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 24px;
-      font-size: 28px;
-      color: var(--accent-blue);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
-    }
-    
-    .dashboard-card:hover .card-icon-container {
-      transform: scale(1.1) rotate(-5deg);
-      background: rgba(0, 112, 209, 0.1);
     }
     
     .card-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text-primary);
-      margin: 0 0 12px 0;
-      letter-spacing: -0.5px;
+      margin: 0 0 8px 0;
     }
     
     .card-desc {
       color: var(--text-secondary);
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.6;
-      margin: 0 0 16px 0;
+      margin: 0 0 20px 0;
+      flex: 1;
     }
     
     .card-count-badge {
       position: absolute;
-      top: 24px;
-      right: 24px;
+      top: 16px;
+      right: 16px;
       background: var(--bg-hover);
       color: var(--text-secondary);
       padding: 4px 10px;
       border-radius: 12px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
       border: 1px solid var(--border);
     }
     
@@ -200,13 +174,13 @@
       flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 24px;
-      flex: 1;
+      justify-content: center;
       align-content: flex-start;
     }
     
     .tool-preview-tags span {
       font-size: 11px;
-      background: var(--bg-base);
+      background: var(--bg-hover);
       border: 1px solid var(--border);
       color: var(--text-muted);
       padding: 3px 8px;
@@ -215,68 +189,120 @@
     }
     
     .card-action {
+      width: 100%;
+      padding: 12px;
+      background: var(--text-primary);
+      color: var(--bg-card);
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      color: var(--accent-blue);
-      font-weight: 600;
-      font-size: 14px;
+      transition: opacity 0.2s;
       margin-top: auto;
-      transition: gap 0.3s ease;
     }
     
     .dashboard-card:hover .card-action {
-      gap: 12px;
+      opacity: 0.9;
     }
 
-    /* Footer */
-    .homepage-footer {
-      border-top: 1px solid var(--border);
-      padding: 48px 0;
-      margin-top: auto;
-      color: var(--text-muted);
-      font-size: 13px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    /* Redesigned Q&A Teaser */
+    .qa-teaser {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px;
       text-align: center;
-      gap: 16px;
+      transition: all 0.3s ease;
+    }
+    .qa-teaser:hover {
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
     }
 
-    .footer-links {
-      display: flex;
-      gap: 24px;
+    /* Why Section Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
     }
-
-    .footer-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s;
+    .feature-item {
+      text-align: center;
+      padding: 16px;
     }
-
-    .footer-links a:hover {
+    .feature-emoji {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
       color: var(--text-primary);
     }
-    
-    /* Device specific colors */
-    .card-gamepad { border-left: 3px solid #3B82F6; }
-    .card-gamepad:hover { border-color: #0ea5e9; box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.1); border-left-color: #0ea5e9; }
-    .card-gamepad .card-icon-container { color: #0ea5e9; }
-    .card-gamepad:hover .card-icon-container { background: rgba(14, 165, 233, 0.1); }
-    .card-gamepad .card-action { color: #0ea5e9; }
-    
-    .card-laptop { border-left: 3px solid #8B5CF6; }
-    .card-laptop:hover { border-color: #8b5cf6; box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1); border-left-color: #8b5cf6; }
-    .card-laptop .card-icon-container { color: #8b5cf6; }
-    .card-laptop:hover .card-icon-container { background: rgba(139, 92, 246, 0.1); }
-    .card-laptop .card-action { color: #8b5cf6; }
-    
-    .card-phone { border-left: 3px solid #10B981; }
-    .card-phone:hover { border-color: #10b981; box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.1); border-left-color: #10b981; }
-    .card-phone .card-icon-container { color: #10b981; }
-    .card-phone:hover .card-icon-container { background: rgba(16, 185, 129, 0.1); }
-    .card-phone .card-action { color: #10b981; }
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Redesigned Footer */
+    .site-footer {
+      background: #1a1a1a;
+      color: #f5f5f4;
+      padding: 60px 24px;
+      margin-top: 80px;
+    }
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+    .footer-col h4 {
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    .footer-col p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-col ul a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .footer-col ul a:hover {
+      color: #ffffff;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 24px;
+      text-align: center;
+    }
+    .footer-bottom p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.5;
+    }
   </style>
 
   <!-- Structured Data -->
@@ -317,26 +343,25 @@
     <main class="main-content">
       
       <div class="hero animate-fade-in-up">
-        <div class="container">
-          <h1 class="hero-title">TechTest<br><span>Hardware Diagnostics</span></h1>
-          <p class="hero-subtitle">Free browser-based hardware diagnostics and repair guides for laptops, phones, and gaming controllers. No signup. No software. No cost.</p>
-        </div>
+        <p style="font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;">Free Hardware Diagnostics</p>
+        <h1 class="hero-title">Test Your Hardware.<br>Know What's Wrong.</h1>
+        <p class="hero-subtitle">Run comprehensive diagnostics on laptops, phones, and gaming controllers in your browser. No signup. No software. No data collection.</p>
       </div>
 
       <!-- Stats Bar -->
       <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px;">
-        <div style="background: var(--bg-alt); width: 100%; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-around; padding: 28px; text-align: center;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; display: flex; justify-content: space-around; padding: 28px; text-align: center;">
           <div>
-            <div id="stat-devices-tested" style="font-size: 32px; font-weight: bold; color: #2563EB;">0</div>
-            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;">Devices Tested</div>
+            <div id="stat-devices-tested" style="font-size: 32px; font-weight: 700; color: var(--text-primary);">0</div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Devices Tested</div>
           </div>
           <div>
-            <div id="stat-repair-guides" style="font-size: 32px; font-weight: bold; color: #2563EB;"><!-- REPAIR_GUIDES_COUNT -->4</div>
-            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;">Repair Guides</div>
+            <div id="stat-repair-guides" style="font-size: 32px; font-weight: 700; color: var(--text-primary);"><!-- REPAIR_GUIDES_COUNT -->4</div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Repair Guides</div>
           </div>
           <div>
-            <div style="font-size: 32px; font-weight: bold; color: #2563EB;">3</div>
-            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;">Tool Categories</div>
+            <div style="font-size: 32px; font-weight: 700; color: var(--text-primary);">3</div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Tool Categories</div>
           </div>
         </div>
       </div>
@@ -350,23 +375,21 @@
       </script>
 
       <!-- Homepage Search Bar -->
-      <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto;">
-        <form action="/repair-guides/" method="GET" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 9999px; height: 48px; padding: 0 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-          <i class="fa-solid fa-search" style="color: #9CA3AF; margin-right: 12px;"></i>
-          <input type="text" name="q" placeholder="Search guides, tools, or devices..." style="border: none; outline: none; width: 100%; font-size: 16px; background: transparent; color: var(--text-primary);">
+      <div class="container animate-fade-in-up delay-1" style="margin-bottom: 60px; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <form action="/repair-guides/" method="GET" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; height: 48px; padding: 0 16px; transition: border-color 0.2s;">
+          <i class="fa-solid fa-search" style="color: var(--text-muted); margin-right: 12px;"></i>
+          <input type="text" name="q" placeholder="Search guides, tools, or devices..." style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; color: var(--text-primary);">
         </form>
       </div>
 
       <div class="container dashboard-grid">
         
         <!-- Gamepad Card -->
-        <a href="/tools/controller-lab/" class="dashboard-card card-gamepad animate-fade-in-up delay-1">
-          <div class="card-icon-container">
-            <i class="fa-solid fa-gamepad"></i>
-          </div>
+        <a href="/tools/controller-lab/" class="dashboard-card animate-fade-in-up delay-1">
           <span class="card-count-badge">6 tests</span>
+          <div class="card-emoji-container">🎮</div>
           <h2 class="card-title">Controller Lab</h2>
-          <p class="card-desc">Diagnose, test, and calibrate PlayStation and Xbox controllers. Read raw HID data, test haptics, and check for stick drift.</p>
+          <p class="card-desc">Diagnose, test, and calibrate PlayStation, Xbox, and Nintendo controllers. Read raw HID data, test haptics, and check for stick drift.</p>
           <div class="tool-preview-tags">
             <span>Calibration</span><span>Input Tester</span><span>Vibration</span><span>Drift Check</span>
           </div>
@@ -376,11 +399,9 @@
         </a>
 
         <!-- Laptop Card -->
-        <a href="/tools/laptop/" class="dashboard-card card-laptop animate-fade-in-up delay-2">
-          <div class="card-icon-container">
-            <i class="fa-solid fa-laptop"></i>
-          </div>
+        <a href="/tools/laptop/" class="dashboard-card animate-fade-in-up delay-2">
           <span class="card-count-badge">8 tools</span>
+          <div class="card-emoji-container">💻</div>
           <h2 class="card-title">Laptop / PC Diagnostics</h2>
           <p class="card-desc">Comprehensive suite for testing your computer. Includes Keyboard, Mouse, Microphone, Speaker, Webcam, Display, and Stress Test tools.</p>
           <div class="tool-preview-tags">
@@ -392,11 +413,9 @@
         </a>
 
         <!-- Phone Card -->
-        <a href="/tools/phone-diagnostics/" class="dashboard-card card-phone animate-fade-in-up delay-3">
-          <div class="card-icon-container">
-            <i class="fa-solid fa-mobile-screen"></i>
-          </div>
+        <a href="/tools/phone-diagnostics/" class="dashboard-card animate-fade-in-up delay-3">
           <span class="card-count-badge">6 tests</span>
+          <div class="card-emoji-container">📱</div>
           <h2 class="card-title">Phone Tester</h2>
           <p class="card-desc">Scan your iOS or Android smartphone for hardware defects. Test touchscreen digitizers, haptics, cameras, and dead pixels.</p>
           <div class="tool-preview-tags">
@@ -408,43 +427,70 @@
         </a>
 
       </div>
+
+      <!-- Why Section -->
+      <div class="container animate-fade-in-up delay-3" style="margin-top: 80px; margin-bottom: 60px; border-top: 1px solid var(--border); padding-top: 80px;">
+        <h2 style="font-family: var(--font-title); font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 50px; text-align: center;">Why TechTest?</h2>
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-emoji">🔒</div>
+            <h3 class="feature-title">No Data Collection</h3>
+            <p class="feature-desc">All diagnostics and inputs are processed locally in your browser. We never collect device details or telemetry.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-emoji">🚫</div>
+            <h3 class="feature-title">No Signup Required</h3>
+            <p class="feature-desc">Skip email inputs and credential setup. Start testing your hardware instantly with zero onboarding steps.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-emoji">💰</div>
+            <h3 class="feature-title">100% Free</h3>
+            <p class="feature-desc">Our tools are fully free. There are no premium paywalls, subscription requirements, or hidden tiers.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-emoji">🔓</div>
+            <h3 class="feature-title">Open Source</h3>
+            <p class="feature-desc">Fully open-source codebase. You can audit, review, inspect, and contribute to our codebase on GitHub.</p>
+          </div>
+        </div>
+      </div>
       
       <!-- Recent Repair Guides -->
-      <div class="container animate-fade-in-up delay-3" style="margin-top: 64px; margin-bottom: 48px;">
+      <div class="container animate-fade-in-up delay-3" style="margin-top: 80px; margin-bottom: 48px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
-          <h2 style="font-size: 24px; font-weight: 800; margin: 0;">Recent Repair Guides</h2>
-          <a href="/repair-guides/" style="color: #2563EB; font-weight: 600; text-decoration: none;">View all <i class="fa-solid fa-arrow-right"></i></a>
+          <h2 style="font-family: var(--font-title); font-size: 28px; font-weight: 700; margin: 0; color: var(--text-primary);">Recent Repair Guides</h2>
+          <a href="/repair-guides/" style="color: var(--accent-blue); font-weight: 600; text-decoration: none; font-size: 14px;">View all <i class="fa-solid fa-arrow-right" style="margin-left: 4px;"></i></a>
         </div>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
           
           <!-- Card 1 -->
-          <a href="/repair-guides/lenovo/thinkpad-t14-gen1-amd/screen-replacement/" style="text-decoration: none; color: inherit; display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); transition: box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
-            <div style="width: 100%; aspect-ratio: 16/9; background: #E5E7EB; display: flex; align-items: center; justify-content: center; color: #9CA3AF;"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
-            <div style="padding: 20px;">
-              <span style="background: #FFF7ED; color: #EA580C; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 12px;">REPAIR GUIDES</span>
-              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4;">ThinkPad T14 Gen 1 — Screen Replacement</h3>
-              <div style="color: #6B7280; font-size: 13px; font-weight: 500;">Intermediate &middot; 45 min</div>
+          <a href="/repair-guides/lenovo/thinkpad-t14-gen1-amd/screen-replacement/" class="dashboard-card" style="padding: 0; align-items: stretch; text-align: left;">
+            <div style="width: 100%; aspect-ratio: 16/9; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div style="padding: 24px;">
+              <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">ThinkPad T14 Gen 1 — Screen Replacement</h3>
+              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Intermediate &middot; 45 min</div>
             </div>
           </a>
 
           <!-- Card 2 -->
-          <a href="/repair-guides/apple/macbook-air-13-m1/" style="text-decoration: none; color: inherit; display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); transition: box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
-            <div style="width: 100%; aspect-ratio: 16/9; background: #E5E7EB; display: flex; align-items: center; justify-content: center; color: #9CA3AF;"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
-            <div style="padding: 20px;">
-              <span style="background: #FFF7ED; color: #EA580C; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 12px;">REPAIR GUIDES</span>
-              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4;">MacBook Air 13" M1 — Hardware Repair Guide</h3>
-              <div style="color: #6B7280; font-size: 13px; font-weight: 500;">Intermediate &middot; 60 min</div>
+          <a href="/repair-guides/apple/macbook-air-13-m1/" class="dashboard-card" style="padding: 0; align-items: stretch; text-align: left;">
+            <div style="width: 100%; aspect-ratio: 16/9; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div style="padding: 24px;">
+              <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">MacBook Air 13" M1 — Hardware Repair Guide</h3>
+              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Intermediate &middot; 60 min</div>
             </div>
           </a>
 
           <!-- Card 3 -->
-          <a href="/fix-ps5-controller-drift/" style="text-decoration: none; color: inherit; display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); transition: box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
-            <div style="width: 100%; aspect-ratio: 16/9; background: #E5E7EB; display: flex; align-items: center; justify-content: center; color: #9CA3AF;"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
-            <div style="padding: 20px;">
-              <span style="background: #FFF7ED; color: #EA580C; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 12px;">REPAIR GUIDES</span>
-              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4;">PS5 Controller — Stick Drift Fix & Recalibrate</h3>
-              <div style="color: #6B7280; font-size: 13px; font-weight: 500;">Beginner &middot; 15 min</div>
+          <a href="/fix-ps5-controller-drift/" class="dashboard-card" style="padding: 0; align-items: stretch; text-align: left;">
+            <div style="width: 100%; aspect-ratio: 16/9; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div style="padding: 24px;">
+              <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">PS5 Controller — Stick Drift Fix & Recalibrate</h3>
+              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Beginner &middot; 15 min</div>
             </div>
           </a>
 
@@ -452,27 +498,49 @@
       </div>
 
       <!-- Q&A Teaser -->
-      <div class="container animate-fade-in-up delay-3" style="margin-bottom: 64px;">
+      <div class="container animate-fade-in-up delay-3" style="margin-bottom: 80px;">
         <div class="qa-teaser">
-          <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 12px 0;">Got a repair question?</h2>
-          <p style="font-size: 16px; margin: 0 0 24px 0; font-weight: 500;">Ask the TechTest community — get answers from real fixers.</p>
-          <a href="/answers/" style="display: inline-block; background: #2563EB; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); transition: background 0.2s;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">Ask a Question <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
+          <h2 style="font-family: var(--font-title); font-size: 24px; font-weight: 700; margin: 0 0 12px 0; color: var(--text-primary);">Got a repair question?</h2>
+          <p style="font-size: 16px; margin: 0 0 24px 0; color: var(--text-secondary);">Ask the TechTest community — get answers from real fixers.</p>
+          <a href="/answers/" style="display: inline-block; background: var(--text-primary); color: var(--bg-card); padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Ask a Question <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
         </div>
       </div>
 
       <!-- Footer -->
-      <footer class="homepage-footer animate-fade-in-up delay-3">
-        <div class="footer-links">
-          <a href="/about/">About</a>
-          <a href="/repair-guides/">Repair Guides</a>
-          <a href="/contact/">Contact</a>
-          <a href="/policies/">Policies & Legal</a>
-          <a href="https://github.com/Ay4uh" target="_blank" rel="noopener">GitHub</a>
-          <a href="/services/ps5-repair-london/" style="color: var(--accent-blue);">PS5 Repair London</a>
+      <footer class="site-footer animate-fade-in-up delay-3">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h4 style="color: white; font-weight: 700; font-size: 15px; margin-bottom: 16px;">TechTest</h4>
+            <p>Free hardware diagnostics for everyone. All diagnostics run fully local in your browser with zero data collection.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Tools</h4>
+            <ul>
+              <li><a href="/tools/controller-lab/">Controller Lab</a></li>
+              <li><a href="/tools/laptop/">Laptop Diagnostics</a></li>
+              <li><a href="/tools/phone-diagnostics/">Phone Tester</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="/about/">About Us</a></li>
+              <li><a href="/repair-guides/">Repair Guides</a></li>
+              <li><a href="/answers/">Q&A Answers</a></li>
+              <li><a href="/contact/">Contact Us</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Legal & Services</h4>
+            <ul>
+              <li><a href="/policies/">Policies & Legal</a></li>
+              <li><a href="https://github.com/Ay4uh" target="_blank" rel="noopener">GitHub Project</a></li>
+              <li><a href="/services/ps5-repair-london/" style="color: #60a5fa;">PS5 Repair London</a></li>
+            </ul>
+          </div>
         </div>
-        <div>
-          &copy; 2026 TechTest &middot; All tools run locally in your browser.<br>
-          No data collection. No signup. Free forever.
+        <div class="footer-bottom">
+          <p>&copy; 2026 TechTest &middot; All diagnostics run locally. No signup. Free forever.</p>
         </div>
       </footer>
 

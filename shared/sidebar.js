@@ -22,7 +22,7 @@ function injectSidebar(activeToolId = null) {
           <i class="fa-solid fa-bars"></i>
         </button>
         <a href="/" class="topnav-brand">
-          <i class="fa-solid fa-screwdriver-wrench text-accent"></i>
+          <div class="logo-box">✕</div>
           <span>TechTest</span>
         </a>
         <div class="topnav-divider"></div>

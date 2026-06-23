@@ -1,23 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
 
 :root {
-  --bg-base: #f8fafc;
+  --bg-base: #fafaf9;
   --bg-card: #ffffff;
-  --bg-hover: #f1f5f9;
-  --bg-alt: #f9fafb;
-  --border: #e2e8f0;
-  --border-active: #0070d1;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --accent-blue: #0070d1;
-  --accent-green: #00a83c;
-  --accent-red: #dc2626;
-  --accent-yellow: #ea580c;
+  --bg-hover: #f5f5f4;
+  --bg-alt: #f5f5f4;
+  --border: #e5e5e5;
+  --border-active: #1a1a1a;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --accent-blue: #2563eb;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
   --accent-gold: #d97706;
   
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-title: 'Merriweather', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
   
   --sidebar-width: 220px;
@@ -28,15 +30,15 @@
 }
 
 [data-theme="dark"] {
-  --bg-base: #0f172a;
-  --bg-card: #1e293b;
-  --bg-hover: #334155;
-  --bg-alt: #1b2230;
-  --border: #334155;
-  --border-active: #3b82f6;
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+  --bg-base: #1c1917;
+  --bg-card: #272522;
+  --bg-hover: #3f3f46;
+  --bg-alt: #272522;
+  --border: #44403c;
+  --border-active: #f5f5f4;
+  --text-primary: #f5f5f4;
+  --text-secondary: #d6d3d1;
+  --text-muted: #78716c;
   --accent-blue: #3b82f6;
 }
 
@@ -69,7 +71,7 @@ body {
   background-color: var(--bg-hover);
   border-right: 1px solid var(--border);
   position: fixed;
-  top: 52px; /* For top nav */
+  top: 64px; /* For top nav */
   bottom: 0;
   left: 0;
   z-index: 900;
@@ -278,11 +280,11 @@ body {
 .main-content {
   flex: 1;
   margin-left: var(--sidebar-width);
-  margin-top: 52px;
+  margin-top: 64px;
   padding: var(--content-padding);
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 52px);
+  min-height: calc(100vh - 64px);
   transition: margin-left 200ms ease;
 }
 
@@ -292,7 +294,7 @@ body {
 
 /* Top Navbar */
 .top-navbar {
-  height: 52px;
+  height: 64px;
   background: var(--bg-card);
   border-bottom: 1px solid var(--border);
   position: fixed;
@@ -314,41 +316,52 @@ body {
 
 .topnav-brand {
   text-decoration: none;
-  font-weight: 800;
-  font-size: 1.1rem;
+  font-weight: 700;
+  font-size: 16px;
   color: var(--text-primary);
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
-  margin-left: 8px;
+}
+
+.logo-box {
+  width: 32px;
+  height: 32px;
+  background: var(--text-primary);
+  color: var(--bg-card);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  font-family: var(--font-body);
+  flex-shrink: 0;
 }
 
 .topnav-divider {
-  width: 1px;
-  height: 20px;
-  background-color: var(--border);
-  margin: 0 4px;
+  display: none;
 }
 
 .topnav-links {
   display: flex;
-  gap: 20px;
+  gap: 24px;
 }
 
 .topnav-link {
   text-decoration: none;
-  color: var(--text-secondary);
-  font-weight: 400;
+  color: var(--text-muted);
+  font-weight: 500;
   font-size: 14px;
   transition: color 0.2s;
 }
 
 .topnav-link:hover {
-  color: var(--accent-blue);
+  color: var(--text-primary);
 }
 
 .topnav-link.active {
-  color: var(--accent-blue);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -363,7 +376,7 @@ body {
 }
 
 .topnav-search:hover {
-  color: var(--accent-blue);
+  color: var(--text-primary);
 }
 
 .topnav-hamburger {
@@ -379,7 +392,7 @@ body {
 /* Search Drawer */
 .search-drawer {
   position: fixed;
-  top: 52px;
+  top: 64px;
   left: 0;
   right: 0;
   height: 0;
@@ -414,7 +427,7 @@ body {
 /* Mobile Dropdown */
 .mobile-dropdown {
   position: fixed;
-  top: 52px;
+  top: 64px;
   left: 0;
   right: 0;
   background: var(--bg-card);
@@ -446,7 +459,7 @@ body {
 }
 
 .mobile-dropdown a:hover, .mobile-dropdown a.active {
-  color: var(--accent-blue);
+  color: var(--text-primary);
   background: var(--bg-hover);
 }
 
