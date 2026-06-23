@@ -1974,4 +1974,131 @@ body {
   }
 }
 
+/* ==========================================
+   MINIMALIST THEME OVERRIDES FOR CATALOGS/SUBPAGES
+   ========================================== */
+
+/* Overrides for tool cards */
+.test-card, .diagnostics-grid .test-card, .tool-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+  transition: all 0.3s ease !important;
+}
+
+.test-card:hover, .diagnostics-grid .test-card:hover, .tool-card:hover {
+  border-color: var(--border-active) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12) !important;
+}
+
+.test-icon, .test-card-header i, .tool-icon-large {
+  color: var(--text-primary) !important;
+  transition: transform 0.3s ease !important;
+}
+
+.test-card:hover .test-icon, .tool-card:hover .tool-icon-large {
+  transform: scale(1.1) !important;
+}
+
+.test-title, .tool-title {
+  color: var(--text-primary) !important;
+}
+
+.test-desc, .tool-desc {
+  color: var(--text-secondary) !important;
+}
+
+.test-action, .btn-open {
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+  transition: gap 0.2s !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.test-card:hover .test-action {
+  gap: 10px !important;
+}
+
+/* Overrides for brand/heading icons */
+.text-accent, i.text-accent {
+  color: var(--text-primary) !important;
+}
+
+/* Overrides for buttons */
+.btn-primary, .btn-run-all {
+  background: var(--text-primary) !important;
+  color: var(--bg-card) !important;
+  border: 1px solid var(--text-primary) !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  transition: opacity 0.2s, background-color 0.2s !important;
+}
+
+.btn-primary:hover, .btn-run-all:hover {
+  background: var(--text-primary) !important;
+  opacity: 0.9 !important;
+}
+
+.btn-run {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
+}
+
+.btn-run:hover {
+  border-color: var(--border-active) !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-hover) !important;
+}
+
+/* Health cards and info banners */
+.health-score-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+.health-score-circle {
+  color: var(--text-primary) !important;
+}
+
+.device-info-banner {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+}
+
+/* Breadcrumbs & Text rules */
+.breadcrumb-item a {
+  color: var(--text-muted) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--text-primary) !important;
+}
+
+.breadcrumb-item.active {
+  color: var(--text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+hr {
+  border-color: var(--border) !important;
+  opacity: 1 !important;
+}
+
 
