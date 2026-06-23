@@ -1,35 +1,50 @@
-// Global ad and auth stats management helpers
-window.incrementAdImpression = function() {
+// Global ad and auth stats management helpers communicating with server
+window.incrementAdImpression = function(adType = 'bottom', adNetwork = 'google_adsense') {
   const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
-  const user = localStorage.getItem('techtest_user');
-  if (!adsenseEnabled || user) return;
-  const val = parseInt(localStorage.getItem('ad_stats_impressions') || '0', 10) + 1;
-  localStorage.setItem('ad_stats_impressions', val.toString());
-  window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+  fetch('/api/auth/status')
+    .then(r => r.json())
+    .then(data => {
+      if (!adsenseEnabled || data.isLoggedIn) return;
+      fetch('/api/ads/impression', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adType, adNetwork, sessionId: 'guest_session' })
+      })
+      .then(() => {
+        window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+      })
+      .catch(e => console.error('Stats impression error:', e));
+    });
 };
 
-window.incrementAdClick = function() {
+window.incrementAdClick = function(adType = 'bottom', adNetwork = 'google_adsense') {
   const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
-  const user = localStorage.getItem('techtest_user');
-  if (!adsenseEnabled || user) return;
-  const val = parseInt(localStorage.getItem('ad_stats_clicks') || '0', 10) + 1;
-  localStorage.setItem('ad_stats_clicks', val.toString());
-  window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+  fetch('/api/auth/status')
+    .then(r => r.json())
+    .then(data => {
+      if (!adsenseEnabled || data.isLoggedIn) return;
+      fetch('/api/ads/click', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adType, adNetwork, sessionId: 'guest_session' })
+      })
+      .then(() => {
+        window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+      })
+      .catch(e => console.error('Stats click error:', e));
+    });
 };
 
-window.incrementAffiliateClick = function() {
-  const val = parseInt(localStorage.getItem('ad_stats_aff_clicks') || '0', 10) + 1;
-  localStorage.setItem('ad_stats_aff_clicks', val.toString());
-  
-  // Simulate a conversion randomly (10% chance) to log affiliate commission!
-  if (Math.random() < 0.10) {
-    const conversions = parseInt(localStorage.getItem('ad_stats_aff_conversions') || '0', 10) + 1;
-    localStorage.setItem('ad_stats_aff_conversions', conversions.toString());
-    const commission = parseFloat(localStorage.getItem('ad_stats_aff_commission') || '0.00') + 4.50; // $4.50 average commission
-    localStorage.setItem('ad_stats_aff_commission', commission.toFixed(2));
-  }
-  
-  window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+window.incrementAffiliateClick = function(productId) {
+  fetch('/api/ads/affiliate-click', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productId })
+  })
+  .then(() => {
+    window.dispatchEvent(new CustomEvent('adStatsUpdated'));
+  })
+  .catch(e => console.error('Stats affiliate click error:', e));
 };
 
 // Inject Global Styles for Auth Modal and Ad Slots
@@ -241,6 +256,7 @@ window.openAuthModal = function() {
           </div>
           
           <form id="authForm">
+            <div id="authErrorMsg" style="color: var(--accent-red); font-size: 12px; font-weight: 600; margin-bottom: 12px; display: none;"></div>
             <div class="auth-form-group">
               <label for="authUsername">Username</label>
               <input type="text" id="authUsername" required placeholder="Enter username" class="auth-form-input">
@@ -262,6 +278,7 @@ window.openAuthModal = function() {
     const authTabSignup = document.getElementById('authTabSignup');
     const authForm = document.getElementById('authForm');
     const authSubmitBtn = document.getElementById('authSubmitBtn');
+    const authErrorMsg = document.getElementById('authErrorMsg');
     let isSignup = false;
     
     btnAuthClose.addEventListener('click', window.closeAuthModal);
@@ -274,6 +291,7 @@ window.openAuthModal = function() {
       authTabLogin.classList.add('active');
       authTabSignup.classList.remove('active');
       authSubmitBtn.textContent = 'Log In';
+      authErrorMsg.style.display = 'none';
     });
     
     authTabSignup.addEventListener('click', () => {
@@ -281,17 +299,45 @@ window.openAuthModal = function() {
       authTabSignup.classList.add('active');
       authTabLogin.classList.remove('active');
       authSubmitBtn.textContent = 'Sign Up';
+      authErrorMsg.style.display = 'none';
     });
     
     authForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const username = document.getElementById('authUsername').value.trim();
-      if (username) {
-        localStorage.setItem('techtest_user', username);
-        localStorage.setItem('techtest_karma', isSignup ? '1' : '100');
-        window.updateNavbarUser();
-        window.closeAuthModal();
-        window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
+      const password = document.getElementById('authPassword').value;
+      
+      if (username && password) {
+        const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
+        
+        fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        })
+        .then(r => r.json().then(data => ({ status: r.status, data })))
+        .then(({ status, data }) => {
+          if (status === 200 && data.success) {
+            window.updateNavbarUser();
+            window.closeAuthModal();
+            authErrorMsg.style.display = 'none';
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+            
+            // Sync user details to local cache just in case static layout hooks rely on it
+            localStorage.setItem('techtest_user', data.user.username);
+            localStorage.setItem('techtest_karma', data.user.karma);
+            
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
+          } else {
+            authErrorMsg.textContent = data.error || 'Authentication failed';
+            authErrorMsg.style.display = 'block';
+          }
+        })
+        .catch(err => {
+          authErrorMsg.textContent = 'Server connection error. Make sure backend is running.';
+          authErrorMsg.style.display = 'block';
+        });
       }
     });
   }
@@ -310,33 +356,74 @@ window.updateNavbarUser = function() {
   const container = document.getElementById('userNavbarContainer');
   if (!container) return;
   
-  const user = localStorage.getItem('techtest_user');
-  const karma = localStorage.getItem('techtest_karma') || '100';
-  
-  if (user) {
-    container.innerHTML = `
-      <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
-        <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${user}</span>
-        <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${karma}</span>
-        <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
-      </div>
-    `;
-    
-    document.getElementById('btnNavbarLogout').addEventListener('click', () => {
-      localStorage.removeItem('techtest_user');
-      localStorage.removeItem('techtest_karma');
-      window.updateNavbarUser();
-      window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
+  fetch('/api/auth/status')
+    .then(r => r.json())
+    .then(data => {
+      if (data.isLoggedIn && data.user) {
+        const user = data.user;
+        
+        // Sync user details to local cache
+        localStorage.setItem('techtest_user', user.username);
+        localStorage.setItem('techtest_karma', user.karma);
+        
+        container.innerHTML = `
+          <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
+            <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${user.username}</span>
+            <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${user.karma}</span>
+            <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+          </div>
+        `;
+        
+        document.getElementById('btnNavbarLogout').addEventListener('click', () => {
+          fetch('/api/auth/logout', { method: 'POST' })
+            .then(r => r.json())
+            .then(() => {
+              localStorage.removeItem('techtest_user');
+              localStorage.removeItem('techtest_karma');
+              window.updateNavbarUser();
+              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
+            });
+        });
+      } else {
+        localStorage.removeItem('techtest_user');
+        localStorage.removeItem('techtest_karma');
+        
+        container.innerHTML = `
+          <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
+        `;
+        
+        document.getElementById('btnNavbarLogin').addEventListener('click', () => {
+          window.openAuthModal();
+        });
+      }
+    })
+    .catch(() => {
+      // Fallback to offline local check if server is unreachable
+      const offlineUser = localStorage.getItem('techtest_user');
+      const offlineKarma = localStorage.getItem('techtest_karma') || '100';
+      if (offlineUser) {
+        container.innerHTML = `
+          <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
+            <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${offlineUser}</span>
+            <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${offlineKarma}</span>
+            <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+          </div>
+        `;
+        document.getElementById('btnNavbarLogout').addEventListener('click', () => {
+          localStorage.removeItem('techtest_user');
+          localStorage.removeItem('techtest_karma');
+          window.updateNavbarUser();
+          window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
+        });
+      } else {
+        container.innerHTML = `
+          <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
+        `;
+        document.getElementById('btnNavbarLogin').addEventListener('click', () => {
+          window.openAuthModal();
+        });
+      }
     });
-  } else {
-    container.innerHTML = `
-      <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
-    `;
-    
-    document.getElementById('btnNavbarLogin').addEventListener('click', () => {
-      window.openAuthModal();
-    });
-  }
 };
 
 function injectSidebar(activeToolId = null) {
@@ -400,7 +487,6 @@ function injectSidebar(activeToolId = null) {
     <button class="mobile-menu-btn" id="hamburgerBtn" style="position: absolute; top: 68px; left: 16px; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-primary); font-size: 20px; display: none;">☰</button>
 
     <aside class="global-sidebar" id="globalSidebar">
-      
       <div class="sidebar-scroll-area">
         <div class="nav-section">
           <div class="nav-category"><span>GAMEPAD</span> <span class="nav-category-pill">1</span></div>
@@ -613,8 +699,6 @@ function injectSidebar(activeToolId = null) {
       });
     }
 
-
-
   } else if (!isToolsPath && layout) {
     layout.classList.add('no-sidebar');
   }
@@ -632,35 +716,57 @@ function injectSidebar(activeToolId = null) {
       
       const renderToolAd = () => {
         const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
-        const user = localStorage.getItem('techtest_user');
         
-        if (adsenseEnabled && !user) {
-          adContainer.innerHTML = `
-            <div class="ad-slot ad-300x250" id="ad-tool-bottom" style="cursor: pointer; width: 100%; max-width: 600px;">
-              <a href="https://www.amazon.com/Arctic-MX-6-Carbon-Based-Performance-Durability/dp/B09VDNKY14" target="_blank" class="ad-affiliate-banner" data-ad-id="mx6_paste_tool">
-                <div class="ad-affiliate-img">🧪</div>
-                <div class="ad-affiliate-content">
-                  <h4 class="ad-affiliate-title">Fix Thermal Throttling: ARCTIC MX-6 (4g)</h4>
-                  <p class="ad-affiliate-desc">Ultimate performance carbon-based thermal paste. Perfect for GPU/CPU repasting. 20% cooler temps guaranteed.</p>
+        fetch('/api/auth/status')
+          .then(r => r.json())
+          .then(data => {
+            const user = data.user;
+            if (adsenseEnabled && !user) {
+              adContainer.innerHTML = `
+                <div class="ad-slot ad-300x250" id="ad-tool-bottom" style="cursor: pointer; width: 100%; max-width: 600px;">
+                  <a href="https://www.amazon.com/Arctic-MX-6-Carbon-Based-Performance-Durability/dp/B09VDNKY14" target="_blank" class="ad-affiliate-banner" data-ad-id="mx6_paste_tool">
+                    <div class="ad-affiliate-img">🧪</div>
+                    <div class="ad-affiliate-content">
+                      <h4 class="ad-affiliate-title">Fix Thermal Throttling: ARCTIC MX-6 (4g)</h4>
+                      <p class="ad-affiliate-desc">Ultimate performance carbon-based thermal paste. Perfect for GPU/CPU repasting. 20% cooler temps guaranteed.</p>
+                    </div>
+                    <button class="ad-affiliate-btn">Buy on Amazon</button>
+                  </a>
                 </div>
-                <button class="ad-affiliate-btn">Buy on Amazon</button>
-              </a>
-            </div>
-          `;
-          
-          // Track impressions
-          if (window.incrementAdImpression) {
-            window.incrementAdImpression();
-          }
-          
-          // Add click listener
-          adContainer.querySelector('a').addEventListener('click', () => {
-            if (window.incrementAdClick) window.incrementAdClick();
-            if (window.incrementAffiliateClick) window.incrementAffiliateClick();
+              `;
+              
+              if (window.incrementAdImpression) {
+                window.incrementAdImpression('bottom', 'google_adsense');
+              }
+              
+              adContainer.querySelector('a').addEventListener('click', () => {
+                if (window.incrementAdClick) window.incrementAdClick('bottom', 'google_adsense');
+                if (window.incrementAffiliateClick) window.incrementAffiliateClick('mx6_paste_tool');
+              });
+            } else {
+              adContainer.innerHTML = '';
+            }
+          })
+          .catch(() => {
+            // Fallback if server is down
+            const user = localStorage.getItem('techtest_user');
+            if (adsenseEnabled && !user) {
+              adContainer.innerHTML = `
+                <div class="ad-slot ad-300x250" id="ad-tool-bottom" style="cursor: pointer; width: 100%; max-width: 600px;">
+                  <a href="https://www.amazon.com/Arctic-MX-6-Carbon-Based-Performance-Durability/dp/B09VDNKY14" target="_blank" class="ad-affiliate-banner" data-ad-id="mx6_paste_tool">
+                    <div class="ad-affiliate-img">🧪</div>
+                    <div class="ad-affiliate-content">
+                      <h4 class="ad-affiliate-title">Fix Thermal Throttling: ARCTIC MX-6 (4g)</h4>
+                      <p class="ad-affiliate-desc">Ultimate performance carbon-based thermal paste. Perfect for GPU/CPU repasting. 20% cooler temps guaranteed.</p>
+                    </div>
+                    <button class="ad-affiliate-btn">Buy on Amazon</button>
+                  </a>
+                </div>
+              `;
+            } else {
+              adContainer.innerHTML = '';
+            }
           });
-        } else {
-          adContainer.innerHTML = '';
-        }
       };
       
       renderToolAd();
@@ -786,5 +892,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
-
-

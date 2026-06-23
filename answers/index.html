@@ -646,12 +646,8 @@
       // Initialize Sidebar
       injectSidebar(null);
       
-      // Load Posts Database from local storage or set defaults
-      if (!localStorage.getItem('antigravity_posts')) {
-        localStorage.setItem('antigravity_posts', JSON.stringify(DEFAULT_POSTS));
-      }
-      
-      let posts = JSON.parse(localStorage.getItem('antigravity_posts'));
+      let posts = [];
+      let userVotes = {};
       let currentFilter = 'all';
       
       // Selectors
@@ -677,8 +673,31 @@
       chkAdsenseToggle.checked = localStorage.getItem('adsense_enabled') !== 'false';
       
       // Functions
-      function savePosts() {
-        localStorage.setItem('antigravity_posts', JSON.stringify(posts));
+      async function loadPostsAndVotes() {
+        try {
+          const [postsRes, votesRes] = await Promise.all([
+            fetch('/api/posts'),
+            fetch('/api/users/votes')
+          ]);
+          
+          posts = await postsRes.json();
+          userVotes = await votesRes.json();
+          
+          // Map userVote field into posts matching votes map
+          posts.forEach(p => {
+            p.userVote = userVotes[p.id] || null;
+          });
+          
+          renderForum();
+        } catch (e) {
+          console.error('Error loading posts/votes:', e);
+          // Fallback to local storage if API fails
+          if (!localStorage.getItem('antigravity_posts')) {
+            localStorage.setItem('antigravity_posts', JSON.stringify(DEFAULT_POSTS));
+          }
+          posts = JSON.parse(localStorage.getItem('antigravity_posts'));
+          renderForum();
+        }
       }
       
       // Render the forum list dynamically
@@ -754,12 +773,12 @@
             postsFeed.appendChild(feedAd);
             
             // Track Feed Ad Impression
-            if (window.incrementAdImpression) window.incrementAdImpression();
+            if (window.incrementAdImpression) window.incrementAdImpression('feed', 'google_adsense');
             
             // Track Click
             feedAd.querySelector('a').addEventListener('click', () => {
-              if (window.incrementAdClick) window.incrementAdClick();
-              if (window.incrementAffiliateClick) window.incrementAffiliateClick();
+              if (window.incrementAdClick) window.incrementAdClick('feed', 'google_adsense');
+              if (window.incrementAffiliateClick) window.incrementAffiliateClick('ptm7950_pad_feed');
             });
           }
         });
@@ -783,8 +802,9 @@
         
         // Setup click listeners for contextual affiliate links in post descriptions
         document.querySelectorAll('.post-body .affiliate-link').forEach(link => {
-          link.addEventListener('click', () => {
-            if (window.incrementAffiliateClick) window.incrementAffiliateClick();
+          link.addEventListener('click', (e) => {
+            const prodId = e.currentTarget.getAttribute('data-product-id') || 'unknown';
+            if (window.incrementAffiliateClick) window.incrementAffiliateClick(prodId);
           });
         });
         
@@ -812,10 +832,10 @@
             </div>
           `;
           
-          if (window.incrementAdImpression) window.incrementAdImpression();
+          if (window.incrementAdImpression) window.incrementAdImpression('sidebar', 'google_adsense');
           sidebarContainer.querySelector('a').addEventListener('click', () => {
-            if (window.incrementAdClick) window.incrementAdClick();
-            if (window.incrementAffiliateClick) window.incrementAffiliateClick();
+            if (window.incrementAdClick) window.incrementAdClick('sidebar', 'google_adsense');
+            if (window.incrementAffiliateClick) window.incrementAffiliateClick('deoxit_sidebar');
           });
           
           // Footer Ad
@@ -832,10 +852,10 @@
             </div>
           `;
           
-          if (window.incrementAdImpression) window.incrementAdImpression();
+          if (window.incrementAdImpression) window.incrementAdImpression('footer', 'google_adsense');
           footerContainer.querySelector('a').addEventListener('click', () => {
-            if (window.incrementAdClick) window.incrementAdClick();
-            if (window.incrementAffiliateClick) window.incrementAffiliateClick();
+            if (window.incrementAdClick) window.incrementAdClick('footer', 'google_adsense');
+            if (window.incrementAffiliateClick) window.incrementAffiliateClick('crc_footer');
           });
           
         } else {
@@ -845,12 +865,10 @@
       }
       
       // Vote Handler
-      function handleVote(e, type) {
+      async function handleVote(e, type) {
         e.preventDefault();
         const button = e.currentTarget;
-        const postId = parseInt(button.getAttribute('data-post-id'), 10);
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
+        const postId = button.getAttribute('data-post-id');
         
         // Guest user blocker -> opens Auth Modal!
         const user = localStorage.getItem('techtest_user');
@@ -859,39 +877,50 @@
           return;
         }
         
-        if (post.userVote === type) {
-          // Cancel vote
-          post.votes += (type === 'up' ? -1 : 1);
-          post.userVote = null;
-        } else {
-          // Vote/change vote
-          let voteDiff = type === 'up' ? 1 : -1;
-          if (post.userVote !== null) {
-            voteDiff *= 2; // Override opposite vote
+        try {
+          const res = await fetch(`/api/posts/${postId}/vote`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type })
+          });
+          
+          if (!res.ok) {
+            const data = await res.json();
+            alert(data.error || 'Failed to vote');
+            return;
           }
-          post.votes += voteDiff;
-          post.userVote = type;
-        }
-        
-        savePosts();
-        
-        // Update vote label count dynamically
-        document.getElementById(`vote-count-${post.id}`).textContent = post.votes;
-        
-        // Re-render voting classes
-        const card = button.closest('.post-card');
-        const upBtn = card.querySelector('.vote-up');
-        const downBtn = card.querySelector('.vote-down');
-        
-        if (post.userVote === 'up') {
-          upBtn.classList.add('up-active');
-          downBtn.classList.remove('down-active');
-        } else if (post.userVote === 'down') {
-          downBtn.classList.add('down-active');
-          upBtn.classList.remove('up-active');
-        } else {
-          upBtn.classList.remove('up-active');
-          downBtn.classList.remove('down-active');
+          
+          const data = await res.json();
+          if (data.success) {
+            // Update the local posts list and userVotes map
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+              post.votes = data.votes;
+              post.userVote = data.userVote;
+            }
+            userVotes[postId] = data.userVote;
+            
+            // Update vote label count dynamically
+            document.getElementById(`vote-count-${postId}`).textContent = data.votes;
+            
+            // Re-render voting classes
+            const card = button.closest('.post-card');
+            const upBtn = card.querySelector('.vote-up');
+            const downBtn = card.querySelector('.vote-down');
+            
+            if (data.userVote === 'up') {
+              upBtn.classList.add('up-active');
+              downBtn.classList.remove('down-active');
+            } else if (data.userVote === 'down') {
+              downBtn.classList.add('down-active');
+              upBtn.classList.remove('up-active');
+            } else {
+              upBtn.classList.remove('up-active');
+              downBtn.classList.remove('down-active');
+            }
+          }
+        } catch (err) {
+          console.error('Voting error:', err);
         }
       }
       
@@ -914,27 +943,27 @@
       }
       
       // Update Moderator Dashboard Stats
-      function updateDashboardUI() {
-        const impressions = parseInt(localStorage.getItem('ad_stats_impressions') || '0', 10);
-        const clicks = parseInt(localStorage.getItem('ad_stats_clicks') || '0', 10);
-        const affClicks = parseInt(localStorage.getItem('ad_stats_aff_clicks') || '0', 10);
-        const conversions = parseInt(localStorage.getItem('ad_stats_aff_conversions') || '0', 10);
-        const commission = parseFloat(localStorage.getItem('ad_stats_aff_commission') || '0.00');
-        
-        // Math formulas
-        const ctr = impressions > 0 ? (clicks / impressions) * 100 : 0.00;
-        const cpmVal = 2.50; // $2.50 CPM
-        const cpcVal = 0.15; // $0.15 CPC
-        const earnings = (impressions * cpmVal / 1000) + (clicks * cpcVal);
-        
-        lblAdImpressions.textContent = impressions.toLocaleString();
-        lblAdClicks.textContent = clicks.toLocaleString();
-        lblAdCTR.textContent = `${ctr.toFixed(2)}%`;
-        lblAdEarnings.textContent = `$${earnings.toFixed(2)}`;
-        
-        lblAffClicks.textContent = affClicks.toLocaleString();
-        lblAffConversions.textContent = conversions.toLocaleString();
-        lblAffCommission.textContent = `$${commission.toFixed(2)}`;
+      async function updateDashboardUI() {
+        try {
+          const res = await fetch('/api/ads/stats');
+          const data = await res.json();
+          
+          const impressions = data.totalImpressions || 0;
+          const clicks = data.totalClicks || 0;
+          const ctr = impressions > 0 ? (clicks / impressions) * 100 : 0.00;
+          const earnings = data.totalRevenue || 0.00;
+          
+          lblAdImpressions.textContent = impressions.toLocaleString();
+          lblAdClicks.textContent = clicks.toLocaleString();
+          lblAdCTR.textContent = `${ctr.toFixed(2)}%`;
+          lblAdEarnings.textContent = `$${earnings.toFixed(2)}`;
+          
+          lblAffClicks.textContent = (data.totalAffClicks || 0).toLocaleString();
+          lblAffConversions.textContent = (data.totalAffSales || 0).toLocaleString();
+          lblAffCommission.textContent = `$${(data.totalAffCommission || 0.00).toFixed(2)}`;
+        } catch (e) {
+          console.error('Error fetching ad stats:', e);
+        }
       }
       
       // Event bindings
@@ -954,14 +983,14 @@
       });
       
       // Reset Stats
-      btnResetAdStats.addEventListener('click', () => {
-        localStorage.setItem('ad_stats_impressions', '0');
-        localStorage.setItem('ad_stats_clicks', '0');
-        localStorage.setItem('ad_stats_aff_clicks', '0');
-        localStorage.setItem('ad_stats_aff_conversions', '0');
-        localStorage.setItem('ad_stats_aff_commission', '0.00');
-        updateDashboardUI();
-        renderForum();
+      btnResetAdStats.addEventListener('click', async () => {
+        try {
+          await fetch('/api/ads/reset-stats', { method: 'POST' });
+          updateDashboardUI();
+          renderForum();
+        } catch (e) {
+          console.error('Reset stats error:', e);
+        }
       });
       
       // Create Post Modals
@@ -977,41 +1006,46 @@
         createPostModal.classList.remove('open');
       });
       
-      createPostForm.addEventListener('submit', (e) => {
+      createPostForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const community = document.getElementById('postCommunity').value;
         const title = document.getElementById('postTitle').value.trim();
         const content = document.getElementById('postContent').value.trim();
-        const author = localStorage.getItem('techtest_user') || 'Anonymous';
         
         if (title && content) {
-          const newPost = {
-            id: Date.now(),
-            community,
-            author,
-            time: 'Just now',
-            title,
-            content,
-            votes: 1,
-            comments: 0,
-            userVote: 'up' // Auto-upvoted by author
-          };
-          
-          posts.unshift(newPost);
-          savePosts();
-          
-          // Close modal and reset
-          createPostModal.classList.remove('open');
-          document.getElementById('postTitle').value = '';
-          document.getElementById('postContent').value = '';
-          
-          renderForum();
+          try {
+            const res = await fetch('/api/posts', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ community, title, content })
+            });
+            
+            if (!res.ok) {
+              const data = await res.json();
+              alert(data.error || 'Failed to create post');
+              return;
+            }
+            
+            const data = await res.json();
+            if (data.success) {
+              // Close modal and reset
+              createPostModal.classList.remove('open');
+              document.getElementById('postTitle').value = '';
+              document.getElementById('postContent').value = '';
+              
+              // Reload posts and user votes
+              await loadPostsAndVotes();
+            }
+          } catch (err) {
+            console.error('Create post error:', err);
+            alert('Failed to publish post. Is the server running?');
+          }
         }
       });
       
       // Listen to Auth State Changes
       window.addEventListener('authStateChanged', () => {
-        renderForum();
+        loadPostsAndVotes();
       });
       
       window.addEventListener('adsSettingsChanged', () => {
@@ -1023,7 +1057,7 @@
       });
       
       // Initial render calls
-      renderForum();
+      loadPostsAndVotes();
       updateDashboardUI();
     });
   </script>
