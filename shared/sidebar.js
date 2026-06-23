@@ -22,7 +22,7 @@ function injectSidebar(activeToolId = null) {
           <i class="fa-solid fa-bars"></i>
         </button>
         <a href="/" class="topnav-brand">
-          <div class="logo-box">✕</div>
+          <img src="/logo.png" alt="TechTest Logo" class="logo-img">
           <span>TechTest</span>
         </a>
         <div class="topnav-divider"></div>
