@@ -1971,10 +1971,26 @@ function trackToolEvent(toolName, eventType, data = {}) {
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   if ((path.startsWith('/tools/') || path.startsWith('/test/')) && path !== '/tools/' && path !== '/test/') {
-    // We are on a tool page
-    let count = parseInt(localStorage.getItem('devices_tested') || '0', 10);
-    count += 1;
-    localStorage.setItem('devices_tested', count.toString());
+    // We are on a tool page - increment once per session
+    if (!sessionStorage.getItem('device_test_counted')) {
+      sessionStorage.setItem('device_test_counted', 'true');
+      
+      const incrementCounter = () => {
+        const services = getFirebaseServices();
+        if (services) {
+          services.db.collection('global_stats').doc('devices_tested').set({
+            count: firebase.firestore.FieldValue.increment(1)
+          }, { merge: true })
+          .catch(e => console.error("Firestore stats increment error:", e));
+        } else {
+          // Fallback to Express backend API
+          fetch('/api/stats/increment-devices', { method: 'POST' }).catch(() => {});
+        }
+      };
+      
+      // Delay slightly to ensure Firebase SDK initialization completes
+      setTimeout(incrementCounter, 1000);
+    }
   }
 
   // Legal Consent Check

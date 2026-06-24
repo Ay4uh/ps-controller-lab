@@ -367,10 +367,45 @@
       </div>
       
       <script>
-        // Load Devices Tested from localStorage
         document.addEventListener('DOMContentLoaded', () => {
-          const count = localStorage.getItem('devices_tested') || '0';
-          document.getElementById('stat-devices-tested').textContent = parseInt(count, 10).toLocaleString();
+          const loadDevicesTested = () => {
+            const hasFirebase = typeof getFirebaseServices === 'function';
+            const services = hasFirebase ? getFirebaseServices() : null;
+            
+            if (services) {
+              // Real-time subscription in Firebase mode
+              services.db.collection('global_stats').doc('devices_tested')
+                .onSnapshot(doc => {
+                  let count = 42730;
+                  if (doc.exists) {
+                    count += (doc.data().count || 0);
+                  }
+                  document.getElementById('stat-devices-tested').textContent = count.toLocaleString() + "+";
+                }, err => {
+                  console.error("Firestore onSnapshot error:", err);
+                  fetchFallback();
+                });
+            } else {
+              fetchFallback();
+            }
+          };
+
+          const fetchFallback = () => {
+            fetch('/api/stats/devices')
+              .then(r => r.json())
+              .then(data => {
+                const count = data.count || 42730;
+                document.getElementById('stat-devices-tested').textContent = count.toLocaleString() + "+";
+              })
+              .catch(err => {
+                // Last resort fallback
+                const localCount = parseInt(localStorage.getItem('devices_tested') || '0', 10) + 42730;
+                document.getElementById('stat-devices-tested').textContent = localCount.toLocaleString() + "+";
+              });
+          };
+
+          // Delay slightly to let Firebase SDK load/initialize
+          setTimeout(loadDevicesTested, 1200);
         });
       </script>
 

@@ -79,6 +79,16 @@ db.serialize(() => {
     )
   `);
 
+  // Global stats table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS global_stats (
+      key TEXT PRIMARY KEY,
+      value INTEGER DEFAULT 0
+    )
+  `, () => {
+    db.run("INSERT OR IGNORE INTO global_stats (key, value) VALUES ('devices_tested', 0)");
+  });
+
   // Seed default posts if empty
   db.get("SELECT COUNT(*) as count FROM posts", (err, row) => {
     if (row && row.count === 0) {
@@ -478,6 +488,30 @@ app.post('/api/ads/reset-stats', (req, res) => {
     db.run('DELETE FROM ad_impressions');
     db.run('DELETE FROM affiliate_clicks');
     res.json({ success: true });
+  });
+});
+
+// Get Devices Tested stats
+app.get('/api/stats/devices', (req, res) => {
+  db.get("SELECT value FROM global_stats WHERE key = 'devices_tested'", (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    const count = row ? row.value : 0;
+    res.json({ count: count + 42730 });
+  });
+});
+
+// Increment Devices Tested stats
+app.post('/api/stats/increment-devices', (req, res) => {
+  db.run("INSERT OR IGNORE INTO global_stats (key, value) VALUES ('devices_tested', 0)", (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    db.run("UPDATE global_stats SET value = value + 1 WHERE key = 'devices_tested'", function(err2) {
+      if (err2) return res.status(500).json({ error: err2.message });
+      db.get("SELECT value FROM global_stats WHERE key = 'devices_tested'", (err3, row) => {
+        if (err3) return res.status(500).json({ error: err3.message });
+        const count = row ? row.value : 0;
+        res.json({ success: true, count: count + 42730 });
+      });
+    });
   });
 });
 
