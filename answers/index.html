@@ -526,6 +526,16 @@
             </div>
             
             <button class="btn-reset-stats" id="btnResetAdStats">Reset Stats</button>
+            
+            <!-- Supabase Setup Panel -->
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+              <button id="btnToggleSupabaseSetup" style="background: none; border: none; color: var(--text-secondary); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0;"><i class="fa-solid fa-database"></i> SUPABASE SETTINGS <i class="fa-solid fa-chevron-down" id="supabaseChevron"></i></button>
+              <div id="supabaseSetupFields" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px;">
+                <input type="text" id="txtSupabaseUrl" placeholder="Supabase Project URL" style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; color: var(--text-primary); outline: none; width: 100%;">
+                <input type="password" id="txtSupabaseKey" placeholder="Supabase Anon Key" style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; color: var(--text-primary); outline: none; width: 100%;">
+                <button id="btnConnectSupabase" style="background: var(--accent-gold); color: white; border: none; padding: 6px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%;">Connect & Reload</button>
+              </div>
+            </div>
           </div>
           
         </aside>
@@ -569,6 +579,7 @@
     </div>
   </div>
 
+  <script src="/shared/config.js?v=23"></script>
   <script src="/shared/sidebar.js?v=23"></script>
   
   <script>
@@ -669,11 +680,81 @@
       const lblAffCommission = document.getElementById('lblAffCommission');
       const btnResetAdStats = document.getElementById('btnResetAdStats');
       
+      // Supabase controls
+      const btnToggleSupabaseSetup = document.getElementById('btnToggleSupabaseSetup');
+      const supabaseSetupFields = document.getElementById('supabaseSetupFields');
+      const supabaseChevron = document.getElementById('supabaseChevron');
+      const txtSupabaseUrl = document.getElementById('txtSupabaseUrl');
+      const txtSupabaseKey = document.getElementById('txtSupabaseKey');
+      const btnConnectSupabase = document.getElementById('btnConnectSupabase');
+      
       // Load Ads settings
       chkAdsenseToggle.checked = localStorage.getItem('adsense_enabled') !== 'false';
       
+      // Load Supabase input caches
+      txtSupabaseUrl.value = window.SUPABASE_URL || localStorage.getItem('supabase_url') || '';
+      txtSupabaseKey.value = window.SUPABASE_ANON_KEY || localStorage.getItem('supabase_anon_key') || '';
+      
+      // Supabase setup actions
+      btnToggleSupabaseSetup.addEventListener('click', () => {
+        const isHidden = supabaseSetupFields.style.display === 'none';
+        supabaseSetupFields.style.display = isHidden ? 'flex' : 'none';
+        supabaseChevron.className = isHidden ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+      });
+      
+      btnConnectSupabase.addEventListener('click', () => {
+        const url = txtSupabaseUrl.value.trim();
+        const key = txtSupabaseKey.value.trim();
+        localStorage.setItem('supabase_url', url);
+        localStorage.setItem('supabase_anon_key', key);
+        alert('Supabase credentials connected! Reloading page...');
+        window.location.reload();
+      });
+      
       // Functions
       async function loadPostsAndVotes() {
+        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+        if (client) {
+          try {
+            const { data: dbPosts, error: postsErr } = await client
+              .from('posts')
+              .select('*')
+              .order('created_at', { ascending: false });
+              
+            if (postsErr) throw postsErr;
+            posts = dbPosts || [];
+            
+            const sessionData = await client.auth.getSession();
+            const session = sessionData.data.session;
+            
+            if (session && session.user) {
+              const username = session.user.email.split('@')[0];
+              const { data: dbVotes, error: votesErr } = await client
+                .from('votes')
+                .select('post_id, vote_type')
+                .eq('username', username);
+                
+              if (votesErr) throw votesErr;
+              userVotes = {};
+              (dbVotes || []).forEach(v => {
+                userVotes[v.post_id] = v.vote_type;
+              });
+            } else {
+              userVotes = {};
+            }
+            
+            posts.forEach(p => {
+              p.userVote = userVotes[p.id] || null;
+            });
+            
+            renderForum();
+            return;
+          } catch (e) {
+            console.error('Supabase load error:', e);
+          }
+        }
+
+        // Fallback to Express server
         try {
           const [postsRes, votesRes] = await Promise.all([
             fetch('/api/posts'),
@@ -877,6 +958,56 @@
           return;
         }
         
+        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+        if (client) {
+          try {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            let voteDiff = 0;
+            let newVoteType = type;
+            
+            if (post.userVote === type) {
+              voteDiff = type === 'up' ? -1 : 1;
+              newVoteType = null;
+              await client.from('votes').delete().eq('username', user).eq('post_id', postId);
+            } else {
+              voteDiff = type === 'up' ? 1 : -1;
+              if (post.userVote !== null) {
+                voteDiff *= 2;
+              }
+              await client.from('votes').upsert([{ username: user, post_id: postId, vote_type: type }]);
+            }
+            
+            const updatedVotesCount = (post.votes || 0) + voteDiff;
+            await client.from('posts').update({ votes: updatedVotesCount }).eq('id', postId);
+            
+            post.votes = updatedVotesCount;
+            post.userVote = newVoteType;
+            userVotes[postId] = newVoteType;
+            
+            document.getElementById(`vote-count-${postId}`).textContent = updatedVotesCount;
+            
+            const card = button.closest('.post-card');
+            const upBtn = card.querySelector('.vote-up');
+            const downBtn = card.querySelector('.vote-down');
+            
+            if (newVoteType === 'up') {
+              upBtn.classList.add('up-active');
+              downBtn.classList.remove('down-active');
+            } else if (newVoteType === 'down') {
+              downBtn.classList.add('down-active');
+              upBtn.classList.remove('up-active');
+            } else {
+              upBtn.classList.remove('up-active');
+              downBtn.classList.remove('down-active');
+            }
+            return;
+          } catch (err) {
+            console.error('Supabase voting error:', err);
+          }
+        }
+        
         try {
           const res = await fetch(`/api/posts/${postId}/vote`, {
             method: 'POST',
@@ -944,6 +1075,39 @@
       
       // Update Moderator Dashboard Stats
       async function updateDashboardUI() {
+        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+        if (client) {
+          try {
+            const [impRes, clkRes, affRes] = await Promise.all([
+              client.from('ad_impressions').select('*', { count: 'exact', head: true }).is('click', null),
+              client.from('ad_impressions').select('*', { count: 'exact', head: true }).eq('click', 1),
+              client.from('affiliate_clicks').select('purchased, commission')
+            ]);
+            
+            const totalImpressions = (impRes.count || 0) + (clkRes.count || 0); // clicks are also impressions
+            const totalClicks = clkRes.count || 0;
+            const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0.00;
+            const earnings = (totalImpressions * 2.50 / 1000) + (totalClicks * 0.15);
+            
+            const affClicksData = affRes.data || [];
+            const totalAffClicks = affClicksData.length;
+            const totalAffSales = affClicksData.filter(x => x.purchased).length;
+            const totalAffCommission = affClicksData.reduce((sum, x) => sum + parseFloat(x.commission || 0), 0);
+            
+            lblAdImpressions.textContent = totalImpressions.toLocaleString();
+            lblAdClicks.textContent = totalClicks.toLocaleString();
+            lblAdCTR.textContent = `${ctr.toFixed(2)}%`;
+            lblAdEarnings.textContent = `$${earnings.toFixed(2)}`;
+            
+            lblAffClicks.textContent = totalAffClicks.toLocaleString();
+            lblAffConversions.textContent = totalAffSales.toLocaleString();
+            lblAffCommission.textContent = `$${totalAffCommission.toFixed(2)}`;
+            return;
+          } catch (e) {
+            console.error('Supabase stats load error:', e);
+          }
+        }
+
         try {
           const res = await fetch('/api/ads/stats');
           const data = await res.json();
@@ -984,6 +1148,21 @@
       
       // Reset Stats
       btnResetAdStats.addEventListener('click', async () => {
+        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+        if (client) {
+          try {
+            await Promise.all([
+              client.from('ad_impressions').delete().neq('ad_type', ''),
+              client.from('affiliate_clicks').delete().neq('product_id', '')
+            ]);
+            updateDashboardUI();
+            renderForum();
+            return;
+          } catch (e) {
+            console.error('Supabase reset stats error:', e);
+          }
+        }
+
         try {
           await fetch('/api/ads/reset-stats', { method: 'POST' });
           updateDashboardUI();
@@ -1011,8 +1190,42 @@
         const community = document.getElementById('postCommunity').value;
         const title = document.getElementById('postTitle').value.trim();
         const content = document.getElementById('postContent').value.trim();
+        const author = localStorage.getItem('techtest_user') || 'Anonymous';
         
         if (title && content) {
+          const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+          if (client) {
+            try {
+              const { data, error } = await client.from('posts').insert([{
+                community,
+                title,
+                content,
+                author,
+                votes: 1,
+                comments: 0
+              }]).select();
+              
+              if (error) throw error;
+              
+              if (data && data[0]) {
+                await client.from('votes').insert([{
+                  username: author,
+                  post_id: data[0].id,
+                  vote_type: 'up'
+                }]);
+              }
+              
+              createPostModal.classList.remove('open');
+              document.getElementById('postTitle').value = '';
+              document.getElementById('postContent').value = '';
+              await loadPostsAndVotes();
+              return;
+            } catch (err) {
+              console.error('Supabase create post error:', err);
+              alert(err.message || 'Failed to publish post');
+            }
+          }
+
           try {
             const res = await fetch('/api/posts', {
               method: 'POST',

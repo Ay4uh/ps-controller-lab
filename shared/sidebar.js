@@ -1,6 +1,54 @@
-// Global ad and auth stats management helpers communicating with server
+// Global ad and auth stats management helpers communicating with Supabase or Express Server
+let supabase = null;
+
+function getSupabaseClient() {
+  if (supabase) return supabase;
+  
+  const url = window.SUPABASE_URL || localStorage.getItem('supabase_url');
+  const key = window.SUPABASE_ANON_KEY || localStorage.getItem('supabase_anon_key');
+  
+  if (url && key && window.supabase) {
+    supabase = window.supabase.createClient(url, key);
+    return supabase;
+  }
+  return null;
+}
+
+// Inject Supabase JS SDK CDN dynamically if config keys exist
+function initSupabaseSDK() {
+  const url = window.SUPABASE_URL || localStorage.getItem('supabase_url');
+  const key = window.SUPABASE_ANON_KEY || localStorage.getItem('supabase_anon_key');
+  if (url && key && !document.querySelector('script[src*="supabase-js"]')) {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.onload = () => {
+      console.log('Supabase JS SDK loaded successfully.');
+      getSupabaseClient();
+      window.dispatchEvent(new CustomEvent('supabaseSDKLoaded'));
+    };
+    document.head.appendChild(script);
+  } else {
+    getSupabaseClient();
+  }
+}
+
+// Run on file load
+initSupabaseSDK();
+
 window.incrementAdImpression = function(adType = 'bottom', adNetwork = 'google_adsense') {
   const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
+  const client = getSupabaseClient();
+  
+  if (client) {
+    client.auth.getSession().then(({ data }) => {
+      if (!adsenseEnabled || data.session) return;
+      client.from('ad_impressions').insert([{ ad_type: adType, ad_network: adNetwork }])
+        .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
+        .catch(e => console.error('Supabase impression error:', e));
+    });
+    return;
+  }
+
   fetch('/api/auth/status')
     .then(r => r.json())
     .then(data => {
@@ -14,11 +62,24 @@ window.incrementAdImpression = function(adType = 'bottom', adNetwork = 'google_a
         window.dispatchEvent(new CustomEvent('adStatsUpdated'));
       })
       .catch(e => console.error('Stats impression error:', e));
-    });
+    })
+    .catch(() => {});
 };
 
 window.incrementAdClick = function(adType = 'bottom', adNetwork = 'google_adsense') {
   const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
+  const client = getSupabaseClient();
+  
+  if (client) {
+    client.auth.getSession().then(({ data }) => {
+      if (!adsenseEnabled || data.session) return;
+      client.from('ad_impressions').insert([{ ad_type: adType, ad_network: adNetwork, click: 1 }])
+        .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
+        .catch(e => console.error('Supabase ad click error:', e));
+    });
+    return;
+  }
+
   fetch('/api/auth/status')
     .then(r => r.json())
     .then(data => {
@@ -32,10 +93,22 @@ window.incrementAdClick = function(adType = 'bottom', adNetwork = 'google_adsens
         window.dispatchEvent(new CustomEvent('adStatsUpdated'));
       })
       .catch(e => console.error('Stats click error:', e));
-    });
+    })
+    .catch(() => {});
 };
 
 window.incrementAffiliateClick = function(productId) {
+  const client = getSupabaseClient();
+  
+  if (client) {
+    const isSale = Math.random() < 0.10; // 10% conversion chance
+    const commission = isSale ? 4.50 : 0.00;
+    client.from('affiliate_clicks').insert([{ product_id: productId, purchased: isSale, commission }])
+      .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
+      .catch(e => console.error('Supabase affiliate click error:', e));
+    return;
+  }
+
   fetch('/api/ads/affiliate-click', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -308,6 +381,41 @@ window.openAuthModal = function() {
       const password = document.getElementById('authPassword').value;
       
       if (username && password) {
+        const client = getSupabaseClient();
+        if (client) {
+          const email = `${username}@ay5uh.com`;
+          const authPromise = isSignup 
+            ? client.auth.signUp({ 
+                email, 
+                password,
+                options: { data: { karma: 100 } }
+              })
+            : client.auth.signInWithPassword({ email, password });
+            
+          authPromise.then(({ data, error }) => {
+            if (error) {
+              authErrorMsg.textContent = error.message;
+              authErrorMsg.style.display = 'block';
+              return;
+            }
+            
+            window.updateNavbarUser();
+            window.closeAuthModal();
+            authErrorMsg.style.display = 'none';
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+            
+            localStorage.setItem('techtest_user', username);
+            localStorage.setItem('techtest_karma', isSignup ? '100' : (data.user?.user_metadata?.karma || 100));
+            
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
+          }).catch(err => {
+            authErrorMsg.textContent = err.message || 'Authentication error';
+            authErrorMsg.style.display = 'block';
+          });
+          return;
+        }
+
         const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
         
         fetch(endpoint, {
@@ -355,6 +463,53 @@ window.closeAuthModal = function() {
 window.updateNavbarUser = function() {
   const container = document.getElementById('userNavbarContainer');
   if (!container) return;
+  
+  const client = getSupabaseClient();
+  if (client) {
+    client.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        console.error('Supabase session load error:', error);
+        return;
+      }
+      const session = data.session;
+      if (session && session.user) {
+        const username = session.user.email.split('@')[0];
+        const karma = session.user.user_metadata.karma || 100;
+        
+        localStorage.setItem('techtest_user', username);
+        localStorage.setItem('techtest_karma', karma);
+        
+        container.innerHTML = `
+          <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
+            <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${username}</span>
+            <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${karma}</span>
+            <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+          </div>
+        `;
+        
+        document.getElementById('btnNavbarLogout').addEventListener('click', () => {
+          client.auth.signOut().then(() => {
+            localStorage.removeItem('techtest_user');
+            localStorage.removeItem('techtest_karma');
+            window.updateNavbarUser();
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
+          });
+        });
+      } else {
+        localStorage.removeItem('techtest_user');
+        localStorage.removeItem('techtest_karma');
+        
+        container.innerHTML = `
+          <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
+        `;
+        
+        document.getElementById('btnNavbarLogin').addEventListener('click', () => {
+          window.openAuthModal();
+        });
+      }
+    });
+    return;
+  }
   
   fetch('/api/auth/status')
     .then(r => r.json())
