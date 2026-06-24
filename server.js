@@ -17,11 +17,17 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       username TEXT UNIQUE NOT NULL,
+      email TEXT UNIQUE,
       password_hash TEXT NOT NULL,
       karma INTEGER DEFAULT 100,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Migration: Add email column if it doesn't exist
+  db.run("ALTER TABLE users ADD COLUMN email TEXT", (err) => {
+    // Suppress error if column already exists
+  });
 
   // Posts table
   db.run(`
@@ -155,46 +161,91 @@ function getLoggedInUser(req) {
 
 // Signup
 app.post('/api/auth/signup', (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
 
-  const id = 'usr_' + crypto.randomBytes(8).toString('hex');
-  const passHash = hashPassword(password);
+  // Enforce password rules: 6 characters, 1 uppercase, 1 special character
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ 
+      error: 'Password must be at least 6 characters and contain at least 1 capital letter and 1 special character' 
+    });
+  }
 
-  db.run(
-    'INSERT INTO users (id, username, password_hash, karma) VALUES (?, ?, ?, 1)',
-    [id, username, passHash],
-    function(err) {
-      if (err) {
-        if (err.message.includes('UNIQUE')) {
-          return res.status(400).json({ error: 'Username is already taken' });
-        }
-        return res.status(500).json({ error: err.message });
-      }
-
-      const token = 'token_' + crypto.randomBytes(16).toString('hex');
-      const user = { id, username, karma: 1 };
-      activeSessions.set(token, user);
-      
-      res.cookie('auth_token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-      res.json({ success: true, user: { username, karma: 1 } });
+  // Validate email if provided
+  if (email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Please enter a valid email address' });
     }
-  );
+  }
+
+  // Check if username already exists
+  db.get('SELECT id FROM users WHERE username = ?', [username], (err, userByUsername) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (userByUsername) {
+      return res.status(400).json({ error: 'Username is already taken. Please choose another one.' });
+    }
+
+    const checkEmailAndInsert = () => {
+      if (email) {
+        db.get('SELECT id FROM users WHERE email = ?', [email], (err, userByEmail) => {
+          if (err) return res.status(500).json({ error: err.message });
+          if (userByEmail) {
+            return res.status(400).json({ error: 'Email is already taken. Please choose another one.' });
+          }
+          doInsert();
+        });
+      } else {
+        doInsert();
+      }
+    };
+
+    const doInsert = () => {
+      const id = 'usr_' + crypto.randomBytes(8).toString('hex');
+      const passHash = hashPassword(password);
+
+      db.run(
+        'INSERT INTO users (id, username, email, password_hash, karma) VALUES (?, ?, ?, ?, 100)',
+        [id, username, email || null, passHash],
+        function(err) {
+          if (err) {
+            if (err.message.includes('UNIQUE')) {
+              if (err.message.toLowerCase().includes('email')) {
+                return res.status(400).json({ error: 'Email is already taken. Please choose another one.' });
+              }
+              return res.status(400).json({ error: 'Username is already taken. Please choose another one.' });
+            }
+            return res.status(500).json({ error: err.message });
+          }
+
+          const token = 'token_' + crypto.randomBytes(16).toString('hex');
+          const user = { id, username, karma: 100 };
+          activeSessions.set(token, user);
+          
+          res.cookie('auth_token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+          res.json({ success: true, user: { username, karma: 100 } });
+        }
+      );
+    };
+
+    checkEmailAndInsert();
+  });
 });
 
 // Login
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
+    return res.status(400).json({ error: 'Username/Email and password are required' });
   }
 
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+  db.get('SELECT * FROM users WHERE username = ? OR email = ?', [username, username], (err, user) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!user || !verifyPassword(password, user.password_hash)) {
-      return res.status(400).json({ error: 'Invalid username or password' });
+      return res.status(400).json({ error: 'Invalid username/email or password' });
     }
 
     const token = 'token_' + crypto.randomBytes(16).toString('hex');

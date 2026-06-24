@@ -297,14 +297,14 @@ if (!document.getElementById('techtest-ads-styles')) {
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(8px) saturate(180%);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 2000;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
     }
     .auth-modal-overlay.show {
@@ -312,86 +312,174 @@ if (!document.getElementById('techtest-ads-styles')) {
       pointer-events: auto;
     }
     .auth-modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      width: 360px;
-      padding: 32px;
+      background: rgba(30, 30, 30, 0.7);
+      backdrop-filter: blur(20px) saturate(190%);
+      -webkit-backdrop-filter: blur(20px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      width: 400px;
+      padding: 40px;
       position: relative;
-      transform: translateY(-20px);
-      transition: transform 0.3s ease;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      transform: scale(0.9) translateY(20px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    [data-theme="light"] .auth-modal {
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.6);
     }
     .auth-modal-overlay.show .auth-modal {
-      transform: translateY(0);
+      transform: scale(1) translateY(0);
     }
     .auth-modal-close {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.05);
       border: none;
-      font-size: 20px;
+      font-size: 18px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+    [data-theme="light"] .auth-modal-close {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .auth-modal-close:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-primary);
+      transform: rotate(90deg);
+    }
+    [data-theme="light"] .auth-modal-close:hover {
+      background: rgba(0, 0, 0, 0.1);
     }
     .auth-modal-tabs {
       display: flex;
-      gap: 16px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
+      gap: 20px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 10px;
+    }
+    [data-theme="light"] .auth-modal-tabs {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     }
     .auth-tab {
       background: none;
       border: none;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
       color: var(--text-muted);
-      padding-bottom: 8px;
-      transition: all 0.2s;
+      padding-bottom: 10px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .auth-tab:hover {
+      color: var(--text-primary);
     }
     .auth-tab.active {
       color: var(--text-primary);
-      border-bottom: 2px solid var(--text-primary);
       font-weight: 700;
     }
+    .auth-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #ff4500, #ff8700);
+      border-radius: 3px 3px 0 0;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    .auth-tab.active::after {
+      transform: scaleX(1);
+    }
     .auth-form-group {
-      margin-bottom: 16px;
+      margin-bottom: 22px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
     .auth-form-group label {
       font-weight: 600;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-secondary);
+      letter-spacing: 0.3px;
     }
     .auth-form-input {
-      background: var(--bg-base);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px;
-      font-size: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
       color: var(--text-primary);
       outline: none;
       width: 100%;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    [data-theme="light"] .auth-form-input {
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .auth-form-input:focus {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 69, 0, 0.6);
+      box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.15),
+                  inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    [data-theme="light"] .auth-form-input:focus {
+      background: #fff;
+      border-color: rgba(255, 69, 0, 0.6);
+      box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.15),
+                  inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     .auth-submit-btn {
       width: 100%;
-      background: var(--text-primary);
-      color: var(--bg-card);
+      background: linear-gradient(135deg, #ff4500, #ff6a00);
+      color: white;
       border: none;
-      padding: 12px;
-      border-radius: 6px;
+      padding: 14px;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+      position: relative;
+      overflow: hidden;
     }
     .auth-submit-btn:hover {
-      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 69, 0, 0.4);
+    }
+    .auth-submit-btn:active {
+      transform: translateY(1px);
+    }
+    .auth-submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0));
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    .auth-submit-btn:hover::before {
+      transform: translateX(100%);
     }
 
     /* User Profile Drawer Styles */
@@ -716,10 +804,14 @@ window.openAuthModal = function(startOnSignup = false) {
           </div>
           
           <form id="authForm">
-            <div id="authErrorMsg" style="color: var(--accent-red); font-size: 12px; font-weight: 600; margin-bottom: 12px; display: none;"></div>
+            <div id="authErrorMsg" style="color: var(--accent-red); font-size: 12px; font-weight: 600; margin-bottom: 12px; display: none; line-height: 1.4;"></div>
             <div class="auth-form-group">
-              <label for="authUsername">Username</label>
-              <input type="text" id="authUsername" required placeholder="Enter username" class="auth-form-input">
+              <label for="authUsername">Username or Email</label>
+              <input type="text" id="authUsername" required placeholder="Enter username or email" class="auth-form-input">
+            </div>
+            <div class="auth-form-group" id="authEmailGroup" style="display: none;">
+              <label for="authEmail">Email Address</label>
+              <input type="email" id="authEmail" placeholder="Enter email address" class="auth-form-input">
             </div>
             <div class="auth-form-group" id="authCredentialGroup" style="display: none;">
               <label for="authCredential">Profile Credential (e.g. Gamepad Restorer)</label>
@@ -745,6 +837,10 @@ window.openAuthModal = function(startOnSignup = false) {
     const authErrorMsg = document.getElementById('authErrorMsg');
     const authCredentialGroup = document.getElementById('authCredentialGroup');
     const authCredentialInput = document.getElementById('authCredential');
+    const authEmailGroup = document.getElementById('authEmailGroup');
+    const authEmailInput = document.getElementById('authEmail');
+    const authUsernameLabel = document.querySelector('label[for="authUsername"]');
+    const authUsernameInput = document.getElementById('authUsername');
     let isSignup = startOnSignup;
     
     btnAuthClose.addEventListener('click', window.closeAuthModal);
@@ -752,62 +848,92 @@ window.openAuthModal = function(startOnSignup = false) {
       if (e.target === modalOverlay) window.closeAuthModal();
     });
     
-    authTabLogin.addEventListener('click', () => {
-      isSignup = false;
-      authTabLogin.classList.add('active');
-      authTabSignup.classList.remove('active');
-      authSubmitBtn.textContent = 'Log In';
+    const updateModalUI = (toSignup) => {
+      isSignup = toSignup;
       authErrorMsg.style.display = 'none';
-      authCredentialGroup.style.display = 'none';
-      authCredentialInput.required = false;
-    });
+      if (isSignup) {
+        authTabSignup.classList.add('active');
+        authTabLogin.classList.remove('active');
+        authSubmitBtn.textContent = 'Sign Up';
+        authCredentialGroup.style.display = 'block';
+        authCredentialInput.required = true;
+        authEmailGroup.style.display = 'block';
+        authEmailInput.required = true;
+        authUsernameLabel.textContent = 'Username';
+        authUsernameInput.placeholder = 'Enter username';
+      } else {
+        authTabLogin.classList.add('active');
+        authTabSignup.classList.remove('active');
+        authSubmitBtn.textContent = 'Log In';
+        authCredentialGroup.style.display = 'none';
+        authCredentialInput.required = false;
+        authEmailGroup.style.display = 'none';
+        authEmailInput.required = false;
+        authUsernameLabel.textContent = 'Username or Email';
+        authUsernameInput.placeholder = 'Enter username or email';
+      }
+    };
     
-    authTabSignup.addEventListener('click', () => {
-      isSignup = true;
-      authTabSignup.classList.add('active');
-      authTabLogin.classList.remove('active');
-      authSubmitBtn.textContent = 'Sign Up';
-      authErrorMsg.style.display = 'none';
-      authCredentialGroup.style.display = 'block';
-      authCredentialInput.required = true;
-    });
+    authTabLogin.addEventListener('click', () => updateModalUI(false));
+    authTabSignup.addEventListener('click', () => updateModalUI(true));
     
     // Set active tab based on starting flag
-    if (startOnSignup) {
-      authTabSignup.classList.add('active');
-      authTabLogin.classList.remove('active');
-      authSubmitBtn.textContent = 'Sign Up';
-      authCredentialGroup.style.display = 'block';
-      authCredentialInput.required = true;
-    } else {
-      authTabLogin.classList.add('active');
-      authTabSignup.classList.remove('active');
-      authSubmitBtn.textContent = 'Log In';
-      authCredentialGroup.style.display = 'none';
-      authCredentialInput.required = false;
-    }
+    updateModalUI(startOnSignup);
     
-    authForm.addEventListener('submit', (e) => {
+    authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = document.getElementById('authUsername').value.trim();
+      const usernameOrEmail = authUsernameInput.value.trim();
       const password = document.getElementById('authPassword').value;
       const credential = authCredentialInput.value.trim() || "Gamepad Restorer";
+      const signupEmail = authEmailInput.value.trim();
       
-      if (username && password) {
-        const services = getFirebaseServices();
-        if (services) {
-          const email = `${username}@ay5uh.com`;
-          const authPromise = isSignup 
-            ? services.auth.createUserWithEmailAndPassword(email, password)
-            : services.auth.signInWithEmailAndPassword(email, password);
-            
-          authPromise.then(async (userCredential) => {
-            const user = userCredential.user;
-            
-            if (isSignup) {
+      if (!usernameOrEmail || !password) return;
+      
+      // Perform validation rules on signup
+      if (isSignup) {
+        // Password rule: 6 characters with 1 capital and 1 special character
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
+        if (!passwordRegex.test(password)) {
+          authErrorMsg.textContent = 'Password must be at least 6 characters and contain at least 1 capital letter and 1 special character.';
+          authErrorMsg.style.display = 'block';
+          return;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(signupEmail)) {
+          authErrorMsg.textContent = 'Please enter a valid email address.';
+          authErrorMsg.style.display = 'block';
+          return;
+        }
+      }
+      
+      const services = getFirebaseServices();
+      if (services) {
+        authErrorMsg.style.display = 'none';
+        
+        if (isSignup) {
+          // Firebase Signup
+          // 1. Check if Username already exists (to prevent overlap)
+          try {
+            const usernameSnapshot = await services.db.collection('users').where('username', '==', usernameOrEmail).get();
+            if (!usernameSnapshot.empty) {
+              authErrorMsg.textContent = 'This username is already taken. Please choose another one.';
+              authErrorMsg.style.display = 'block';
+              return;
+            }
+          } catch (err) {
+            console.error("Firestore username validation error:", err);
+          }
+          
+          // 2. Register via Firebase Auth
+          services.auth.createUserWithEmailAndPassword(signupEmail, password)
+            .then(async (userCredential) => {
+              const user = userCredential.user;
               await services.db.collection('users').doc(user.uid).set({
-                username: username,
-                displayName: username,
+                username: usernameOrEmail,
+                displayName: usernameOrEmail,
+                email: signupEmail,
                 karma: 100,
                 bio: "Tell the community about your gaming setups and repair skills...",
                 credentials: credential,
@@ -816,63 +942,131 @@ window.openAuthModal = function(startOnSignup = false) {
                 avatarTheme: "gold",
                 savedPosts: []
               });
+              
               localStorage.setItem('techtest_karma', '100');
-            } else {
+              localStorage.setItem('techtest_user', usernameOrEmail);
+              window.updateNavbarUser();
+              window.closeAuthModal();
+              
+              // Clear fields
+              authUsernameInput.value = '';
+              document.getElementById('authPassword').value = '';
+              authCredentialInput.value = '';
+              authEmailInput.value = '';
+              
+              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: usernameOrEmail } }));
+            })
+            .catch(err => {
+              let msg = err.message || 'Authentication error';
+              if (err.code === 'auth/email-already-in-use') {
+                msg = 'This email address is already registered. Please choose another one.';
+              } else if (err.code === 'auth/invalid-email') {
+                msg = 'Please enter a valid email address.';
+              } else if (err.code === 'auth/weak-password') {
+                msg = 'Password must be at least 6 characters.';
+              }
+              authErrorMsg.textContent = msg;
+              authErrorMsg.style.display = 'block';
+            });
+        } else {
+          // Firebase Login
+          let loginEmail = usernameOrEmail;
+          let resolvedUsername = usernameOrEmail;
+          
+          if (!usernameOrEmail.includes('@')) {
+            // It's a username. Query Firestore for the email.
+            try {
+              const userSnapshot = await services.db.collection('users').where('username', '==', usernameOrEmail).get();
+              if (!userSnapshot.empty) {
+                const userData = userSnapshot.docs[0].data();
+                loginEmail = userData.email || `${usernameOrEmail}@ay5uh.com`;
+                resolvedUsername = userData.username || usernameOrEmail;
+              } else {
+                // Fallback for legacy users
+                loginEmail = `${usernameOrEmail}@ay5uh.com`;
+              }
+            } catch (err) {
+              console.error("Firestore user query error:", err);
+              loginEmail = `${usernameOrEmail}@ay5uh.com`;
+            }
+          } else {
+            // It's an email. Query Firestore for the username to save in localStorage.
+            try {
+              const userSnapshot = await services.db.collection('users').where('email', '==', usernameOrEmail).get();
+              if (!userSnapshot.empty) {
+                resolvedUsername = userSnapshot.docs[0].data().username || usernameOrEmail;
+              } else {
+                resolvedUsername = usernameOrEmail.split('@')[0];
+              }
+            } catch (err) {
+              console.error("Firestore user query error:", err);
+              resolvedUsername = usernameOrEmail.split('@')[0];
+            }
+          }
+          
+          services.auth.signInWithEmailAndPassword(loginEmail, password)
+            .then(async (userCredential) => {
+              const user = userCredential.user;
               const userDoc = await services.db.collection('users').doc(user.uid).get();
               if (userDoc.exists) {
                 const data = userDoc.data();
                 localStorage.setItem('techtest_karma', data.karma || 100);
+                resolvedUsername = data.username || resolvedUsername;
               }
-            }
-            
-            localStorage.setItem('techtest_user', username);
-            window.updateNavbarUser();
-            window.closeAuthModal();
-            authErrorMsg.style.display = 'none';
-            document.getElementById('authUsername').value = '';
-            document.getElementById('authPassword').value = '';
-            authCredentialInput.value = '';
-            
-            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
-          }).catch(err => {
-            authErrorMsg.textContent = err.message || 'Authentication error';
-            authErrorMsg.style.display = 'block';
-          });
-          return;
+              
+              localStorage.setItem('techtest_user', resolvedUsername);
+              window.updateNavbarUser();
+              window.closeAuthModal();
+              
+              authUsernameInput.value = '';
+              document.getElementById('authPassword').value = '';
+              
+              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: resolvedUsername } }));
+            })
+            .catch(err => {
+              authErrorMsg.textContent = 'Invalid username/email or password';
+              authErrorMsg.style.display = 'block';
+            });
         }
- 
-        // Offline / Express Backend Fallback
-        const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
-        
-        fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        })
-        .then(r => r.json().then(data => ({ status: r.status, data })))
-        .then(({ status, data }) => {
-          if (status === 200 && data.success) {
-            window.updateNavbarUser();
-            window.closeAuthModal();
-            authErrorMsg.style.display = 'none';
-            document.getElementById('authUsername').value = '';
-            document.getElementById('authPassword').value = '';
-            authCredentialInput.value = '';
-            
-            localStorage.setItem('techtest_user', data.user.username);
-            localStorage.setItem('techtest_karma', data.user.karma);
-            
-            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
-          } else {
-            authErrorMsg.textContent = data.error || 'Authentication failed';
-            authErrorMsg.style.display = 'block';
-          }
-        })
-        .catch(err => {
-          authErrorMsg.textContent = 'Server connection error. Make sure backend is running.';
-          authErrorMsg.style.display = 'block';
-        });
+        return;
       }
+      
+      // Offline / Express Backend Fallback
+      const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
+      const payload = isSignup 
+        ? { username: usernameOrEmail, email: signupEmail, password }
+        : { username: usernameOrEmail, password };
+        
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(r => r.json().then(data => ({ status: r.status, data })))
+      .then(({ status, data }) => {
+        if (status === 200 && data.success) {
+          localStorage.setItem('techtest_user', data.user.username);
+          localStorage.setItem('techtest_karma', data.user.karma || 100);
+          
+          window.updateNavbarUser();
+          window.closeAuthModal();
+          authErrorMsg.style.display = 'none';
+          
+          authUsernameInput.value = '';
+          document.getElementById('authPassword').value = '';
+          authCredentialInput.value = '';
+          authEmailInput.value = '';
+          
+          window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: data.user.username } }));
+        } else {
+          authErrorMsg.textContent = data.error || 'Authentication failed';
+          authErrorMsg.style.display = 'block';
+        }
+      })
+      .catch(err => {
+        authErrorMsg.textContent = 'Server connection error. Make sure backend is running.';
+        authErrorMsg.style.display = 'block';
+      });
     });
   } else {
     // If modal already exists, simulate click to switch active tab
