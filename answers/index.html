@@ -728,11 +728,10 @@
             const session = sessionData.data.session;
             
             if (session && session.user) {
-              const username = session.user.email.split('@')[0];
               const { data: dbVotes, error: votesErr } = await client
                 .from('votes')
                 .select('post_id, vote_type')
-                .eq('username', username);
+                .eq('user_id', session.user.id);
                 
               if (votesErr) throw votesErr;
               userVotes = {};
@@ -961,6 +960,13 @@
         const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
         if (client) {
           try {
+            const sessionData = await client.auth.getSession();
+            const session = sessionData.data.session;
+            if (!session) {
+              window.openAuthModal();
+              return;
+            }
+            
             const post = posts.find(p => p.id === postId);
             if (!post) return;
             
@@ -970,18 +976,23 @@
             if (post.userVote === type) {
               voteDiff = type === 'up' ? -1 : 1;
               newVoteType = null;
-              await client.from('votes').delete().eq('username', user).eq('post_id', postId);
+              await client.from('votes').delete().eq('user_id', session.user.id).eq('post_id', postId);
             } else {
               voteDiff = type === 'up' ? 1 : -1;
               if (post.userVote !== null) {
                 voteDiff *= 2;
               }
-              await client.from('votes').upsert([{ username: user, post_id: postId, vote_type: type }]);
+              await client.from('votes').upsert([{ 
+                user_id: session.user.id, 
+                username: user, 
+                post_id: postId, 
+                vote_type: type 
+              }]);
             }
             
+            // Post vote count is updated dynamically on the database by PostgreSQL trigger.
+            // We update the local count immediately to keep the UI instant and responsive.
             const updatedVotesCount = (post.votes || 0) + voteDiff;
-            await client.from('posts').update({ votes: updatedVotesCount }).eq('id', postId);
-            
             post.votes = updatedVotesCount;
             post.userVote = newVoteType;
             userVotes[postId] = newVoteType;
@@ -1196,12 +1207,20 @@
           const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
           if (client) {
             try {
+              const sessionData = await client.auth.getSession();
+              const session = sessionData.data.session;
+              if (!session) {
+                window.openAuthModal();
+                return;
+              }
+              
               const { data, error } = await client.from('posts').insert([{
                 community,
                 title,
                 content,
                 author,
-                votes: 1,
+                user_id: session.user.id,
+                votes: 0, // Starts at 0, will be incremented to 1 by trigger when vote is inserted
                 comments: 0
               }]).select();
               
@@ -1209,6 +1228,7 @@
               
               if (data && data[0]) {
                 await client.from('votes').insert([{
+                  user_id: session.user.id,
                   username: author,
                   post_id: data[0].id,
                   vote_type: 'up'
