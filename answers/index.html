@@ -527,13 +527,12 @@
             
             <button class="btn-reset-stats" id="btnResetAdStats">Reset Stats</button>
             
-            <!-- Supabase Setup Panel -->
+            <!-- Firebase Setup Panel -->
             <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
-              <button id="btnToggleSupabaseSetup" style="background: none; border: none; color: var(--text-secondary); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0;"><i class="fa-solid fa-database"></i> SUPABASE SETTINGS <i class="fa-solid fa-chevron-down" id="supabaseChevron"></i></button>
-              <div id="supabaseSetupFields" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px;">
-                <input type="text" id="txtSupabaseUrl" placeholder="Supabase Project URL" style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; color: var(--text-primary); outline: none; width: 100%;">
-                <input type="password" id="txtSupabaseKey" placeholder="Supabase Anon Key" style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; color: var(--text-primary); outline: none; width: 100%;">
-                <button id="btnConnectSupabase" style="background: var(--accent-gold); color: white; border: none; padding: 6px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%;">Connect & Reload</button>
+              <button id="btnToggleFirebaseSetup" style="background: none; border: none; color: var(--text-secondary); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0;"><i class="fa-solid fa-database"></i> FIREBASE SETTINGS <i class="fa-solid fa-chevron-down" id="firebaseChevron"></i></button>
+              <div id="firebaseSetupFields" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px;">
+                <textarea id="txtFirebaseConfig" placeholder='Paste Firebase Config JSON here (e.g. {"apiKey": "...", "authDomain": "...", ...})' style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; color: var(--text-primary); outline: none; width: 100%; min-height: 80px; font-family: monospace; resize: vertical;"></textarea>
+                <button id="btnConnectFirebase" style="background: var(--accent-gold); color: white; border: none; padding: 6px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%;">Connect & Reload</button>
               </div>
             </div>
           </div>
@@ -680,76 +679,105 @@
       const lblAffCommission = document.getElementById('lblAffCommission');
       const btnResetAdStats = document.getElementById('btnResetAdStats');
       
-      // Supabase controls
-      const btnToggleSupabaseSetup = document.getElementById('btnToggleSupabaseSetup');
-      const supabaseSetupFields = document.getElementById('supabaseSetupFields');
-      const supabaseChevron = document.getElementById('supabaseChevron');
-      const txtSupabaseUrl = document.getElementById('txtSupabaseUrl');
-      const txtSupabaseKey = document.getElementById('txtSupabaseKey');
-      const btnConnectSupabase = document.getElementById('btnConnectSupabase');
+      // Firebase controls
+      const btnToggleFirebaseSetup = document.getElementById('btnToggleFirebaseSetup');
+      const firebaseSetupFields = document.getElementById('firebaseSetupFields');
+      const firebaseChevron = document.getElementById('firebaseChevron');
+      const txtFirebaseConfig = document.getElementById('txtFirebaseConfig');
+      const btnConnectFirebase = document.getElementById('btnConnectFirebase');
       
       // Load Ads settings
       chkAdsenseToggle.checked = localStorage.getItem('adsense_enabled') !== 'false';
       
-      // Load Supabase input caches
-      txtSupabaseUrl.value = window.SUPABASE_URL || localStorage.getItem('supabase_url') || '';
-      txtSupabaseKey.value = window.SUPABASE_ANON_KEY || localStorage.getItem('supabase_anon_key') || '';
+      // Load Firebase input caches
+      txtFirebaseConfig.value = localStorage.getItem('firebase_config') || '';
       
-      // Supabase setup actions
-      btnToggleSupabaseSetup.addEventListener('click', () => {
-        const isHidden = supabaseSetupFields.style.display === 'none';
-        supabaseSetupFields.style.display = isHidden ? 'flex' : 'none';
-        supabaseChevron.className = isHidden ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
-      });
+      // Firebase setup actions
+      if (btnToggleFirebaseSetup) {
+        btnToggleFirebaseSetup.addEventListener('click', () => {
+          const isHidden = firebaseSetupFields.style.display === 'none';
+          firebaseSetupFields.style.display = isHidden ? 'flex' : 'none';
+          firebaseChevron.className = isHidden ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+        });
+      }
       
-      btnConnectSupabase.addEventListener('click', () => {
-        const url = txtSupabaseUrl.value.trim();
-        const key = txtSupabaseKey.value.trim();
-        localStorage.setItem('supabase_url', url);
-        localStorage.setItem('supabase_anon_key', key);
-        alert('Supabase credentials connected! Reloading page...');
-        window.location.reload();
-      });
+      if (btnConnectFirebase) {
+        btnConnectFirebase.addEventListener('click', () => {
+          const configStr = txtFirebaseConfig.value.trim();
+          if (configStr) {
+            try {
+              JSON.parse(configStr); // Validate JSON format
+              localStorage.setItem('firebase_config', configStr);
+              alert('Firebase configuration connected! Reloading page...');
+              window.location.reload();
+            } catch (e) {
+              alert('Invalid JSON configuration. Please check your config block format.');
+            }
+          } else {
+            localStorage.removeItem('firebase_config');
+            alert('Firebase configuration cleared! Reloading page...');
+            window.location.reload();
+          }
+        });
+      }
       
       // Functions
       async function loadPostsAndVotes() {
-        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
-        if (client) {
+        const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
+        if (services) {
           try {
-            const { data: dbPosts, error: postsErr } = await client
-              .from('posts')
-              .select('*')
-              .order('created_at', { ascending: false });
-              
-            if (postsErr) throw postsErr;
-            posts = dbPosts || [];
+            const postsSnap = await services.db.collection('posts').orderBy('created_at', 'desc').get();
+            posts = postsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             
-            const sessionData = await client.auth.getSession();
-            const session = sessionData.data.session;
+            const user = services.auth.currentUser;
+            userVotes = {};
+            let savedPosts = [];
             
-            if (session && session.user) {
-              const { data: dbVotes, error: votesErr } = await client
-                .from('votes')
-                .select('post_id, vote_type')
-                .eq('user_id', session.user.id);
-                
-              if (votesErr) throw votesErr;
-              userVotes = {};
-              (dbVotes || []).forEach(v => {
+            if (user) {
+              const votesSnap = await services.db.collection('votes').where('user_id', '==', user.uid).get();
+              votesSnap.forEach(doc => {
+                const v = doc.data();
                 userVotes[v.post_id] = v.vote_type;
               });
-            } else {
-              userVotes = {};
+              
+              const userDoc = await services.db.collection('users').doc(user.uid).get();
+              if (userDoc.exists) {
+                savedPosts = userDoc.data().savedPosts || [];
+              }
             }
             
             posts.forEach(p => {
               p.userVote = userVotes[p.id] || null;
+              p.saved = savedPosts.includes(p.id);
+              
+              // Handle timestamp conversion
+              let rawTime = p.created_at;
+              if (rawTime && rawTime.toDate) {
+                rawTime = rawTime.toDate();
+              } else if (rawTime) {
+                rawTime = new Date(rawTime);
+              }
+              
+              if (rawTime) {
+                const diffMs = new Date() - rawTime;
+                const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+                if (diffHrs < 1) {
+                  const diffMins = Math.floor(diffMs / (1000 * 60));
+                  p.time = diffMins <= 1 ? 'just now' : `${diffMins}m ago`;
+                } else if (diffHrs < 24) {
+                  p.time = `${diffHrs}h ago`;
+                } else {
+                  p.time = `${Math.floor(diffHrs / 24)}d ago`;
+                }
+              } else {
+                p.time = 'just now';
+              }
             });
             
             renderForum();
             return;
           } catch (e) {
-            console.error('Supabase load error:', e);
+            console.error('Firestore posts load error:', e);
           }
         }
 
@@ -806,6 +834,7 @@
           const upActive = post.userVote === 'up' ? 'up-active' : '';
           const downActive = post.userVote === 'down' ? 'down-active' : '';
           
+          const isSaved = post.saved;
           postCard.innerHTML = `
             <div class="post-votes-col">
               <button class="vote-btn vote-up ${upActive}" data-post-id="${post.id}"><i class="fa-solid fa-arrow-up"></i></button>
@@ -823,6 +852,7 @@
               <p class="post-body">${post.content}</p>
               <div class="post-footer">
                 <div class="post-footer-item"><i class="fa-regular fa-comment"></i> ${post.comments} Comments</div>
+                <div class="post-footer-item btn-save-post" data-post-id="${post.id}" style="cursor: pointer;"><i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i> ${isSaved ? 'Saved' : 'Save'}</div>
                 <div class="post-footer-item"><i class="fa-solid fa-share"></i> Share</div>
               </div>
             </div>
@@ -869,6 +899,59 @@
         });
         document.querySelectorAll('.vote-down').forEach(btn => {
           btn.addEventListener('click', (e) => handleVote(e, 'down'));
+        });
+        
+        // Add save post event listeners
+        document.querySelectorAll('.btn-save-post').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const postId = btn.getAttribute('data-post-id');
+            const user = localStorage.getItem('techtest_user');
+            if (!user) {
+              window.openAuthModal();
+              return;
+            }
+            
+            const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
+            let savedPosts = [];
+            if (services && services.auth.currentUser) {
+              try {
+                const userRef = services.db.collection('users').doc(services.auth.currentUser.uid);
+                const userDoc = await userRef.get();
+                if (userDoc.exists) {
+                  savedPosts = userDoc.data().savedPosts || [];
+                }
+                const isSaved = savedPosts.includes(postId);
+                if (isSaved) {
+                  savedPosts = savedPosts.filter(id => id !== postId);
+                } else {
+                  savedPosts.push(postId);
+                }
+                await userRef.update({ savedPosts });
+              } catch(err) {
+                console.error('Firestore save post error:', err);
+              }
+            } else {
+              try {
+                savedPosts = JSON.parse(localStorage.getItem('techtest_mock_saved') || '[]');
+              } catch(e) {}
+              const isSaved = savedPosts.includes(postId);
+              if (isSaved) {
+                savedPosts = savedPosts.filter(id => id !== postId);
+              } else {
+                savedPosts.push(postId);
+              }
+              localStorage.setItem('techtest_mock_saved', JSON.stringify(savedPosts));
+            }
+            
+            const isSavedNow = savedPosts.includes(postId);
+            btn.innerHTML = `<i class="${isSavedNow ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i> ${isSavedNow ? 'Saved' : 'Save'}`;
+            
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+              post.saved = isSavedNow;
+            }
+          });
         });
         
         // Add community badge click filtering
@@ -957,12 +1040,11 @@
           return;
         }
         
-        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
-        if (client) {
+        const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
+        if (services) {
           try {
-            const sessionData = await client.auth.getSession();
-            const session = sessionData.data.session;
-            if (!session) {
+            const firebaseUser = services.auth.currentUser;
+            if (!firebaseUser) {
               window.openAuthModal();
               return;
             }
@@ -972,32 +1054,49 @@
             
             let voteDiff = 0;
             let newVoteType = type;
+            const voteDocId = `${firebaseUser.uid}_${postId}`;
+            const voteRef = services.db.collection('votes').doc(voteDocId);
             
             if (post.userVote === type) {
               voteDiff = type === 'up' ? -1 : 1;
               newVoteType = null;
-              await client.from('votes').delete().eq('user_id', session.user.id).eq('post_id', postId);
+              await voteRef.delete();
             } else {
               voteDiff = type === 'up' ? 1 : -1;
               if (post.userVote !== null) {
                 voteDiff *= 2;
               }
-              await client.from('votes').upsert([{ 
-                user_id: session.user.id, 
-                username: user, 
-                post_id: postId, 
-                vote_type: type 
-              }]);
+              await voteRef.set({
+                user_id: firebaseUser.uid,
+                username: user,
+                post_id: postId,
+                vote_type: type,
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+              });
             }
             
-            // Post vote count is updated dynamically on the database by PostgreSQL trigger.
-            // We update the local count immediately to keep the UI instant and responsive.
-            const updatedVotesCount = (post.votes || 0) + voteDiff;
-            post.votes = updatedVotesCount;
+            const newVotesCount = (post.votes || 0) + voteDiff;
+            await services.db.collection('posts').doc(postId).update({
+              votes: newVotesCount
+            });
+            
+            // Adjust author's karma score: upvote adds karma, downvote subtracts
+            if (post.user_id && post.user_id !== firebaseUser.uid) {
+              const authorProfileRef = services.db.collection('users').doc(post.user_id);
+              const authorProfileDoc = await authorProfileRef.get();
+              if (authorProfileDoc.exists) {
+                const currentKarma = authorProfileDoc.data().karma || 100;
+                await authorProfileRef.update({
+                  karma: currentKarma + voteDiff
+                });
+              }
+            }
+            
+            post.votes = newVotesCount;
             post.userVote = newVoteType;
             userVotes[postId] = newVoteType;
             
-            document.getElementById(`vote-count-${postId}`).textContent = updatedVotesCount;
+            document.getElementById(`vote-count-${postId}`).textContent = newVotesCount;
             
             const card = button.closest('.post-card');
             const upBtn = card.querySelector('.vote-up');
@@ -1015,7 +1114,7 @@
             }
             return;
           } catch (err) {
-            console.error('Supabase voting error:', err);
+            console.error('Firestore voting error:', err);
           }
         }
         
@@ -1086,24 +1185,37 @@
       
       // Update Moderator Dashboard Stats
       async function updateDashboardUI() {
-        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
-        if (client) {
+        const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
+        if (services) {
           try {
-            const [impRes, clkRes, affRes] = await Promise.all([
-              client.from('ad_impressions').select('*', { count: 'exact', head: true }).is('click', null),
-              client.from('ad_impressions').select('*', { count: 'exact', head: true }).eq('click', 1),
-              client.from('affiliate_clicks').select('purchased, commission')
-            ]);
+            const impressionsSnap = await services.db.collection('ad_impressions').get();
+            const affiliateSnap = await services.db.collection('affiliate_clicks').get();
             
-            const totalImpressions = (impRes.count || 0) + (clkRes.count || 0); // clicks are also impressions
-            const totalClicks = clkRes.count || 0;
+            let totalImpressions = 0;
+            let totalClicks = 0;
+            let totalAffClicks = 0;
+            let totalAffSales = 0;
+            let totalAffCommission = 0.00;
+            
+            impressionsSnap.forEach(doc => {
+              const data = doc.data();
+              totalImpressions++;
+              if (data.click === 1) {
+                totalClicks++;
+              }
+            });
+            
+            affiliateSnap.forEach(doc => {
+              const data = doc.data();
+              totalAffClicks++;
+              if (data.purchased) {
+                totalAffSales++;
+                totalAffCommission += parseFloat(data.commission || 0);
+              }
+            });
+            
             const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0.00;
             const earnings = (totalImpressions * 2.50 / 1000) + (totalClicks * 0.15);
-            
-            const affClicksData = affRes.data || [];
-            const totalAffClicks = affClicksData.length;
-            const totalAffSales = affClicksData.filter(x => x.purchased).length;
-            const totalAffCommission = affClicksData.reduce((sum, x) => sum + parseFloat(x.commission || 0), 0);
             
             lblAdImpressions.textContent = totalImpressions.toLocaleString();
             lblAdClicks.textContent = totalClicks.toLocaleString();
@@ -1115,7 +1227,7 @@
             lblAffCommission.textContent = `$${totalAffCommission.toFixed(2)}`;
             return;
           } catch (e) {
-            console.error('Supabase stats load error:', e);
+            console.error('Firestore stats load error:', e);
           }
         }
 
@@ -1159,18 +1271,26 @@
       
       // Reset Stats
       btnResetAdStats.addEventListener('click', async () => {
-        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
-        if (client) {
+        const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
+        if (services) {
           try {
-            await Promise.all([
-              client.from('ad_impressions').delete().neq('ad_type', ''),
-              client.from('affiliate_clicks').delete().neq('product_id', '')
-            ]);
+            const impressionsSnap = await services.db.collection('ad_impressions').get();
+            const affiliateSnap = await services.db.collection('affiliate_clicks').get();
+            
+            const deletePromises = [];
+            impressionsSnap.forEach(doc => {
+              deletePromises.push(doc.ref.delete());
+            });
+            affiliateSnap.forEach(doc => {
+              deletePromises.push(doc.ref.delete());
+            });
+            
+            await Promise.all(deletePromises);
             updateDashboardUI();
             renderForum();
             return;
           } catch (e) {
-            console.error('Supabase reset stats error:', e);
+            console.error('Firestore reset stats error:', e);
           }
         }
 
@@ -1204,36 +1324,34 @@
         const author = localStorage.getItem('techtest_user') || 'Anonymous';
         
         if (title && content) {
-          const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
-          if (client) {
+          const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
+          if (services) {
             try {
-              const sessionData = await client.auth.getSession();
-              const session = sessionData.data.session;
-              if (!session) {
+              const user = services.auth.currentUser;
+              if (!user) {
                 window.openAuthModal();
                 return;
               }
               
-              const { data, error } = await client.from('posts').insert([{
+              const postRef = await services.db.collection('posts').add({
                 community,
                 title,
                 content,
                 author,
-                user_id: session.user.id,
-                votes: 0, // Starts at 0, will be incremented to 1 by trigger when vote is inserted
-                comments: 0
-              }]).select();
+                user_id: user.uid,
+                votes: 1, // Start with author's own upvote
+                comments: 0,
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+              });
               
-              if (error) throw error;
-              
-              if (data && data[0]) {
-                await client.from('votes').insert([{
-                  user_id: session.user.id,
-                  username: author,
-                  post_id: data[0].id,
-                  vote_type: 'up'
-                }]);
-              }
+              const voteDocId = `${user.uid}_${postRef.id}`;
+              await services.db.collection('votes').doc(voteDocId).set({
+                user_id: user.uid,
+                username: author,
+                post_id: postRef.id,
+                vote_type: 'up',
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+              });
               
               createPostModal.classList.remove('open');
               document.getElementById('postTitle').value = '';
@@ -1241,7 +1359,7 @@
               await loadPostsAndVotes();
               return;
             } catch (err) {
-              console.error('Supabase create post error:', err);
+              console.error('Firestore create post error:', err);
               alert(err.message || 'Failed to publish post');
             }
           }

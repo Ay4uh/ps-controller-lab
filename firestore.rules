@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users Profile
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Posts
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && resource.data.user_id == request.auth.uid;
+    }
+    
+    // Votes
+    match /votes/{voteId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null && request.resource.data.user_id == request.auth.uid;
+    }
+    
+    // Ad & Affiliate Logs (Write-only for clients, read for mods)
+    match /ad_impressions/{logId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+    match /affiliate_clicks/{logId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+  }
+}

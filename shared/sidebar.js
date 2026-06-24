@@ -1,51 +1,124 @@
-// Global ad and auth stats management helpers communicating with Supabase or Express Server
-let supabase = null;
+// Global ad and auth stats management helpers communicating with Firebase (Auth & Firestore) or Express Server
+let firebaseApp = null;
+let firebaseAuth = null;
+let firebaseDb = null;
 
-function getSupabaseClient() {
-  if (supabase) return supabase;
-  
-  const url = window.SUPABASE_URL || localStorage.getItem('supabase_url');
-  const key = window.SUPABASE_ANON_KEY || localStorage.getItem('supabase_anon_key');
-  
-  if (url && key && window.supabase) {
-    supabase = window.supabase.createClient(url, key);
-    return supabase;
+function getFirebaseConfig() {
+  if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey) {
+    return window.FIREBASE_CONFIG;
+  }
+  try {
+    const cached = localStorage.getItem('firebase_config');
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch (e) {}
+  return null;
+}
+
+function getFirebaseServices() {
+  if (firebaseApp && firebaseAuth && firebaseDb) {
+    return { auth: firebaseAuth, db: firebaseDb };
+  }
+  const config = getFirebaseConfig();
+  if (config && window.firebase) {
+    try {
+      if (!firebase.apps.length) {
+        firebaseApp = firebase.initializeApp(config);
+      } else {
+        firebaseApp = firebase.app();
+      }
+      firebaseAuth = firebaseApp.auth();
+      firebaseDb = firebaseApp.firestore();
+      return { auth: firebaseAuth, db: firebaseDb };
+    } catch (e) {
+      console.error('Error initializing Firebase services:', e);
+    }
   }
   return null;
 }
 
-// Inject Supabase JS SDK CDN dynamically if config keys exist
-function initSupabaseSDK() {
-  const url = window.SUPABASE_URL || localStorage.getItem('supabase_url');
-  const key = window.SUPABASE_ANON_KEY || localStorage.getItem('supabase_anon_key');
-  if (url && key && !document.querySelector('script[src*="supabase-js"]')) {
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
     const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    script.onload = () => {
-      console.log('Supabase JS SDK loaded successfully.');
-      getSupabaseClient();
-      window.dispatchEvent(new CustomEvent('supabaseSDKLoaded'));
-    };
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
     document.head.appendChild(script);
+  });
+}
+
+async function initFirebaseSDK() {
+  const config = getFirebaseConfig();
+  if (config) {
+    if (!window.firebase) {
+      try {
+        await loadScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
+        await loadScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js');
+        await loadScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js');
+      } catch (e) {
+        console.error('Failed to load Firebase SDK from CDN:', e);
+        return;
+      }
+    }
+    const services = getFirebaseServices();
+    if (services) {
+      console.log('Firebase services loaded and initialized.');
+      
+      // Hook up auth state change listener
+      services.auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          const username = user.email.split('@')[0];
+          localStorage.setItem('techtest_user', username);
+          
+          try {
+            const userDoc = await services.db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+              const data = userDoc.data();
+              localStorage.setItem('techtest_karma', data.karma || 100);
+            }
+          } catch (e) {
+            console.error('Error fetching user profile:', e);
+          }
+        } else {
+          localStorage.removeItem('techtest_user');
+          localStorage.removeItem('techtest_karma');
+        }
+        window.updateNavbarUser();
+        window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: !!user } }));
+      });
+      
+      window.dispatchEvent(new CustomEvent('firebaseSDKLoaded'));
+    }
   } else {
-    getSupabaseClient();
+    console.log('No Firebase config found. Running in offline fallback mode.');
+    window.updateNavbarUser();
   }
 }
 
-// Run on file load
-initSupabaseSDK();
+// Run on load
+initFirebaseSDK();
 
 window.incrementAdImpression = function(adType = 'bottom', adNetwork = 'google_adsense') {
   const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
-  const client = getSupabaseClient();
+  const services = getFirebaseServices();
   
-  if (client) {
-    client.auth.getSession().then(({ data }) => {
-      if (!adsenseEnabled || data.session) return;
-      client.from('ad_impressions').insert([{ ad_type: adType, ad_network: adNetwork }])
-        .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
-        .catch(e => console.error('Supabase impression error:', e));
-    });
+  if (services) {
+    const user = services.auth.currentUser;
+    if (!adsenseEnabled || user) return;
+    
+    services.db.collection('ad_impressions').add({
+      ad_type: adType,
+      ad_network: adNetwork,
+      click: null,
+      created_at: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
+    .catch(e => console.error('Firestore impression error:', e));
     return;
   }
 
@@ -68,15 +141,20 @@ window.incrementAdImpression = function(adType = 'bottom', adNetwork = 'google_a
 
 window.incrementAdClick = function(adType = 'bottom', adNetwork = 'google_adsense') {
   const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
-  const client = getSupabaseClient();
+  const services = getFirebaseServices();
   
-  if (client) {
-    client.auth.getSession().then(({ data }) => {
-      if (!adsenseEnabled || data.session) return;
-      client.from('ad_impressions').insert([{ ad_type: adType, ad_network: adNetwork, click: 1 }])
-        .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
-        .catch(e => console.error('Supabase ad click error:', e));
-    });
+  if (services) {
+    const user = services.auth.currentUser;
+    if (!adsenseEnabled || user) return;
+    
+    services.db.collection('ad_impressions').add({
+      ad_type: adType,
+      ad_network: adNetwork,
+      click: 1,
+      created_at: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
+    .catch(e => console.error('Firestore ad click error:', e));
     return;
   }
 
@@ -98,14 +176,20 @@ window.incrementAdClick = function(adType = 'bottom', adNetwork = 'google_adsens
 };
 
 window.incrementAffiliateClick = function(productId) {
-  const client = getSupabaseClient();
+  const services = getFirebaseServices();
   
-  if (client) {
+  if (services) {
     const isSale = Math.random() < 0.10; // 10% conversion chance
     const commission = isSale ? 4.50 : 0.00;
-    client.from('affiliate_clicks').insert([{ product_id: productId, purchased: isSale, commission }])
-      .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
-      .catch(e => console.error('Supabase affiliate click error:', e));
+    
+    services.db.collection('affiliate_clicks').add({
+      product_id: productId,
+      purchased: isSale,
+      commission: commission,
+      created_at: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => window.dispatchEvent(new CustomEvent('adStatsUpdated')))
+    .catch(e => console.error('Firestore affiliate click error:', e));
     return;
   }
 
@@ -120,7 +204,7 @@ window.incrementAffiliateClick = function(productId) {
   .catch(e => console.error('Stats affiliate click error:', e));
 };
 
-// Inject Global Styles for Auth Modal and Ad Slots
+// Inject Global Styles for Auth Modal, Ad Slots, and User Profile Drawer
 if (!document.getElementById('techtest-ads-styles')) {
   const styleEl = document.createElement('style');
   styleEl.id = 'techtest-ads-styles';
@@ -273,7 +357,6 @@ if (!document.getElementById('techtest-ads-styles')) {
       border-bottom: 2px solid var(--text-primary);
       font-weight: 700;
     }
-    
     .auth-form-group {
       margin-bottom: 16px;
       display: flex;
@@ -309,6 +392,310 @@ if (!document.getElementById('techtest-ads-styles')) {
     }
     .auth-submit-btn:hover {
       opacity: 0.9;
+    }
+
+    /* User Profile Drawer Styles */
+    .profile-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .profile-drawer-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .profile-drawer {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 400px;
+      height: 100%;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+      z-index: 2001;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @media (max-width: 480px) {
+      .profile-drawer {
+        width: 100%;
+        right: -100%;
+      }
+    }
+    .profile-drawer.show {
+      right: 0;
+    }
+    .profile-drawer-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .profile-drawer-header h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .profile-drawer-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+    .profile-drawer-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 40px;
+    }
+    .profile-banner {
+      height: 100px;
+      background: linear-gradient(135deg, var(--accent-gold), #d97706);
+      position: relative;
+      margin-bottom: 45px;
+    }
+    .profile-banner.gold {
+      background: linear-gradient(135deg, var(--accent-gold), #d97706);
+    }
+    .profile-banner.reddit {
+      background: linear-gradient(135deg, #ff4500, #ff8700);
+    }
+    .profile-banner.quora {
+      background: linear-gradient(135deg, #b92b27, #1565c0);
+    }
+    .profile-banner.ifixit {
+      background: linear-gradient(135deg, #0071ce, #00b0ff);
+    }
+    .profile-avatar-container {
+      position: absolute;
+      bottom: -35px;
+      left: 20px;
+    }
+    .profile-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 4px solid var(--bg-card);
+      background: var(--bg-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .profile-avatar-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      color: var(--bg-card);
+      border: 2px solid var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .profile-info-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+    .profile-username {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .profile-cake-day {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .profile-karma-badges {
+      display: flex;
+      gap: 12px;
+    }
+    .karma-badge {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .karma-badge-val {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+    .karma-badge-title {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .profile-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+    .profile-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin: 0 0 10px 0;
+      letter-spacing: 0.5px;
+    }
+    .profile-credential-wrapper, .profile-bio-wrapper {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .profile-credential-display, .profile-bio-display {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .profile-credential-input, .profile-bio-input {
+      flex: 1;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px;
+      color: var(--text-primary);
+      font-size: 12px;
+      outline: none;
+      font-family: inherit;
+    }
+    .profile-bio-input {
+      min-height: 60px;
+      resize: vertical;
+    }
+    .profile-edit-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 2px;
+      font-size: 11px;
+      transition: color 0.2s;
+    }
+    .profile-edit-btn:hover {
+      color: var(--accent-gold);
+    }
+    .profile-badges-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .badge-card {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .badge-card.locked {
+      opacity: 0.4;
+      filter: grayscale(1);
+    }
+    .badge-icon {
+      font-size: 18px;
+    }
+    .badge-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .badge-name {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .badge-desc {
+      font-size: 8px;
+      color: var(--text-muted);
+    }
+    .profile-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .profile-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-align: center;
+    }
+    .profile-tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--accent-gold);
+    }
+    .profile-tab-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .profile-activity-item {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .profile-activity-item:hover {
+      background: var(--bg-hover);
+    }
+    .profile-activity-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .profile-activity-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
   `;
   document.head.appendChild(styleEl);
@@ -381,32 +768,43 @@ window.openAuthModal = function() {
       const password = document.getElementById('authPassword').value;
       
       if (username && password) {
-        const client = getSupabaseClient();
-        if (client) {
+        const services = getFirebaseServices();
+        if (services) {
           const email = `${username}@ay5uh.com`;
           const authPromise = isSignup 
-            ? client.auth.signUp({ 
-                email, 
-                password,
-                options: { data: { karma: 100 } }
-              })
-            : client.auth.signInWithPassword({ email, password });
+            ? services.auth.createUserWithEmailAndPassword(email, password)
+            : services.auth.signInWithEmailAndPassword(email, password);
             
-          authPromise.then(({ data, error }) => {
-            if (error) {
-              authErrorMsg.textContent = error.message;
-              authErrorMsg.style.display = 'block';
-              return;
+          authPromise.then(async (userCredential) => {
+            const user = userCredential.user;
+            
+            if (isSignup) {
+              await services.db.collection('users').doc(user.uid).set({
+                username: username,
+                displayName: username,
+                karma: 100,
+                bio: "Tell the community about your gaming setups and repair skills...",
+                credentials: "Gamepad Restorer",
+                joinDate: firebase.firestore.FieldValue.serverTimestamp(),
+                avatarPreset: "🎮",
+                avatarTheme: "gold",
+                savedPosts: []
+              });
+              localStorage.setItem('techtest_karma', '100');
+            } else {
+              const userDoc = await services.db.collection('users').doc(user.uid).get();
+              if (userDoc.exists) {
+                const data = userDoc.data();
+                localStorage.setItem('techtest_karma', data.karma || 100);
+              }
             }
             
+            localStorage.setItem('techtest_user', username);
             window.updateNavbarUser();
             window.closeAuthModal();
             authErrorMsg.style.display = 'none';
             document.getElementById('authUsername').value = '';
             document.getElementById('authPassword').value = '';
-            
-            localStorage.setItem('techtest_user', username);
-            localStorage.setItem('techtest_karma', isSignup ? '100' : (data.user?.user_metadata?.karma || 100));
             
             window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
           }).catch(err => {
@@ -416,6 +814,7 @@ window.openAuthModal = function() {
           return;
         }
 
+        // Offline / Express Backend Fallback
         const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
         
         fetch(endpoint, {
@@ -432,7 +831,6 @@ window.openAuthModal = function() {
             document.getElementById('authUsername').value = '';
             document.getElementById('authPassword').value = '';
             
-            // Sync user details to local cache just in case static layout hooks rely on it
             localStorage.setItem('techtest_user', data.user.username);
             localStorage.setItem('techtest_karma', data.user.karma);
             
@@ -464,123 +862,50 @@ window.updateNavbarUser = function() {
   const container = document.getElementById('userNavbarContainer');
   if (!container) return;
   
-  const client = getSupabaseClient();
-  if (client) {
-    client.auth.getSession().then(({ data, error }) => {
-      if (error) {
-        console.error('Supabase session load error:', error);
-        return;
-      }
-      const session = data.session;
-      if (session && session.user) {
-        const username = session.user.email.split('@')[0];
-        const karma = session.user.user_metadata.karma || 100;
-        
-        localStorage.setItem('techtest_user', username);
-        localStorage.setItem('techtest_karma', karma);
-        
-        container.innerHTML = `
-          <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
-            <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${username}</span>
-            <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${karma}</span>
-            <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
-          </div>
-        `;
-        
-        document.getElementById('btnNavbarLogout').addEventListener('click', () => {
-          client.auth.signOut().then(() => {
-            localStorage.removeItem('techtest_user');
-            localStorage.removeItem('techtest_karma');
-            window.updateNavbarUser();
-            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
-          });
-        });
-      } else {
-        localStorage.removeItem('techtest_user');
-        localStorage.removeItem('techtest_karma');
-        
-        container.innerHTML = `
-          <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
-        `;
-        
-        document.getElementById('btnNavbarLogin').addEventListener('click', () => {
-          window.openAuthModal();
-        });
-      }
-    });
-    return;
+  const services = getFirebaseServices();
+  if (services) {
+    const user = services.auth.currentUser;
+    if (user) {
+      const username = user.email.split('@')[0];
+      const karma = localStorage.getItem('techtest_karma') || 100;
+      
+      container.innerHTML = `
+        <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; cursor: pointer;">
+          <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${username}</span>
+          <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${karma}</span>
+        </div>
+      `;
+      
+      container.querySelector('.user-nav-profile').addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.openProfileDrawer(username);
+      });
+      return;
+    }
   }
   
-  fetch('/api/auth/status')
-    .then(r => r.json())
-    .then(data => {
-      if (data.isLoggedIn && data.user) {
-        const user = data.user;
-        
-        // Sync user details to local cache
-        localStorage.setItem('techtest_user', user.username);
-        localStorage.setItem('techtest_karma', user.karma);
-        
-        container.innerHTML = `
-          <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
-            <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${user.username}</span>
-            <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${user.karma}</span>
-            <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
-          </div>
-        `;
-        
-        document.getElementById('btnNavbarLogout').addEventListener('click', () => {
-          fetch('/api/auth/logout', { method: 'POST' })
-            .then(r => r.json())
-            .then(() => {
-              localStorage.removeItem('techtest_user');
-              localStorage.removeItem('techtest_karma');
-              window.updateNavbarUser();
-              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
-            });
-        });
-      } else {
-        localStorage.removeItem('techtest_user');
-        localStorage.removeItem('techtest_karma');
-        
-        container.innerHTML = `
-          <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
-        `;
-        
-        document.getElementById('btnNavbarLogin').addEventListener('click', () => {
-          window.openAuthModal();
-        });
-      }
-    })
-    .catch(() => {
-      // Fallback to offline local check if server is unreachable
-      const offlineUser = localStorage.getItem('techtest_user');
-      const offlineKarma = localStorage.getItem('techtest_karma') || '100';
-      if (offlineUser) {
-        container.innerHTML = `
-          <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px;">
-            <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${offlineUser}</span>
-            <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${offlineKarma}</span>
-            <button id="btnNavbarLogout" title="Logout" style="background: none; border: none; padding: 0; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fa-solid fa-right-from-bracket"></i></button>
-          </div>
-        `;
-        document.getElementById('btnNavbarLogout').addEventListener('click', () => {
-          localStorage.removeItem('techtest_user');
-          localStorage.removeItem('techtest_karma');
-          window.updateNavbarUser();
-          window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
-        });
-      } else {
-        container.innerHTML = `
-          <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
-        `;
-        document.getElementById('btnNavbarLogin').addEventListener('click', () => {
-          window.openAuthModal();
-        });
-      }
+  const offlineUser = localStorage.getItem('techtest_user');
+  const offlineKarma = localStorage.getItem('techtest_karma') || '100';
+  if (offlineUser) {
+    container.innerHTML = `
+      <div class="user-nav-profile" style="display: flex; align-items: center; gap: 8px; background: var(--bg-hover); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; cursor: pointer;">
+        <span class="user-nav-name" style="font-weight: 600; font-size: 12px; color: var(--text-primary);">u/${offlineUser}</span>
+        <span class="user-nav-karma" style="font-size: 11px; color: var(--accent-gold); font-weight: 700; background: rgba(217,119,6,0.1); padding: 2px 6px; border-radius: 10px; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-star"></i> ${offlineKarma}</span>
+      </div>
+    `;
+    container.querySelector('.user-nav-profile').addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.openProfileDrawer(offlineUser);
     });
+  } else {
+    container.innerHTML = `
+      <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
+    `;
+    document.getElementById('btnNavbarLogin').addEventListener('click', () => {
+      window.openAuthModal();
+    });
+  }
 };
-
 function injectSidebar(activeToolId = null) {
   const isToolsPath = window.location.pathname.startsWith('/tools/') || activeToolId !== null;
 
