@@ -702,7 +702,7 @@ if (!document.getElementById('techtest-ads-styles')) {
 }
 
 // Global modal management
-window.openAuthModal = function() {
+window.openAuthModal = function(startOnSignup = false) {
   let modalOverlay = document.getElementById('authModalOverlay');
   if (!modalOverlay) {
     const modalHTML = `
@@ -739,7 +739,7 @@ window.openAuthModal = function() {
     const authForm = document.getElementById('authForm');
     const authSubmitBtn = document.getElementById('authSubmitBtn');
     const authErrorMsg = document.getElementById('authErrorMsg');
-    let isSignup = false;
+    let isSignup = startOnSignup;
     
     btnAuthClose.addEventListener('click', window.closeAuthModal);
     modalOverlay.addEventListener('click', (e) => {
@@ -761,6 +761,17 @@ window.openAuthModal = function() {
       authSubmitBtn.textContent = 'Sign Up';
       authErrorMsg.style.display = 'none';
     });
+    
+    // Set active tab based on starting flag
+    if (startOnSignup) {
+      authTabSignup.classList.add('active');
+      authTabLogin.classList.remove('active');
+      authSubmitBtn.textContent = 'Sign Up';
+    } else {
+      authTabLogin.classList.add('active');
+      authTabSignup.classList.remove('active');
+      authSubmitBtn.textContent = 'Log In';
+    }
     
     authForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -846,6 +857,15 @@ window.openAuthModal = function() {
         });
       }
     });
+  } else {
+    // If modal already exists, simulate click to switch active tab
+    const authTabLogin = document.getElementById('authTabLogin');
+    const authTabSignup = document.getElementById('authTabSignup');
+    if (startOnSignup) {
+      authTabSignup.click();
+    } else {
+      authTabLogin.click();
+    }
   }
   
   modalOverlay.classList.add('show');
@@ -899,10 +919,14 @@ window.updateNavbarUser = function() {
     });
   } else {
     container.innerHTML = `
-      <button id="btnNavbarLogin" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s;">Log In</button>
+      <button id="btnNavbarLogin" style="background: none; color: var(--text-primary); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: background 0.2s;">Log In</button>
+      <button id="btnNavbarSignup" style="background: var(--text-primary); color: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity 0.2s; margin-left: 6px;">Sign Up</button>
     `;
     document.getElementById('btnNavbarLogin').addEventListener('click', () => {
-      window.openAuthModal();
+      window.openAuthModal(false);
+    });
+    document.getElementById('btnNavbarSignup').addEventListener('click', () => {
+      window.openAuthModal(true);
     });
   }
 };
