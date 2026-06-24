@@ -721,6 +721,10 @@ window.openAuthModal = function(startOnSignup = false) {
               <label for="authUsername">Username</label>
               <input type="text" id="authUsername" required placeholder="Enter username" class="auth-form-input">
             </div>
+            <div class="auth-form-group" id="authCredentialGroup" style="display: none;">
+              <label for="authCredential">Profile Credential (e.g. Gamepad Restorer)</label>
+              <input type="text" id="authCredential" placeholder="Enter credential (e.g., PS5 Expert)" class="auth-form-input">
+            </div>
             <div class="auth-form-group">
               <label for="authPassword">Password</label>
               <input type="password" id="authPassword" required placeholder="Enter password" class="auth-form-input">
@@ -739,6 +743,8 @@ window.openAuthModal = function(startOnSignup = false) {
     const authForm = document.getElementById('authForm');
     const authSubmitBtn = document.getElementById('authSubmitBtn');
     const authErrorMsg = document.getElementById('authErrorMsg');
+    const authCredentialGroup = document.getElementById('authCredentialGroup');
+    const authCredentialInput = document.getElementById('authCredential');
     let isSignup = startOnSignup;
     
     btnAuthClose.addEventListener('click', window.closeAuthModal);
@@ -752,6 +758,8 @@ window.openAuthModal = function(startOnSignup = false) {
       authTabSignup.classList.remove('active');
       authSubmitBtn.textContent = 'Log In';
       authErrorMsg.style.display = 'none';
+      authCredentialGroup.style.display = 'none';
+      authCredentialInput.required = false;
     });
     
     authTabSignup.addEventListener('click', () => {
@@ -760,6 +768,8 @@ window.openAuthModal = function(startOnSignup = false) {
       authTabLogin.classList.remove('active');
       authSubmitBtn.textContent = 'Sign Up';
       authErrorMsg.style.display = 'none';
+      authCredentialGroup.style.display = 'block';
+      authCredentialInput.required = true;
     });
     
     // Set active tab based on starting flag
@@ -767,16 +777,21 @@ window.openAuthModal = function(startOnSignup = false) {
       authTabSignup.classList.add('active');
       authTabLogin.classList.remove('active');
       authSubmitBtn.textContent = 'Sign Up';
+      authCredentialGroup.style.display = 'block';
+      authCredentialInput.required = true;
     } else {
       authTabLogin.classList.add('active');
       authTabSignup.classList.remove('active');
       authSubmitBtn.textContent = 'Log In';
+      authCredentialGroup.style.display = 'none';
+      authCredentialInput.required = false;
     }
     
     authForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const username = document.getElementById('authUsername').value.trim();
       const password = document.getElementById('authPassword').value;
+      const credential = authCredentialInput.value.trim() || "Gamepad Restorer";
       
       if (username && password) {
         const services = getFirebaseServices();
@@ -795,7 +810,7 @@ window.openAuthModal = function(startOnSignup = false) {
                 displayName: username,
                 karma: 100,
                 bio: "Tell the community about your gaming setups and repair skills...",
-                credentials: "Gamepad Restorer",
+                credentials: credential,
                 joinDate: firebase.firestore.FieldValue.serverTimestamp(),
                 avatarPreset: "🎮",
                 avatarTheme: "gold",
@@ -816,6 +831,7 @@ window.openAuthModal = function(startOnSignup = false) {
             authErrorMsg.style.display = 'none';
             document.getElementById('authUsername').value = '';
             document.getElementById('authPassword').value = '';
+            authCredentialInput.value = '';
             
             window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
           }).catch(err => {
@@ -824,7 +840,7 @@ window.openAuthModal = function(startOnSignup = false) {
           });
           return;
         }
-
+ 
         // Offline / Express Backend Fallback
         const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
         
@@ -841,6 +857,7 @@ window.openAuthModal = function(startOnSignup = false) {
             authErrorMsg.style.display = 'none';
             document.getElementById('authUsername').value = '';
             document.getElementById('authPassword').value = '';
+            authCredentialInput.value = '';
             
             localStorage.setItem('techtest_user', data.user.username);
             localStorage.setItem('techtest_karma', data.user.karma);
@@ -930,6 +947,461 @@ window.updateNavbarUser = function() {
     });
   }
 };
+
+window.openProfileDrawer = function(username) {
+  let drawerOverlay = document.getElementById('profileDrawerOverlay');
+  let drawer = document.getElementById('profileDrawer');
+  
+  if (!drawerOverlay) {
+    const drawerHTML = `
+      <div class="profile-drawer-overlay" id="profileDrawerOverlay"></div>
+      <div class="profile-drawer" id="profileDrawer">
+        <div class="profile-drawer-header">
+          <h3>USER PROFILE</h3>
+          <button class="profile-drawer-close" id="btnProfileClose">&times;</button>
+        </div>
+        <div class="profile-drawer-scroll">
+          <div class="profile-banner" id="profileBanner">
+            <div class="profile-avatar-container">
+              <div class="profile-avatar" id="profileAvatar">🎮</div>
+              <div class="profile-avatar-edit" id="btnEditProfileTheme" title="Customize Avatar & Theme"><i class="fa-solid fa-gear"></i></div>
+            </div>
+          </div>
+          
+          <div class="profile-info-section">
+            <h4 class="profile-username" id="lblProfileUsername">u/${username}</h4>
+            <div class="profile-cake-day"><i class="fa-solid fa-cake-candles"></i> Cake Day: <span id="lblProfileCakeDay">June 24, 2026</span></div>
+            
+            <div class="profile-karma-badges">
+              <div class="karma-badge">
+                <span class="karma-badge-val" id="lblProfilePostKarma">0</span>
+                <span class="karma-badge-title">Post Karma</span>
+              </div>
+              <div class="karma-badge">
+                <span class="karma-badge-val" id="lblProfileCommentKarma">0</span>
+                <span class="karma-badge-title">Comment Karma</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="profile-section">
+            <h5 class="profile-section-title">Profile Credential</h5>
+            <div class="profile-credential-wrapper">
+              <div class="profile-credential-display" id="lblProfileCredential">Gamepad Restorer</div>
+              <input type="text" class="profile-credential-input" id="txtProfileCredential" style="display: none;">
+              <button class="profile-edit-btn" id="btnEditCredential"><i class="fa-solid fa-pencil"></i></button>
+            </div>
+          </div>
+          
+          <div class="profile-section">
+            <h5 class="profile-section-title">Biography</h5>
+            <div class="profile-bio-wrapper">
+              <div class="profile-bio-display" id="lblProfileBio">Tell the community about your gaming setups...</div>
+              <textarea class="profile-bio-input" id="txtProfileBio" style="display: none;"></textarea>
+              <button class="profile-edit-btn" id="btnEditBio"><i class="fa-solid fa-pencil"></i></button>
+            </div>
+          </div>
+          
+          <div class="profile-section">
+            <h5 class="profile-section-title">Reputation & Badges (iFixit Style)</h5>
+            <div style="background: var(--bg-hover); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">REPUTATION SCORE</span>
+                <span style="font-size: 18px; font-weight: 800; color: var(--accent-gold);" id="lblProfileReputation">100</span>
+              </div>
+              <div class="profile-badges-grid">
+                <div class="badge-card locked" id="badgeNovice">
+                  <span class="badge-icon">🎓</span>
+                  <div class="badge-details">
+                    <span class="badge-name">Novice Tech</span>
+                    <span class="badge-desc">Reputation >= 100</span>
+                  </div>
+                </div>
+                <div class="badge-card locked" id="badgePro">
+                  <span class="badge-icon">🛠️</span>
+                  <div class="badge-details">
+                    <span class="badge-name">Pro Fixer</span>
+                    <span class="badge-desc">Reputation >= 200</span>
+                  </div>
+                </div>
+                <div class="badge-card locked" id="badgeVoter">
+                  <span class="badge-icon">🗳️</span>
+                  <div class="badge-details">
+                    <span class="badge-name">Active Citizen</span>
+                    <span class="badge-desc">Voted on a post</span>
+                  </div>
+                </div>
+                <div class="badge-card locked" id="badgeAuthor">
+                  <span class="badge-icon">📝</span>
+                  <div class="badge-details">
+                    <span class="badge-name">Author</span>
+                    <span class="badge-desc">Created a post</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <h5 class="profile-section-title">Customizations</h5>
+            <div id="themeCustomizerGroup" style="display: none; background: var(--bg-hover); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px; flex-direction: column; gap: 8px;">
+              <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">AVATAR PRESET</span>
+                <select id="selAvatarPreset" style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 4px; color: var(--text-primary); font-size: 11px;">
+                  <option value="🎮">🎮 Gamepad</option>
+                  <option value="🛠️">🛠️ Wrench</option>
+                  <option value="💻">💻 Laptop</option>
+                  <option value="📱">📱 Phone</option>
+                  <option value="🔧">🔧 Spanner</option>
+                  <option value="🕹️">🕹️ Joystick</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">BANNER THEME</span>
+                <select id="selAvatarTheme" style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 4px; color: var(--text-primary); font-size: 11px;">
+                  <option value="gold">Gold Gradient</option>
+                  <option value="reddit">Reddit Orange</option>
+                  <option value="quora">Quora Red</option>
+                  <option value="ifixit">iFixit Blue</option>
+                </select>
+              </div>
+              <button id="btnSaveProfileTheme" style="background: var(--text-primary); color: var(--bg-card); border: none; padding: 6px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px;">Save Preset</button>
+            </div>
+          </div>
+          
+          <div class="profile-section">
+            <div class="profile-tabs">
+              <button class="profile-tab active" id="tabProfilePosts">Posts</button>
+              <button class="profile-tab" id="tabProfileSaved">Saved</button>
+              <button class="profile-tab" id="tabProfileVoted">Voted</button>
+            </div>
+            <div class="profile-tab-content" id="profileActivityList">
+              <!-- Activity items loaded dynamically -->
+            </div>
+          </div>
+          
+          <div class="profile-section" style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 16px;">
+            <button class="auth-submit-btn" id="btnProfileLogout" style="background: var(--accent-red); color: white;">Log Out</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', drawerHTML);
+    drawerOverlay = document.getElementById('profileDrawerOverlay');
+    drawer = document.getElementById('profileDrawer');
+    
+    // Close Drawer Listeners
+    document.getElementById('btnProfileClose').addEventListener('click', () => {
+      drawerOverlay.classList.remove('show');
+      drawer.classList.remove('show');
+    });
+    drawerOverlay.addEventListener('click', () => {
+      drawerOverlay.classList.remove('show');
+      drawer.classList.remove('show');
+    });
+    
+    // Edit Credential Listener
+    const btnEditCredential = document.getElementById('btnEditCredential');
+    const lblProfileCredential = document.getElementById('lblProfileCredential');
+    const txtProfileCredential = document.getElementById('txtProfileCredential');
+    
+    btnEditCredential.addEventListener('click', async () => {
+      if (txtProfileCredential.style.display === 'none') {
+        txtProfileCredential.value = lblProfileCredential.textContent;
+        txtProfileCredential.style.display = 'block';
+        lblProfileCredential.style.display = 'none';
+        btnEditCredential.innerHTML = '<i class="fa-solid fa-check"></i>';
+        txtProfileCredential.focus();
+      } else {
+        const newVal = txtProfileCredential.value.trim() || "Gamepad Restorer";
+        lblProfileCredential.textContent = newVal;
+        txtProfileCredential.style.display = 'none';
+        lblProfileCredential.style.display = 'block';
+        btnEditCredential.innerHTML = '<i class="fa-solid fa-pencil"></i>';
+        
+        // Save to Database
+        const services = getFirebaseServices();
+        if (services && services.auth.currentUser) {
+          await services.db.collection('users').doc(services.auth.currentUser.uid).update({ credentials: newVal });
+        } else {
+          localStorage.setItem('techtest_credentials', newVal);
+        }
+      }
+    });
+    
+    // Edit Bio Listener
+    const btnEditBio = document.getElementById('btnEditBio');
+    const lblProfileBio = document.getElementById('lblProfileBio');
+    const txtProfileBio = document.getElementById('txtProfileBio');
+    
+    btnEditBio.addEventListener('click', async () => {
+      if (txtProfileBio.style.display === 'none') {
+        txtProfileBio.value = lblProfileBio.textContent;
+        txtProfileBio.style.display = 'block';
+        lblProfileBio.style.display = 'none';
+        btnEditBio.innerHTML = '<i class="fa-solid fa-check"></i>';
+        txtProfileBio.focus();
+      } else {
+        const newVal = txtProfileBio.value.trim() || "Tell the community about your gaming setups...";
+        lblProfileBio.textContent = newVal;
+        txtProfileBio.style.display = 'none';
+        lblProfileBio.style.display = 'block';
+        btnEditBio.innerHTML = '<i class="fa-solid fa-pencil"></i>';
+        
+        // Save to Database
+        const services = getFirebaseServices();
+        if (services && services.auth.currentUser) {
+          await services.db.collection('users').doc(services.auth.currentUser.uid).update({ bio: newVal });
+        } else {
+          localStorage.setItem('techtest_bio', newVal);
+        }
+      }
+    });
+    
+    // Theme Customize Listeners
+    const btnEditProfileTheme = document.getElementById('btnEditProfileTheme');
+    const themeCustomizerGroup = document.getElementById('themeCustomizerGroup');
+    const btnSaveProfileTheme = document.getElementById('btnSaveProfileTheme');
+    
+    btnEditProfileTheme.addEventListener('click', () => {
+      if (themeCustomizerGroup.style.display === 'none') {
+        themeCustomizerGroup.style.display = 'flex';
+      } else {
+        themeCustomizerGroup.style.display = 'none';
+      }
+    });
+    
+    btnSaveProfileTheme.addEventListener('click', async () => {
+      const preset = document.getElementById('selAvatarPreset').value;
+      const theme = document.getElementById('selAvatarTheme').value;
+      
+      document.getElementById('profileAvatar').textContent = preset;
+      const banner = document.getElementById('profileBanner');
+      banner.className = 'profile-banner ' + theme;
+      
+      themeCustomizerGroup.style.display = 'none';
+      
+      const services = getFirebaseServices();
+      if (services && services.auth.currentUser) {
+        await services.db.collection('users').doc(services.auth.currentUser.uid).update({
+          avatarPreset: preset,
+          avatarTheme: theme
+        });
+      } else {
+        localStorage.setItem('techtest_avatar_preset', preset);
+        localStorage.setItem('techtest_avatar_theme', theme);
+      }
+    });
+    
+    // Tab Listeners
+    const tabProfilePosts = document.getElementById('tabProfilePosts');
+    const tabProfileSaved = document.getElementById('tabProfileSaved');
+    const tabProfileVoted = document.getElementById('tabProfileVoted');
+    
+    const setTabActive = (activeTab) => {
+      [tabProfilePosts, tabProfileSaved, tabProfileVoted].forEach(tab => tab.classList.remove('active'));
+      activeTab.classList.add('active');
+    };
+    
+    tabProfilePosts.addEventListener('click', () => {
+      setTabActive(tabProfilePosts);
+      loadActivityList('posts', username);
+    });
+    tabProfileSaved.addEventListener('click', () => {
+      setTabActive(tabProfileSaved);
+      loadActivityList('saved', username);
+    });
+    tabProfileVoted.addEventListener('click', () => {
+      setTabActive(tabProfileVoted);
+      loadActivityList('voted', username);
+    });
+    
+    // Logout Listener
+    document.getElementById('btnProfileLogout').addEventListener('click', () => {
+      const services = getFirebaseServices();
+      if (services) {
+        services.auth.signOut().then(() => {
+          drawerOverlay.classList.remove('show');
+          drawer.classList.remove('show');
+          window.updateNavbarUser();
+        });
+      } else {
+        localStorage.removeItem('techtest_user');
+        localStorage.removeItem('techtest_karma');
+        drawerOverlay.classList.remove('show');
+        drawer.classList.remove('show');
+        window.updateNavbarUser();
+        window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: false } }));
+      }
+    });
+  }
+  
+  // Render and animate drawer open
+  setTimeout(() => {
+    drawerOverlay.classList.add('show');
+    drawer.classList.add('show');
+  }, 10);
+  
+  // Load data from Firebase or offline fallback
+  const syncDrawerProfile = async () => {
+    const services = getFirebaseServices();
+    let profileData = {
+      joinDate: "June 2026",
+      karma: parseInt(localStorage.getItem('techtest_karma') || "100", 10),
+      credentials: localStorage.getItem('techtest_credentials') || "Gamepad Restorer",
+      bio: localStorage.getItem('techtest_bio') || "Tell the community about your gaming setups and repair skills...",
+      avatarPreset: localStorage.getItem('techtest_avatar_preset') || "🎮",
+      avatarTheme: localStorage.getItem('techtest_avatar_theme') || "gold"
+    };
+    
+    let postCount = 0;
+    let voteCount = 0;
+    
+    if (services) {
+      const user = services.auth.currentUser;
+      if (user) {
+        try {
+          const userDoc = await services.db.collection('users').doc(user.uid).get();
+          if (userDoc.exists) {
+            const data = userDoc.data();
+            profileData.credentials = data.credentials || profileData.credentials;
+            profileData.bio = data.bio || profileData.bio;
+            profileData.avatarPreset = data.avatarPreset || profileData.avatarPreset;
+            profileData.avatarTheme = data.avatarTheme || profileData.avatarTheme;
+            profileData.karma = data.karma || profileData.karma;
+            
+            if (data.joinDate) {
+              const date = data.joinDate.toDate ? data.joinDate.toDate() : new Date(data.joinDate);
+              profileData.joinDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+          }
+          
+          // Get post count
+          const postsSnap = await services.db.collection('posts').where('user_id', '==', user.uid).get();
+          postCount = postsSnap.size;
+          
+          // Get vote count
+          const votesSnap = await services.db.collection('votes').where('user_id', '==', user.uid).get();
+          voteCount = votesSnap.size;
+          
+        } catch (e) {
+          console.error("Error loading user profile details:", e);
+        }
+      }
+    }
+    
+    // Calculate Reputation
+    const reputation = profileData.karma + (postCount * 10) + (voteCount * 2);
+    
+    // Update DOM
+    document.getElementById('lblProfileCakeDay').textContent = profileData.joinDate;
+    document.getElementById('lblProfilePostKarma').textContent = profileData.karma;
+    document.getElementById('lblProfileCommentKarma').textContent = postCount * 2; // Simulated comment karma
+    document.getElementById('lblProfileCredential').textContent = profileData.credentials;
+    document.getElementById('lblProfileBio').textContent = profileData.bio;
+    document.getElementById('lblProfileReputation').textContent = reputation;
+    document.getElementById('profileAvatar').textContent = profileData.avatarPreset;
+    
+    const banner = document.getElementById('profileBanner');
+    banner.className = 'profile-banner ' + profileData.avatarTheme;
+    
+    document.getElementById('selAvatarPreset').value = profileData.avatarPreset;
+    document.getElementById('selAvatarTheme').value = profileData.avatarTheme;
+    
+    // Unlock Badges
+    const badgeNovice = document.getElementById('badgeNovice');
+    const badgePro = document.getElementById('badgePro');
+    const badgeVoter = document.getElementById('badgeVoter');
+    const badgeAuthor = document.getElementById('badgeAuthor');
+    
+    if (reputation >= 100) badgeNovice.classList.remove('locked'); else badgeNovice.classList.add('locked');
+    if (reputation >= 200) badgePro.classList.remove('locked'); else badgePro.classList.add('locked');
+    if (voteCount >= 1) badgeVoter.classList.remove('locked'); else badgeVoter.classList.add('locked');
+    if (postCount >= 1) badgeAuthor.classList.remove('locked'); else badgeAuthor.classList.add('locked');
+    
+    // Load initial tab (posts)
+    loadActivityList('posts', username);
+  };
+  
+  syncDrawerProfile();
+};
+
+async function loadActivityList(tabName, username) {
+  const container = document.getElementById('profileActivityList');
+  container.innerHTML = '<div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 12px;">Loading activity...</div>';
+  
+  const services = getFirebaseServices();
+  let items = [];
+  
+  if (services && services.auth.currentUser) {
+    const user = services.auth.currentUser;
+    try {
+      if (tabName === 'posts') {
+        const snap = await services.db.collection('posts').where('user_id', '==', user.uid).get();
+        snap.forEach(doc => {
+          items.push({ id: doc.id, ...doc.data() });
+        });
+      } else if (tabName === 'saved') {
+        const userDoc = await services.db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          const savedIds = userDoc.data().savedPosts || [];
+          for (const id of savedIds) {
+            const postDoc = await services.db.collection('posts').doc(id).get();
+            if (postDoc.exists) {
+              items.push({ id: postDoc.id, ...postDoc.data() });
+            }
+          }
+        }
+      } else if (tabName === 'voted') {
+        const snap = await services.db.collection('votes').where('user_id', '==', user.uid).get();
+        const postIds = [];
+        snap.forEach(doc => {
+          postIds.push(doc.data().post_id);
+        });
+        for (const id of postIds) {
+          const postDoc = await services.db.collection('posts').doc(id).get();
+          if (postDoc.exists) {
+            items.push({ id: postDoc.id, ...postDoc.data() });
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error loading activity items:", e);
+    }
+  } else {
+    // Offline local placeholders
+    if (tabName === 'posts') {
+      items = [
+        { id: '1', title: 'Need help with PS5 stick drift', community: 'r/Gaming', votes: 12, created_at: new Date() }
+      ];
+    }
+  }
+  
+  if (items.length === 0) {
+    container.innerHTML = `<div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 12px;">No activity in ${tabName} yet.</div>`;
+    return;
+  }
+  
+  container.innerHTML = items.map(item => {
+    let rawTime = item.created_at;
+    if (rawTime && rawTime.toDate) rawTime = rawTime.toDate();
+    const timeStr = rawTime ? new Date(rawTime).toLocaleDateString() : '';
+    
+    return `
+      <a href="/answers/#post-card-${item.id}" class="profile-activity-item">
+        <div class="profile-activity-title">${item.title}</div>
+        <div class="profile-activity-meta">
+          <span>${item.community || 'r/Gaming'}</span>
+          <span>&middot;</span>
+          <span><i class="fa-solid fa-arrow-up"></i> ${item.votes || 0} votes</span>
+          <span>&middot;</span>
+          <span>${timeStr}</span>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
 function injectSidebar(activeToolId = null) {
   const isToolsPath = window.location.pathname.startsWith('/tools/') || activeToolId !== null;
 
