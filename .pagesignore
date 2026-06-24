@@ -1,0 +1,12 @@
+# Exclude development files, backend assets, and heavy binaries from Pages deploy
+scratch/
+node_modules/
+.wrangler/
+.git/
+.agents/
+database.sqlite
+server.js
+package.json
+package-lock.json
+current_diff.txt
+*.md
