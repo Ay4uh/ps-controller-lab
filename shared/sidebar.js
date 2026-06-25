@@ -790,6 +790,9 @@ if (!document.getElementById('techtest-ads-styles')) {
 }
 
 // Global modal management
+// Global modal management
+let currentAuthModalMode = 'login';
+
 window.openAuthModal = function(startOnSignup = false) {
   let modalOverlay = document.getElementById('authModalOverlay');
   if (!modalOverlay) {
@@ -798,30 +801,43 @@ window.openAuthModal = function(startOnSignup = false) {
         <div class="auth-modal">
           <button class="auth-modal-close" id="btnAuthClose">&times;</button>
           
-          <div class="auth-modal-tabs">
+          <div class="auth-modal-tabs" id="authTabs">
             <button id="authTabLogin" class="auth-tab active">Log In</button>
             <button id="authTabSignup" class="auth-tab">Sign Up</button>
           </div>
           
           <form id="authForm">
             <div id="authErrorMsg" style="color: var(--accent-red); font-size: 12px; font-weight: 600; margin-bottom: 12px; display: none; line-height: 1.4;"></div>
-            <div class="auth-form-group">
-              <label for="authUsername">Username or Email</label>
-              <input type="text" id="authUsername" required placeholder="Enter username or email" class="auth-form-input">
+            <div id="authSuccessMsg" style="color: #10B981; font-size: 12px; font-weight: 600; margin-bottom: 12px; display: none; line-height: 1.4;"></div>
+            
+            <div class="auth-form-group" id="authUsernameGroup">
+              <label for="authUsername" id="lblAuthUsername">Username or Email</label>
+              <input type="text" id="authUsername" placeholder="Enter username or email" class="auth-form-input">
             </div>
+            
             <div class="auth-form-group" id="authEmailGroup" style="display: none;">
               <label for="authEmail">Email Address</label>
               <input type="email" id="authEmail" placeholder="Enter email address" class="auth-form-input">
             </div>
+            
             <div class="auth-form-group" id="authCredentialGroup" style="display: none;">
               <label for="authCredential">Profile Credential (e.g. Gamepad Restorer)</label>
               <input type="text" id="authCredential" placeholder="Enter credential (e.g., PS5 Expert)" class="auth-form-input">
             </div>
-            <div class="auth-form-group">
-              <label for="authPassword">Password</label>
-              <input type="password" id="authPassword" required placeholder="Enter password" class="auth-form-input">
+            
+            <div class="auth-form-group" id="authPasswordGroup">
+              <label for="authPassword" id="lblAuthPassword">Password</label>
+              <input type="password" id="authPassword" placeholder="Enter password" class="auth-form-input">
+              <div id="forgotPasswordLinkWrapper" style="text-align: right; margin-top: 6px;">
+                <a href="#" id="linkForgotPassword" style="font-size: 11px; color: var(--accent-blue); text-decoration: none; font-weight: 600;">Forgot Password?</a>
+              </div>
             </div>
+            
             <button type="submit" id="authSubmitBtn" class="auth-submit-btn">Log In</button>
+            
+            <div id="backToLoginWrapper" style="text-align: center; margin-top: 16px; display: none;">
+              <a href="#" id="linkBackToLogin" style="font-size: 12px; color: var(--text-secondary); text-decoration: none; font-weight: 600;">&larr; Back to Log In</a>
+            </div>
           </form>
         </div>
       </div>
@@ -835,251 +851,271 @@ window.openAuthModal = function(startOnSignup = false) {
     const authForm = document.getElementById('authForm');
     const authSubmitBtn = document.getElementById('authSubmitBtn');
     const authErrorMsg = document.getElementById('authErrorMsg');
-    const authCredentialGroup = document.getElementById('authCredentialGroup');
-    const authCredentialInput = document.getElementById('authCredential');
+    const authSuccessMsg = document.getElementById('authSuccessMsg');
+    
+    const authUsernameGroup = document.getElementById('authUsernameGroup');
+    const authUsernameLabel = document.getElementById('lblAuthUsername');
+    const authUsernameInput = document.getElementById('authUsername');
+    
     const authEmailGroup = document.getElementById('authEmailGroup');
     const authEmailInput = document.getElementById('authEmail');
-    const authUsernameLabel = document.querySelector('label[for="authUsername"]');
-    const authUsernameInput = document.getElementById('authUsername');
-    let isSignup = startOnSignup;
+    
+    const authCredentialGroup = document.getElementById('authCredentialGroup');
+    const authCredentialInput = document.getElementById('authCredential');
+    
+    const authPasswordGroup = document.getElementById('authPasswordGroup');
+    const authPasswordLabel = document.getElementById('lblAuthPassword');
+    const authPasswordInput = document.getElementById('authPassword');
+    
+    const forgotPasswordLinkWrapper = document.getElementById('forgotPasswordLinkWrapper');
+    const linkForgotPassword = document.getElementById('linkForgotPassword');
+    
+    const backToLoginWrapper = document.getElementById('backToLoginWrapper');
+    const linkBackToLogin = document.getElementById('linkBackToLogin');
+    const authTabs = document.getElementById('authTabs');
     
     btnAuthClose.addEventListener('click', window.closeAuthModal);
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) window.closeAuthModal();
     });
     
-    const updateModalUI = (toSignup) => {
-      isSignup = toSignup;
+    window.updateAuthModalUI = (mode) => {
+      currentAuthModalMode = mode;
       authErrorMsg.style.display = 'none';
-      if (isSignup) {
+      authSuccessMsg.style.display = 'none';
+      
+      if (mode === 'signup') {
+        authTabs.style.display = 'flex';
         authTabSignup.classList.add('active');
         authTabLogin.classList.remove('active');
-        authSubmitBtn.textContent = 'Sign Up';
-        authCredentialGroup.style.display = 'block';
-        authCredentialInput.required = true;
-        authEmailGroup.style.display = 'block';
-        authEmailInput.required = true;
+        authUsernameGroup.style.display = 'block';
         authUsernameLabel.textContent = 'Username';
         authUsernameInput.placeholder = 'Enter username';
-      } else {
+        authUsernameInput.required = true;
+        authEmailGroup.style.display = 'block';
+        authEmailInput.required = true;
+        authCredentialGroup.style.display = 'block';
+        authCredentialInput.required = true;
+        authPasswordGroup.style.display = 'block';
+        authPasswordLabel.textContent = 'Password';
+        forgotPasswordLinkWrapper.style.display = 'none';
+        backToLoginWrapper.style.display = 'none';
+        authSubmitBtn.textContent = 'Sign Up';
+      } else if (mode === 'login') {
+        authTabs.style.display = 'flex';
         authTabLogin.classList.add('active');
         authTabSignup.classList.remove('active');
-        authSubmitBtn.textContent = 'Log In';
-        authCredentialGroup.style.display = 'none';
-        authCredentialInput.required = false;
-        authEmailGroup.style.display = 'none';
-        authEmailInput.required = false;
+        authUsernameGroup.style.display = 'block';
         authUsernameLabel.textContent = 'Username or Email';
         authUsernameInput.placeholder = 'Enter username or email';
+        authUsernameInput.required = true;
+        authEmailGroup.style.display = 'none';
+        authEmailInput.required = false;
+        authCredentialGroup.style.display = 'none';
+        authCredentialInput.required = false;
+        authPasswordGroup.style.display = 'block';
+        authPasswordLabel.textContent = 'Password';
+        forgotPasswordLinkWrapper.style.display = 'block';
+        backToLoginWrapper.style.display = 'none';
+        authSubmitBtn.textContent = 'Log In';
+      } else if (mode === 'forgot') {
+        authTabs.style.display = 'none';
+        authUsernameGroup.style.display = 'none';
+        authUsernameInput.required = false;
+        authEmailGroup.style.display = 'block';
+        authEmailInput.required = true;
+        authCredentialGroup.style.display = 'none';
+        authCredentialInput.required = false;
+        authPasswordGroup.style.display = 'none';
+        authPasswordInput.required = false;
+        backToLoginWrapper.style.display = 'block';
+        authSubmitBtn.textContent = 'Send Reset Link';
+      } else if (mode === 'reset') {
+        authTabs.style.display = 'none';
+        authUsernameGroup.style.display = 'none';
+        authUsernameInput.required = false;
+        authEmailGroup.style.display = 'none';
+        authEmailInput.required = false;
+        authCredentialGroup.style.display = 'none';
+        authCredentialInput.required = false;
+        authPasswordGroup.style.display = 'block';
+        authPasswordLabel.textContent = 'New Password';
+        authPasswordInput.placeholder = 'Enter new password';
+        authPasswordInput.required = true;
+        forgotPasswordLinkWrapper.style.display = 'none';
+        backToLoginWrapper.style.display = 'block';
+        authSubmitBtn.textContent = 'Reset Password';
       }
     };
     
-    authTabLogin.addEventListener('click', () => updateModalUI(false));
-    authTabSignup.addEventListener('click', () => updateModalUI(true));
+    authTabLogin.addEventListener('click', () => window.updateAuthModalUI('login'));
+    authTabSignup.addEventListener('click', () => window.updateAuthModalUI('signup'));
+    linkForgotPassword.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.updateAuthModalUI('forgot');
+    });
+    linkBackToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.updateAuthModalUI('login');
+    });
     
     // Set active tab based on starting flag
-    updateModalUI(startOnSignup);
+    window.updateAuthModalUI(startOnSignup ? 'signup' : 'login');
     
     authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const usernameOrEmail = authUsernameInput.value.trim();
-      const password = document.getElementById('authPassword').value;
+      const username = authUsernameInput.value.trim();
+      const password = authPasswordInput.value;
       const credential = authCredentialInput.value.trim() || "Gamepad Restorer";
-      const signupEmail = authEmailInput.value.trim();
+      const email = authEmailInput.value.trim();
       
-      if (!usernameOrEmail || !password) return;
+      authErrorMsg.style.display = 'none';
+      authSuccessMsg.style.display = 'none';
       
-      // Perform validation rules on signup
-      if (isSignup) {
-        // Password rule: 6 characters with 1 capital and 1 special character
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
+      if (currentAuthModalMode === 'signup') {
+        // Enforce password rules: 8+ chars, 1 uppercase, 1 number
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
         if (!passwordRegex.test(password)) {
-          authErrorMsg.textContent = 'Password must be at least 6 characters and contain at least 1 capital letter and 1 special character.';
+          authErrorMsg.textContent = 'Password must be at least 8 characters and contain at least 1 uppercase letter and 1 number.';
           authErrorMsg.style.display = 'block';
           return;
         }
         
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(signupEmail)) {
+        if (!emailRegex.test(email)) {
           authErrorMsg.textContent = 'Please enter a valid email address.';
           authErrorMsg.style.display = 'block';
           return;
         }
-      }
-      
-      const services = getFirebaseServices();
-      if (services) {
-        authErrorMsg.style.display = 'none';
         
-        if (isSignup) {
-          // Firebase Signup
-          // 1. Check if Username already exists (to prevent overlap)
-          try {
-            const usernameSnapshot = await services.db.collection('users').where('username', '==', usernameOrEmail).get();
-            if (!usernameSnapshot.empty) {
-              authErrorMsg.textContent = 'This username is already taken. Please choose another one.';
-              authErrorMsg.style.display = 'block';
-              return;
-            }
-          } catch (err) {
-            console.error("Firestore username validation error:", err);
-          }
-          
-          // 2. Register via Firebase Auth
-          services.auth.createUserWithEmailAndPassword(signupEmail, password)
-            .then(async (userCredential) => {
-              const user = userCredential.user;
-              await services.db.collection('users').doc(user.uid).set({
-                username: usernameOrEmail,
-                displayName: usernameOrEmail,
-                email: signupEmail,
-                karma: 100,
-                bio: "Tell the community about your gaming setups and repair skills...",
-                credentials: credential,
-                joinDate: firebase.firestore.FieldValue.serverTimestamp(),
-                avatarPreset: "🎮",
-                avatarTheme: "gold",
-                savedPosts: []
-              });
-              
-              localStorage.setItem('techtest_karma', '100');
-              localStorage.setItem('techtest_user', usernameOrEmail);
-              window.updateNavbarUser();
-              window.closeAuthModal();
-              
-              // Clear fields
-              authUsernameInput.value = '';
-              document.getElementById('authPassword').value = '';
-              authCredentialInput.value = '';
-              authEmailInput.value = '';
-              
-              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: usernameOrEmail } }));
-            })
-            .catch(err => {
-              let msg = err.message || 'Authentication error';
-              if (err.code === 'auth/email-already-in-use') {
-                msg = 'This email address is already registered. Please choose another one.';
-              } else if (err.code === 'auth/invalid-email') {
-                msg = 'Please enter a valid email address.';
-              } else if (err.code === 'auth/weak-password') {
-                msg = 'Password must be at least 6 characters.';
-              }
-              authErrorMsg.textContent = msg;
-              authErrorMsg.style.display = 'block';
-            });
-        } else {
-          // Firebase Login
-          let loginEmail = usernameOrEmail;
-          let resolvedUsername = usernameOrEmail;
-          
-          if (!usernameOrEmail.includes('@')) {
-            // It's a username. Query Firestore for the email.
-            try {
-              const userSnapshot = await services.db.collection('users').where('username', '==', usernameOrEmail).get();
-              if (!userSnapshot.empty) {
-                const userData = userSnapshot.docs[0].data();
-                loginEmail = userData.email || `${usernameOrEmail}@ay5uh.com`;
-                resolvedUsername = userData.username || usernameOrEmail;
-              } else {
-                // Fallback for legacy users
-                loginEmail = `${usernameOrEmail}@ay5uh.com`;
-              }
-            } catch (err) {
-              console.error("Firestore user query error:", err);
-              loginEmail = `${usernameOrEmail}@ay5uh.com`;
-            }
+        fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, username, password, displayName: username })
+        })
+        .then(r => r.json().then(data => ({ status: r.status, data })))
+        .then(({ status, data }) => {
+          if (status === 200 && data.success) {
+            authSuccessMsg.textContent = data.message || 'Signup successful. Please verify your email.';
+            authSuccessMsg.style.display = 'block';
+            authForm.reset();
           } else {
-            // It's an email. Query Firestore for the username to save in localStorage.
-            try {
-              const userSnapshot = await services.db.collection('users').where('email', '==', usernameOrEmail).get();
-              if (!userSnapshot.empty) {
-                resolvedUsername = userSnapshot.docs[0].data().username || usernameOrEmail;
-              } else {
-                resolvedUsername = usernameOrEmail.split('@')[0];
-              }
-            } catch (err) {
-              console.error("Firestore user query error:", err);
-              resolvedUsername = usernameOrEmail.split('@')[0];
-            }
+            authErrorMsg.textContent = data.error || 'Signup failed';
+            authErrorMsg.style.display = 'block';
           }
-          
-          services.auth.signInWithEmailAndPassword(loginEmail, password)
-            .then(async (userCredential) => {
-              const user = userCredential.user;
-              const userDoc = await services.db.collection('users').doc(user.uid).get();
-              if (userDoc.exists) {
-                const data = userDoc.data();
-                localStorage.setItem('techtest_karma', data.karma || 100);
-                resolvedUsername = data.username || resolvedUsername;
-              }
-              
-              localStorage.setItem('techtest_user', resolvedUsername);
-              window.updateNavbarUser();
-              window.closeAuthModal();
-              
-              authUsernameInput.value = '';
-              document.getElementById('authPassword').value = '';
-              
-              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: resolvedUsername } }));
-            })
-            .catch(err => {
-              authErrorMsg.textContent = 'Invalid username/email or password';
-              authErrorMsg.style.display = 'block';
-            });
-        }
-        return;
-      }
-      
-      // Offline / Express Backend Fallback
-      const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
-      const payload = isSignup 
-        ? { username: usernameOrEmail, email: signupEmail, password }
-        : { username: usernameOrEmail, password };
-        
-      fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(r => r.json().then(data => ({ status: r.status, data })))
-      .then(({ status, data }) => {
-        if (status === 200 && data.success) {
-          localStorage.setItem('techtest_user', data.user.username);
-          localStorage.setItem('techtest_karma', data.user.karma || 100);
-          
-          window.updateNavbarUser();
-          window.closeAuthModal();
-          authErrorMsg.style.display = 'none';
-          
-          authUsernameInput.value = '';
-          document.getElementById('authPassword').value = '';
-          authCredentialInput.value = '';
-          authEmailInput.value = '';
-          
-          window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: data.user.username } }));
-        } else {
-          authErrorMsg.textContent = data.error || 'Authentication failed';
+        })
+        .catch(err => {
+          authErrorMsg.textContent = 'Server connection error.';
           authErrorMsg.style.display = 'block';
+        });
+        
+      } else if (currentAuthModalMode === 'login') {
+        fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        })
+        .then(r => r.json().then(data => ({ status: r.status, data })))
+        .then(({ status, data }) => {
+          if (status === 200 && data.success) {
+            localStorage.setItem('techtest_user', data.user.username);
+            localStorage.setItem('techtest_karma', data.user.karma || 100);
+            if (data.accessToken) {
+              localStorage.setItem('accessToken', data.accessToken);
+            }
+            if (data.refreshToken) {
+              localStorage.setItem('refreshToken', data.refreshToken);
+            }
+            
+            window.updateNavbarUser();
+            window.closeAuthModal();
+            
+            // Save local credentials
+            localStorage.setItem('techtest_credentials', credential);
+            
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: data.user.username } }));
+          } else {
+            authErrorMsg.textContent = data.error || 'Login failed';
+            authErrorMsg.style.display = 'block';
+          }
+        })
+        .catch(err => {
+          authErrorMsg.textContent = 'Server connection error.';
+          authErrorMsg.style.display = 'block';
+        });
+        
+      } else if (currentAuthModalMode === 'forgot') {
+        fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        })
+        .then(r => r.json().then(data => ({ status: r.status, data })))
+        .then(({ status, data }) => {
+          if (status === 200) {
+            authSuccessMsg.textContent = data.message || 'If that email exists, a reset link has been sent.';
+            authSuccessMsg.style.display = 'block';
+            authForm.reset();
+          } else {
+            authErrorMsg.textContent = data.error || 'Request failed';
+            authErrorMsg.style.display = 'block';
+          }
+        })
+        .catch(err => {
+          authErrorMsg.textContent = 'Server connection error.';
+          authErrorMsg.style.display = 'block';
+        });
+        
+      } else if (currentAuthModalMode === 'reset') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        if (!token) {
+          authErrorMsg.textContent = 'Password reset token is missing from URL.';
+          authErrorMsg.style.display = 'block';
+          return;
         }
-      })
-      .catch(err => {
-        authErrorMsg.textContent = 'Server connection error. Make sure backend is running.';
-        authErrorMsg.style.display = 'block';
-      });
+        
+        fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, password })
+        })
+        .then(r => r.json().then(data => ({ status: r.status, data })))
+        .then(({ status, data }) => {
+          if (status === 200) {
+            authSuccessMsg.textContent = data.message || 'Password reset successfully. Please log in.';
+            authSuccessMsg.style.display = 'block';
+            setTimeout(() => {
+              window.updateAuthModalUI('login');
+            }, 3000);
+          } else {
+            authErrorMsg.textContent = data.error || 'Reset failed';
+            authErrorMsg.style.display = 'block';
+          }
+        })
+        .catch(err => {
+          authErrorMsg.textContent = 'Server connection error.';
+          authErrorMsg.style.display = 'block';
+        });
+      }
     });
   } else {
-    // If modal already exists, simulate click to switch active tab
-    const authTabLogin = document.getElementById('authTabLogin');
-    const authTabSignup = document.getElementById('authTabSignup');
-    if (startOnSignup) {
-      authTabSignup.click();
-    } else {
-      authTabLogin.click();
-    }
+    // If modal already exists, transition mode
+    window.updateAuthModalUI(startOnSignup ? 'signup' : 'login');
   }
   
   modalOverlay.classList.add('show');
+};
+
+window.switchAuthModalMode = function(mode) {
+  let modalOverlay = document.getElementById('authModalOverlay');
+  if (!modalOverlay) {
+    window.openAuthModal(false);
+  }
+  if (typeof window.updateAuthModalUI === 'function') {
+    window.updateAuthModalUI(mode);
+  }
 };
 
 window.closeAuthModal = function() {
@@ -1420,8 +1456,19 @@ window.openProfileDrawer = function(username) {
           window.updateNavbarUser();
         });
       } else {
+        const token = localStorage.getItem('accessToken');
+        fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }).catch(err => console.error("Error calling logout endpoint:", err));
+        
         localStorage.removeItem('techtest_user');
         localStorage.removeItem('techtest_karma');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        
         drawerOverlay.classList.remove('show');
         drawer.classList.remove('show');
         window.updateNavbarUser();
@@ -2090,5 +2137,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
+  }
+
+  // Handle Email Verification and Password Reset URL routing on page load
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  
+  if (path === '/verify-email' && token) {
+    window.openAuthModal(false);
+    setTimeout(() => {
+      const authErrorMsg = document.getElementById('authErrorMsg');
+      const authSuccessMsg = document.getElementById('authSuccessMsg');
+      if (authSuccessMsg) {
+        authSuccessMsg.textContent = 'Verifying your email, please wait...';
+        authSuccessMsg.style.display = 'block';
+      }
+      
+      fetch('/api/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      })
+      .then(r => r.json().then(data => ({ status: r.status, data })))
+      .then(({ status, data }) => {
+        if (status === 200) {
+          authSuccessMsg.textContent = 'Email verified successfully! You can now log in.';
+          authSuccessMsg.style.display = 'block';
+        } else {
+          authSuccessMsg.style.display = 'none';
+          authErrorMsg.textContent = data.error || 'Email verification failed.';
+          authErrorMsg.style.display = 'block';
+        }
+      })
+      .catch(err => {
+        if (authSuccessMsg) authSuccessMsg.style.display = 'none';
+        if (authErrorMsg) {
+          authErrorMsg.textContent = 'Server connection error.';
+          authErrorMsg.style.display = 'block';
+        }
+      });
+    }, 200);
+  } else if (path === '/reset-password' && token) {
+    window.switchAuthModalMode('reset');
   }
 });

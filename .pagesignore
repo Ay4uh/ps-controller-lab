@@ -10,3 +10,6 @@ package.json
 package-lock.json
 current_diff.txt
 *.md
+auth.js
+middleware/
+test_auth_pipeline.js
