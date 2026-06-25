@@ -1976,16 +1976,30 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.setItem('device_test_counted', 'true');
       
       const incrementCounter = () => {
-        const services = getFirebaseServices();
-        if (services) {
-          services.db.collection('global_stats').doc('devices_tested').set({
-            count: firebase.firestore.FieldValue.increment(1)
-          }, { merge: true })
-          .catch(e => console.error("Firestore stats increment error:", e));
-        } else {
-          // Fallback to Express backend API
-          fetch('/api/stats/increment-devices', { method: 'POST' }).catch(() => {});
-        }
+        fetch('/api/stats/increment-devices', { method: 'POST' })
+          .then(r => r.json())
+          .then(data => {
+            if (data.success && data.isNewIp) {
+              const services = getFirebaseServices();
+              if (services) {
+                services.db.collection('global_stats').doc('devices_tested').set({
+                  count: firebase.firestore.FieldValue.increment(1)
+                }, { merge: true })
+                .catch(e => console.error("Firestore stats increment error:", e));
+              }
+            }
+          })
+          .catch(e => {
+            console.error("Backend counter increment error:", e);
+            // Fallback: if backend is unreachable, increment Firestore anyway
+            const services = getFirebaseServices();
+            if (services) {
+              services.db.collection('global_stats').doc('devices_tested').set({
+                count: firebase.firestore.FieldValue.increment(1)
+              }, { merge: true })
+              .catch(fsErr => console.error("Firestore fallback increment error:", fsErr));
+            }
+          });
       };
       
       // Delay slightly to ensure Firebase SDK initialization completes

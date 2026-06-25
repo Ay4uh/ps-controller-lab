@@ -87,7 +87,19 @@ db.serialize(() => {
     )
   `, () => {
     db.run("INSERT OR IGNORE INTO global_stats (key, value) VALUES ('devices_tested', 0)");
+    
+    // Reset counter to 0 and delete existing test IPs to start fresh
+    db.run("UPDATE global_stats SET value = 0 WHERE key = 'devices_tested'");
+    db.run("DELETE FROM device_test_ips");
   });
+
+  // Device Test IPs table (to prevent same IP double counting)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS device_test_ips (
+      ip TEXT PRIMARY KEY,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 
   // Seed default posts if empty
   db.get("SELECT COUNT(*) as count FROM posts", (err, row) => {
@@ -496,22 +508,38 @@ app.get('/api/stats/devices', (req, res) => {
   db.get("SELECT value FROM global_stats WHERE key = 'devices_tested'", (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
     const count = row ? row.value : 0;
-    res.json({ count: count + 42730 });
+    res.json({ count });
   });
 });
 
-// Increment Devices Tested stats
+// Increment Devices Tested stats (IP-uniqueness enforced)
 app.post('/api/stats/increment-devices', (req, res) => {
-  db.run("INSERT OR IGNORE INTO global_stats (key, value) VALUES ('devices_tested', 0)", (err) => {
-    if (err) return res.status(500).json({ error: err.message });
-    db.run("UPDATE global_stats SET value = value + 1 WHERE key = 'devices_tested'", function(err2) {
-      if (err2) return res.status(500).json({ error: err2.message });
-      db.get("SELECT value FROM global_stats WHERE key = 'devices_tested'", (err3, row) => {
-        if (err3) return res.status(500).json({ error: err3.message });
-        const count = row ? row.value : 0;
-        res.json({ success: true, count: count + 42730 });
+  const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const ip = rawIp === '::1' ? '127.0.0.1' : rawIp;
+
+  db.run("INSERT INTO device_test_ips (ip) VALUES (?)", [ip], function(err) {
+    if (err) {
+      if (err.message.includes('UNIQUE')) {
+        // IP already tested, return current count
+        db.get("SELECT value FROM global_stats WHERE key = 'devices_tested'", (err3, row) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+          const count = row ? row.value : 0;
+          return res.json({ success: true, count, isNewIp: false });
+        });
+      } else {
+        return res.status(500).json({ error: err.message });
+      }
+    } else {
+      // New IP: increment counter
+      db.run("UPDATE global_stats SET value = value + 1 WHERE key = 'devices_tested'", function(err2) {
+        if (err2) return res.status(500).json({ error: err2.message });
+        db.get("SELECT value FROM global_stats WHERE key = 'devices_tested'", (err3, row) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+          const count = row ? row.value : 0;
+          res.json({ success: true, count, isNewIp: true });
+        });
       });
-    });
+    }
   });
 });
 

@@ -376,7 +376,7 @@
               // Real-time subscription in Firebase mode
               services.db.collection('global_stats').doc('devices_tested')
                 .onSnapshot(doc => {
-                  let count = 42730;
+                  let count = 0;
                   if (doc.exists) {
                     count += (doc.data().count || 0);
                   }
@@ -394,12 +394,12 @@
             fetch('/api/stats/devices')
               .then(r => r.json())
               .then(data => {
-                const count = data.count || 42730;
+                const count = data.count || 0;
                 document.getElementById('stat-devices-tested').textContent = count.toLocaleString() + "+";
               })
               .catch(err => {
                 // Last resort fallback
-                const localCount = parseInt(localStorage.getItem('devices_tested') || '0', 10) + 42730;
+                const localCount = parseInt(localStorage.getItem('devices_tested') || '0', 10);
                 document.getElementById('stat-devices-tested').textContent = localCount.toLocaleString() + "+";
               });
           };
