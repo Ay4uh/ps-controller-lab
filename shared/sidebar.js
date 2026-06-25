@@ -989,83 +989,183 @@ window.openAuthModal = function(startOnSignup = false) {
           return;
         }
         
-        fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, username, password, displayName: username })
-        })
-        .then(r => r.json().then(data => ({ status: r.status, data })))
-        .then(({ status, data }) => {
-          if (status === 200 && data.success) {
-            authSuccessMsg.textContent = data.message || 'Signup successful. Please verify your email.';
-            authSuccessMsg.style.display = 'block';
-            authForm.reset();
-          } else {
-            authErrorMsg.textContent = data.error || 'Signup failed';
+        const services = getFirebaseServices();
+        if (services) {
+          services.auth.createUserWithEmailAndPassword(email, password)
+            .then(async (userCredential) => {
+              const user = userCredential.user;
+              await user.updateProfile({ displayName: username });
+              
+              // Seed user record in Firestore
+              await services.db.collection('users').doc(user.uid).set({
+                id: user.uid,
+                username: username,
+                email: email,
+                display_name: username,
+                role: 'member',
+                karma: 100,
+                is_active: true,
+                is_banned: false,
+                email_verified: false,
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+              });
+              
+              await user.sendEmailVerification();
+              
+              authSuccessMsg.textContent = 'Account created! Please check your email to verify your account.';
+              authSuccessMsg.style.display = 'block';
+              authForm.reset();
+            })
+            .catch(err => {
+              authErrorMsg.textContent = err.message || 'Signup failed';
+              authErrorMsg.style.display = 'block';
+            });
+        } else {
+          fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, username, password, displayName: username })
+          })
+          .then(r => r.json().then(data => ({ status: r.status, data })))
+          .then(({ status, data }) => {
+            if (status === 200 && data.success) {
+              authSuccessMsg.textContent = data.message || 'Signup successful. Please verify your email.';
+              authSuccessMsg.style.display = 'block';
+              authForm.reset();
+            } else {
+              authErrorMsg.textContent = data.error || 'Signup failed';
+              authErrorMsg.style.display = 'block';
+            }
+          })
+          .catch(err => {
+            authErrorMsg.textContent = 'Server connection error.';
             authErrorMsg.style.display = 'block';
-          }
-        })
-        .catch(err => {
-          authErrorMsg.textContent = 'Server connection error.';
-          authErrorMsg.style.display = 'block';
-        });
+          });
+        }
         
       } else if (currentAuthModalMode === 'login') {
-        fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        })
-        .then(r => r.json().then(data => ({ status: r.status, data })))
-        .then(({ status, data }) => {
-          if (status === 200 && data.success) {
-            localStorage.setItem('techtest_user', data.user.username);
-            localStorage.setItem('techtest_karma', data.user.karma || 100);
-            if (data.accessToken) {
-              localStorage.setItem('accessToken', data.accessToken);
-            }
-            if (data.refreshToken) {
-              localStorage.setItem('refreshToken', data.refreshToken);
-            }
-            
-            window.updateNavbarUser();
-            window.closeAuthModal();
-            
-            // Save local credentials
-            localStorage.setItem('techtest_credentials', credential);
-            
-            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: data.user.username } }));
-          } else {
-            authErrorMsg.textContent = data.error || 'Login failed';
-            authErrorMsg.style.display = 'block';
+        const services = getFirebaseServices();
+        if (services) {
+          let emailPromise = Promise.resolve(username);
+          if (!username.includes('@')) {
+            emailPromise = services.db.collection('users')
+              .where('username', '==', username)
+              .get()
+              .then(snap => {
+                if (snap.empty) {
+                  throw new Error('User not found.');
+                }
+                return snap.docs[0].data().email;
+              });
           }
-        })
-        .catch(err => {
-          authErrorMsg.textContent = 'Server connection error.';
-          authErrorMsg.style.display = 'block';
-        });
+          
+          emailPromise
+            .then(resolvedEmail => services.auth.signInWithEmailAndPassword(resolvedEmail, password))
+            .then(async (userCredential) => {
+              const user = userCredential.user;
+              if (!user.emailVerified) {
+                authErrorMsg.textContent = 'Please verify your email address before logging in.';
+                authErrorMsg.style.display = 'block';
+                await services.auth.signOut();
+                return;
+              }
+              
+              const userDoc = await services.db.collection('users').doc(user.uid).get();
+              if (userDoc.exists) {
+                const userData = userDoc.data();
+                if (userData.is_banned) {
+                  authErrorMsg.textContent = `Account banned. Reason: ${userData.ban_reason || 'Inappropriate behavior'}`;
+                  authErrorMsg.style.display = 'block';
+                  await services.auth.signOut();
+                  return;
+                }
+                localStorage.setItem('techtest_user', userData.username);
+                localStorage.setItem('techtest_karma', userData.karma || 100);
+              } else {
+                localStorage.setItem('techtest_user', username);
+                localStorage.setItem('techtest_karma', 100);
+              }
+              
+              window.updateNavbarUser();
+              window.closeAuthModal();
+              localStorage.setItem('techtest_credentials', credential);
+              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: username } }));
+            })
+            .catch(err => {
+              authErrorMsg.textContent = err.message || 'Login failed';
+              authErrorMsg.style.display = 'block';
+            });
+        } else {
+          fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          })
+          .then(r => r.json().then(data => ({ status: r.status, data })))
+          .then(({ status, data }) => {
+            if (status === 200 && data.success) {
+              localStorage.setItem('techtest_user', data.user.username);
+              localStorage.setItem('techtest_karma', data.user.karma || 100);
+              if (data.accessToken) {
+                localStorage.setItem('accessToken', data.accessToken);
+              }
+              if (data.refreshToken) {
+                localStorage.setItem('refreshToken', data.refreshToken);
+              }
+              
+              window.updateNavbarUser();
+              window.closeAuthModal();
+              
+              // Save local credentials
+              localStorage.setItem('techtest_credentials', credential);
+              
+              window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: data.user.username } }));
+            } else {
+              authErrorMsg.textContent = data.error || 'Login failed';
+              authErrorMsg.style.display = 'block';
+            }
+          })
+          .catch(err => {
+            authErrorMsg.textContent = 'Server connection error.';
+            authErrorMsg.style.display = 'block';
+          });
+        }
         
       } else if (currentAuthModalMode === 'forgot') {
-        fetch('/api/auth/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        })
-        .then(r => r.json().then(data => ({ status: r.status, data })))
-        .then(({ status, data }) => {
-          if (status === 200) {
-            authSuccessMsg.textContent = data.message || 'If that email exists, a reset link has been sent.';
-            authSuccessMsg.style.display = 'block';
-            authForm.reset();
-          } else {
-            authErrorMsg.textContent = data.error || 'Request failed';
+        const services = getFirebaseServices();
+        if (services) {
+          services.auth.sendPasswordResetEmail(email)
+            .then(() => {
+              authSuccessMsg.textContent = 'Reset link has been sent to your email address.';
+              authSuccessMsg.style.display = 'block';
+              authForm.reset();
+            })
+            .catch(err => {
+              authErrorMsg.textContent = err.message || 'Request failed';
+              authErrorMsg.style.display = 'block';
+            });
+        } else {
+          fetch('/api/auth/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          })
+          .then(r => r.json().then(data => ({ status: r.status, data })))
+          .then(({ status, data }) => {
+            if (status === 200) {
+              authSuccessMsg.textContent = data.message || 'If that email exists, a reset link has been sent.';
+              authSuccessMsg.style.display = 'block';
+              authForm.reset();
+            } else {
+              authErrorMsg.textContent = data.error || 'Request failed';
+              authErrorMsg.style.display = 'block';
+            }
+          })
+          .catch(err => {
+            authErrorMsg.textContent = 'Server connection error.';
             authErrorMsg.style.display = 'block';
-          }
-        })
-        .catch(err => {
-          authErrorMsg.textContent = 'Server connection error.';
-          authErrorMsg.style.display = 'block';
-        });
+          });
+        }
         
       } else if (currentAuthModalMode === 'reset') {
         const urlParams = new URLSearchParams(window.location.search);
@@ -1076,28 +1176,44 @@ window.openAuthModal = function(startOnSignup = false) {
           return;
         }
         
-        fetch('/api/auth/reset-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, password })
-        })
-        .then(r => r.json().then(data => ({ status: r.status, data })))
-        .then(({ status, data }) => {
-          if (status === 200) {
-            authSuccessMsg.textContent = data.message || 'Password reset successfully. Please log in.';
-            authSuccessMsg.style.display = 'block';
-            setTimeout(() => {
-              window.updateAuthModalUI('login');
-            }, 3000);
-          } else {
-            authErrorMsg.textContent = data.error || 'Reset failed';
+        const services = getFirebaseServices();
+        if (services) {
+          services.auth.confirmPasswordReset(token, password)
+            .then(() => {
+              authSuccessMsg.textContent = 'Password reset successfully. Please log in.';
+              authSuccessMsg.style.display = 'block';
+              setTimeout(() => {
+                window.updateAuthModalUI('login');
+              }, 3000);
+            })
+            .catch(err => {
+              authErrorMsg.textContent = err.message || 'Password reset failed';
+              authErrorMsg.style.display = 'block';
+            });
+        } else {
+          fetch('/api/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, password })
+          })
+          .then(r => r.json().then(data => ({ status: r.status, data })))
+          .then(({ status, data }) => {
+            if (status === 200) {
+              authSuccessMsg.textContent = data.message || 'Password reset successfully. Please log in.';
+              authSuccessMsg.style.display = 'block';
+              setTimeout(() => {
+                window.updateAuthModalUI('login');
+              }, 3000);
+            } else {
+              authErrorMsg.textContent = data.error || 'Reset failed';
+              authErrorMsg.style.display = 'block';
+            }
+          })
+          .catch(err => {
+            authErrorMsg.textContent = 'Server connection error.';
             authErrorMsg.style.display = 'block';
-          }
-        })
-        .catch(err => {
-          authErrorMsg.textContent = 'Server connection error.';
-          authErrorMsg.style.display = 'block';
-        });
+          });
+        }
       }
     });
   } else {
