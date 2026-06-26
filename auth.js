@@ -73,12 +73,13 @@ class AuthManager {
     );
 
     // Send verification email
-    await this.sendVerificationEmail(userId, email);
+    const verRes = await this.sendVerificationEmail(userId, email);
 
     return {
       userId,
       email,
       username,
+      verifyUrl: verRes.verifyUrl,
       message: 'User created. Please check your email to verify your account.'
     };
   }
@@ -200,7 +201,7 @@ class AuthManager {
     `;
 
     await this.sendEmail(email, 'Verify Your Email', emailContent);
-    return { message: 'Verification email sent' };
+    return { message: 'Verification email sent', verifyUrl };
   }
 
   async verifyEmail(token) {

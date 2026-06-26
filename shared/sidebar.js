@@ -1034,7 +1034,11 @@ window.openAuthModal = function(startOnSignup = false) {
           .then(r => r.json().then(data => ({ status: r.status, data })))
           .then(({ status, data }) => {
             if (status === 200 && data.success) {
-              authSuccessMsg.textContent = data.message || 'Signup successful. Please verify your email.';
+              let msg = data.message || 'Signup successful. Please verify your email.';
+              if (data.verifyUrl) {
+                msg += ` <br><br><strong>Test Environment:</strong> <a href="${data.verifyUrl}" style="color: #60a5fa; text-decoration: underline; font-weight: bold;">Click here to instantly verify your account</a>`;
+              }
+              authSuccessMsg.innerHTML = msg;
               authSuccessMsg.style.display = 'block';
               authForm.reset();
             } else {
