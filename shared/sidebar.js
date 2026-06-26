@@ -3,6 +3,11 @@ let firebaseApp = null;
 let firebaseAuth = null;
 let firebaseDb = null;
 
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? ''
+  : 'https://raised-coalition-visits-taxes.trycloudflare.com';
+
+
 function getFirebaseConfig() {
   if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey) {
     return window.FIREBASE_CONFIG;
@@ -122,11 +127,11 @@ window.incrementAdImpression = function(adType = 'bottom', adNetwork = 'google_a
     return;
   }
 
-  fetch('/api/auth/status')
+  fetch(API_BASE_URL + '/api/auth/status')
     .then(r => r.json())
     .then(data => {
       if (!adsenseEnabled || data.isLoggedIn) return;
-      fetch('/api/ads/impression', {
+      fetch(API_BASE_URL + '/api/ads/impression', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ adType, adNetwork, sessionId: 'guest_session' })
@@ -158,11 +163,11 @@ window.incrementAdClick = function(adType = 'bottom', adNetwork = 'google_adsens
     return;
   }
 
-  fetch('/api/auth/status')
+  fetch(API_BASE_URL + '/api/auth/status')
     .then(r => r.json())
     .then(data => {
       if (!adsenseEnabled || data.isLoggedIn) return;
-      fetch('/api/ads/click', {
+      fetch(API_BASE_URL + '/api/ads/click', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ adType, adNetwork, sessionId: 'guest_session' })
@@ -193,7 +198,7 @@ window.incrementAffiliateClick = function(productId) {
     return;
   }
 
-  fetch('/api/ads/affiliate-click', {
+  fetch(API_BASE_URL + '/api/ads/affiliate-click', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId })
@@ -973,10 +978,10 @@ window.openAuthModal = function(startOnSignup = false) {
       authSuccessMsg.style.display = 'none';
       
       if (currentAuthModalMode === 'signup') {
-        // Enforce password rules: 8+ chars, 1 uppercase, 1 number
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+        // Enforce password rules: 6+ chars, 1 uppercase, 1 number, 1 special character
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
         if (!passwordRegex.test(password)) {
-          authErrorMsg.textContent = 'Password must be at least 8 characters and contain at least 1 uppercase letter and 1 number.';
+          authErrorMsg.textContent = 'Password must be at least 6 characters and contain at least 1 uppercase letter, 1 number, and 1 special character.';
           authErrorMsg.style.display = 'block';
           return;
         }
@@ -1021,7 +1026,7 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.style.display = 'block';
             });
         } else {
-          fetch('/api/auth/signup', {
+          fetch(API_BASE_URL + '/api/auth/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, username, password, displayName: username })
@@ -1096,7 +1101,7 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.style.display = 'block';
             });
         } else {
-          fetch('/api/auth/login', {
+          fetch(API_BASE_URL + '/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -1145,7 +1150,7 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.style.display = 'block';
             });
         } else {
-          fetch('/api/auth/forgot-password', {
+          fetch(API_BASE_URL + '/api/auth/forgot-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
@@ -1191,7 +1196,7 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.style.display = 'block';
             });
         } else {
-          fetch('/api/auth/reset-password', {
+          fetch(API_BASE_URL + '/api/auth/reset-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token, password })
@@ -1573,7 +1578,7 @@ window.openProfileDrawer = function(username) {
         });
       } else {
         const token = localStorage.getItem('accessToken');
-        fetch('/api/auth/logout', {
+        fetch(API_BASE_URL + '/api/auth/logout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -2050,7 +2055,7 @@ function injectSidebar(activeToolId = null) {
       const renderToolAd = () => {
         const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
         
-        fetch('/api/auth/status')
+        fetch(API_BASE_URL + '/api/auth/status')
           .then(r => r.json())
           .then(data => {
             const user = data.user;
@@ -2139,7 +2144,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.setItem('device_test_counted', 'true');
       
       const incrementCounter = () => {
-        fetch('/api/stats/increment-devices', { method: 'POST' })
+        fetch(API_BASE_URL + '/api/stats/increment-devices', { method: 'POST' })
           .then(r => r.json())
           .then(data => {
             if (data.success && data.isNewIp) {
@@ -2269,7 +2274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         authSuccessMsg.style.display = 'block';
       }
       
-      fetch('/api/auth/verify-email', {
+      fetch(API_BASE_URL + '/api/auth/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token })

@@ -722,6 +722,8 @@
       }
       
       // Functions
+      const apiBase = window.API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://raised-coalition-visits-taxes.trycloudflare.com');
+      
       async function loadPostsAndVotes() {
         const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
         if (services) {
@@ -784,8 +786,8 @@
         // Fallback to Express server
         try {
           const [postsRes, votesRes] = await Promise.all([
-            fetch('/api/posts'),
-            fetch('/api/users/votes')
+            fetch(apiBase + '/api/posts'),
+            fetch(apiBase + '/api/users/votes')
           ]);
           
           posts = await postsRes.json();
@@ -1232,7 +1234,7 @@
         }
 
         try {
-          const res = await fetch('/api/ads/stats');
+          const res = await fetch(apiBase + '/api/ads/stats');
           const data = await res.json();
           
           const impressions = data.totalImpressions || 0;
@@ -1295,7 +1297,7 @@
         }
 
         try {
-          await fetch('/api/ads/reset-stats', { method: 'POST' });
+          await fetch(apiBase + '/api/ads/reset-stats', { method: 'POST' });
           updateDashboardUI();
           renderForum();
         } catch (e) {
@@ -1365,7 +1367,7 @@
           }
 
           try {
-            const res = await fetch('/api/posts', {
+            const res = await fetch(apiBase + '/api/posts', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ community, title, content })

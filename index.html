@@ -391,7 +391,8 @@
           };
 
           const fetchFallback = () => {
-            fetch('/api/stats/devices')
+            const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://raised-coalition-visits-taxes.trycloudflare.com';
+            fetch(apiBase + '/api/stats/devices')
               .then(r => r.json())
               .then(data => {
                 const count = data.count || 0;

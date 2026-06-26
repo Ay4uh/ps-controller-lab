@@ -52,9 +52,9 @@ class AuthManager {
       throw new Error('Email or username already exists');
     }
 
-    // Validate password strength (min 8 chars, 1 uppercase, 1 number)
-    if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-      throw new Error('Password must be at least 8 characters with uppercase and number');
+    // Validate password strength (min 6 chars, 1 uppercase, 1 number, 1 special character)
+    if (password.length < 6 || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+      throw new Error('Password must be at least 6 characters with 1 uppercase letter, 1 number, and 1 special character');
     }
 
     // Hash password
@@ -191,7 +191,7 @@ class AuthManager {
     );
 
     // Send email
-    const verifyUrl = `http://localhost:8099/verify-email?token=${token}`;
+    const verifyUrl = `https://ay5uh.com/verify-email?token=${token}`;
     const emailContent = `
       <h2>Verify Your AntiGravity Account</h2>
       <p>Click the link below to verify your email:</p>
@@ -256,7 +256,7 @@ class AuthManager {
     );
 
     // Send email
-    const resetUrl = `http://localhost:8099/reset-password?token=${token}`;
+    const resetUrl = `https://ay5uh.com/reset-password?token=${token}`;
     const emailContent = `
       <h2>Reset Your AntiGravity Password</h2>
       <p>Click the link below to reset your password:</p>
@@ -287,8 +287,8 @@ class AuthManager {
     }
 
     // Validate password
-    if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
-      throw new Error('Password must be at least 8 characters with uppercase and number');
+    if (newPassword.length < 6 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[^A-Za-z0-9]/.test(newPassword)) {
+      throw new Error('Password must be at least 6 characters with 1 uppercase letter, 1 number, and 1 special character');
     }
 
     // Hash new password
