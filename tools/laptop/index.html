@@ -173,25 +173,48 @@
         <div class="mb-4">
           <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg-hover); padding: 4px 10px; border-radius: 12px; display: inline-block; margin-bottom: 12px; border: 1px solid var(--border);">LAPTOP / MACBOOK</div>
           <h1 class="fw-bold mb-2"><i class="fa-solid fa-laptop text-accent" style="margin-right: 8px;"></i> Laptop / PC Diagnostics</h1>
-          <p class="text-muted">9 tools to test your computer's hardware.</p>
+          <p class="text-muted">11 tools to test every part of your computer's hardware — plus a one-click full diagnostic suite.</p>
           <hr style="border-color: var(--border); margin-top: 24px; margin-bottom: 24px;">
         </div>
 
+        <!-- One-Click Comprehensive Test Banner -->
+        <a href="/tools/laptop-comprehensive/" style="display:block; text-decoration:none; margin-bottom: 28px;">
+          <div style="background: linear-gradient(135deg, #1d4ed8 0%, #4f46e5 100%); border-radius: 14px; padding: 28px 32px; display:flex; align-items:center; justify-content:space-between; gap: 20px; flex-wrap: wrap; color: #fff; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.92'" onmouseout="this.style.opacity='1'">
+            <div>
+              <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.75; margin-bottom:6px;">🔬 NEW</div>
+              <div style="font-size:22px; font-weight:800; margin-bottom:4px;">One-Click Full Diagnostic</div>
+              <div style="font-size:14px; opacity:0.85;">11 automated tests · Real-time results · Hardware score report</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 12px 24px; font-size: 14px; font-weight: 700; white-space: nowrap; display:flex; align-items:center; gap: 8px;">
+              <i class="fa-solid fa-play"></i> Run Full Diagnostic
+            </div>
+          </div>
+        </a>
+
         <div class="diagnostics-grid">
           
+          <a href="/tools/system-specs/" class="test-card">
+            <div class="test-card-header">
+              <i class="fa-solid fa-microchip test-icon"></i>
+              <h2 class="test-title">System Specs Detector</h2>
+            </div>
+            <p class="test-desc">Detect your CPU cores, GPU model, RAM, battery level, screen specs, and network info instantly.</p>
+            <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
+          </a>
+
           <a href="/tools/keyboard-test/" class="test-card">
             <div class="test-card-header">
               <i class="fa-solid fa-keyboard test-icon"></i>
               <h2 class="test-title">Keyboard Test</h2>
             </div>
-            <p class="test-desc">Press every key to check for stuck, dead, or unresponsive keys.</p>
+            <p class="test-desc">Press every key to check for stuck, dead, or unresponsive keys. Includes ghosting detection.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
           </a>
 
           <a href="/tools/mouse-test/" class="test-card">
             <div class="test-card-header">
               <i class="fa-solid fa-computer-mouse test-icon"></i>
-              <h2 class="test-title">Mouse & Trackpad Test</h2>
+              <h2 class="test-title">Mouse &amp; Trackpad Test</h2>
             </div>
             <p class="test-desc">Check clicks, scroll, precision, DPI, multi-touch and trackpad sensitivity.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
@@ -202,7 +225,7 @@
               <i class="fa-solid fa-microphone test-icon"></i>
               <h2 class="test-title">Microphone Test</h2>
             </div>
-            <p class="test-desc">Record and playback audio to test your mic.</p>
+            <p class="test-desc">Record audio and view a live spectrum visualizer to detect static, hum, or mic issues.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
           </a>
 
@@ -211,7 +234,7 @@
               <i class="fa-solid fa-volume-high test-icon"></i>
               <h2 class="test-title">Speaker Test</h2>
             </div>
-            <p class="test-desc">Test your left and right channels, stereo balance, and frequency response.</p>
+            <p class="test-desc">Test L/R channels, stereo balance, frequency response, and sweep 20Hz–20kHz.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
           </a>
 
@@ -220,7 +243,7 @@
               <i class="fa-solid fa-desktop test-icon"></i>
               <h2 class="test-title">Display Test</h2>
             </div>
-            <p class="test-desc">Check refresh rate and basic color rendering.</p>
+            <p class="test-desc">Check refresh rate, color gamut (sRGB, P3, Rec.2020), HDR support, and screen resolution.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
           </a>
 
@@ -229,7 +252,7 @@
               <i class="fa-solid fa-border-all test-icon"></i>
               <h2 class="test-title">Dead Pixel Test</h2>
             </div>
-            <p class="test-desc">Cycle through solid colors to spot dead or stuck pixels.</p>
+            <p class="test-desc">Cycle through solid colors to spot dead or stuck pixels on your screen.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
           </a>
 
@@ -247,7 +270,7 @@
               <i class="fa-solid fa-microchip test-icon"></i>
               <h2 class="test-title">CPU Stress Test</h2>
             </div>
-            <p class="test-desc">Stress test your processor cores with intensive background calculations to measure thermals.</p>
+            <p class="test-desc">Stress test all processor cores with intensive calculations to reveal thermal throttling.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
           </a>
 
@@ -256,11 +279,21 @@
               <i class="fa-solid fa-gauge-high test-icon"></i>
               <h2 class="test-title">GPU Stress Test</h2>
             </div>
-            <p class="test-desc">Stress test your graphics card with 3D WebGL fractal shaders to measure FPS and stability.</p>
+            <p class="test-desc">Stress test your GPU with 3D WebGL fractal shaders and measure FPS stability.</p>
+            <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
+          </a>
+
+          <a href="/tools/laptop-comprehensive/" class="test-card">
+            <div class="test-card-header">
+              <i class="fa-solid fa-flask-vial test-icon"></i>
+              <h2 class="test-title">Comprehensive Tester</h2>
+            </div>
+            <p class="test-desc">Run all 11 tests at once and get a hardware score + downloadable report. One click.</p>
             <div class="test-action">Open Tool <i class="fa-solid fa-arrow-right"></i></div>
           </a>
 
         </div>
+
 
       </div>
     </main>

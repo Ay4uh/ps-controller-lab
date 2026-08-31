@@ -206,7 +206,13 @@
           <p class="text-muted">Record and playback audio to test your mic.</p>
           <hr style="border-color: var(--border); margin-top: 24px;">
         </div>
-        <div id="deviceInfo" style="font-family:var(--font-mono); color:var(--text-muted); font-size:14px; margin-bottom: 16px; text-align: right;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+          <div id="deviceInfo" style="font-family:var(--font-mono); color:var(--text-muted); font-size:13px;"></div>
+          <div style="display: flex; gap: 6px; background: var(--bg-hover); padding: 4px; border-radius: 8px; border: 1px solid var(--border);">
+            <button id="btnWave" class="btn-sm" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-weight: 600; font-size: 12px; cursor: pointer; color: var(--text-primary);" onclick="setVizMode('waveform')">Waveform</button>
+            <button id="btnSpec" class="btn-sm" style="background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 4px 12px; font-weight: 600; font-size: 12px; cursor: pointer; color: var(--text-muted);" onclick="setVizMode('spectrum')">Frequency Spectrum</button>
+          </div>
+        </div>
 
         <div class="visualizer-container">
           <div class="mic-overlay" id="micOverlay">
@@ -288,6 +294,21 @@
       }
     }
 
+    let currentVizMode = 'waveform';
+
+    function setVizMode(mode) {
+      currentVizMode = mode;
+      const bWave = document.getElementById('btnWave');
+      const bSpec = document.getElementById('btnSpec');
+      if (mode === 'waveform') {
+        bWave.style.background = 'var(--bg-card)'; bWave.style.borderColor = 'var(--border)'; bWave.style.color = 'var(--text-primary)';
+        bSpec.style.background = 'transparent'; bSpec.style.borderColor = 'transparent'; bSpec.style.color = 'var(--text-muted)';
+      } else {
+        bSpec.style.background = 'var(--bg-card)'; bSpec.style.borderColor = 'var(--border)'; bSpec.style.color = 'var(--text-primary)';
+        bWave.style.background = 'transparent'; bWave.style.borderColor = 'transparent'; bWave.style.color = 'var(--text-muted)';
+      }
+    }
+
     function getDBFS(rms) {
       if (rms === 0) return -100;
       return 20 * Math.log10(rms);
@@ -299,39 +320,71 @@
 
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      analyser.getByteTimeDomainData(dataArray);
 
-      // Light Mode Background
-      ctx.fillStyle = '#ffffff';
+      // Background
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      ctx.fillStyle = isDark ? '#272522' : '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#0070d1'; // Accent Blue
-      ctx.beginPath();
+      if (currentVizMode === 'waveform') {
+        analyser.getByteTimeDomainData(dataArray);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#2563eb'; // Accent Blue
+        ctx.beginPath();
 
-      const sliceWidth = canvas.width * 1.0 / bufferLength;
-      let x = 0;
-      let sumSquares = 0;
+        const sliceWidth = canvas.width * 1.0 / bufferLength;
+        let x = 0;
+        let sumSquares = 0;
 
-      for (let i = 0; i < bufferLength; i++) {
-        const v = dataArray[i] / 128.0;
-        const y = v * canvas.height / 2;
+        for (let i = 0; i < bufferLength; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = v * canvas.height / 2;
+          const normalized = (dataArray[i] - 128) / 128;
+          sumSquares += normalized * normalized;
 
-        const normalized = (dataArray[i] - 128) / 128;
-        sumSquares += normalized * normalized;
-
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+          x += sliceWidth;
         }
-        x += sliceWidth;
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.stroke();
+
+        const rms = Math.sqrt(sumSquares / bufferLength);
+        updateLevels(rms);
+
+      } else {
+        // Spectrum Bars Mode
+        analyser.getByteFrequencyData(dataArray);
+        const barCount = 64;
+        const barWidth = (canvas.width / barCount) - 2;
+        const step = Math.floor(bufferLength / barCount);
+
+        let sumSquares = 0;
+
+        for (let i = 0; i < barCount; i++) {
+          const val = dataArray[i * step];
+          const barHeight = (val / 255) * (canvas.height - 20);
+          const x = i * (barWidth + 2);
+          const y = canvas.height - barHeight;
+
+          const grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+          grad.addColorStop(0, '#2563eb');
+          grad.addColorStop(0.7, '#10b981');
+          grad.addColorStop(1, '#ef4444');
+
+          ctx.fillStyle = grad;
+          ctx.fillRect(x, y, barWidth, barHeight);
+
+          const norm = val / 255;
+          sumSquares += norm * norm;
+        }
+
+        const rms = Math.sqrt(sumSquares / barCount);
+        updateLevels(rms);
       }
+    }
 
-      ctx.lineTo(canvas.width, canvas.height / 2);
-      ctx.stroke();
-
-      const rms = Math.sqrt(sumSquares / bufferLength);
+    function updateLevels(rms) {
       const dbfs = getDBFS(rms);
       
       let dbStr = dbfs <= -100 ? '- ∞' : dbfs.toFixed(1);

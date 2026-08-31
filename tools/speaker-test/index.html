@@ -218,7 +218,7 @@
           </div>
         </div>
 
-        <div class="test-list">
+          <div class="test-list">
           <div class="test-item">
             <div class="info">
               <h5>Stereo Sweep</h5>
@@ -235,12 +235,53 @@
           </div>
           <div class="test-item">
             <div class="info">
+              <h5>Mid-Range Test (1kHz)</h5>
+              <p>Tests vocal clarity and mid-range driver response</p>
+            </div>
+            <button class="btn-custom-primary" onclick="playFreq(1000)"><i class="fa-solid fa-play"></i> Play</button>
+          </div>
+          <div class="test-item">
+            <div class="info">
               <h5>Treble Test (12kHz)</h5>
               <p>Checks high-end tweeters and distortion</p>
             </div>
             <button class="btn-custom-primary" onclick="playFreq(12000)"><i class="fa-solid fa-play"></i> Play</button>
           </div>
+          <div class="test-item">
+            <div class="info">
+              <h5>Air Frequency (18kHz)</h5>
+              <p>Ultra-high tone to check for high-freq rolloff or hearing loss</p>
+            </div>
+            <button class="btn-custom-primary" onclick="playFreq(18000)"><i class="fa-solid fa-play"></i> Play</button>
+          </div>
         </div>
+
+        <!-- Frequency Sweep Generator -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-top: 24px;">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-waveform-lines" style="color:var(--accent-blue); margin-right:8px;"></i>Frequency Sweep Generator</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Drag the slider to play any frequency from 20Hz (deep bass) to 20,000Hz (ultra-high). Listen for distortion, rattling, or dead zones in your speakers.</p>
+
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+              <input type="range" id="freqSlider" min="20" max="20000" value="440" step="1"
+                style="width:100%; accent-color: var(--accent-blue);"
+                oninput="updateSweepFreq(this.value)" onmousedown="startSweepTone()" ontouchstart="startSweepTone()">
+              <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:4px;">
+                <span>20 Hz</span><span>Sub-Bass</span><span>Mid</span><span>Treble</span><span>20 kHz</span>
+              </div>
+            </div>
+            <div style="text-align:center; min-width:90px;">
+              <div style="font-family: var(--font-mono); font-size: 28px; font-weight: 800; color: var(--accent-blue);" id="sweepDisplay">440 Hz</div>
+              <div style="font-size: 11px; color: var(--text-muted);" id="sweepNote">A4 · Musical A</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; display:flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-custom-primary" onclick="startAutoSweep()" id="autoSweepBtn"><i class="fa-solid fa-wave-square"></i> Auto Sweep 20Hz→20kHz</button>
+            <button class="btn-outline-secondary" onclick="stopSweepTone()"><i class="fa-solid fa-stop"></i> Stop</button>
+          </div>
+        </div>
+
 
       </div>
     </main>
@@ -345,6 +386,76 @@
       }, 1000);
       setTimeout(() => r.classList.remove('playing'), 2000);
     }
-  </script>
+
+    // --- Frequency Sweep Generator ---
+    let sweepOsc = null, sweepGain = null, sweepCtx = null, autoSweepInterval = null;
+
+    function startSweepTone() {
+      stopSweepTone();
+      initAudio();
+      sweepCtx = audioContext;
+      sweepOsc = sweepCtx.createOscillator();
+      sweepGain = sweepCtx.createGain();
+      sweepOsc.type = 'sine';
+      sweepOsc.frequency.value = parseInt(document.getElementById('freqSlider').value) || 440;
+      sweepGain.gain.setValueAtTime(0, sweepCtx.currentTime);
+      sweepGain.gain.linearRampToValueAtTime(0.7, sweepCtx.currentTime + 0.05);
+      sweepOsc.connect(sweepGain);
+      sweepGain.connect(sweepCtx.destination);
+      sweepOsc.start();
+    }
+
+    function stopSweepTone() {
+      if (autoSweepInterval) { clearInterval(autoSweepInterval); autoSweepInterval = null; }
+      if (sweepOsc) {
+        try {
+          sweepGain.gain.linearRampToValueAtTime(0, sweepCtx.currentTime + 0.05);
+          sweepOsc.stop(sweepCtx.currentTime + 0.06);
+        } catch(e) {}
+        sweepOsc = null;
+      }
+      const btn = document.getElementById('autoSweepBtn');
+      if (btn) btn.innerHTML = '<i class="fa-solid fa-wave-square"></i> Auto Sweep 20Hz→20kHz';
+    }
+
+    function updateSweepFreq(val) {
+      const hz = parseInt(val);
+      if (sweepOsc) sweepOsc.frequency.setTargetAtTime(hz, sweepCtx.currentTime, 0.01);
+      const display = document.getElementById('sweepDisplay');
+      const note    = document.getElementById('sweepNote');
+      if (!display) return;
+      display.textContent = hz < 1000 ? `${hz} Hz` : `${(hz/1000).toFixed(1)} kHz`;
+      // Friendly label
+      if (hz < 80)       note.textContent = 'Sub-Bass · Deep Rumble';
+      else if (hz < 300)  note.textContent = 'Bass · Kick Drum Range';
+      else if (hz < 1000) note.textContent = 'Low-Mid · Bass Guitar';
+      else if (hz < 4000) note.textContent = 'Mid · Vocals & Snare';
+      else if (hz < 8000) note.textContent = 'High-Mid · Presence';
+      else if (hz < 14000)note.textContent = 'Treble · Air & Shimmer';
+      else                note.textContent = 'Ultra-High · Edge of Hearing';
+    }
+
+    function startAutoSweep() {
+      if (autoSweepInterval) { stopSweepTone(); return; }
+      startSweepTone();
+      const slider = document.getElementById('freqSlider');
+      slider.value = 20;
+      updateSweepFreq(20);
+      const btn = document.getElementById('autoSweepBtn');
+      btn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop Auto Sweep';
+      // Sweep 20Hz to 20kHz over 8 seconds
+      const steps = 200, stepMs = 8000 / steps;
+      let step = 0;
+      autoSweepInterval = setInterval(() => {
+        step++;
+        if (step > steps) { stopSweepTone(); return; }
+        // Logarithmic sweep sounds more natural
+        const hz = Math.round(20 * Math.pow(1000, step / steps));
+        slider.value = hz;
+        updateSweepFreq(hz);
+        if (sweepOsc) sweepOsc.frequency.value = hz;
+      }, stepMs);
+    }
+
 </body>
 </html>

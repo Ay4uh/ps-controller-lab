@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free System Specs Detector — CPU, GPU, RAM & Battery | TechTest</title>
+  <meta name="description" content="Instantly detect your laptop's CPU cores, GPU model, RAM size, battery health, screen specs, and network info — all from your browser. No download required.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:site_name" content="TechTest">
+  <meta property="og:type" content="website">
+  <meta name="author" content="TechTest">
+  <link rel="canonical" href="https://ay5uh.com/tools/system-specs/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-31VR9YJW06');</script>
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta property="og:title" content="Free System Specs Detector | TechTest">
+  <meta property="og:description" content="Detect CPU, GPU, RAM, battery, screen and network info instantly from your browser.">
+  <meta property="og:url" content="https://ay5uh.com/tools/system-specs/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="sitemap" type="application/xml" href="https://ay5uh.com/sitemap.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ay5uh.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://ay5uh.com/"},{"@type":"ListItem","position":3,"name":"System Specs","item":"https://ay5uh.com/tools/system-specs/"}]}</script>
+  <script>(function(){const t=localStorage.getItem('techtest_theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}})();</script>
+
+  <style>
+    /* Page Hero */
+    .page-hero {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-icon-wrap {
+      width: 72px; height: 72px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; color: #fff;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.25);
+      flex-shrink: 0;
+    }
+
+    .hero-text h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; }
+    .hero-text p  { font-size: 14px; color: var(--text-secondary); margin: 0; }
+
+    /* Grid */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Spec Card */
+    .spec-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spec-card:hover {
+      border-color: var(--accent-blue);
+      box-shadow: 0 4px 20px rgba(37,99,235,0.08);
+    }
+
+    .spec-card.wide { grid-column: span 2; }
+    @media (max-width: 700px) { .spec-card.wide { grid-column: span 1; } }
+
+    .sc-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+
+    .sc-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+
+    .sc-icon.blue   { background: rgba(37,99,235,0.10); color: #2563eb; }
+    .sc-icon.green  { background: rgba(16,185,129,0.10); color: #10b981; }
+    .sc-icon.purple { background: rgba(139,92,246,0.10); color: #8b5cf6; }
+    .sc-icon.orange { background: rgba(245,158,11,0.10); color: #f59e0b; }
+    .sc-icon.teal   { background: rgba(20,184,166,0.10); color: #14b8a6; }
+    .sc-icon.pink   { background: rgba(236,72,153,0.10); color: #ec4899; }
+
+    .sc-meta { flex: 1; min-width: 0; }
+    .sc-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 1px;
+    }
+    .sc-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+
+    .sc-value {
+      font-family: var(--font-mono);
+      font-size: 21px; font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2; margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .sc-value.loading { font-family: var(--font-body); font-size: 13px; font-weight: 400; color: var(--text-muted); }
+    .sc-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Battery bar */
+    .bat-bar { height: 6px; background: var(--bg-hover); border-radius: 3px; overflow: hidden; margin: 10px 0 6px; border: 1px solid var(--border); }
+    .bat-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+    /* Status pill */
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .pill-green { background: rgba(16,185,129,0.12); color: #10b981; }
+    .pill-blue  { background: rgba(37,99,235,0.12);  color: #2563eb; }
+    .pill-orange{ background: rgba(245,158,11,0.12); color: #d97706; }
+    .pill-grey  { background: var(--bg-hover); color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* Disclaimer */
+    .disclaimer {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container pb-5">
+
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/tools/laptop/">Tools</a></li>
+            <li class="breadcrumb-item active" aria-current="page">System Specs</li>
+          </ol>
+        </nav>
+
+        <!-- Hero -->
+        <div class="page-hero">
+          <div class="hero-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+          <div class="hero-text">
+            <h1>System Specs Detector</h1>
+            <p>Your browser-detected hardware profile — CPU, GPU, RAM, Battery, Display &amp; more. All in real-time, no download required.</p>
+          </div>
+        </div>
+
+        <!-- Specs Grid -->
+        <div class="specs-grid">
+
+          <!-- CPU -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon blue"><i class="fa-solid fa-microchip"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Processor</div>
+                <div class="sc-name">CPU Cores</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="cpuVal">Detecting…</div>
+            <div class="sc-sub" id="cpuSub"></div>
+          </div>
+
+          <!-- RAM -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon green"><i class="fa-solid fa-memory"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Memory</div>
+                <div class="sc-name">RAM</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="ramVal">Detecting…</div>
+            <div class="sc-sub" id="ramSub"></div>
+          </div>
+
+          <!-- GPU (wide) -->
+          <div class="spec-card wide">
+            <div class="sc-header">
+              <div class="sc-icon purple"><i class="fa-solid fa-display"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Graphics Card</div>
+                <div class="sc-name">GPU / Renderer</div>
+              </div>
+              <span class="pill pill-grey" id="gpuPill"></span>
+            </div>
+            <div class="sc-value loading" id="gpuVal" style="font-size:16px;">Detecting…</div>
+            <div class="sc-sub" id="gpuSub"></div>
+          </div>
+
+          <!-- Screen -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon teal"><i class="fa-solid fa-tv"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Display</div>
+                <div class="sc-name">Screen Resolution</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="screenVal">Detecting…</div>
+            <div class="sc-sub" id="screenSub"></div>
+          </div>
+
+          <!-- Refresh Rate -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon blue"><i class="fa-solid fa-gauge-high"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Display</div>
+                <div class="sc-name">Refresh Rate</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="hzVal" style="font-size:40px; font-weight:800; color: var(--accent-blue);">—</div>
+            <div class="sc-sub" id="hzSub">Sampling via requestAnimationFrame…</div>
+          </div>
+
+          <!-- Battery -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon orange" id="batIconWrap"><i class="fa-solid fa-battery-three-quarters" id="batIcon"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Power</div>
+                <div class="sc-name">Battery</div>
+              </div>
+              <span class="pill pill-grey" id="batPill"></span>
+            </div>
+            <div class="sc-value loading" id="batteryVal">Detecting…</div>
+            <div class="bat-bar" id="batBar" style="display:none;"><div class="bat-fill" id="batFill"></div></div>
+            <div class="sc-sub" id="batterySub" style="margin-top:4px;"></div>
+          </div>
+
+          <!-- Network -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon teal"><i class="fa-solid fa-wifi"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Connection</div>
+                <div class="sc-name">Network</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="netVal">Detecting…</div>
+            <div class="sc-sub" id="netSub"></div>
+          </div>
+
+          <!-- Storage -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon purple"><i class="fa-solid fa-hard-drive"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Storage</div>
+                <div class="sc-name">Browser Quota</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="storageVal">Detecting…</div>
+            <div class="sc-sub" id="storageSub"></div>
+          </div>
+
+          <!-- Platform -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon blue" id="platIconWrap"><i class="fa-brands fa-windows" id="platIcon"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">System</div>
+                <div class="sc-name">Platform &amp; Browser</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="platformVal" style="font-size:16px;">Detecting…</div>
+            <div class="sc-sub" id="platformSub"></div>
+          </div>
+
+          <!-- Touch -->
+          <div class="spec-card">
+            <div class="sc-header">
+              <div class="sc-icon pink"><i class="fa-solid fa-hand-pointer"></i></div>
+              <div class="sc-meta">
+                <div class="sc-label">Input</div>
+                <div class="sc-name">Touch Screen</div>
+              </div>
+            </div>
+            <div class="sc-value loading" id="touchVal">Detecting…</div>
+            <div class="sc-sub" id="touchSub"></div>
+          </div>
+
+        </div>
+
+        <div class="disclaimer">
+          <i class="fa-solid fa-circle-info" style="color:var(--accent-blue); flex-shrink:0; margin-top:1px;"></i>
+          <span>These values are estimated by your browser using Web APIs and may differ from actual hardware specs due to browser sandboxing. For exact specifications, check your device's System Information or Task Manager.</span>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/shared/sidebar.js?v=24"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => { try { injectSidebar('system-specs'); } catch(e){} });
+
+    function fmt(bytes) {
+      if (bytes >= 1e12) return (bytes/1e12).toFixed(1)+' TB';
+      if (bytes >= 1e9)  return (bytes/1e9).toFixed(1)+' GB';
+      if (bytes >= 1e6)  return (bytes/1e6).toFixed(1)+' MB';
+      return bytes+' B';
+    }
+
+    /* --- CPU --- */
+    const cores = navigator.hardwareConcurrency;
+    const cpuEl = document.getElementById('cpuVal');
+    cpuEl.classList.remove('loading');
+    cpuEl.textContent = cores ? `${cores} Cores` : 'Unavailable';
+    document.getElementById('cpuSub').textContent = cores
+      ? `~${Math.ceil(cores/2)} physical cores · Hyperthreading likely active`
+      : 'navigator.hardwareConcurrency not supported';
+
+    /* --- RAM --- */
+    const ram = navigator.deviceMemory;
+    const ramEl = document.getElementById('ramVal');
+    ramEl.classList.remove('loading');
+    ramEl.textContent = ram ? `≥ ${ram} GB` : 'Restricted';
+    document.getElementById('ramSub').textContent = ram
+      ? 'Browser-reported estimate · Capped at 8 GB for privacy'
+      : 'navigator.deviceMemory not supported in this browser';
+
+    /* --- GPU --- */
+    (function(){
+      const el = document.getElementById('gpuVal');
+      const sub = document.getElementById('gpuSub');
+      const pill = document.getElementById('gpuPill');
+      try {
+        const c = document.createElement('canvas');
+        const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+        if (!gl) { el.textContent='WebGL not available'; sub.textContent='Cannot detect GPU.'; return; }
+        const ext = gl.getExtension('WEBGL_debug_renderer_info');
+        const renderer = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+        const vendor   = ext ? gl.getParameter(ext.UNMASKED_VENDOR_WEBGL)   : gl.getParameter(gl.VENDOR);
+        el.classList.remove('loading');
+        el.textContent = renderer || 'Unknown Renderer';
+        sub.textContent = `Vendor: ${vendor || 'Unknown'} · ${gl.getParameter(gl.VERSION)}`;
+        if (!ext) { pill.textContent='Masked by browser'; pill.className='pill pill-orange'; }
+        else       { pill.textContent='Detected'; pill.className='pill pill-green'; }
+      } catch(e) {
+        el.textContent='Detection failed'; sub.textContent=e.message;
+      }
+    })();
+
+    /* --- Screen --- */
+    (function(){
+      const dpr = window.devicePixelRatio || 1;
+      const pw  = Math.round(screen.width * dpr);
+      const ph  = Math.round(screen.height * dpr);
+      const el  = document.getElementById('screenVal');
+      el.classList.remove('loading');
+      el.textContent = `${pw} × ${ph}`;
+      let gamut = 'sRGB';
+      if (window.matchMedia('(color-gamut: rec2020)').matches) gamut='Rec.2020 (Ultra Wide)';
+      else if (window.matchMedia('(color-gamut: p3)').matches) gamut='Display P3 (Wide)';
+      const hdr = window.matchMedia('(dynamic-range: high)').matches ? ' · HDR ✓' : '';
+      document.getElementById('screenSub').textContent =
+        `DPR ${dpr}x ${dpr>1?'(HiDPI/Retina)':'(Standard)'} · ${gamut}${hdr} · ${screen.colorDepth}-bit`;
+    })();
+
+    /* --- Refresh Rate --- */
+    (function(){
+      let f=0; const s=performance.now();
+      function tick(now){
+        f++;
+        if(now-s<900){ requestAnimationFrame(tick); return; }
+        const fps=Math.round(f*1000/(now-s));
+        const common=[30,48,60,75,90,100,120,144,165,240,360];
+        const hz=common.reduce((p,c)=>Math.abs(c-fps)<=3?c:p, fps);
+        const el=document.getElementById('hzVal');
+        el.classList.remove('loading');
+        el.textContent=`${hz}`;
+        el.insertAdjacentHTML('afterend','<span style="font-size:18px;color:var(--text-muted);font-family:var(--font-body);font-weight:500;"> Hz</span>');
+        document.getElementById('hzSub').textContent=`Measured via rAF · Raw: ${fps} fps`;
+      }
+      requestAnimationFrame(tick);
+    })();
+
+    /* --- Battery --- */
+    if('getBattery' in navigator){
+      navigator.getBattery().then(bat=>{
+        function upd(){
+          const pct=Math.round(bat.level*100);
+          const el=document.getElementById('batteryVal');
+          el.classList.remove('loading');
+          el.textContent=`${pct}%`;
+          document.getElementById('batBar').style.display='block';
+          const fill=document.getElementById('batFill');
+          fill.style.width=`${pct}%`;
+          fill.style.background=pct>50?'#10b981':pct>20?'#f59e0b':'#ef4444';
+          const pill=document.getElementById('batPill');
+          pill.textContent=bat.charging?'⚡ Charging':'🔋 On Battery';
+          pill.className=bat.charging?'pill pill-green':'pill pill-orange';
+          let t='';
+          if(bat.charging && bat.chargingTime!==Infinity){
+            t=` · ~${Math.round(bat.chargingTime/60)} min to full`;
+          } else if(!bat.charging && bat.dischargingTime!==Infinity){
+            const m=Math.round(bat.dischargingTime/60);
+            t=` · ~${Math.floor(m/60)}h ${m%60}m remaining`;
+          } else { t=' · Calculating…'; }
+          document.getElementById('batterySub').textContent=
+            (bat.charging?'Charging':'Discharging') + t;
+        }
+        upd();
+        bat.addEventListener('levelchange',upd);
+        bat.addEventListener('chargingchange',upd);
+      }).catch(()=>{
+        const el=document.getElementById('batteryVal');
+        el.classList.remove('loading'); el.textContent='Unavailable';
+        document.getElementById('batterySub').textContent='Battery API denied or unavailable.';
+      });
+    } else {
+      document.getElementById('batteryVal').textContent='Not Supported';
+      document.getElementById('batteryVal').classList.remove('loading');
+      document.getElementById('batterySub').textContent='Battery Status API not supported in this browser.';
+    }
+
+    /* --- Network --- */
+    (function(){
+      const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+      const el=document.getElementById('netVal');
+      el.classList.remove('loading');
+      if(conn){
+        const type=(conn.effectiveType||conn.type||'Unknown').toUpperCase();
+        el.textContent=type;
+        const p=[];
+        if(conn.downlink) p.push(`↓ ${conn.downlink} Mbps`);
+        if(conn.rtt)      p.push(`RTT ${conn.rtt} ms`);
+        if(conn.saveData) p.push('Data Saver ON');
+        document.getElementById('netSub').textContent=p.join(' · ')||'No extra data available';
+      } else {
+        el.textContent='Not Supported';
+        document.getElementById('netSub').textContent='Network Information API not available.';
+      }
+    })();
+
+    /* --- Storage --- */
+    if(navigator.storage&&navigator.storage.estimate){
+      navigator.storage.estimate().then(({quota,usage})=>{
+        const el=document.getElementById('storageVal');
+        el.classList.remove('loading'); el.textContent=fmt(quota);
+        const pct=quota?((usage/quota)*100).toFixed(1):0;
+        document.getElementById('storageSub').textContent=
+          `${fmt(usage)} used (${pct}%) · IndexedDB, Cache API, etc.`;
+      });
+    } else {
+      document.getElementById('storageVal').textContent='Not Supported';
+      document.getElementById('storageVal').classList.remove('loading');
+    }
+
+    /* --- Platform --- */
+    (function(){
+      const ua=navigator.userAgent;
+      let os=navigator.platform||'Unknown';
+      if(/Win/.test(os))      os='Windows';
+      else if(/Mac/.test(os)) os='macOS';
+      else if(/Linux/.test(os))os='Linux';
+      else if(/Android/.test(ua))os='Android';
+      else if(/iPhone|iPad/.test(ua))os='iOS';
+      let browser='Browser';
+      if(/Edg\//.test(ua))     browser='Edge';
+      else if(/Chrome\//.test(ua)) browser='Chrome';
+      else if(/Firefox\//.test(ua))browser='Firefox';
+      else if(/Safari\//.test(ua)) browser='Safari';
+      const icon=document.getElementById('platIcon');
+      if(os==='macOS'||os==='iOS')       icon.className='fa-brands fa-apple';
+      else if(os==='Android')            icon.className='fa-brands fa-android';
+      else if(os==='Linux')              icon.className='fa-brands fa-linux';
+      else                               icon.className='fa-brands fa-windows';
+      const el=document.getElementById('platformVal');
+      el.classList.remove('loading'); el.textContent=`${os} · ${browser}`;
+      const m=ua.match(/(Chrome|Firefox|Safari|Edg)\/(\d+)/);
+      if(m) document.getElementById('platformSub').textContent=
+        `${m[1]} v${m[2]} · Lang: ${navigator.language} · Cookies: ${navigator.cookieEnabled?'On':'Off'}`;
+    })();
+
+    /* --- Touch --- */
+    (function(){
+      const pts=navigator.maxTouchPoints;
+      const el=document.getElementById('touchVal');
+      el.classList.remove('loading');
+      el.textContent=pts>0?'Touch Screen':'Non-Touch';
+      document.getElementById('touchSub').textContent=pts>0
+        ?`${pts} simultaneous touch point${pts>1?'s':''} supported`
+        :'No touch input (maxTouchPoints = 0)';
+    })();
+  </script>
+</body>
+</html>

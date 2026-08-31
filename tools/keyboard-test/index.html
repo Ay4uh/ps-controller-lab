@@ -355,8 +355,11 @@
         </div>
 
         <div id="testScreen">
-          <div class="test-status">
-            <div class="test-counter" id="testCounter">0 / 0</div>
+          <div class="test-status" style="flex-wrap: wrap;">
+            <div>
+              <div class="test-counter" id="testCounter">0 / 0</div>
+              <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;" id="nkroCounter">Simultaneous Keys (Rollover): <strong style="color: var(--accent-blue);" id="currentPressedCount">0</strong> (Max: <strong style="color: var(--accent-green);" id="maxPressedCount">0</strong>)</div>
+            </div>
             <div class="progress">
               <div class="progress-bar" id="testProgress"></div>
             </div>
@@ -697,6 +700,7 @@
     const testedKeys = new Set();
     const stuckKeys = new Set();
     const currentlyPressed = new Set();
+    let maxPressed = 0;
     const pressTimers = {};
     let isComplete = false;
 
@@ -734,6 +738,11 @@
         }
 
         currentlyPressed.add(code);
+        if (currentlyPressed.size > maxPressed) {
+          maxPressed = currentlyPressed.size;
+        }
+        document.getElementById('currentPressedCount').textContent = currentlyPressed.size;
+        document.getElementById('maxPressedCount').textContent = maxPressed;
         
         // 3-second stuck logic
         if (!pressTimers[code]) {
@@ -756,6 +765,7 @@
       
       els.forEach(el => el.classList.remove('active'));
       currentlyPressed.delete(code);
+      document.getElementById('currentPressedCount').textContent = currentlyPressed.size;
       
       if (pressTimers[code]) {
         clearTimeout(pressTimers[code]);

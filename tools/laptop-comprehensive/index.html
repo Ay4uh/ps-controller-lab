@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Comprehensive Laptop Diagnostic — Full Hardware Report | TechTest</title>
+  <meta name="description" content="One-click full laptop hardware diagnostic. Tests CPU, RAM, GPU, battery, display, audio, webcam and more. Get a complete hardware health score instantly.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:site_name" content="TechTest">
+  <meta property="og:type" content="website">
+  <meta name="author" content="TechTest">
+  <link rel="canonical" href="https://ay5uh.com/tools/laptop-comprehensive/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-31VR9YJW06');</script>
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta property="og:title" content="Free Comprehensive Laptop Diagnostic | TechTest">
+  <meta property="og:description" content="One-click full laptop hardware diagnostic suite.">
+  <meta property="og:url" content="https://ay5uh.com/tools/laptop-comprehensive/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="sitemap" type="application/xml" href="https://ay5uh.com/sitemap.xml">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ay5uh.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://ay5uh.com/"},{"@type":"ListItem","position":3,"name":"Comprehensive Laptop Test","item":"https://ay5uh.com/tools/laptop-comprehensive/"}]}</script>
+  <script>(function(){const t=localStorage.getItem('techtest_theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}})();</script>
+
+  <style>
+    /* ── Hero ── */
+    .diag-hero {
+      background: linear-gradient(135deg, #1e3a8a 0%, #312e81 50%, #1e1b4b 100%);
+      border-radius: 20px;
+      padding: 52px 44px;
+      text-align: center;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    .diag-hero::before,
+    .diag-hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .diag-hero::before {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+      top: -80px; right: -80px;
+    }
+
+    .diag-hero::after {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      bottom: -60px; left: -60px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 20px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .diag-hero h1 {
+      font-size: 34px; font-weight: 800; margin: 0 0 12px; color: #fff;
+    }
+
+    .diag-hero p {
+      font-size: 15px; color: rgba(255,255,255,0.75); margin: 0 auto 32px; max-width: 500px;
+    }
+
+    .hero-stats {
+      display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .hero-stat { text-align: center; }
+    .hero-stat .num { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; }
+    .hero-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    #runBtn {
+      background: #fff;
+      color: #1e3a8a;
+      border: none;
+      padding: 16px 40px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    #runBtn:hover  { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
+    #runBtn:active { transform: translateY(0); }
+    #runBtn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    #statusText { margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.6); }
+
+    /* ── Progress bar ── */
+    .progress-wrap { height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin-top: 20px; overflow: hidden; }
+    .progress-fill { height: 100%; background: #fff; border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+
+    /* ── Test Suite ── */
+    .test-suite {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .suite-header {
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--text-muted);
+    }
+
+    .test-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .test-row:last-child { border-bottom: none; }
+
+    .test-row.running { background: rgba(37,99,235,0.04); }
+    .test-row.done-pass { }
+    .test-row.done-fail { background: rgba(239,68,68,0.03); }
+
+    .tr-icon {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+      background: var(--bg-hover);
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .tr-icon.active { background: rgba(37,99,235,0.12); color: #2563eb; }
+    .tr-icon.pass   { background: rgba(16,185,129,0.12); color: #10b981; }
+    .tr-icon.fail   { background: rgba(239,68,68,0.12);  color: #ef4444; }
+    .tr-icon.warn   { background: rgba(245,158,11,0.12); color: #f59e0b; }
+
+    .tr-info { flex: 1; min-width: 0; }
+    .tr-name { font-weight: 600; font-size: 14px; color: var(--text-primary); }
+    .tr-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.3px; white-space: nowrap; flex-shrink: 0;
+    }
+
+    .b-pending { background: var(--bg-hover); color: var(--text-muted); border: 1px solid var(--border); }
+    .b-running { background: rgba(37,99,235,0.12); color: #2563eb; animation: bpulse 1s infinite; }
+    .b-pass    { background: rgba(16,185,129,0.12); color: #10b981; }
+    .b-warn    { background: rgba(245,158,11,0.12); color: #d97706; }
+    .b-fail    { background: rgba(239,68,68,0.12);  color: #ef4444; }
+    .b-skip    { background: var(--bg-hover); color: var(--text-muted); }
+
+    @keyframes bpulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    /* ── Report ── */
+    #reportSection { display: none; }
+
+    .report-hero {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .score-ring {
+      display: inline-block;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent-blue) calc(var(--s, 0) * 1%), var(--bg-hover) 0%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      box-shadow: 0 0 0 8px var(--bg-card), 0 0 0 9px var(--border);
+      margin: 0 auto 20px;
+      position: relative;
+    }
+
+    .score-num { font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+    .score-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+    .grade-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 20px; border-radius: 30px;
+      font-size: 15px; font-weight: 700; margin-bottom: 24px;
+    }
+
+    .grade-excellent { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+    .grade-good      { background: rgba(37,99,235,0.12);  color: #2563eb; border: 1px solid rgba(37,99,235,0.2); }
+    .grade-attention { background: rgba(245,158,11,0.12); color: #d97706; border: 1px solid rgba(245,158,11,0.2); }
+
+    .report-table { width:100%; border-collapse:collapse; }
+    .report-table th {
+      text-align:left; padding:8px 12px;
+      font-size:11px; font-weight:700; text-transform:uppercase;
+      letter-spacing:0.5px; color:var(--text-muted);
+      border-bottom:1px solid var(--border);
+    }
+    .report-table td { padding:12px; font-size:13px; border-bottom:1px solid var(--border); }
+    .report-table tr:last-child td { border-bottom:none; }
+
+    #copyBtn {
+      background: var(--bg-hover); border: 1px solid var(--border);
+      color: var(--text-primary); padding: 10px 20px;
+      border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.2s; margin-top: 20px;
+    }
+    #copyBtn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    /* ── Download CTA ── */
+    .download-cta {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 44px 40px;
+      text-align: center;
+      margin-top: 24px;
+      margin-bottom: 28px;
+    }
+
+    .download-cta h3 { font-size: 22px; font-weight: 800; margin: 0 0 10px; }
+    .download-cta .sub { font-size: 14px; color: var(--text-secondary); margin: 0 auto 28px; max-width: 520px; }
+
+    .limit-chips {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 28px;
+    }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg-hover); border: 1px solid var(--border);
+      border-radius: 8px; padding: 5px 12px;
+      font-size: 12px; color: var(--text-secondary);
+    }
+
+    .chip i { color: var(--accent-blue); width: 12px; text-align: center; }
+
+    .dl-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+
+    .dl-primary {
+      background: var(--accent-blue, #2563eb);
+      color: #fff; border: none;
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 14px rgba(37,99,235,0.25);
+    }
+    .dl-primary:hover { opacity: 0.9; transform: translateY(-1px); color: #fff; text-decoration: none; }
+
+    .dl-secondary {
+      background: var(--bg-hover); color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      transition: all 0.2s;
+    }
+    .dl-secondary:hover { border-color: var(--accent-blue); color: var(--accent-blue); text-decoration: none; }
+
+    .dl-note { font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container pb-5">
+
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/tools/laptop/">Tools</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Comprehensive Diagnostic</li>
+          </ol>
+        </nav>
+
+        <!-- Hero -->
+        <div class="diag-hero">
+          <div class="hero-badge"><i class="fa-solid fa-flask-vial"></i> Diagnostic Suite</div>
+          <h1>Full Laptop Diagnostic</h1>
+          <p>11 automated tests. Real-time results. Hardware health score. Just like HP Diagnostics — but instant, in your browser.</p>
+
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="num">11</div><div class="lbl">Automated Tests</div></div>
+            <div class="hero-stat"><div class="num">~15s</div><div class="lbl">Total Runtime</div></div>
+            <div class="hero-stat"><div class="num">100</div><div class="lbl">Point Score</div></div>
+            <div class="hero-stat"><div class="num">0</div><div class="lbl">Downloads</div></div>
+          </div>
+
+          <button id="runBtn" onclick="runDiagnostic()">
+            <i class="fa-solid fa-play"></i> Run Full Diagnostic
+          </button>
+          <div id="statusText">Ready — click above to begin your hardware scan.</div>
+
+          <div class="progress-wrap" id="progressWrap" style="display:none;">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- Test Suite -->
+        <div class="test-suite">
+          <div class="suite-header">
+            <span><i class="fa-solid fa-list-check" style="margin-right:6px;"></i>Test Suite</span>
+            <span id="progressLabel">0 / 11 complete</span>
+          </div>
+          <div id="testRows"></div>
+        </div>
+
+        <!-- Report -->
+        <div id="reportSection">
+          <div class="report-hero">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:16px;">Your Results</div>
+
+            <div class="score-ring" id="scoreRing" style="--s:0">
+              <div class="score-num" id="scoreNum">—</div>
+              <div class="score-lbl">/ 100</div>
+            </div>
+
+            <div id="gradePill"></div>
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:28px;" id="gradeDesc"></div>
+
+            <table class="report-table">
+              <thead><tr><th>Test</th><th>Status</th><th>Details</th></tr></thead>
+              <tbody id="reportBody"></tbody>
+            </table>
+
+            <button id="copyBtn" onclick="copyReport()">
+              <i class="fa-solid fa-copy"></i> Copy Report to Clipboard
+            </button>
+          </div>
+        </div>
+
+        <!-- Download CTA -->
+        <div class="download-cta">
+          <h3>🖥️ Want Deeper Hardware Access?</h3>
+          <p class="sub">Browsers can't access CPU temperatures, RAM slot details, BIOS info, or S.M.A.R.T. drive health. Our native tool unlocks all of that.</p>
+
+          <div class="limit-chips">
+            <span class="chip"><i class="fa-solid fa-thermometer-half"></i> CPU &amp; GPU Temps</span>
+            <span class="chip"><i class="fa-solid fa-server"></i> BIOS / UEFI Info</span>
+            <span class="chip"><i class="fa-solid fa-hard-drive"></i> S.M.A.R.T. Drive Health</span>
+            <span class="chip"><i class="fa-solid fa-memory"></i> RAM Slot Details</span>
+            <span class="chip"><i class="fa-solid fa-fan"></i> Fan Speed (RPM)</span>
+            <span class="chip"><i class="fa-solid fa-bolt"></i> Power Draw (Watts)</span>
+          </div>
+
+          <div class="dl-btns">
+            <a href="/downloads/TechTest-Diagnostic-v1.0.exe" download class="dl-primary">
+              <i class="fa-brands fa-windows"></i> Download for Windows (.exe)
+            </a>
+            <a href="/downloads/TechTest-Diagnostic-v1.0.dmg" download class="dl-secondary">
+              <i class="fa-brands fa-apple"></i> macOS Version (.dmg)
+            </a>
+          </div>
+          <div class="dl-note">Free · Portable · No install required · No data collected</div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/shared/sidebar.js?v=24"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => { try { injectSidebar('laptop-comprehensive'); } catch(e){} });
+
+    const TESTS = [
+      { id:'cpu',     icon:'fa-microchip',         name:'CPU Cores',              desc:'Detect logical processor count'        },
+      { id:'ram',     icon:'fa-memory',             name:'RAM Estimation',         desc:'Estimate available system memory'      },
+      { id:'gpu',     icon:'fa-display',            name:'GPU Detection',          desc:'Identify graphics renderer via WebGL'  },
+      { id:'battery', icon:'fa-battery-three-quarters', name:'Battery Health',    desc:'Check charge level and status'         },
+      { id:'display', icon:'fa-gauge-high',         name:'Refresh Rate',           desc:'Measure screen Hz via rAF'             },
+      { id:'gamut',   icon:'fa-palette',            name:'Color Gamut',            desc:'Detect display color space'            },
+      { id:'network', icon:'fa-wifi',               name:'Network Info',           desc:'Detect connection type and speed'      },
+      { id:'touch',   icon:'fa-hand-pointer',       name:'Touch Screen',           desc:'Check touch input capability'          },
+      { id:'storage', icon:'fa-hard-drive',         name:'Storage Quota',          desc:'Estimate browser storage available'    },
+      { id:'webcam',  icon:'fa-camera',             name:'Webcam',                 desc:'Check for camera device'               },
+      { id:'mic',     icon:'fa-microphone',         name:'Microphone',             desc:'Check for audio input device'          },
+    ];
+
+    const results = {};
+
+    function buildRows() {
+      document.getElementById('testRows').innerHTML = TESTS.map(t => `
+        <div class="test-row" id="row-${t.id}">
+          <div class="tr-icon" id="icon-${t.id}"><i class="fa-solid ${t.icon}"></i></div>
+          <div class="tr-info">
+            <div class="tr-name">${t.name}</div>
+            <div class="tr-detail" id="detail-${t.id}">${t.desc}</div>
+          </div>
+          <span class="badge b-pending" id="badge-${t.id}">Pending</span>
+        </div>`).join('');
+    }
+
+    function setBadge(id, cls, txt) {
+      const b = document.getElementById(`badge-${id}`);
+      b.className = `badge b-${cls}`;
+      b.textContent = txt;
+    }
+
+    function setIcon(id, cls) {
+      const ic = document.getElementById(`icon-${id}`);
+      ic.className = `tr-icon ${cls}`;
+    }
+
+    function setDetail(id, txt) {
+      document.getElementById(`detail-${id}`).textContent = txt;
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function runDiagnostic() {
+      const btn = document.getElementById('runBtn');
+      btn.disabled = true;
+      document.getElementById('reportSection').style.display = 'none';
+      document.getElementById('progressWrap').style.display = 'block';
+      document.getElementById('progressFill').style.width = '0%';
+      document.getElementById('statusText').textContent = 'Scanning hardware…';
+      Object.keys(results).forEach(k => delete results[k]);
+      buildRows();
+
+      let done = 0;
+      const total = TESTS.length;
+
+      async function run(id, fn) {
+        document.getElementById('statusText').textContent = `Running: ${TESTS.find(t=>t.id===id).name}…`;
+        setBadge(id, 'running', '⚙ Running');
+        setIcon(id, 'active');
+        await sleep(180);
+        try { await fn(); } catch(e) {
+          results[id] = { status:'fail', detail:'Error: '+e.message };
+          setDetail(id, 'Error: '+e.message);
+          setBadge(id, 'fail', '✗ Fail');
+          setIcon(id, 'fail');
+        }
+        done++;
+        document.getElementById('progressLabel').textContent = `${done} / ${total} complete`;
+        document.getElementById('progressFill').style.width = `${(done/total)*100}%`;
+        await sleep(220);
+      }
+
+      await run('cpu', async () => {
+        const c = navigator.hardwareConcurrency;
+        if(c){ results['cpu']={status:'pass',detail:`${c} logical cores`}; setDetail('cpu',`${c} logical cores detected`); setBadge('cpu','pass','✓ Pass'); setIcon('cpu','pass'); }
+        else  { results['cpu']={status:'warn',detail:'Not reported'}; setDetail('cpu','Not reported by browser'); setBadge('cpu','warn','⚠ Warn'); setIcon('cpu','warn'); }
+      });
+
+      await run('ram', async () => {
+        const r = navigator.deviceMemory;
+        if(r){ results['ram']={status:'pass',detail:`≥ ${r} GB`}; setDetail('ram',`≥ ${r} GB (browser-capped)`); setBadge('ram','pass','✓ Pass'); setIcon('ram','pass'); }
+        else  { results['ram']={status:'warn',detail:'API not supported'}; setDetail('ram','deviceMemory API not supported'); setBadge('ram','warn','⚠ Warn'); setIcon('ram','warn'); }
+      });
+
+      await run('gpu', async () => {
+        const c=document.createElement('canvas'), gl=c.getContext('webgl')||c.getContext('experimental-webgl');
+        if(!gl){ results['gpu']={status:'warn',detail:'WebGL unavailable'}; setDetail('gpu','WebGL not available'); setBadge('gpu','warn','⚠ Warn'); setIcon('gpu','warn'); return; }
+        const ext=gl.getExtension('WEBGL_debug_renderer_info');
+        const r=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);
+        if(r){ results['gpu']={status:'pass',detail:r}; setDetail('gpu',r); setBadge('gpu','pass','✓ Pass'); setIcon('gpu','pass'); }
+        else  { results['gpu']={status:'warn',detail:'Masked'}; setDetail('gpu','GPU masked by browser'); setBadge('gpu','warn','⚠ Warn'); setIcon('gpu','warn'); }
+      });
+
+      await run('battery', async () => {
+        if(!('getBattery' in navigator)){ results['battery']={status:'skip',detail:'API not supported'}; setDetail('battery','Battery API not supported'); setBadge('battery','skip','— Skip'); setIcon('battery',''); return; }
+        const bat=await navigator.getBattery();
+        const pct=Math.round(bat.level*100);
+        const st=bat.charging?'Charging':'On Battery';
+        const detail=`${pct}% · ${st}`;
+        const s=pct>30?'pass':pct>15?'warn':'fail';
+        results['battery']={status:s,detail};
+        setDetail('battery',detail);
+        setBadge('battery',s,s==='pass'?'✓ Pass':s==='warn'?'⚠ Warn':'✗ Low');
+        setIcon('battery',s);
+      });
+
+      await run('display', async () => {
+        const fps=await new Promise(res=>{
+          let f=0;const s=performance.now();
+          function t(now){f++;if(now-s<700){requestAnimationFrame(t);}else{res(Math.round(f*1000/(now-s)));}}
+          requestAnimationFrame(t);
+        });
+        const common=[30,48,60,75,90,120,144,165,240,360];
+        const hz=common.reduce((p,c)=>Math.abs(c-fps)<=3?c:p, fps);
+        results['display']={status:'pass',detail:`${hz} Hz`};
+        setDetail('display',`${hz} Hz detected`);
+        setBadge('display','pass','✓ Pass');
+        setIcon('display','pass');
+      });
+
+      await run('gamut', async () => {
+        let g='sRGB (Standard)';
+        if(window.matchMedia('(color-gamut: rec2020)').matches) g='Rec.2020 (Ultra Wide)';
+        else if(window.matchMedia('(color-gamut: p3)').matches) g='Display P3 (Wide)';
+        results['gamut']={status:'pass',detail:g};
+        setDetail('gamut',g);
+        setBadge('gamut','pass','✓ Pass');
+        setIcon('gamut','pass');
+      });
+
+      await run('network', async () => {
+        const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+        if(!conn){ results['network']={status:'skip',detail:'API not supported'}; setDetail('network','Network Information API not supported'); setBadge('network','skip','— Skip'); setIcon('network',''); return; }
+        const type=(conn.effectiveType||conn.type||'Unknown').toUpperCase();
+        const dl=conn.downlink?` · ↓ ${conn.downlink} Mbps`:'';
+        results['network']={status:'pass',detail:type+dl};
+        setDetail('network',type+dl);
+        setBadge('network','pass','✓ Pass');
+        setIcon('network','pass');
+      });
+
+      await run('touch', async () => {
+        const pts=navigator.maxTouchPoints;
+        const detail=pts>0?`Touch screen · ${pts} pts`:'Non-touch device';
+        results['touch']={status:'pass',detail};
+        setDetail('touch',detail);
+        setBadge('touch','pass','✓ Pass');
+        setIcon('touch','pass');
+      });
+
+      await run('storage', async () => {
+        if(!navigator.storage||!navigator.storage.estimate){ results['storage']={status:'skip',detail:'API not supported'}; setDetail('storage','StorageManager not supported'); setBadge('storage','skip','— Skip'); setIcon('storage',''); return; }
+        const{quota}=await navigator.storage.estimate();
+        function fmt(b){if(b>=1e12)return(b/1e12).toFixed(1)+' TB';if(b>=1e9)return(b/1e9).toFixed(1)+' GB';return(b/1e6).toFixed(0)+' MB';}
+        const q=fmt(quota);
+        results['storage']={status:'pass',detail:`${q} quota`};
+        setDetail('storage',`${q} browser storage available`);
+        setBadge('storage','pass','✓ Pass');
+        setIcon('storage','pass');
+      });
+
+      await run('webcam', async () => {
+        if(!navigator.mediaDevices||!navigator.mediaDevices.enumerateDevices){ results['webcam']={status:'skip',detail:'API not supported'}; setDetail('webcam','MediaDevices not supported'); setBadge('webcam','skip','— Skip'); setIcon('webcam',''); return; }
+        const devs=await navigator.mediaDevices.enumerateDevices();
+        const cams=devs.filter(d=>d.kind==='videoinput');
+        if(cams.length){ results['webcam']={status:'pass',detail:`${cams.length} camera(s)`}; setDetail('webcam',`${cams.length} camera(s) detected`); setBadge('webcam','pass','✓ Pass'); setIcon('webcam','pass'); }
+        else            { results['webcam']={status:'fail',detail:'No camera found'}; setDetail('webcam','No webcam detected'); setBadge('webcam','fail','✗ Fail'); setIcon('webcam','fail'); }
+      });
+
+      await run('mic', async () => {
+        if(!navigator.mediaDevices||!navigator.mediaDevices.enumerateDevices){ results['mic']={status:'skip',detail:'API not supported'}; setDetail('mic','MediaDevices not supported'); setBadge('mic','skip','— Skip'); setIcon('mic',''); return; }
+        const devs=await navigator.mediaDevices.enumerateDevices();
+        const mics=devs.filter(d=>d.kind==='audioinput');
+        if(mics.length){ results['mic']={status:'pass',detail:`${mics.length} mic(s)`}; setDetail('mic',`${mics.length} microphone(s) detected`); setBadge('mic','pass','✓ Pass'); setIcon('mic','pass'); }
+        else            { results['mic']={status:'fail',detail:'No mic found'}; setDetail('mic','No microphone detected'); setBadge('mic','fail','✗ Fail'); setIcon('mic','fail'); }
+      });
+
+      document.getElementById('statusText').textContent = '✅ Scan complete!';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Run Again';
+      showReport();
+    }
+
+    function showReport() {
+      const sec = document.getElementById('reportSection');
+      sec.style.display = 'block';
+      sec.scrollIntoView({ behavior:'smooth', block:'start' });
+
+      const W = { pass:1, warn:0.5, fail:0, skip:0.7 };
+      let tot=0, max=0;
+      TESTS.forEach(t => {
+        const r = results[t.id]; if(!r) return;
+        max+=9; tot+=Math.round((W[r.status]??0)*9);
+      });
+      const score = Math.round((tot/max)*100);
+      document.getElementById('scoreNum').textContent = score;
+      document.getElementById('scoreRing').style.setProperty('--s', score);
+
+      let grade, gradeClass, gradeDesc;
+      if(score>=80){ grade='🏆 Excellent Hardware'; gradeClass='grade-excellent'; gradeDesc='All major systems are functioning correctly.'; }
+      else if(score>=60){ grade='👍 Good Condition'; gradeClass='grade-good'; gradeDesc='Most systems are working. Review warnings below.'; }
+      else{ grade='⚠️ Needs Attention'; gradeClass='grade-attention'; gradeDesc='Several tests need review. Check the details below.'; }
+
+      document.getElementById('gradePill').innerHTML = `<div class="grade-pill ${gradeClass}">${grade}</div>`;
+      document.getElementById('gradeDesc').textContent = gradeDesc;
+
+      const tbody = document.getElementById('reportBody');
+      tbody.innerHTML = TESTS.map(t => {
+        const r=results[t.id]||{status:'skip',detail:'Not run'};
+        const cls={pass:'b-pass',warn:'b-warn',fail:'b-fail',skip:'b-skip'}[r.status]||'b-skip';
+        const lbl={pass:'✓ Pass',warn:'⚠ Warn',fail:'✗ Fail',skip:'— Skip'}[r.status]||'—';
+        return `<tr>
+          <td><i class="fa-solid ${TESTS.find(x=>x.id===t.id).icon}" style="margin-right:8px;color:var(--accent-blue);"></i>${TESTS.find(x=>x.id===t.id).name}</td>
+          <td><span class="badge ${cls}">${lbl}</span></td>
+          <td style="color:var(--text-secondary);">${r.detail||'—'}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function copyReport() {
+      const lines = [
+        'TechTest — Comprehensive Laptop Diagnostic',
+        `Date: ${new Date().toLocaleString()}`,
+        '─'.repeat(48),
+      ];
+      TESTS.forEach(t => {
+        const r=results[t.id]||{status:'skip',detail:'Not run'};
+        lines.push(`${t.name.padEnd(24)} [${r.status.toUpperCase()}]  ${r.detail||''}`);
+      });
+      lines.push('','Source: https://ay5uh.com/tools/laptop-comprehensive/');
+      navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+        const b=document.getElementById('copyBtn');
+        b.innerHTML='<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(()=>{ b.innerHTML='<i class="fa-solid fa-copy"></i> Copy Report to Clipboard'; }, 2200);
+      });
+    }
+
+    buildRows();
+  </script>
+</body>
+</html>

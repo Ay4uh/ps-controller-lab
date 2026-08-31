@@ -251,6 +251,43 @@ function initializeSchema() {
       )
     `);
 
+    // 11b. Affiliate links table
+    db.run(`
+      CREATE TABLE IF NOT EXISTS affiliate_links (
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        url TEXT,
+        category TEXT,
+        commission_rate REAL,
+        active INTEGER DEFAULT 1,
+        clicks INTEGER DEFAULT 0,
+        revenue REAL DEFAULT 0.00,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // 11c. Site settings table
+    db.run(`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        setting_key TEXT PRIMARY KEY,
+        setting_value TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `, () => {
+      // Insert default Ad frequency config
+      db.run("INSERT OR IGNORE INTO site_settings (setting_key, setting_value) VALUES (?, ?)", 
+        ['ad_frequency', JSON.stringify({
+          show_between_posts: true,
+          between_posts_interval: 5,
+          show_sidebar: true,
+          show_footer: true,
+          dismissible: true
+        })]
+      );
+    });
+
     // 12. Global stats table
     db.run(`
       CREATE TABLE IF NOT EXISTS global_stats (
@@ -970,6 +1007,16 @@ app.post('/api/posts/:id/vote', (req, res) => {
 
 // ================= ADMETRICS API ENDPOINTS =================
 
+// Ad config
+app.get('/api/ads/config', (req, res) => {
+  const user = getLoggedInUser(req);
+  res.json({
+    showAds: !user,
+    userId: user ? user.id : null,
+    sessionId: req.cookies.sessionId || crypto.randomBytes(16).toString('hex')
+  });
+});
+
 // Impression log
 app.post('/api/ads/impression', (req, res) => {
   const { adType, adNetwork, sessionId } = req.body;
@@ -1016,6 +1063,24 @@ app.post('/api/ads/affiliate-click', (req, res) => {
     function(err) {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ success: true, purchased: isSale, commission });
+    }
+  );
+});
+
+// Update Ad Settings
+app.put('/api/ads/settings', (req, res) => {
+  const user = getLoggedInUser(req);
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  
+  const { setting_key, setting_value } = req.body;
+  db.run(
+    'INSERT INTO site_settings (setting_key, setting_value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value, updated_at=CURRENT_TIMESTAMP',
+    [setting_key, JSON.stringify(setting_value)],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
     }
   );
 });
