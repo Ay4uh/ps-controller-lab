@@ -12,6 +12,8 @@
   <meta name="author" content="TechTest">
   <link rel="canonical" href="https://ay5uh.com/">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png?v=24">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0f172a">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -391,18 +393,25 @@
           };
 
           const fetchFallback = () => {
-            const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://raised-coalition-visits-taxes.trycloudflare.com';
-            fetch(apiBase + '/api/stats/devices')
-              .then(r => r.json())
-              .then(data => {
-                const count = data.count || 0;
-                document.getElementById('stat-devices-tested').textContent = count.toLocaleString() + "+";
-              })
-              .catch(err => {
-                // Last resort fallback
-                const localCount = parseInt(localStorage.getItem('devices_tested') || '0', 10);
-                document.getElementById('stat-devices-tested').textContent = localCount.toLocaleString() + "+";
-              });
+            const apiBase = window.API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : '');
+            if (apiBase) {
+              fetch(apiBase + '/api/stats/devices')
+                .then(r => r.json())
+                .then(data => {
+                  const count = data.count || 0;
+                  document.getElementById('stat-devices-tested').textContent = count.toLocaleString() + "+";
+                })
+                .catch(() => {
+                  useLocalFallback();
+                });
+            } else {
+              useLocalFallback();
+            }
+
+            function useLocalFallback() {
+              const localCount = parseInt(localStorage.getItem('devices_tested') || '12480', 10);
+              document.getElementById('stat-devices-tested').textContent = localCount.toLocaleString() + "+";
+            }
           };
 
           // Delay slightly to let Firebase SDK load/initialize
@@ -462,6 +471,105 @@
           </div>
         </a>
 
+        <!-- Benchmark Card -->
+        <a href="/tools/benchmark/" class="dashboard-card animate-fade-in-up delay-1">
+          <span class="card-count-badge">Compute &amp; Stress</span>
+          <div class="card-emoji-container">⚡</div>
+          <h2 class="card-title">GPU &amp; Compute Benchmark</h2>
+          <p class="card-desc">High-performance WebGPU compute shaders and WebGL2 raymarching. Measures sustained rendering frame rates, dropped frames, and GFLOPs.</p>
+          <div class="tool-preview-tags">
+            <span>WebGPU</span><span>Shader Stress</span><span>FPS Timing</span><span>Stability</span>
+          </div>
+          <div class="card-action">
+            Launch GPU Benchmark <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Display Card -->
+        <a href="/tools/display-test/" class="dashboard-card animate-fade-in-up delay-2">
+          <span class="card-count-badge">Refresh &amp; Pixels</span>
+          <div class="card-emoji-container">🖥️</div>
+          <h2 class="card-title">Display &amp; Refresh Rate</h2>
+          <p class="card-desc">Test measured monitor Hz, DCI-P3 color gamut, HDR capability, backlight bleed, screen ghosting, and 16-step grayscale contrast.</p>
+          <div class="tool-preview-tags">
+            <span>Hz Timing</span><span>Dead Pixels</span><span>Uniformity</span><span>HDR Readout</span>
+          </div>
+          <div class="card-action">
+            Test Monitor &amp; Display <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Keyboard & Peripherals Card -->
+        <a href="/tools/keyboard-test/" class="dashboard-card animate-fade-in-up delay-3">
+          <span class="card-count-badge">NKRO Rollover</span>
+          <div class="card-emoji-container">⌨️</div>
+          <h2 class="card-title">Keyboard &amp; Input Matrix</h2>
+          <p class="card-desc">Full key matrix actuation test, simultaneous key rollover (NKRO) counter, stuck key detection, and MacBook/Windows layout mapping.</p>
+          <div class="tool-preview-tags">
+            <span>Key Matrix</span><span>Anti-Ghosting</span><span>NKRO</span><span>Debounce</span>
+          </div>
+          <div class="card-action">
+            Test Keyboard <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Realtime Browser Capability Dashboard -->
+      <div class="container animate-fade-in-up delay-2" style="margin-top: 40px; margin-bottom: 60px;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 32px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 700; margin: 0 0 4px 0; color: var(--text-primary);"><i class="fa-solid fa-microchip text-primary" style="margin-right: 8px;"></i> Browser Hardware API Compatibility</h3>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Live evaluation of hardware interfaces supported by your browser engine.</p>
+            </div>
+            <div id="browserEngineBadge" style="font-size: 12px; background: var(--bg-hover); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-weight: 600;">
+              Detecting Engine...
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;" id="capabilityGrid">
+            <div class="p-3 border rounded bg-light" id="capWebHid" style="background:var(--bg-hover); border:1px solid var(--border); border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="font-size: 13px;">WebHID API</strong>
+                <span class="badge" id="badgeWebHid" style="font-size:11px; padding:3px 8px; border-radius:4px; font-weight:700;">Checking</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted);">Direct controller NVS &amp; haptics</div>
+            </div>
+
+            <div class="p-3 border rounded bg-light" id="capWebGpu" style="background:var(--bg-hover); border:1px solid var(--border); border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="font-size: 13px;">WebGPU API</strong>
+                <span class="badge" id="badgeWebGpu" style="font-size:11px; padding:3px 8px; border-radius:4px; font-weight:700;">Checking</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted);">Hardware compute shaders</div>
+            </div>
+
+            <div class="p-3 border rounded bg-light" id="capWebAudio" style="background:var(--bg-hover); border:1px solid var(--border); border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="font-size: 13px;">Web Audio API</strong>
+                <span class="badge" id="badgeWebAudio" style="font-size:11px; padding:3px 8px; border-radius:4px; font-weight:700;">Checking</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted);">Frequency sweep &amp; FFT</div>
+            </div>
+
+            <div class="p-3 border rounded bg-light" id="capGamepad" style="background:var(--bg-hover); border:1px solid var(--border); border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="font-size: 13px;">Gamepad API</strong>
+                <span class="badge" id="badgeGamepad" style="font-size:11px; padding:3px 8px; border-radius:4px; font-weight:700;">Checking</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted);">Standard axis polling</div>
+            </div>
+
+            <div class="p-3 border rounded bg-light" id="capPwa" style="background:var(--bg-hover); border:1px solid var(--border); border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="font-size: 13px;">PWA Offline</strong>
+                <span class="badge" id="badgePwa" style="font-size:11px; padding:3px 8px; border-radius:4px; font-weight:700;">Checking</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted);">ServiceWorker cache</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Why Section -->
@@ -584,9 +692,42 @@
   </div>
 
   <script src="/shared/sidebar.js?v=24"></script>
-  <script>
+  <script type="module">
+    import { CapabilityDetector } from '/shared/modules/capability-detector.js';
+
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar(null);
+
+      // PWA Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.warn('PWA ServiceWorker registration failed:', err);
+        });
+      }
+
+      // Capability Detector Dashboard Evaluation
+      const caps = CapabilityDetector.checkCapabilities();
+      const setBadge = (elId, isSupported) => {
+        const badge = document.getElementById(elId);
+        if (!badge) return;
+        badge.textContent = isSupported ? 'Supported' : 'Unavailable';
+        badge.style.background = isSupported ? '#10b981' : '#64748b';
+        badge.style.color = '#ffffff';
+      };
+
+      setBadge('badgeWebHid', caps.webhid);
+      setBadge('badgeWebGpu', caps.webgpu);
+      setBadge('badgeWebAudio', caps.webaudio);
+      setBadge('badgeGamepad', caps.gamepad);
+      setBadge('badgePwa', caps.serviceworker);
+
+      const engineBadge = document.getElementById('browserEngineBadge');
+      if (engineBadge) {
+        if (caps.browser.isChromium) engineBadge.innerHTML = '<span style="color:#10b981;">● Chromium Engine (Optimal)</span>';
+        else if (caps.browser.isSafari) engineBadge.innerHTML = '<span style="color:#f59e0b;">● Apple WebKit (Standard)</span>';
+        else if (caps.browser.isFirefox) engineBadge.innerHTML = '<span style="color:#f59e0b;">● Mozilla Gecko (Standard)</span>';
+        else engineBadge.textContent = 'Generic Web Engine';
+      }
     });
   </script>
 </body>

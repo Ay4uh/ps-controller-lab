@@ -1,0 +1,44 @@
+{
+  "name": "TechTest — Hardware Diagnostic & Calibration Lab",
+  "short_name": "TechTest",
+  "description": "Professional in-browser hardware testing, calibration, and certification for controllers, laptops, displays, keyboards, and audio.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Controller Lab",
+      "url": "/tools/controller-lab/",
+      "description": "Test and calibrate PlayStation & Xbox gamepads",
+      "icons": [{ "src": "/logo.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Keyboard Test",
+      "url": "/tools/keyboard-test/",
+      "description": "Full keyboard matrix and NKRO rollover test",
+      "icons": [{ "src": "/logo.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Display & Hz Test",
+      "url": "/tools/display-test/",
+      "description": "Measure refresh rate and inspect screen uniformity",
+      "icons": [{ "src": "/logo.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "GPU Benchmark",
+      "url": "/tools/benchmark/",
+      "description": "WebGPU compute shaders and stress test",
+      "icons": [{ "src": "/logo.png", "sizes": "512x512" }]
+    }
+  ]
+}

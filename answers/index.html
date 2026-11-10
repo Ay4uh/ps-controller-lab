@@ -722,7 +722,7 @@
       }
       
       // Functions
-      const apiBase = window.API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://raised-coalition-visits-taxes.trycloudflare.com');
+      const apiBase = window.API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : '');
       
       async function loadPostsAndVotes() {
         const services = window.getFirebaseServices ? window.getFirebaseServices() : null;

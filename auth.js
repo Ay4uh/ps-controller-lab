@@ -6,7 +6,9 @@ const nodemailer = require('nodemailer');
 class AuthManager {
   constructor(db) {
     this.db = db;
-    this.jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-prod';
+    this.jwtSecret = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' 
+      ? crypto.randomBytes(32).toString('hex') 
+      : 'techtest-dev-secret-key-change-in-prod');
     this.jwtExpiry = '24h';
     this.refreshTokenExpiry = '7d';
     

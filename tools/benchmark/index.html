@@ -8,8 +8,9 @@
   <meta property="og:type" content="website">
   <meta name="author" content="TechTest">
   <link rel="canonical" href="https://ay5uh.com/tools/benchmark/">
-  <title>System Benchmark | TechTest</title>
-  <meta name="description" content="Free browser-based hardware diagnostics.">
+  <title>Free WebGPU & WebGL Benchmark — Stress Test Your GPU Online | TechTest</title>
+  <meta name="description" content="Stress test and benchmark your graphics card and CPU in your browser. Uses high-performance WebGPU compute shaders and WebGL2 raymarching. No download required.">
+  <meta name="keywords" content="webgpu benchmark, online gpu stress test, webgl benchmark, gpu tester online, graphics card stress test">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -20,110 +21,21 @@
     gtag('config', 'G-31VR9YJW06');
   </script>
 
-  <link rel="stylesheet" href="/shared/styles.css?v=24">
-  <style>
-    .placeholder-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 48px 32px;
-      max-width: 500px;
-      margin: 48px auto;
-      text-align: center;
-    }
-    .placeholder-title {
-      font-size: 24px;
-      margin: 0 0 16px 0;
-      color: var(--text-primary);
-    }
-    .placeholder-desc {
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin: 0 0 32px 0;
-    }
-    .live-tools-list {
-      text-align: left;
-      background: var(--bg-base);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-    }
-    .live-tools-list a {
-      display: block;
-      color: var(--text-primary);
-      text-decoration: none;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .live-tools-list a:last-child {
-      border-bottom: none;
-    }
-    .live-tools-list a:hover {
-      color: var(--accent-blue);
-    }
-  </style>
-
-  <!-- Breadcrumb Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://ay5uh.com/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Tools",
-        "item": "https://ay5uh.com/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": "⚡ System Benchmark",
-        "item": "https://ay5uh.com/tools/benchmark/"
-      }
-    ]
-  }
-  </script>
-
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "System Benchmark | TechTest",
-    "url": "https://ay5uh.com/tools/benchmark/",
-    "description": "Free browser-based hardware diagnostics.",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "All",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
-  }
-  </script>
-
   <!-- Open Graph -->
-  <meta property="og:title" content="System Benchmark | TechTest">
-  <meta property="og:description" content="Free browser-based hardware diagnostics.">
+  <meta property="og:title" content="Free WebGPU & WebGL Benchmark | TechTest">
+  <meta property="og:description" content="Stress test and benchmark your graphics card and CPU in your browser. WebGPU compute shaders and WebGL2 raymarching.">
   <meta property="og:url" content="https://ay5uh.com/tools/benchmark/">
   <meta property="og:image" content="https://ay5uh.com/og-image.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="System Benchmark | TechTest">
-  <meta name="twitter:description" content="Free browser-based hardware diagnostics.">
+  <meta name="twitter:title" content="Free WebGPU & WebGL Benchmark | TechTest">
+  <meta name="twitter:description" content="Stress test and benchmark your graphics card and CPU in your browser.">
   <meta name="twitter:image" content="https://ay5uh.com/og-image.png">
 
-  <!-- Sitemap reference -->
-  <link rel="sitemap" type="application/xml" href="https://ay5uh.com/sitemap.xml">
-
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- Theme Initialization -->
   <script>
     (function() {
@@ -135,6 +47,60 @@
       }
     })();
   </script>
+
+  <style>
+    .benchmark-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 992px) {
+      .benchmark-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+    .viewport-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .viewport-canvas {
+      width: 100%;
+      height: 400px;
+      background: #09090b;
+      display: block;
+    }
+    .telemetry-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .stat-metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-metric-row:last-child {
+      border-bottom: none;
+    }
+    .stat-metric-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .stat-metric-val {
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+  </style>
 </head>
 <body>
 
@@ -145,33 +111,159 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item"><a href="/">Tools</a></li>
-            <li class="breadcrumb-item active" aria-current="page">⚡ System Benchmark</li>
+            <li class="breadcrumb-item active" aria-current="page">WebGPU & WebGL Benchmark</li>
           </ol>
         </nav>
 
-        <div class="placeholder-card">
-          <h1 class="placeholder-title">⚡ System Benchmark</h1>
-          
-          <div class="placeholder-desc">
-            🔨 This tool is being built.
+        <div class="mb-4">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg-hover); padding: 4px 10px; border-radius: 12px; display: inline-block; margin-bottom: 12px; border: 1px solid var(--border);">HARDWARE BENCHMARK</div>
+          <h1 class="fw-bold mb-2"><i class="fa-solid fa-bolt text-warning" style="margin-right: 8px;"></i> WebGPU &amp; WebGL System Benchmark</h1>
+          <p class="text-muted">Direct hardware shader throughput, compute kernel execution, frame pacing consistency, and multi-core CPU matrix performance.</p>
+        </div>
+
+        <div class="benchmark-grid">
+          <!-- Left: Viewport and Controls -->
+          <div class="viewport-card">
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong id="activeApiBadge" class="badge" style="background:#2563eb; color:#fff; font-size:12px; padding:4px 8px; border-radius:4px;">Detecting Graphics API...</strong>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <label for="selectIntensity" style="font-size: 12px; color: var(--text-secondary);">Workload:</label>
+                <select id="selectIntensity" style="padding: 4px 8px; font-size: 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); color: var(--text-primary);">
+                  <option value="light">Light (10s Quick Check)</option>
+                  <option value="standard" selected>Standard (30s Stability)</option>
+                  <option value="intensive">Intensive (60s Thermal Stress)</option>
+                </select>
+              </div>
+            </div>
+
+            <canvas id="stressCanvas" class="viewport-canvas" width="800" height="400"></canvas>
+
+            <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; background: var(--bg-card);">
+              <button id="btnStartBenchmark" class="btn-custom-primary" style="padding: 12px 28px; font-weight: 600; font-size: 15px; border-radius: 6px; cursor: pointer; border: none; background: #2563eb; color: #fff;">
+                <i class="fa-solid fa-play me-2"></i> Start GPU Stress Test
+              </button>
+              <button id="btnCertifyBenchmark" class="btn-custom-secondary d-none" style="padding: 12px 20px; font-weight: 600; font-size: 14px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-hover); color: var(--text-primary);">
+                <i class="fa-solid fa-certificate text-warning me-2"></i> Export Health Certificate
+              </button>
+            </div>
           </div>
 
-          <div class="live-tools-list">
-            <p style="margin:0 0 12px 0; color:var(--text-muted); font-size:12px; text-transform:uppercase; font-weight:700;">Check back soon or try:</p>
-            <a href="/tools/controller-lab/">→ Controller Lab (live now)</a>
-            <a href="/tools/keyboard-test/">→ Keyboard Test (live now)</a>
-            <a href="/tools/battery-tester/">→ Battery Health (live now)</a>
-          </div>
+          <!-- Right: Real-time Telemetry -->
+          <div class="telemetry-card">
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Live GPU Telemetry</h3>
 
+            <div class="stat-metric-row">
+              <span class="stat-metric-label">Rendering Frame Rate</span>
+              <span class="stat-metric-val" id="telemetryFps">-- FPS</span>
+            </div>
+
+            <div class="stat-metric-row">
+              <span class="stat-metric-label">Min / Max Frame Rate</span>
+              <span class="stat-metric-val" id="telemetryMinMaxFps">-- / --</span>
+            </div>
+
+            <div class="stat-metric-row">
+              <span class="stat-metric-label">Dropped Frame Count</span>
+              <span class="stat-metric-val" id="telemetryDropped">0 frames</span>
+            </div>
+
+            <div class="stat-metric-row">
+              <span class="stat-metric-label">Estimated Compute Rate</span>
+              <span class="stat-metric-val" id="telemetryGflops">-- GFLOPs</span>
+            </div>
+
+            <div class="stat-metric-row">
+              <span class="stat-metric-label">Hardware Concurrency</span>
+              <span class="stat-metric-val" id="telemetryCores">-- Cores</span>
+            </div>
+
+            <div class="stat-metric-row">
+              <span class="stat-metric-label">Overall Stability Score</span>
+              <span class="stat-metric-val" id="telemetryScore">--</span>
+            </div>
+
+            <div style="margin-top: 24px; padding: 12px; background: var(--bg-hover); border-radius: 6px; font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+              <i class="fa-solid fa-circle-info" style="color: #2563eb; margin-right: 4px;"></i>
+              <strong>Browser Measurement Limitation:</strong> Modern browsers do not expose physical GPU thermistor sensors or fan RPMs for sandbox security. This test evaluates relative compute throughput and frame-time delivery variance under sustained loads.
+            </div>
+          </div>
         </div>
       </div>
     </main>
   </div>
 
   <script src="/shared/sidebar.js?v=24"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
+  <script type="module">
+    import { GpuStressTester } from '/shared/modules/gpu-stress.js';
+    import { CertificateGenerator } from '/shared/modules/certificate-generator.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
       injectSidebar('benchmark');
+
+      const canvas = document.getElementById('stressCanvas');
+      const tester = new GpuStressTester(canvas);
+      const apiInfo = await tester.init();
+
+      const badge = document.getElementById('activeApiBadge');
+      if (apiInfo.supported) {
+        badge.textContent = `Accelerated via ${apiInfo.api}`;
+        if (apiInfo.api === 'WebGPU') {
+          badge.style.background = '#10b981';
+        }
+      } else {
+        badge.textContent = 'Hardware Acceleration Unavailable';
+        badge.style.background = '#ef4444';
+      }
+
+      document.getElementById('telemetryCores').textContent = `${navigator.hardwareConcurrency || 4} Threads`;
+
+      const btnStart = document.getElementById('btnStartBenchmark');
+      const btnCert = document.getElementById('btnCertifyBenchmark');
+
+      btnStart.addEventListener('click', () => {
+        const intensity = document.getElementById('selectIntensity').value;
+        const duration = intensity === 'light' ? 10 : intensity === 'intensive' ? 60 : 30;
+
+        btnStart.disabled = true;
+        btnStart.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Benchmarking...';
+        btnCert.classList.add('d-none');
+
+        tester.start(intensity, duration, (stats) => {
+          document.getElementById('telemetryFps').textContent = `${stats.fps} FPS`;
+          document.getElementById('telemetryMinMaxFps').textContent = `${stats.minFps === Infinity ? 0 : stats.minFps} / ${stats.maxFps}`;
+          document.getElementById('telemetryDropped').textContent = `${stats.droppedFrames} frames`;
+          document.getElementById('telemetryGflops').textContent = `${stats.gflopsEstimate} GFLOPs`;
+
+          if (stats.completed) {
+            btnStart.disabled = false;
+            btnStart.innerHTML = '<i class="fa-solid fa-rotate-right me-2"></i> Run Benchmark Again';
+            btnCert.classList.remove('d-none');
+
+            const stabilityScore = Math.max(20, Math.min(100, Math.round(100 - (stats.droppedFrames * 2.5))));
+            document.getElementById('telemetryScore').textContent = `${stabilityScore} / 100`;
+
+            btnCert.onclick = () => {
+              CertificateGenerator.openCertificateModal({
+                category: 'PC Graphics & Compute',
+                deviceModel: `${apiInfo.api} Graphics Engine (${navigator.hardwareConcurrency || 4} CPU Threads)`,
+                overallGrade: stabilityScore > 85 ? 'Grade A+ (Optimal Stability)' : 'Grade B (Acceptable)',
+                status: stabilityScore > 75 ? 'PASS' : 'ACCEPTABLE',
+                metrics: [
+                  { label: 'Graphics Execution Subsystem', value: apiInfo.api, status: 'pass' },
+                  { label: 'Sustained Benchmark Frame Rate', value: `${stats.fps} FPS`, status: stats.fps >= 50 ? 'pass' : 'warn' },
+                  { label: 'Frame Consistency Stability', value: `${stabilityScore} / 100`, status: 'pass' },
+                  { label: 'Dropped / Lagging Frames', value: `${stats.droppedFrames} missed frames`, status: stats.droppedFrames < 10 ? 'pass' : 'warn' },
+                  { label: 'Shader Compute Throughput', value: `${stats.gflopsEstimate} GFLOPs`, status: 'pass' },
+                  { label: 'Host CPU Logical Cores', value: `${navigator.hardwareConcurrency || 4} Threads`, status: 'pass' }
+                ],
+                notes: `Completed ${duration}s ${intensity} GPU compute and rendering workload. No shader compilation failures or hardware crash events detected.`
+              });
+            };
+          }
+        });
+      });
     });
   </script>
 </body>

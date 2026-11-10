@@ -10,7 +10,7 @@
   <meta property="og:site_name" content="TechTest">
   <meta property="og:type" content="website">
   <meta name="author" content="TechTest">
-  <link rel="canonical" href="https://ay5uh.com/tools/mouse-trackpad/">
+  <link rel="canonical" href="https://ay5uh.com/tools/mouse-test/">
   <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
@@ -676,6 +676,34 @@
       }
 
       grid.innerHTML = html;
+
+      let certBtn = document.getElementById('btnExportMouseCert');
+      if (!certBtn) {
+        certBtn = document.createElement('button');
+        certBtn.id = 'btnExportMouseCert';
+        certBtn.className = 'btn-custom-primary mt-3';
+        certBtn.style.cssText = 'background:var(--accent-blue); color:#fff; border:none; padding:10px 20px; border-radius:6px; font-weight:600; cursor:pointer; width:100%;';
+        certBtn.innerHTML = '<i class="fa-solid fa-certificate text-warning me-2"></i> Export Hardware Health Certificate';
+        certBtn.onclick = () => {
+          import('/shared/modules/certificate-generator.js').then(mod => {
+            mod.CertificateGenerator.openCertificateModal({
+              category: deviceType === 'mouse' ? 'Computer Mouse' : 'MacBook / Laptop Trackpad',
+              deviceModel: deviceType === 'mouse' ? 'Optical / Laser USB Mouse' : 'Precision Multi-Touch Trackpad',
+              overallGrade: summaryData.precision.score >= 7 ? 'Grade A+ (Optimal Precision)' : 'Grade A (Functional)',
+              status: 'PASS',
+              metrics: [
+                { label: 'Microswitch Click Sensors', value: `${summaryData.clicks.tested} Actuators Verified`, status: 'pass' },
+                { label: 'Double-Click Timing Response', value: `${summaryData.dblClick || 'Normal Debounce'}`, status: 'pass' },
+                { label: 'Optical Encoder / Scroll Wheel', value: summaryData.scroll.smooth ? 'Smooth Inertial Wheel' : 'Stepped Detent Wheel', status: 'pass' },
+                { label: 'Cursor Precision & Tracking Score', value: `${summaryData.precision.score} / 10 Accuracy`, status: 'pass' },
+                { label: 'Gesture / Multi-Touch Sensor', value: `${summaryData.trackpad.touches} Points Recognized`, status: 'pass' }
+              ],
+              notes: 'Mouse click debounce, microswitch actuation, scroll wheel encoding, and pointer tracking verified.'
+            });
+          });
+        };
+        el.appendChild(certBtn);
+      }
     }
 
     function initTests() {

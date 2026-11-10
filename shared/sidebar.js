@@ -3,9 +3,9 @@ let firebaseApp = null;
 let firebaseAuth = null;
 let firebaseDb = null;
 
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_BASE_URL = window.API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? ''
-  : 'https://raised-coalition-visits-taxes.trycloudflare.com';
+  : '');
 
 
 function getFirebaseConfig() {
@@ -1774,12 +1774,18 @@ function injectSidebar(activeToolId = null) {
   const subnavHTML = activeToolId === 'controller-lab' ? `
     <ul class="nav-list" style="margin-top: 4px; padding-left: 16px;">
       <li class="nav-item"><button class="tab-btn active" data-tab="tab-overview" title="Overview"><i class="fa-solid fa-sliders" style="width:14px; text-align:center;"></i> <span class="item-text">Overview</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-3d" title="3D Visualizer"><i class="fa-solid fa-cube" style="width:14px; text-align:center; color:#3b82f6;"></i> <span class="item-text">3D Visualizer</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-circularity" title="Circularity Error"><i class="fa-solid fa-circle-notch" style="width:14px; text-align:center; color:#10b981;"></i> <span class="item-text">Circularity</span></button></li>
       <li class="nav-item"><button class="tab-btn" data-tab="tab-calibration" title="Calibration"><i class="fa-solid fa-wrench" style="width:14px; text-align:center;"></i> <span class="item-text">Calibration</span></button></li>
       <li class="nav-item"><button class="tab-btn" data-tab="tab-tester" title="Input Tester"><i class="fa-solid fa-keyboard" style="width:14px; text-align:center;"></i> <span class="item-text">Input Tester</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-polling" title="Polling & Jitter"><i class="fa-solid fa-gauge-high" style="width:14px; text-align:center; color:#f59e0b;"></i> <span class="item-text">Polling Rate</span></button></li>
       <li class="nav-item"><button class="tab-btn" data-tab="tab-vibration" title="Vibration"><i class="fa-solid fa-water" style="width:14px; text-align:center;"></i> <span class="item-text">Vibration</span></button></li>
       <li class="nav-item"><button class="tab-btn" data-tab="tab-touchpad" title="Touchpad"><i class="fa-solid fa-fingerprint" style="width:14px; text-align:center;"></i> <span class="item-text">Touchpad</span></button></li>
       <li class="nav-item"><button class="tab-btn" data-tab="tab-drift" title="Drift Check"><i class="fa-solid fa-compass" style="width:14px; text-align:center;"></i> <span class="item-text">Drift Check</span></button></li>
-      <li class="nav-item"><button class="tab-btn" data-tab="tab-sensors" title="Sensor Lab"><i class="fa-solid fa-microchip" style="width:14px; text-align:center;"></i> <span class="item-text">Sensor Lab</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-decoder" title="Revision Decoder"><i class="fa-solid fa-microchip" style="width:14px; text-align:center; color:#8b5cf6;"></i> <span class="item-text">Board Decoder</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-hall" title="Hall Effect Mode"><i class="fa-solid fa-magnet" style="width:14px; text-align:center; color:#ec4899;"></i> <span class="item-text">Hall Effect</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-cert" title="Diagnostic Certificate"><i class="fa-solid fa-certificate" style="width:14px; text-align:center; color:#eab308;"></i> <span class="item-text">Health Certificate</span></button></li>
+      <li class="nav-item"><button class="tab-btn" data-tab="tab-sensors" title="Sensor Lab"><i class="fa-solid fa-atom" style="width:14px; text-align:center;"></i> <span class="item-text">Sensor Lab</span></button></li>
       <li class="nav-item"><button class="tab-btn" data-tab="tab-info" title="Info & Logs"><i class="fa-solid fa-circle-info" style="width:14px; text-align:center;"></i> <span class="item-text">Info & Logs</span></button></li>
       <li class="nav-item"><button class="tab-btn" data-tab="tab-docs" title="Documentation"><i class="fa-solid fa-book" style="width:14px; text-align:center;"></i> <span class="item-text">Documentation</span></button></li>
     </ul>

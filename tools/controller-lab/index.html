@@ -1588,6 +1588,148 @@
         &ldquo;PlayStation&rdquo;, &ldquo;DualShock&rdquo;, and &ldquo;DualSense&rdquo; are registered trademarks of Sony Interactive Entertainment Inc. All other product names and trademarks are property of their respective owners.
       </footer>
 
+      <!-- NEXT-GEN 3D CONTROLLER VISUALIZER PANEL -->
+      <section class="tab-panel" id="tab-3d">
+        <div class="card-custom mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="card-title-custom mb-1"><i class="fa-solid fa-cube text-primary"></i> 3D Interactive Controller Environment</h2>
+              <p class="text-muted small mb-0">Full PBR 3D viewport. Real-time stick gimbal deflection, trigger hinge compression, button tactile feedback, and lightbar emissive glow.</p>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-secondary" onclick="window.nextGenSuite && window.nextGenSuite.visualizer3D && window.nextGenSuite.visualizer3D.controllerGroup && (window.nextGenSuite.visualizer3D.controllerGroup.rotation.set(0,0,0))">
+                <i class="fa-solid fa-arrows-rotate"></i> Reset Camera
+              </button>
+            </div>
+          </div>
+          <div id="canvas-3d-controller-container" style="width: 100%; height: 440px; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); border-radius: 12px; position: relative; overflow: hidden; cursor: grab;">
+            <div style="position: absolute; bottom: 12px; left: 16px; font-size: 11px; color: rgba(255,255,255,0.6); pointer-events: none;">
+              <i class="fa-solid fa-hand-pointer"></i> Click &amp; drag to rotate in 3D &bull; Move sticks or press triggers to observe physical deformation
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANALOG STICK CIRCULARITY BENCHMARK PANEL -->
+      <section class="tab-panel" id="tab-circularity">
+        <div class="card-custom mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="card-title-custom mb-1"><i class="fa-solid fa-circle-notch text-success"></i> Analog Stick Circularity Benchmark</h2>
+              <p class="text-muted small mb-0">Computes outer travel circularity deviation, cardinal snapping, and outer deadzone clipping across 36 angular slices.</p>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-primary" id="btnStartCircularity"><i class="fa-solid fa-play"></i> Start Circularity Test</button>
+              <button class="btn btn-sm btn-outline-secondary" id="btnResetCircularity"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
+            </div>
+          </div>
+
+          <div class="row g-4 mb-3">
+            <div class="col-md-6 text-center">
+              <h6 class="fw-bold mb-2">Left Analog Stick (Polar Radar)</h6>
+              <div class="p-2 border rounded bg-light d-inline-block">
+                <canvas id="circularityCanvasLeft" width="240" height="240" style="background:#fff; border-radius:8px;"></canvas>
+              </div>
+            </div>
+            <div class="col-md-6 text-center">
+              <h6 class="fw-bold mb-2">Right Analog Stick (Polar Radar)</h6>
+              <div class="p-2 border rounded bg-light d-inline-block">
+                <canvas id="circularityCanvasRight" width="240" height="240" style="background:#fff; border-radius:8px;"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div id="circularityResultsText" class="p-3 border rounded bg-light text-center">
+            <span class="text-muted">Click <strong>Start Circularity Test</strong> and rotate both sticks along their outer rims 2-3 times.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- REALTIME POLLING RATE & LATENCY PANEL -->
+      <section class="tab-panel" id="tab-polling">
+        <div class="card-custom mb-4">
+          <h2 class="card-title-custom mb-1"><i class="fa-solid fa-gauge-high text-warning"></i> Input Polling Rate &amp; Latency Benchmark</h2>
+          <p class="text-muted small mb-3">Measures real-time report frequency (Hz), inter-frame packet intervals, and transmission delivery jitter.</p>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="p-3 border rounded bg-light text-center">
+                <div class="small text-muted text-uppercase fw-bold">Live Polling Rate</div>
+                <div class="fs-2 fw-bold text-primary" id="statRealtimeHz">0 Hz</div>
+                <div class="small text-muted">Target: 250Hz - 1000Hz</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 border rounded bg-light text-center">
+                <div class="small text-muted text-uppercase fw-bold">Delivery Jitter</div>
+                <div class="fs-2 fw-bold text-success" id="statJitterMs">0.0 ms</div>
+                <div class="small text-muted">Lower variance is better</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 border rounded bg-light text-center">
+                <div class="small text-muted text-uppercase fw-bold">Connection Class</div>
+                <div class="fs-2 fw-bold text-dark" id="statConnMode">Direct HID</div>
+                <div class="small text-muted">USB / Bluetooth Protocol</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info small mb-0">
+            <strong>Technical Note:</strong> Over Bluetooth, operating system Bluetooth drivers (Windows BT stack, macOS CoreBluetooth) may throttle polling to 125-250 Hz to preserve battery. For maximum 1000 Hz throughput and minimal input lag, connect via a high-speed USB-C data cable.
+          </div>
+        </div>
+      </section>
+
+      <!-- HARDWARE REVISION DECODER PANEL -->
+      <section class="tab-panel" id="tab-decoder">
+        <div class="card-custom mb-4">
+          <h2 class="card-title-custom mb-1"><i class="fa-solid fa-microchip text-primary"></i> DualSense Motherboard Revision Decoder</h2>
+          <p class="text-muted small mb-3">Identify your exact PlayStation 5 controller board revision (BDM-010 through BDM-050) to ensure part compatibility before opening the shell.</p>
+
+          <div class="input-group mb-3">
+            <input type="text" id="inputDecoderQuery" class="form-control" placeholder="Enter Model (e.g. CFI-ZCT1W), FCC ID (e.g. AK8CFIZCT1A), or suffix (A, B, C)...">
+            <button class="btn btn-primary" id="btnDecodeRevision"><i class="fa-solid fa-magnifying-glass"></i> Decode Board Revision</button>
+          </div>
+
+          <div id="revisionDecoderResults">
+            <div class="p-3 border rounded bg-light text-muted small">
+              Enter your controller's FCC ID or model code from the back label to see board architecture, trigger spring specs, and compatible Hall effect thumbsticks.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HALL EFFECT DIAGNOSTIC MODE PANEL -->
+      <section class="tab-panel" id="tab-hall">
+        <div class="card-custom mb-4">
+          <h2 class="card-title-custom mb-1"><i class="fa-solid fa-magnet text-danger"></i> Hall Effect Joystick Diagnostic Suite</h2>
+          <p class="text-muted small mb-3">Evaluate electromagnetic Hall sensor symmetry, center magnetic isolation, and trigger motor cross-talk.</p>
+
+          <div class="p-3 border rounded bg-light mb-3">
+            <h6 class="fw-bold mb-1">Magnetic Trigger Cross-Talk Test</h6>
+            <p class="small text-muted mb-3">Detects whether strong magnetic fields from adaptive trigger motors or rumble actuators distort analog stick centering.</p>
+            <button class="btn btn-sm btn-outline-primary" id="btnTestMagneticInterference">
+              <i class="fa-solid fa-vial"></i> Test Magnetic Interference
+            </button>
+            <div id="hallEffectResults"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HARDWARE HEALTH CERTIFICATION PANEL -->
+      <section class="tab-panel" id="tab-cert">
+        <div class="card-custom mb-4 text-center py-5">
+          <div style="font-size: 54px; color: #f59e0b; margin-bottom: 16px;">🏅</div>
+          <h2 class="card-title-custom mb-2">Official Hardware Diagnostic Certificate</h2>
+          <p class="text-muted mx-auto mb-4" style="max-width: 600px;">
+            Generate an official, printable TechTest Diagnostic Certificate with unique report ID and QR verification. Ideal for verifying hardware health before buying or selling used controllers on eBay, Swappa, or Marketplace.
+          </p>
+          <button class="btn btn-primary btn-lg px-4" id="btnGenerateControllerCert">
+            <i class="fa-solid fa-file-pdf"></i> Generate &amp; View Certificate
+          </button>
+        </div>
+      </section>
 
       <section class="tab-panel" id="tab-calibration">
         <div class="row">
@@ -3927,6 +4069,24 @@
             }
           }
         }
+
+        if (window.nextGenSuite && gp.axes && gp.buttons) {
+          window.nextGenSuite.processFrame({
+            axes: gp.axes,
+            buttons: {
+              cross: gp.buttons[0]?.pressed,
+              circle: gp.buttons[1]?.pressed,
+              square: gp.buttons[2]?.pressed,
+              triangle: gp.buttons[3]?.pressed,
+              l1: gp.buttons[4]?.pressed,
+              r1: gp.buttons[5]?.pressed
+            },
+            triggers: {
+              l2: gp.buttons[6]?.value || 0,
+              r2: gp.buttons[7]?.value || 0
+            }
+          });
+        }
         
         const actuator = gp.vibrationActuator || (gp.hapticActuators && gp.hapticActuators[0]);
         if (isConnected && connectionType === "USB") {
@@ -3938,6 +4098,21 @@
         }
       } else if (demoModeActive) {
         const simGp = simulateDemoInputs();
+        if (window.nextGenSuite && simGp && simGp.axes) {
+          window.nextGenSuite.processFrame({
+            axes: simGp.axes,
+            buttons: {
+              cross: simGp.buttons[0]?.pressed,
+              circle: simGp.buttons[1]?.pressed,
+              square: simGp.buttons[2]?.pressed,
+              triangle: simGp.buttons[3]?.pressed
+            },
+            triggers: {
+              l2: simGp.buttons[6]?.value || 0,
+              r2: simGp.buttons[7]?.value || 0
+            }
+          });
+        }
         if (simGp && document.getElementById("finetuneModal")?.classList.contains("show")) {
           if (typeof handleFinetuneDpadAndSticks === "function") {
             handleFinetuneDpadAndSticks(simGp);
@@ -6583,6 +6758,13 @@
 
   </script>
   <script src="/shared/sidebar.js?v=24"></script>
+  <script type="module">
+    import { NextGenControllerSuite } from '/tools/controller-lab/js/nextgen-suite.js';
+    window.nextGenSuite = new NextGenControllerSuite();
+    document.addEventListener('DOMContentLoaded', () => {
+      window.nextGenSuite.init();
+    });
+  </script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar('controller-lab');

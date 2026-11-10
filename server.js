@@ -33,8 +33,8 @@ db.serialize(() => {
   db.all("PRAGMA table_info(users)", (err, columns) => {
     const hasIsActive = columns && columns.some(c => c.name === 'is_active');
     if (columns && columns.length > 0 && !hasIsActive) {
-      console.log("Migrating users table by dropping old simple schema...");
-      db.run("DROP TABLE users", () => {
+      console.log("Migrating users table safely: adding is_active column...");
+      db.run("ALTER TABLE users ADD COLUMN is_active INTEGER DEFAULT 1", () => {
         initializeSchema();
       });
     } else {
