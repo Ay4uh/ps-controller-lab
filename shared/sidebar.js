@@ -100,13 +100,66 @@ async function initFirebaseSDK() {
       window.dispatchEvent(new CustomEvent('firebaseSDKLoaded'));
     }
   } else {
-    console.log('No Firebase config found. Running in offline fallback mode.');
-    window.updateNavbarUser();
+    console.log('No Firebase config found. Using hybrid Express / local auth mode.');
+    if (typeof window.updateNavbarUser === 'function') {
+      window.updateNavbarUser();
+    }
   }
 }
 
-// Run on load
-initFirebaseSDK();
+// Global Unified Search Index for Tools, Repair Guides & Platform Routes
+window.TECHTEST_SEARCH_INDEX = [
+  { title: 'Controller Lab (3D, Drift, Circularity, IMU, Hall Effect)', url: '/tools/controller-lab/', category: 'Tool', keywords: 'ps5 dualsense ps4 dualshock xbox controller gamepad drift calibration 3d hall effect bdm polling' },
+  { title: 'Controller Calibration & Center Offset', url: '/tools/controller-lab/?tab=calibration', category: 'Controller Tab', keywords: 'calibrate center analog stick dualsense dualshock' },
+  { title: 'Controller Input Tester & Matrix', url: '/tools/controller-lab/?tab=tester', category: 'Controller Tab', keywords: 'buttons triggers l2 r2 dpad' },
+  { title: 'Controller Vibration & Haptics Test', url: '/tools/controller-lab/?tab=vibration', category: 'Controller Tab', keywords: 'rumble haptic feedback motors' },
+  { title: 'Controller Stick Drift & Circularity', url: '/tools/controller-lab/?tab=drift', category: 'Controller Tab', keywords: 'stick drift circularity polar heatmap deadzone' },
+  { title: 'DualSense Board Revision Decoder (BDM-010–050)', url: '/tools/controller-lab/?tab=decoder', category: 'Hardware Reference', keywords: 'bdm-010 bdm-020 bdm-030 bdm-040 bdm-050 fcc id potentiometer' },
+  { title: 'Laptop / PC Diagnostics Hub', url: '/tools/laptop/', category: 'Hub', keywords: 'laptop pc macbook computer diagnostics tests' },
+  { title: 'One-Click Comprehensive Laptop Suite', url: '/tools/laptop-comprehensive/', category: 'Suite', keywords: 'full suite all in one automatic test laptop' },
+  { title: 'GPU & Compute Stress Benchmark (WebGPU / WebGL2)', url: '/tools/benchmark/', category: 'Tool', keywords: 'gpu webgpu webgl compute shader stress fps benchmark graphics' },
+  { title: 'CPU & Thermal Laptop Stress Test', url: '/tools/laptop-stress/', category: 'Tool', keywords: 'cpu thermal throttling stress cores workers' },
+  { title: 'System Specs Detector', url: '/tools/system-specs/', category: 'Tool', keywords: 'specs hardware cpu ram gpu cores battery monitor' },
+  { title: 'Display & Refresh Rate Test (240Hz, HDR)', url: '/tools/display-test/', category: 'Tool', keywords: 'monitor screen refresh rate hz hdr color gamut uniformity ghosting' },
+  { title: 'Dead & Stuck Pixel Test', url: '/tools/dead-pixel-test/', category: 'Tool', keywords: 'dead pixel stuck pixel lcd oled defect test' },
+  { title: 'Keyboard & NKRO Rollover Test', url: '/tools/keyboard-test/', category: 'Tool', keywords: 'keyboard keys nkro anti ghosting stuck key macbook windows' },
+  { title: 'Mouse & Trackpad Precision Test', url: '/tools/mouse-test/', category: 'Tool', keywords: 'mouse double click scroll encoder dpi trackpad polling' },
+  { title: 'Microphone Oscilloscope & FFT Spectrum', url: '/tools/mic-test/', category: 'Tool', keywords: 'microphone mic audio input waveform fft static clipping' },
+  { title: 'Speaker Stereo & Frequency Sweep (20Hz-20kHz)', url: '/tools/speaker-test/', category: 'Tool', keywords: 'speaker stereo left right sweep frequency hz audio' },
+  { title: 'Webcam & Camera Optics Test', url: '/tools/webcam-test/', category: 'Tool', keywords: 'webcam camera video resolution fps optics' },
+  { title: 'Network Ping, Jitter & WebRTC Latency', url: '/tools/network-test/', category: 'Tool', keywords: 'network ping latency jitter webrtc stun speed' },
+  { title: 'Phone Diagnostics (Touch, Multi-Touch, Sensors)', url: '/tools/phone-diagnostics/', category: 'Tool', keywords: 'phone iphone android touch screen multitouch digitizer mobile' },
+  { title: 'Verify Hardware Health Certificate', url: '/verify/', category: 'Ledger', keywords: 'verify certificate hmac qr code health score report' },
+  { title: 'ThinkPad T14 Gen 1 AMD — Screen Replacement Guide', url: '/repair-guides/lenovo/thinkpad-t14-gen1-amd/screen-replacement/', category: 'Repair Guide', keywords: 'lenovo thinkpad t14 gen1 lcd screen replacement guide' },
+  { title: 'MacBook Air 13" M1 — Hardware Repair Guide', url: '/repair-guides/apple/macbook-air-13-m1/', category: 'Repair Guide', keywords: 'apple macbook air m1 a2337 battery screen trackpad guide' },
+  { title: 'PS5 Controller Stick Drift Fix & Recalibration', url: '/fix-ps5-controller-drift/', category: 'Repair Guide', keywords: 'ps5 dualsense stick drift repair fix guide' },
+  { title: 'PS4 DualShock 4 Stick Drift Test & Guide', url: '/ps4-controller-drift-test/', category: 'Repair Guide', keywords: 'ps4 dualshock 4 drift test guide' },
+  { title: 'All Repair Guides Catalog', url: '/repair-guides/', category: 'Directory', keywords: 'repair guides catalog laptops gaming hardware' },
+  { title: 'Community Q&A & Hardware Answers', url: '/answers/', category: 'Community', keywords: 'questions answers forum help ask community' },
+  { title: 'PS5 Controller Repair London', url: '/services/ps5-repair-london/', category: 'Service Info', keywords: 'ps5 repair london uk service' },
+  { title: 'About TechTest & Privacy', url: '/about/', category: 'Info', keywords: 'about privacy local open source' },
+  { title: 'Contact TechTest', url: '/contact/', category: 'Info', keywords: 'contact email support feedback' },
+  { title: 'Policies & Legal Terms', url: '/policies/', category: 'Legal', keywords: 'policies privacy terms disclaimer' }
+];
+
+window.searchTechTestCatalog = function(query) {
+  const q = (query || '').trim().toLowerCase();
+  if (!q) return [];
+  const terms = q.split(/\s+/);
+  return window.TECHTEST_SEARCH_INDEX.filter(item => {
+    const haystack = (item.title + ' ' + item.category + ' ' + item.keywords).toLowerCase();
+    return terms.every(t => haystack.includes(t));
+  }).slice(0, 8);
+};
+
+async function hashLocalPassword(password) {
+  const enc = new TextEncoder().encode('TechTest-LocalAuth-Salt:' + password);
+  if (typeof crypto !== 'undefined' && crypto.subtle) {
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  return btoa(password);
+}
 
 window.incrementAdImpression = function(adType = 'bottom', adNetwork = 'google_adsense') {
   const adsenseEnabled = localStorage.getItem('adsense_enabled') !== 'false';
@@ -834,14 +887,14 @@ window.openAuthModal = function(startOnSignup = false) {
               <label for="authPassword" id="lblAuthPassword">Password</label>
               <input type="password" id="authPassword" placeholder="Enter password" class="auth-form-input">
               <div id="forgotPasswordLinkWrapper" style="text-align: right; margin-top: 6px;">
-                <a href="#" id="linkForgotPassword" style="font-size: 11px; color: var(--accent-blue); text-decoration: none; font-weight: 600;">Forgot Password?</a>
+                <button type="button" id="linkForgotPassword" style="background: none; border: none; padding: 0; cursor: pointer; font-size: 11px; color: var(--accent-blue); text-decoration: none; font-weight: 600;">Forgot Password?</button>
               </div>
             </div>
             
             <button type="submit" id="authSubmitBtn" class="auth-submit-btn">Log In</button>
             
             <div id="backToLoginWrapper" style="text-align: center; margin-top: 16px; display: none;">
-              <a href="#" id="linkBackToLogin" style="font-size: 12px; color: var(--text-secondary); text-decoration: none; font-weight: 600;">&larr; Back to Log In</a>
+              <button type="button" id="linkBackToLogin" style="background: none; border: none; padding: 0; cursor: pointer; font-size: 12px; color: var(--text-secondary); text-decoration: none; font-weight: 600;">&larr; Back to Log In</button>
             </div>
           </form>
         </div>
@@ -1026,14 +1079,18 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.style.display = 'block';
             });
         } else {
-          fetch(API_BASE_URL + '/api/auth/signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, username, password, displayName: username })
-          })
-          .then(r => r.json().then(data => ({ status: r.status, data })))
-          .then(({ status, data }) => {
-            if (status === 200 && data.success) {
+          try {
+            const res = await fetch(API_BASE_URL + '/api/auth/signup', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, username, password, displayName: username })
+            });
+            const contentType = res.headers.get('content-type') || '';
+            if (!contentType.includes('application/json') || res.status === 404 || res.status === 405 || res.status === 501) {
+              throw new Error('NO_BACKEND');
+            }
+            const data = await res.json();
+            if (res.status === 200 && data.success) {
               let msg = data.message || 'Signup successful. Please verify your email.';
               if (data.verifyUrl) {
                 msg += ` <br><br><strong>Test Environment:</strong> <a href="${data.verifyUrl}" style="color: #60a5fa; text-decoration: underline; font-weight: bold;">Click here to instantly verify your account</a>`;
@@ -1045,11 +1102,24 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.textContent = data.error || 'Signup failed';
               authErrorMsg.style.display = 'block';
             }
-          })
-          .catch(err => {
-            authErrorMsg.textContent = 'Server connection error.';
-            authErrorMsg.style.display = 'block';
-          });
+          } catch (err) {
+            // Static / Local Account Store Fallback (Web Crypto SHA-256)
+            const accounts = JSON.parse(localStorage.getItem('techtest_accounts') || '[]');
+            if (accounts.some(a => a.username.toLowerCase() === username.toLowerCase() || a.email.toLowerCase() === email.toLowerCase())) {
+              authErrorMsg.textContent = 'An account with this username or email already exists locally.';
+              authErrorMsg.style.display = 'block';
+              return;
+            }
+            const passwordHash = await hashLocalPassword(password);
+            accounts.push({ username, email, credential, passwordHash, karma: 100, createdAt: new Date().toISOString() });
+            localStorage.setItem('techtest_accounts', JSON.stringify(accounts));
+            localStorage.setItem('techtest_user', username);
+            localStorage.setItem('techtest_karma', '100');
+            localStorage.setItem('techtest_credentials', credential);
+            window.updateNavbarUser();
+            window.closeAuthModal();
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username } }));
+          }
         }
         
       } else if (currentAuthModalMode === 'login') {
@@ -1105,39 +1175,53 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.style.display = 'block';
             });
         } else {
-          fetch(API_BASE_URL + '/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-          })
-          .then(r => r.json().then(data => ({ status: r.status, data })))
-          .then(({ status, data }) => {
-            if (status === 200 && data.success) {
+          try {
+            const res = await fetch(API_BASE_URL + '/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, password })
+            });
+            const contentType = res.headers.get('content-type') || '';
+            if (!contentType.includes('application/json') || res.status === 404 || res.status === 405 || res.status === 501) {
+              throw new Error('NO_BACKEND');
+            }
+            const data = await res.json();
+            if (res.status === 200 && data.success) {
               localStorage.setItem('techtest_user', data.user.username);
               localStorage.setItem('techtest_karma', data.user.karma || 100);
-              if (data.accessToken) {
-                localStorage.setItem('accessToken', data.accessToken);
-              }
-              if (data.refreshToken) {
-                localStorage.setItem('refreshToken', data.refreshToken);
-              }
-              
+              if (data.accessToken) localStorage.setItem('accessToken', data.accessToken);
+              if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
               window.updateNavbarUser();
               window.closeAuthModal();
-              
-              // Save local credentials
               localStorage.setItem('techtest_credentials', credential);
-              
               window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: data.user.username } }));
             } else {
               authErrorMsg.textContent = data.error || 'Login failed';
               authErrorMsg.style.display = 'block';
             }
-          })
-          .catch(err => {
-            authErrorMsg.textContent = 'Server connection error.';
-            authErrorMsg.style.display = 'block';
-          });
+          } catch (err) {
+            // Static / Local Account Store Fallback (Web Crypto SHA-256)
+            const accounts = JSON.parse(localStorage.getItem('techtest_accounts') || '[]');
+            const inputLower = username.toLowerCase();
+            const match = accounts.find(a => a.username.toLowerCase() === inputLower || a.email.toLowerCase() === inputLower);
+            if (!match) {
+              authErrorMsg.textContent = 'No account found with that username/email. Switch to "Sign Up" to create a profile.';
+              authErrorMsg.style.display = 'block';
+              return;
+            }
+            const passwordHash = await hashLocalPassword(password);
+            if (match.passwordHash !== passwordHash) {
+              authErrorMsg.textContent = 'Incorrect password. Please try again.';
+              authErrorMsg.style.display = 'block';
+              return;
+            }
+            localStorage.setItem('techtest_user', match.username);
+            localStorage.setItem('techtest_karma', String(match.karma || 100));
+            localStorage.setItem('techtest_credentials', match.credential || credential);
+            window.updateNavbarUser();
+            window.closeAuthModal();
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { loggedIn: true, username: match.username } }));
+          }
         }
         
       } else if (currentAuthModalMode === 'forgot') {
@@ -1154,14 +1238,18 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.style.display = 'block';
             });
         } else {
-          fetch(API_BASE_URL + '/api/auth/forgot-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-          })
-          .then(r => r.json().then(data => ({ status: r.status, data })))
-          .then(({ status, data }) => {
-            if (status === 200) {
+          try {
+            const res = await fetch(API_BASE_URL + '/api/auth/forgot-password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email })
+            });
+            const contentType = res.headers.get('content-type') || '';
+            if (!contentType.includes('application/json') || res.status === 404 || res.status === 405 || res.status === 501) {
+              throw new Error('NO_BACKEND');
+            }
+            const data = await res.json();
+            if (res.status === 200) {
               authSuccessMsg.textContent = data.message || 'If that email exists, a reset link has been sent.';
               authSuccessMsg.style.display = 'block';
               authForm.reset();
@@ -1169,11 +1257,10 @@ window.openAuthModal = function(startOnSignup = false) {
               authErrorMsg.textContent = data.error || 'Request failed';
               authErrorMsg.style.display = 'block';
             }
-          })
-          .catch(err => {
-            authErrorMsg.textContent = 'Server connection error.';
-            authErrorMsg.style.display = 'block';
-          });
+          } catch (err) {
+            authSuccessMsg.textContent = 'Local session mode active. Create a new account in Sign Up if you forgot your local password.';
+            authSuccessMsg.style.display = 'block';
+          }
         }
         
       } else if (currentAuthModalMode === 'reset') {
@@ -1810,16 +1897,17 @@ function injectSidebar(activeToolId = null) {
       </div>
       <div class="topnav-right" style="display: flex; align-items: center; gap: 8px;">
         <div id="userNavbarContainer" style="display: inline-flex; align-items: center; gap: 8px;"></div>
-        <button class="topnav-theme-toggle" id="btnToggleTheme" title="Toggle Theme" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; padding: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.2s;"><i class="fa-solid fa-moon"></i></button>
-        <button class="topnav-search" id="btnToggleSearch"><i class="fa-solid fa-search"></i></button>
-        <button class="topnav-hamburger" id="btnToggleMobileMenu"><i class="fa-solid fa-bars"></i></button>
+        <button type="button" class="topnav-theme-toggle" id="btnToggleTheme" title="Toggle Theme" aria-label="Toggle dark mode theme" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; padding: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.2s;"><i class="fa-solid fa-moon"></i></button>
+        <button type="button" class="topnav-search" id="btnToggleSearch" title="Search" aria-label="Toggle search"><i class="fa-solid fa-search"></i></button>
+        <button type="button" class="topnav-hamburger" id="btnToggleMobileMenu" title="Menu" aria-label="Toggle navigation menu"><i class="fa-solid fa-bars"></i></button>
       </div>
     </nav>
     
     <!-- Search Drawer -->
     <div class="search-drawer" id="searchDrawer">
       <i class="fa-solid fa-search" style="color: #9CA3AF; margin-right: 12px;"></i>
-      <input type="text" id="searchInput" placeholder="Search devices, repair guides, tools...">
+      <input type="text" id="searchInput" placeholder="Search devices, repair guides, tools..." autocomplete="off">
+      <div class="nav-search-results" id="navSearchResults"></div>
     </div>
 
     <!-- Mobile Dropdown -->
@@ -1827,12 +1915,16 @@ function injectSidebar(activeToolId = null) {
       <a href="/" class="${window.location.pathname === '/' || window.location.pathname.startsWith('/tools/') ? 'active' : ''}">Tools</a>
       <a href="/repair-guides/" class="${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
       <a href="/answers/" class="${window.location.pathname.startsWith('/answers/') ? 'active' : ''}">Answers</a>
+      <a href="/verify/" class="${window.location.pathname.startsWith('/verify/') ? 'active' : ''}">Verify Certificate</a>
+      <div class="mobile-dropdown-actions">
+        <input type="text" id="mobileSearchInput" placeholder="Quick search tools or guides..." style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; background:var(--bg-base); color:var(--text-primary); font-size:14px;">
+      </div>
     </div>
   `;
 
   const sidebarHTML = `
     <!-- Mobile Hamburger Toggle -->
-    <button class="mobile-menu-btn" id="hamburgerBtn" style="position: absolute; top: 68px; left: 16px; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-primary); font-size: 20px; display: none;">☰</button>
+    <button type="button" class="mobile-menu-btn" id="hamburgerBtn" aria-label="Toggle tools sidebar" style="position: absolute; top: 68px; left: 16px; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-primary); font-size: 20px; display: none;">☰</button>
 
     <aside class="global-sidebar" id="globalSidebar">
       <div class="sidebar-scroll-area">
@@ -1847,7 +1939,7 @@ function injectSidebar(activeToolId = null) {
         </div>
 
         <div class="nav-section">
-          <div class="nav-category"><span>LAPTOP / MACBOOK</span> <span class="nav-category-pill">7</span></div>
+          <div class="nav-category"><span>LAPTOP / MACBOOK</span> <span class="nav-category-pill">9</span></div>
           <ul class="nav-list">
             <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test" title="Keyboard Test">
               <i class="fa-solid fa-keyboard nav-icon"></i> <span class="item-text">Keyboard Test</span>
@@ -1870,14 +1962,23 @@ function injectSidebar(activeToolId = null) {
             <li class="nav-item"><a href="/tools/webcam-test/" id="nav-webcam-test" title="Webcam Test">
               <i class="fa-solid fa-camera nav-icon"></i> <span class="item-text">Webcam Test</span>
             </a></li>
+            <li class="nav-item"><a href="/tools/benchmark/" id="nav-benchmark" title="GPU Benchmark">
+              <i class="fa-solid fa-bolt nav-icon"></i> <span class="item-text">GPU Benchmark</span>
+            </a></li>
+            <li class="nav-item"><a href="/tools/network-test/" id="nav-network-test" title="Network Latency">
+              <i class="fa-solid fa-wifi nav-icon"></i> <span class="item-text">Network Latency</span>
+            </a></li>
           </ul>
         </div>
 
         <div class="nav-section">
-          <div class="nav-category"><span>PHONE</span> <span class="nav-category-pill">1</span></div>
+          <div class="nav-category"><span>PHONE &amp; VERIFY</span> <span class="nav-category-pill">2</span></div>
           <ul class="nav-list">
             <li class="nav-item"><a href="/tools/phone-diagnostics/" id="nav-phone-diagnostics" title="Phone Diagnostics">
               <i class="fa-solid fa-mobile-screen nav-icon"></i> <span class="item-text">Phone Diagnostics</span>
+            </a></li>
+            <li class="nav-item"><a href="/verify/" id="nav-verify" title="Verify Certificate">
+              <i class="fa-solid fa-shield-halved nav-icon"></i> <span class="item-text">Verify Certificate</span>
             </a></li>
           </ul>
         </div>
@@ -1903,28 +2004,79 @@ function injectSidebar(activeToolId = null) {
   const btnToggleSearch = document.getElementById('btnToggleSearch');
   const searchDrawer = document.getElementById('searchDrawer');
   const searchInput = document.getElementById('searchInput');
+  const navSearchResults = document.getElementById('navSearchResults');
   const btnToggleMobileMenu = document.getElementById('btnToggleMobileMenu');
   const mobileDropdown = document.getElementById('mobileDropdown');
+  const mobileSearchInput = document.getElementById('mobileSearchInput');
   const btnToggleTheme = document.getElementById('btnToggleTheme');
+
+  const renderSearchResults = (query, resultsEl) => {
+    if (!resultsEl) return;
+    const matches = window.searchTechTestCatalog ? window.searchTechTestCatalog(query) : [];
+    if (!query.trim()) {
+      resultsEl.classList.remove('open');
+      resultsEl.innerHTML = '';
+      return;
+    }
+    if (matches.length === 0) {
+      resultsEl.innerHTML = `
+        <a href="/repair-guides/?q=${encodeURIComponent(query.trim())}" class="search-result-item">
+          <span>Search repair guides for "<strong>${query.trim().replace(/</g, '&lt;')}</strong>"</span>
+          <span class="search-result-meta">Search Guides &rarr;</span>
+        </a>
+      `;
+    } else {
+      resultsEl.innerHTML = matches.map(m => `
+        <a href="${m.url}" class="search-result-item">
+          <span>${m.title}</span>
+          <span class="search-result-meta">${m.category}</span>
+        </a>
+      `).join('');
+    }
+    resultsEl.classList.add('open');
+  };
 
   if (btnToggleSearch && searchDrawer) {
     btnToggleSearch.addEventListener('click', (e) => {
       e.stopPropagation();
       searchDrawer.classList.toggle('open');
       if (searchDrawer.classList.contains('open')) {
-        setTimeout(() => searchInput.focus(), 50);
+        setTimeout(() => searchInput && searchInput.focus(), 50);
+      } else if (navSearchResults) {
+        navSearchResults.classList.remove('open');
       }
     });
 
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        renderSearchResults(e.target.value, navSearchResults);
+      });
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const q = searchInput.value.trim();
+          if (!q) return;
+          const matches = window.searchTechTestCatalog ? window.searchTechTestCatalog(q) : [];
+          if (matches.length > 0) {
+            window.location.href = matches[0].url;
+          } else {
+            window.location.href = `/repair-guides/?q=${encodeURIComponent(q)}`;
+          }
+        }
+      });
+    }
+
     document.addEventListener('click', (e) => {
-      if (!searchDrawer.contains(e.target) && e.target !== btnToggleSearch) {
+      if (!searchDrawer.contains(e.target) && !btnToggleSearch.contains(e.target)) {
         searchDrawer.classList.remove('open');
+        if (navSearchResults) navSearchResults.classList.remove('open');
       }
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         searchDrawer.classList.remove('open');
+        if (navSearchResults) navSearchResults.classList.remove('open');
       }
     });
   }
@@ -1941,8 +2093,20 @@ function injectSidebar(activeToolId = null) {
       });
     });
 
+    if (mobileSearchInput) {
+      mobileSearchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const q = mobileSearchInput.value.trim();
+          if (!q) return;
+          const matches = window.searchTechTestCatalog ? window.searchTechTestCatalog(q) : [];
+          window.location.href = matches.length > 0 ? matches[0].url : `/repair-guides/?q=${encodeURIComponent(q)}`;
+        }
+      });
+    }
+
     document.addEventListener('click', (e) => {
-      if (!mobileDropdown.contains(e.target) && e.target !== btnToggleMobileMenu) {
+      if (!mobileDropdown.contains(e.target) && !btnToggleMobileMenu.contains(e.target)) {
         mobileDropdown.classList.remove('open');
       }
     });
@@ -2155,9 +2319,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const incrementCounter = () => {
         fetch(API_BASE_URL + '/api/stats/increment-devices', { method: 'POST' })
-          .then(r => r.json())
+          .then(r => {
+            const ct = r.headers.get('content-type') || '';
+            if (!r.ok || !ct.includes('application/json')) return null;
+            return r.json();
+          })
           .then(data => {
-            if (data.success && data.isNewIp) {
+            if (data && data.success && data.isNewIp) {
               const services = getFirebaseServices();
               if (services) {
                 services.db.collection('global_stats').doc('devices_tested').set({
@@ -2167,15 +2335,14 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             }
           })
-          .catch(e => {
-            console.error("Backend counter increment error:", e);
-            // Fallback: if backend is unreachable, increment Firestore anyway
+          .catch(() => {
+            // Static / offline mode: silently increment Firestore only if configured
             const services = getFirebaseServices();
             if (services) {
               services.db.collection('global_stats').doc('devices_tested').set({
                 count: firebase.firestore.FieldValue.increment(1)
               }, { merge: true })
-              .catch(fsErr => console.error("Firestore fallback increment error:", fsErr));
+              .catch(() => {});
             }
           });
       };
@@ -2311,4 +2478,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else if (path === '/reset-password' && token) {
     window.switchAuthModalMode('reset');
   }
+
+  initFirebaseSDK();
 });

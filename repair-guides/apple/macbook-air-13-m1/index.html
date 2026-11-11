@@ -120,79 +120,79 @@
 
           <!-- Section: Guides -->
           <section id="guides" class="device-section">
-            <h2 class="device-h2">Replacement Guides</h2>
+            <h2 class="device-h2">Component Diagnostics &amp; Service Areas</h2>
             
             <div class="guide-card-grid">
               <!-- Card 1 -->
-              <a href="#" class="device-guide-card">
-                <span class="guide-featured-badge">Featured</span>
+              <a href="/tools/system-specs/" class="device-guide-card">
+                <span class="guide-featured-badge">Diagnostic</span>
                 <div class="guide-card-text">
-                  <div class="guide-card-title">Battery</div>
+                  <div class="guide-card-title">Battery &amp; Power</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-solid fa-battery-full"></i>
                 </div>
               </a>
               <!-- Card 2 -->
-              <a href="#" class="device-guide-card">
-                <span class="guide-featured-badge">Featured</span>
+              <a href="/tools/display-test/" class="device-guide-card">
+                <span class="guide-featured-badge">Diagnostic</span>
                 <div class="guide-card-text">
-                  <div class="guide-card-title">Screen</div>
+                  <div class="guide-card-title">Retina Screen</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-solid fa-desktop"></i>
                 </div>
               </a>
               <!-- Card 3 -->
-              <a href="#" class="device-guide-card">
-                <span class="guide-featured-badge">Featured</span>
+              <a href="/test/macbook-trackpad/" class="device-guide-card">
+                <span class="guide-featured-badge">Diagnostic</span>
                 <div class="guide-card-text">
-                  <div class="guide-card-title">Trackpad</div>
+                  <div class="guide-card-title">Force Touch Trackpad</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-solid fa-fingerprint"></i>
                 </div>
               </a>
               <!-- Card 4 -->
-              <a href="#" class="device-guide-card">
+              <a href="/test/macbook-pro-keyboard/" class="device-guide-card">
                 <div class="guide-card-text">
-                  <div class="guide-card-title">Keyboard</div>
+                  <div class="guide-card-title">Scissor Keyboard</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-solid fa-keyboard"></i>
                 </div>
               </a>
               <!-- Card 5 -->
-              <a href="#" class="device-guide-card">
+              <a href="/tools/benchmark/" class="device-guide-card">
                 <div class="guide-card-text">
-                  <div class="guide-card-title">Logic Board</div>
+                  <div class="guide-card-title">M1 SoC &amp; GPU</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-solid fa-microchip"></i>
                 </div>
               </a>
               <!-- Card 6 -->
-              <a href="#" class="device-guide-card">
+              <a href="/tools/speaker-test/" class="device-guide-card">
                 <div class="guide-card-text">
-                  <div class="guide-card-title">Left Speaker</div>
+                  <div class="guide-card-title">Left Speaker Channel</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-solid fa-volume-high"></i>
                 </div>
               </a>
               <!-- Card 7 -->
-              <a href="#" class="device-guide-card">
+              <a href="/tools/speaker-test/" class="device-guide-card">
                 <div class="guide-card-text">
-                  <div class="guide-card-title">Right Speaker</div>
+                  <div class="guide-card-title">Right Speaker Channel</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-solid fa-volume-high"></i>
                 </div>
               </a>
               <!-- Card 8 -->
-              <a href="#" class="device-guide-card">
+              <a href="#troubleshooting" class="device-guide-card">
                 <div class="guide-card-text">
-                  <div class="guide-card-title">USB-C Board</div>
+                  <div class="guide-card-title">USB-C / Thunderbolt I/O</div>
                 </div>
                 <div class="guide-card-image">
                   <i class="fa-brands fa-usb"></i>
@@ -207,63 +207,63 @@
             <div class="troubleshooting-accordion">
               <details>
                 <summary>Screen is black but laptop is on</summary>
-                <div class="accordion-content">Check display cable connection. If it persists, you may need a Screen Replacement.</div>
+                <div class="accordion-content">Check display cable connection and verify panel pixels using our <a href="/tools/display-test/">Display Test</a>. If an external monitor works cleanly, the internal eDP assembly or flex cable is at fault.</div>
               </details>
               <details>
                 <summary>Display flickers randomly</summary>
-                <div class="accordion-content">Update GPU drivers / check cable. If physical damage is suspected, inspect the screen hinge area.</div>
+                <div class="accordion-content">Test uniformity and backlight stability. If lines change when moving the hinge angle, the A2337 display assembly requires replacement.</div>
               </details>
               <details>
                 <summary>Battery draining extremely fast</summary>
-                <div class="accordion-content">Check battery health in macOS System Settings. If capacity is below 80%, consider a Battery Replacement.</div>
+                <div class="accordion-content">Check battery health in macOS System Settings &rarr; Power. If Maximum Capacity is below 80% or status reads Service Recommended, replace the A2389 battery cell pack.</div>
               </details>
               <details>
                 <summary>Keys feeling sticky or not registering</summary>
-                <div class="accordion-content">Clean underneath the keys with compressed air. For persistent issues, a full Keyboard assembly replacement may be required.</div>
+                <div class="accordion-content">Run our <a href="/test/macbook-pro-keyboard/">MacBook Keyboard Test</a> to isolate unreactive switches and test for chattering before cleaning keycaps with compressed air.</div>
               </details>
             </div>
           </section>
 
           <!-- Section: Parts & Tools -->
           <section id="parts" class="device-section">
-            <h2 class="device-h2">Parts & Tools</h2>
+            <h2 class="device-h2">Parts &amp; Tools Reference</h2>
             <div class="parts-tools-grid">
               <div class="pt-col">
-                <h3>Tools</h3>
+                <h3>Required Drivers &amp; Tools</h3>
                 <div class="pt-item">
-                  <span>Phillips #0 screwdriver</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>Phillips #0 screwdriver (Internal brackets)</span>
+                  <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">PH0 / J00</span>
                 </div>
                 <div class="pt-item">
-                  <span>Plastic spudger</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>Nylon / Plastic spudger (Battery flex disconnect)</span>
+                  <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">ESD Safe</span>
                 </div>
                 <div class="pt-item">
-                  <span>P5 Pentalobe Screwdriver</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>P5 Pentalobe Screwdriver (Bottom case 1.2mm)</span>
+                  <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">1.2mm Star</span>
                 </div>
                 <div class="pt-item">
-                  <span>T5 Torx Screwdriver</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>T5 &amp; T3 Torx Screwdrivers (Hinge &amp; I/O)</span>
+                  <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Torx T3/T5</span>
                 </div>
               </div>
               <div class="pt-col">
-                <h3>Parts</h3>
+                <h3>Compatible Replacement Part IDs</h3>
                 <div class="pt-item">
-                  <span>MacBook Air 13" (A2337) Screen</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>MacBook Air 13" M1 Full Display Assembly</span>
+                  <span style="font-size: 12px; color: var(--accent-blue); font-weight: 600;">A2337 EMC 3598</span>
                 </div>
                 <div class="pt-item">
-                  <span>MacBook Air (Late 2020) Battery</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>MacBook Air M1 Internal Battery (49.9 Wh)</span>
+                  <span style="font-size: 12px; color: var(--accent-blue); font-weight: 600;">Part A2389</span>
                 </div>
                 <div class="pt-item">
-                  <span>USB-C Board Replacement</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>Dual USB-C / Thunderbolt I/O Board</span>
+                  <span style="font-size: 12px; color: var(--accent-blue); font-weight: 600;">821-02788-A</span>
                 </div>
                 <div class="pt-item">
-                  <span>iFixit Pro Tech Toolkit</span>
-                  <a href="#" class="pt-buy-link">Buy &rarr;</a>
+                  <span>Force Touch Trackpad Flex Cable</span>
+                  <span style="font-size: 12px; color: var(--accent-blue); font-weight: 600;">821-02663-03</span>
                 </div>
               </div>
             </div>

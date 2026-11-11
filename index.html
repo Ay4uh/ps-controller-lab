@@ -180,14 +180,25 @@
       align-content: flex-start;
     }
     
+    .tool-preview-tags a,
     .tool-preview-tags span {
       font-size: 11px;
       background: var(--bg-hover);
       border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 3px 8px;
+      color: var(--text-secondary);
+      padding: 4px 9px;
       border-radius: 6px;
       font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tool-preview-tags a:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      background: rgba(37, 99, 235, 0.08);
     }
     
     .card-action {
@@ -206,10 +217,54 @@
       gap: 8px;
       transition: opacity 0.2s;
       margin-top: auto;
+      text-decoration: none;
+      position: relative;
+      z-index: 2;
     }
     
     .dashboard-card:hover .card-action {
       opacity: 0.9;
+    }
+
+    .dashboard-card[data-href] {
+      cursor: pointer;
+    }
+
+    .hero-search-wrapper {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto 60px auto;
+    }
+
+    .hero-search-results {
+      position: absolute;
+      top: 52px;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+      z-index: 100;
+      max-height: 320px;
+      overflow-y: auto;
+      display: none;
+      text-align: left;
+    }
+
+    .hero-search-results.open {
+      display: block;
+    }
+
+    .guide-thumb-svg {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
     }
 
     /* Redesigned Q&A Teaser */
@@ -352,167 +407,153 @@
 
       <!-- Stats Bar -->
       <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px;">
-        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; display: flex; justify-content: space-around; padding: 28px; text-align: center;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; display: flex; justify-content: space-around; padding: 28px; text-align: center; flex-wrap: wrap; gap: 20px;">
           <div>
-            <div id="stat-devices-tested" style="font-size: 32px; font-weight: 700; color: var(--text-primary);">0</div>
-            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Devices Tested</div>
+            <div id="stat-devices-tested" style="font-size: 32px; font-weight: 700; color: var(--text-primary);">14</div>
+            <div id="stat-devices-label" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Diagnostic Tools</div>
           </div>
           <div>
             <div id="stat-repair-guides" style="font-size: 32px; font-weight: 700; color: var(--text-primary);"><!-- REPAIR_GUIDES_COUNT -->4</div>
             <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Repair Guides</div>
           </div>
           <div>
-            <div style="font-size: 32px; font-weight: 700; color: var(--text-primary);">3</div>
-            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Tool Categories</div>
+            <div style="font-size: 32px; font-weight: 700; color: var(--text-primary);">100%</div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Local &amp; Private</div>
           </div>
         </div>
       </div>
-      
-      <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const loadDevicesTested = () => {
-            const hasFirebase = typeof getFirebaseServices === 'function';
-            const services = hasFirebase ? getFirebaseServices() : null;
-            
-            if (services) {
-              // Real-time subscription in Firebase mode
-              services.db.collection('global_stats').doc('devices_tested')
-                .onSnapshot(doc => {
-                  let count = 0;
-                  if (doc.exists) {
-                    count += (doc.data().count || 0);
-                  }
-                  document.getElementById('stat-devices-tested').textContent = count.toLocaleString() + "+";
-                }, err => {
-                  console.error("Firestore onSnapshot error:", err);
-                  fetchFallback();
-                });
-            } else {
-              fetchFallback();
-            }
-          };
-
-          const fetchFallback = () => {
-            const apiBase = window.API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : '');
-            if (apiBase) {
-              fetch(apiBase + '/api/stats/devices')
-                .then(r => r.json())
-                .then(data => {
-                  const count = data.count || 0;
-                  document.getElementById('stat-devices-tested').textContent = count.toLocaleString() + "+";
-                })
-                .catch(() => {
-                  useLocalFallback();
-                });
-            } else {
-              useLocalFallback();
-            }
-
-            function useLocalFallback() {
-              const localCount = parseInt(localStorage.getItem('devices_tested') || '12480', 10);
-              document.getElementById('stat-devices-tested').textContent = localCount.toLocaleString() + "+";
-            }
-          };
-
-          // Delay slightly to let Firebase SDK load/initialize
-          setTimeout(loadDevicesTested, 1200);
-        });
-      </script>
 
       <!-- Homepage Search Bar -->
-      <div class="container animate-fade-in-up delay-1" style="margin-bottom: 60px; max-width: 600px; margin-left: auto; margin-right: auto;">
-        <form action="/repair-guides/" method="GET" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; height: 48px; padding: 0 16px; transition: border-color 0.2s;">
-          <i class="fa-solid fa-search" style="color: var(--text-muted); margin-right: 12px;"></i>
-          <input type="text" name="q" placeholder="Search guides, tools, or devices..." style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; color: var(--text-primary);">
-        </form>
+      <div class="container animate-fade-in-up delay-1">
+        <div class="hero-search-wrapper">
+          <form id="heroSearchForm" action="/repair-guides/" method="GET" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; height: 48px; padding: 0 16px; transition: border-color 0.2s;">
+            <i class="fa-solid fa-search" style="color: var(--text-muted); margin-right: 12px;"></i>
+            <input type="text" id="heroSearchInput" name="q" placeholder="Search guides, tools, or devices..." autocomplete="off" style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; color: var(--text-primary);">
+            <button type="button" id="heroSearchClear" aria-label="Clear search" style="display: none; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 4px 8px;"><i class="fa-solid fa-times"></i></button>
+          </form>
+          <div id="heroSearchResults" class="hero-search-results"></div>
+        </div>
       </div>
 
-      <div class="container dashboard-grid">
+      <div class="container dashboard-grid" id="heroToolsGrid">
         
         <!-- Gamepad Card -->
-        <a href="/tools/controller-lab/" class="dashboard-card animate-fade-in-up delay-1">
-          <span class="card-count-badge">6 tests</span>
+        <div class="dashboard-card animate-fade-in-up delay-1" data-href="/tools/controller-lab/" data-keywords="controller lab gamepad ps5 dualsense ps4 dualshock xbox drift calibration 3d hall effect vibration circularity" tabindex="0" role="link">
+          <span class="card-count-badge">8 tests</span>
           <div class="card-emoji-container">🎮</div>
           <h2 class="card-title">Controller Lab</h2>
-          <p class="card-desc">Diagnose, test, and calibrate PlayStation, Xbox, and Nintendo controllers. Read raw HID data, test haptics, and check for stick drift.</p>
+          <p class="card-desc">Diagnose, test, and calibrate PlayStation, Xbox, and Nintendo controllers. Read raw HID data, inspect 3D sticks, test haptics, and check for stick drift.</p>
           <div class="tool-preview-tags">
-            <span>Calibration</span><span>Input Tester</span><span>Vibration</span><span>Drift Check</span>
+            <a href="/tools/controller-lab/?tab=3d">3D Model</a>
+            <a href="/tools/controller-lab/?tab=calibration">Calibration</a>
+            <a href="/tools/controller-lab/?tab=tester">Input Tester</a>
+            <a href="/tools/controller-lab/?tab=vibration">Vibration</a>
+            <a href="/tools/controller-lab/?tab=drift">Drift Check</a>
+            <a href="/tools/controller-lab/?tab=circularity">Circularity</a>
+            <a href="/tools/controller-lab/?tab=hall">Hall Effect</a>
+            <a href="/tools/controller-lab/?tab=decoder">Board Decoder</a>
           </div>
-          <div class="card-action">
+          <a href="/tools/controller-lab/" class="card-action">
             Open Controller Lab <i class="fa-solid fa-arrow-right"></i>
-          </div>
-        </a>
+          </a>
+        </div>
 
         <!-- Laptop Card -->
-        <a href="/tools/laptop/" class="dashboard-card animate-fade-in-up delay-2">
-          <span class="card-count-badge">8 tools</span>
+        <div class="dashboard-card animate-fade-in-up delay-2" data-href="/tools/laptop/" data-keywords="laptop pc macbook windows diagnostics keyboard mouse mic speaker display dead pixel webcam stress cpu" tabindex="0" role="link">
+          <span class="card-count-badge">9 tools</span>
           <div class="card-emoji-container">💻</div>
           <h2 class="card-title">Laptop / PC Diagnostics</h2>
           <p class="card-desc">Comprehensive suite for testing your computer. Includes Keyboard, Mouse, Microphone, Speaker, Webcam, Display, and Stress Test tools.</p>
           <div class="tool-preview-tags">
-            <span>Keyboard</span><span>Mouse</span><span>Mic</span><span>Speaker</span><span>Display</span><span>Dead Pixel</span><span>Webcam</span><span>Stress Test</span>
+            <a href="/tools/keyboard-test/">Keyboard</a>
+            <a href="/tools/mouse-test/">Mouse</a>
+            <a href="/tools/mic-test/">Mic</a>
+            <a href="/tools/speaker-test/">Speaker</a>
+            <a href="/tools/display-test/">Display</a>
+            <a href="/tools/dead-pixel-test/">Dead Pixel</a>
+            <a href="/tools/webcam-test/">Webcam</a>
+            <a href="/tools/laptop-stress/">Stress Test</a>
+            <a href="/tools/system-specs/">Specs</a>
           </div>
-          <div class="card-action">
+          <a href="/tools/laptop/" class="card-action">
             View PC Tools <i class="fa-solid fa-arrow-right"></i>
-          </div>
-        </a>
+          </a>
+        </div>
 
         <!-- Phone Card -->
-        <a href="/tools/phone-diagnostics/" class="dashboard-card animate-fade-in-up delay-3">
+        <div class="dashboard-card animate-fade-in-up delay-3" data-href="/tools/phone-diagnostics/" data-keywords="phone ios android mobile smartphone touchscreen digitizer multitouch dead pixel camera mic speaker" tabindex="0" role="link">
           <span class="card-count-badge">6 tests</span>
           <div class="card-emoji-container">📱</div>
           <h2 class="card-title">Phone Tester</h2>
           <p class="card-desc">Scan your iOS or Android smartphone for hardware defects. Test touchscreen digitizers, haptics, cameras, and dead pixels.</p>
           <div class="tool-preview-tags">
-            <span>Dead Pixel</span><span>Touch</span><span>Multi-Touch</span><span>Speaker</span><span>Mic</span><span>Camera</span>
+            <a href="/tools/dead-pixel-test/">Dead Pixel</a>
+            <a href="/tools/phone-diagnostics/#touch">Touch</a>
+            <a href="/tools/phone-diagnostics/#multitouch">Multi-Touch</a>
+            <a href="/tools/speaker-test/">Speaker</a>
+            <a href="/tools/mic-test/">Mic</a>
+            <a href="/tools/webcam-test/">Camera</a>
           </div>
-          <div class="card-action">
+          <a href="/tools/phone-diagnostics/" class="card-action">
             Start Phone Test <i class="fa-solid fa-arrow-right"></i>
-          </div>
-        </a>
+          </a>
+        </div>
 
         <!-- Benchmark Card -->
-        <a href="/tools/benchmark/" class="dashboard-card animate-fade-in-up delay-1">
+        <div class="dashboard-card animate-fade-in-up delay-1" data-href="/tools/benchmark/" data-keywords="gpu compute benchmark webgpu webgl shader stress fps stability specs" tabindex="0" role="link">
           <span class="card-count-badge">Compute &amp; Stress</span>
           <div class="card-emoji-container">⚡</div>
           <h2 class="card-title">GPU &amp; Compute Benchmark</h2>
-          <p class="card-desc">High-performance WebGPU compute shaders and WebGL2 raymarching. Measures sustained rendering frame rates, dropped frames, and GFLOPs.</p>
+          <p class="card-desc">High-performance WebGPU compute shaders and WebGL2 raymarching. Measures sustained rendering frame rates, dropped frames, and compute throughput.</p>
           <div class="tool-preview-tags">
-            <span>WebGPU</span><span>Shader Stress</span><span>FPS Timing</span><span>Stability</span>
+            <a href="/tools/benchmark/">WebGPU</a>
+            <a href="/tools/benchmark/">Shader Stress</a>
+            <a href="/tools/benchmark/">FPS Timing</a>
+            <a href="/tools/system-specs/">System Specs</a>
           </div>
-          <div class="card-action">
+          <a href="/tools/benchmark/" class="card-action">
             Launch GPU Benchmark <i class="fa-solid fa-arrow-right"></i>
-          </div>
-        </a>
+          </a>
+        </div>
 
         <!-- Display Card -->
-        <a href="/tools/display-test/" class="dashboard-card animate-fade-in-up delay-2">
+        <div class="dashboard-card animate-fade-in-up delay-2" data-href="/tools/display-test/" data-keywords="display monitor screen refresh rate hz pixels uniformity backlight bleed hdr gamut" tabindex="0" role="link">
           <span class="card-count-badge">Refresh &amp; Pixels</span>
           <div class="card-emoji-container">🖥️</div>
           <h2 class="card-title">Display &amp; Refresh Rate</h2>
           <p class="card-desc">Test measured monitor Hz, DCI-P3 color gamut, HDR capability, backlight bleed, screen ghosting, and 16-step grayscale contrast.</p>
           <div class="tool-preview-tags">
-            <span>Hz Timing</span><span>Dead Pixels</span><span>Uniformity</span><span>HDR Readout</span>
+            <a href="/tools/display-test/">Hz Timing</a>
+            <a href="/tools/dead-pixel-test/">Dead Pixels</a>
+            <a href="/tools/display-test/#uniformity">Uniformity</a>
+            <a href="/tools/display-test/#hdr">HDR Readout</a>
           </div>
-          <div class="card-action">
+          <a href="/tools/display-test/" class="card-action">
             Test Monitor &amp; Display <i class="fa-solid fa-arrow-right"></i>
-          </div>
-        </a>
+          </a>
+        </div>
 
         <!-- Keyboard & Peripherals Card -->
-        <a href="/tools/keyboard-test/" class="dashboard-card animate-fade-in-up delay-3">
+        <div class="dashboard-card animate-fade-in-up delay-3" data-href="/tools/keyboard-test/" data-keywords="keyboard input matrix nkro anti-ghosting key rollover debounce mouse network ping" tabindex="0" role="link">
           <span class="card-count-badge">NKRO Rollover</span>
           <div class="card-emoji-container">⌨️</div>
           <h2 class="card-title">Keyboard &amp; Input Matrix</h2>
           <p class="card-desc">Full key matrix actuation test, simultaneous key rollover (NKRO) counter, stuck key detection, and MacBook/Windows layout mapping.</p>
           <div class="tool-preview-tags">
-            <span>Key Matrix</span><span>Anti-Ghosting</span><span>NKRO</span><span>Debounce</span>
+            <a href="/tools/keyboard-test/">Key Matrix</a>
+            <a href="/tools/keyboard-test/">Anti-Ghosting</a>
+            <a href="/tools/mouse-test/">Mouse &amp; DPI</a>
+            <a href="/tools/network-test/">Network Ping</a>
           </div>
-          <div class="card-action">
+          <a href="/tools/keyboard-test/" class="card-action">
             Test Keyboard <i class="fa-solid fa-arrow-right"></i>
-          </div>
-        </a>
+          </a>
+        </div>
 
+      </div>
+      <div id="heroSearchEmptyState" class="container" style="display:none; text-align:center; padding: 32px; margin-bottom: 40px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;">
+        <p style="margin:0 0 12px 0; color: var(--text-secondary);">No dashboard category matched your filter directly.</p>
+        <a id="heroSearchEmptyLink" href="/repair-guides/" class="card-action" style="width:auto; display:inline-flex; padding:10px 20px;">Search Repair Guides Instead <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
       <!-- Realtime Browser Capability Dashboard -->
@@ -610,7 +651,16 @@
           
           <!-- Card 1 -->
           <a href="/repair-guides/lenovo/thinkpad-t14-gen1-amd/screen-replacement/" class="dashboard-card" style="padding: 0; align-items: stretch; text-align: left;">
-            <div style="width: 100%; aspect-ratio: 16/9; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div class="guide-thumb-svg">
+              <svg viewBox="0 0 260 140" width="220" height="118" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="30" y="14" width="200" height="106" rx="6" stroke="#38bdf8" stroke-width="2" fill="#0f172a"/>
+                <rect x="42" y="24" width="176" height="86" rx="2" stroke="#1e40af" stroke-dasharray="4 3" stroke-width="1.5" fill="#1e293b"/>
+                <rect x="108" y="96" width="44" height="10" rx="2" fill="#f59e0b"/>
+                <line x1="130" y1="106" x2="130" y2="128" stroke="#f59e0b" stroke-width="3"/>
+                <text x="130" y="64" fill="#e2e8f0" font-family="monospace" font-size="11" text-anchor="middle">14.0" 30-Pin eDP</text>
+                <text x="130" y="80" fill="#94a3b8" font-family="sans-serif" font-size="9" text-anchor="middle">ThinkPad T14 Gen 1</text>
+              </svg>
+            </div>
             <div style="padding: 24px;">
               <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
               <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">ThinkPad T14 Gen 1 — Screen Replacement</h3>
@@ -620,7 +670,15 @@
 
           <!-- Card 2 -->
           <a href="/repair-guides/apple/macbook-air-13-m1/" class="dashboard-card" style="padding: 0; align-items: stretch; text-align: left;">
-            <div style="width: 100%; aspect-ratio: 16/9; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div class="guide-thumb-svg">
+              <svg viewBox="0 0 260 140" width="220" height="118" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="40" y="18" width="180" height="92" rx="8" stroke="#a78bfa" stroke-width="2" fill="#0f172a"/>
+                <rect x="24" y="110" width="212" height="10" rx="4" fill="#334155" stroke="#64748b" stroke-width="1.5"/>
+                <rect x="108" y="110" width="44" height="4" rx="2" fill="#94a3b8"/>
+                <rect x="86" y="42" width="88" height="44" rx="6" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5"/>
+                <text x="130" y="68" fill="#e2e8f0" font-family="monospace" font-size="11" text-anchor="middle">A2337 M1</text>
+              </svg>
+            </div>
             <div style="padding: 24px;">
               <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
               <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">MacBook Air 13" M1 — Hardware Repair Guide</h3>
@@ -630,10 +688,20 @@
 
           <!-- Card 3 -->
           <a href="/fix-ps5-controller-drift/" class="dashboard-card" style="padding: 0; align-items: stretch; text-align: left;">
-            <div style="width: 100%; aspect-ratio: 16/9; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fa-solid fa-image" style="font-size: 32px;"></i></div>
+            <div class="guide-thumb-svg">
+              <svg viewBox="0 0 260 140" width="220" height="118" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="95" cy="70" r="32" stroke="#10b981" stroke-width="2" fill="#1e293b"/>
+                <circle cx="95" cy="70" r="14" stroke="#34d399" stroke-width="1.5" fill="#0f172a"/>
+                <line x1="95" y1="38" x2="95" y2="102" stroke="#334155" stroke-width="1"/>
+                <line x1="63" y1="70" x2="127" y2="70" stroke="#334155" stroke-width="1"/>
+                <circle cx="99" cy="67" r="4" fill="#ef4444"/>
+                <text x="172" y="65" fill="#e2e8f0" font-family="monospace" font-size="11" text-anchor="middle">DualSense</text>
+                <text x="172" y="81" fill="#10b981" font-family="monospace" font-size="10" text-anchor="middle">BDM Potentiometer</text>
+              </svg>
+            </div>
             <div style="padding: 24px;">
               <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
-              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">PS5 Controller — Stick Drift Fix & Recalibrate</h3>
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">PS5 Controller — Stick Drift Fix &amp; Recalibrate</h3>
               <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Beginner &middot; 15 min</div>
             </div>
           </a>
@@ -646,7 +714,7 @@
         <div class="qa-teaser">
           <h2 style="font-family: var(--font-title); font-size: 24px; font-weight: 700; margin: 0 0 12px 0; color: var(--text-primary);">Got a repair question?</h2>
           <p style="font-size: 16px; margin: 0 0 24px 0; color: var(--text-secondary);">Ask the TechTest community — get answers from real fixers.</p>
-          <a href="/answers/" style="display: inline-block; background: var(--text-primary); color: var(--bg-card); padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Ask a Question <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
+          <a href="/answers/?ask=1" style="display: inline-block; background: var(--text-primary); color: var(--bg-card); padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Ask a Question <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
         </div>
       </div>
 
@@ -663,6 +731,8 @@
               <li><a href="/tools/controller-lab/">Controller Lab</a></li>
               <li><a href="/tools/laptop/">Laptop Diagnostics</a></li>
               <li><a href="/tools/phone-diagnostics/">Phone Tester</a></li>
+              <li><a href="/tools/benchmark/">GPU Benchmark</a></li>
+              <li><a href="/verify/">Verify Certificate</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -670,15 +740,15 @@
             <ul>
               <li><a href="/about/">About Us</a></li>
               <li><a href="/repair-guides/">Repair Guides</a></li>
-              <li><a href="/answers/">Q&A Answers</a></li>
+              <li><a href="/answers/">Q&amp;A Answers</a></li>
               <li><a href="/contact/">Contact Us</a></li>
             </ul>
           </div>
           <div class="footer-col">
-            <h4>Legal & Services</h4>
+            <h4>Legal &amp; Services</h4>
             <ul>
-              <li><a href="/policies/">Policies & Legal</a></li>
-              <li><a href="https://github.com/Ay4uh" target="_blank" rel="noopener">GitHub Project</a></li>
+              <li><a href="/policies/">Policies &amp; Legal</a></li>
+              <li><a href="https://github.com/Ay4uh/ps-controller-lab" target="_blank" rel="noopener">GitHub Project</a></li>
               <li><a href="/services/ps5-repair-london/" style="color: #60a5fa;">PS5 Repair London</a></li>
             </ul>
           </div>
@@ -697,6 +767,95 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar(null);
+
+      // Card navigation (preserves clickable inner sub-badge links)
+      const heroGrid = document.getElementById('heroToolsGrid');
+      const heroCards = Array.from(heroGrid ? heroGrid.querySelectorAll('.dashboard-card') : []);
+      heroCards.forEach(card => {
+        const dest = card.getAttribute('data-href');
+        if (!dest) return;
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('a, button')) return;
+          window.location.href = dest;
+        });
+        card.addEventListener('keydown', (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && e.target === card) {
+            e.preventDefault();
+            window.location.href = dest;
+          }
+        });
+      });
+
+      // Interactive Hero Search Filtering + Autocomplete Routing
+      const heroForm = document.getElementById('heroSearchForm');
+      const heroInput = document.getElementById('heroSearchInput');
+      const heroResults = document.getElementById('heroSearchResults');
+      const heroClear = document.getElementById('heroSearchClear');
+      const heroEmpty = document.getElementById('heroSearchEmptyState');
+      const heroEmptyLink = document.getElementById('heroSearchEmptyLink');
+
+      const updateHeroSearch = () => {
+        if (!heroInput) return;
+        const q = heroInput.value.trim().toLowerCase();
+        if (heroClear) heroClear.style.display = q ? 'block' : 'none';
+
+        let visibleCount = 0;
+        heroCards.forEach(card => {
+          const text = (card.textContent + ' ' + (card.getAttribute('data-keywords') || '')).toLowerCase();
+          const matched = !q || q.split(/\s+/).every(t => text.includes(t));
+          card.style.display = matched ? 'flex' : 'none';
+          if (matched) visibleCount++;
+        });
+
+        if (heroEmpty && heroEmptyLink) {
+          heroEmpty.style.display = (q && visibleCount === 0) ? 'block' : 'none';
+          heroEmptyLink.href = '/repair-guides/?q=' + encodeURIComponent(heroInput.value.trim());
+        }
+
+        if (heroResults) {
+          if (!q) {
+            heroResults.classList.remove('open');
+            heroResults.innerHTML = '';
+          } else {
+            const matches = window.searchTechTestCatalog ? window.searchTechTestCatalog(q) : [];
+            if (matches.length === 0) {
+              heroResults.innerHTML = `<a href="/repair-guides/?q=${encodeURIComponent(heroInput.value.trim())}" class="search-result-item"><span>Search all Repair Guides for "<strong>${heroInput.value.trim().replace(/</g, '&lt;')}</strong>"</span><span class="search-result-meta">Repair Guides &rarr;</span></a>`;
+            } else {
+              heroResults.innerHTML = matches.map(m => `<a href="${m.url}" class="search-result-item"><span>${m.title}</span><span class="search-result-meta">${m.category}</span></a>`).join('');
+            }
+            heroResults.classList.add('open');
+          }
+        }
+      };
+
+      if (heroInput) {
+        heroInput.addEventListener('input', updateHeroSearch);
+      }
+      if (heroClear) {
+        heroClear.addEventListener('click', () => {
+          heroInput.value = '';
+          updateHeroSearch();
+          heroInput.focus();
+        });
+      }
+      if (heroForm) {
+        heroForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const q = heroInput ? heroInput.value.trim() : '';
+          if (!q) return;
+          const matches = window.searchTechTestCatalog ? window.searchTechTestCatalog(q) : [];
+          if (matches.length > 0) {
+            window.location.href = matches[0].url;
+          } else {
+            window.location.href = '/repair-guides/?q=' + encodeURIComponent(q);
+          }
+        });
+      }
+      document.addEventListener('click', (e) => {
+        if (heroResults && heroForm && !heroForm.contains(e.target) && !heroResults.contains(e.target)) {
+          heroResults.classList.remove('open');
+        }
+      });
 
       // PWA Service Worker Registration
       if ('serviceWorker' in navigator) {

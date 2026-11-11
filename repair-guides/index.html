@@ -76,8 +76,10 @@
       <div class="catalog-main-zone">
         <!-- Zone 2: Brand Sidebar -->
         <aside class="catalog-sidebar">
-          <div class="sidebar-category">LAPTOPS</div>
-          <div class="brand-link active" data-brand="lenovo">Lenovo</div>
+          <div class="sidebar-category">CATALOG</div>
+          <div class="brand-link active" data-brand="all">All Guides</div>
+          <div class="sidebar-category mt-4">LAPTOPS</div>
+          <div class="brand-link" data-brand="lenovo">Lenovo</div>
           <div class="brand-link" data-brand="apple">Apple</div>
 
           <div class="sidebar-category mt-4">GAMING</div>
@@ -108,25 +110,7 @@
         slug: 'lenovo',
         series: [
           { name: 'ThinkPad T Series', models: [
-            { name: 'ThinkPad T14 Gen 1 AMD', slug: 'thinkpad-t14-gen1-amd', hasGuide: true },
-            { name: 'ThinkPad T14 Gen 2', slug: 'thinkpad-t14-gen2', hasGuide: false },
-            { name: 'ThinkPad T14s Gen 1', slug: 'thinkpad-t14s-gen1', hasGuide: false },
-            { name: 'ThinkPad T490', slug: 'thinkpad-t490', hasGuide: false }
-          ]},
-          { name: 'ThinkPad X Series', models: [
-            { name: 'ThinkPad X1 Carbon Gen 9', slug: 'thinkpad-x1-carbon-gen9', hasGuide: false },
-            { name: 'ThinkPad X13 Gen 2', slug: 'thinkpad-x13-gen2', hasGuide: false },
-            { name: 'ThinkPad X390', slug: 'thinkpad-x390', hasGuide: false }
-          ]},
-          { name: 'IdeaPad', models: [
-            { name: 'IdeaPad Flex 5', slug: 'ideapad-flex-5', hasGuide: false },
-            { name: 'IdeaPad Slim 7', slug: 'ideapad-slim-7', hasGuide: false },
-            { name: 'IdeaPad Gaming 3', slug: 'ideapad-gaming-3', hasGuide: false }
-          ]},
-          { name: 'Legion', models: [
-            { name: 'Legion 5 Pro', slug: 'legion-5-pro', hasGuide: false },
-            { name: 'Legion 7', slug: 'legion-7', hasGuide: false },
-            { name: 'Legion Y540', slug: 'legion-y540', hasGuide: false }
+            { name: 'ThinkPad T14 Gen 1 AMD (Screen Replacement)', slug: 'thinkpad-t14-gen1-amd', hasGuide: true }
           ]}
         ]
       },
@@ -135,45 +119,23 @@
         slug: 'apple',
         series: [
           { name: 'MacBook Air', models: [
-            { name: 'MacBook Air M2', slug: 'macbook-air-m2', hasGuide: false },
-            { name: 'MacBook Air 13" M1', slug: 'macbook-air-13-m1', hasGuide: true },
-            { name: 'MacBook Air (Intel)', slug: 'macbook-air-intel', hasGuide: false }
-          ]},
-          { name: 'MacBook Pro', models: [
-            { name: 'MacBook Pro 14" M2', slug: 'macbook-pro-14-m2', hasGuide: false },
-            { name: 'MacBook Pro 16" M1', slug: 'macbook-pro-16-m1', hasGuide: false },
-            { name: 'MacBook Pro 13" (Touch Bar)', slug: 'macbook-pro-13-touch', hasGuide: false }
-          ]},
-          { name: 'Mac Mini', models: [
-            { name: 'Mac Mini M2', slug: 'mac-mini-m2', hasGuide: false },
-            { name: 'Mac Mini M1', slug: 'mac-mini-m1', hasGuide: false }
+            { name: 'MacBook Air 13" M1 (A2337 Hardware Guide)', slug: 'macbook-air-13-m1', hasGuide: true }
           ]}
         ]
       },
-      dell: { name: 'Dell', slug: 'dell', series: [{ name: 'XPS', models: [{ name: 'XPS 13 9310', slug: 'xps-13-9310', hasGuide: false }] }, { name: 'Inspiron', models: [{ name: 'Inspiron 15', slug: 'inspiron-15', hasGuide: false }] }, { name: 'Latitude', models: [{ name: 'Latitude 7420', slug: 'latitude-7420', hasGuide: false }] }] },
-      hp: { name: 'HP', slug: 'hp', series: [{ name: 'Pavilion', models: [{ name: 'Pavilion Aero 13', slug: 'pavilion-aero-13', hasGuide: false }] }, { name: 'EliteBook', models: [{ name: 'EliteBook 840 G8', slug: 'elitebook-840-g8', hasGuide: false }] }, { name: 'Spectre', models: [{ name: 'Spectre x360 14', slug: 'spectre-x360-14', hasGuide: false }] }] },
-      asus: { name: 'ASUS', slug: 'asus', series: [{ name: 'ZenBook', models: [{ name: 'ZenBook 14 UX425', slug: 'zenbook-14-ux425', hasGuide: false }] }, { name: 'VivoBook', models: [{ name: 'VivoBook 15', slug: 'vivobook-15', hasGuide: false }] }, { name: 'ROG', models: [{ name: 'ROG Zephyrus G14', slug: 'rog-zephyrus-g14', hasGuide: false }, { name: 'ROG Strix G15', slug: 'rog-strix-g15', hasGuide: false }] }] },
-      acer: { name: 'Acer', slug: 'acer', series: [{ name: 'Aspire', models: [{ name: 'Aspire 5', slug: 'aspire-5', hasGuide: false }] }, { name: 'Swift', models: [{ name: 'Swift 3', slug: 'swift-3', hasGuide: false }] }, { name: 'Nitro', models: [{ name: 'Nitro 5', slug: 'nitro-5', hasGuide: false }] }] },
-      microsoft: { name: 'Microsoft', slug: 'microsoft', series: [{ name: 'Surface Laptop', models: [{ name: 'Surface Laptop 4', slug: 'surface-laptop-4', hasGuide: false }] }, { name: 'Surface Pro', models: [{ name: 'Surface Pro 8', slug: 'surface-pro-8', hasGuide: false }] }] },
-      gateway: { name: 'Gateway', slug: 'gateway', series: [{ name: 'Chromebooks', models: [{ name: 'Gateway 11.6" Chromebook', slug: 'gateway-11-chromebook', hasGuide: false }] }] },
-      samsung: { name: 'Samsung', slug: 'samsung', series: [{ name: 'Galaxy Book', models: [{ name: 'Galaxy Book3 Pro', slug: 'galaxy-book3-pro', hasGuide: false }] }, { name: 'Galaxy S Series', models: [{ name: 'Galaxy S23 Ultra', slug: 'galaxy-s23-ultra', hasGuide: false }] }] },
-      'apple-iphone': { name: 'Apple iPhone', slug: 'apple-iphone', series: [{ name: 'iPhone 14 Series', models: [{ name: 'iPhone 14 Pro Max', slug: 'iphone-14-pro-max', hasGuide: false }] }, { name: 'iPhone 13 Series', models: [{ name: 'iPhone 13 Pro', slug: 'iphone-13-pro', hasGuide: false }] }] },
-      google: { name: 'Google', slug: 'google', series: [{ name: 'Pixel phones', models: [{ name: 'Pixel 7 Pro', slug: 'pixel-7-pro', hasGuide: false }, { name: 'Pixel 6a', slug: 'pixel-6a', hasGuide: false }] }] },
       playstation: {
         name: 'PlayStation',
         slug: 'playstation',
         series: [
           { name: 'Controllers', models: [
-            { name: 'PS5 DualSense - Stick Drift Fix', slug: '../../fix-ps5-controller-drift', hasGuide: true },
-            { name: 'PS4 DualShock 4 - Stick Drift Test', slug: '../../ps4-controller-drift-test', hasGuide: true }
+            { name: 'PS5 DualSense — Stick Drift Fix & Calibration', slug: '../../fix-ps5-controller-drift', hasGuide: true },
+            { name: 'PS4 DualShock 4 — Stick Drift Test & Repair', slug: '../../ps4-controller-drift-test', hasGuide: true }
           ]}
         ]
-      },
-      xbox: { name: 'Xbox', slug: 'xbox', series: [{ name: 'Series X', models: [{ name: 'Xbox Series X', slug: 'xbox-series-x', hasGuide: false }] }, { name: 'Series S', models: [{ name: 'Xbox Series S', slug: 'xbox-series-s', hasGuide: false }] }, { name: 'Xbox One controller', models: [{ name: 'Xbox Wireless Controller', slug: 'xbox-wireless-controller', hasGuide: false }] }] },
-      nintendo: { name: 'Nintendo', slug: 'nintendo', series: [{ name: 'Switch', models: [{ name: 'Nintendo Switch OLED', slug: 'switch-oled', hasGuide: false }] }, { name: 'Switch Lite', models: [{ name: 'Nintendo Switch Lite', slug: 'switch-lite', hasGuide: false }] }, { name: 'Joy-Con', models: [{ name: 'Joy-Con (L/R)', slug: 'joy-con', hasGuide: false }] }] }
+      }
     };
 
-    let activeBrandId = 'lenovo';
+    let activeBrandId = 'all';
 
     function initCatalog() {
       const searchInput = document.getElementById('catalogSearch');
@@ -201,7 +163,8 @@
           renderGrid(null, query);
         } else {
           clearBtn.style.display = 'none';
-          document.querySelector(`.brand-link[data-brand="${activeBrandId}"]`).classList.add('active');
+          const activeLink = document.querySelector(`.brand-link[data-brand="${activeBrandId}"]`);
+          if (activeLink) activeLink.classList.add('active');
           renderGrid(activeBrandId, '');
         }
       });
@@ -210,12 +173,21 @@
       clearBtn.addEventListener('click', () => {
         searchInput.value = '';
         clearBtn.style.display = 'none';
-        document.querySelector(`.brand-link[data-brand="${activeBrandId}"]`).classList.add('active');
+        const activeLink = document.querySelector(`.brand-link[data-brand="${activeBrandId}"]`);
+        if (activeLink) activeLink.classList.add('active');
         renderGrid(activeBrandId, '');
       });
 
-      // Initial render
-      renderGrid(activeBrandId, '');
+      // Handle URL ?q= parameter cleanly
+      const urlQuery = new URLSearchParams(window.location.search).get('q');
+      if (urlQuery && urlQuery.trim()) {
+        searchInput.value = urlQuery.trim();
+        clearBtn.style.display = 'block';
+        brandLinks.forEach(l => l.classList.remove('active'));
+        renderGrid(null, urlQuery.trim().toLowerCase());
+      } else {
+        renderGrid(activeBrandId, '');
+      }
     }
 
     function renderGrid(brandId, searchQuery) {
@@ -225,17 +197,27 @@
       let dataToRender = [];
 
       if (searchQuery) {
-        // Search across all brands
+        const terms = searchQuery.split(/\s+/);
         Object.values(catalogData).forEach(brand => {
           let matchedSeries = [];
           brand.series.forEach(series => {
-            const matchedModels = series.models.filter(model => 
-              model.hasGuide && (
-                model.name.toLowerCase().includes(searchQuery) ||
-                series.name.toLowerCase().includes(searchQuery) ||
-                brand.name.toLowerCase().includes(searchQuery)
-              )
-            );
+            const matchedModels = series.models.filter(model => {
+              const hay = `${model.name} ${series.name} ${brand.name}`.toLowerCase();
+              return model.hasGuide && terms.every(t => hay.includes(t));
+            });
+            if (matchedModels.length > 0) {
+              matchedSeries.push({ name: series.name, models: matchedModels });
+            }
+          });
+          if (matchedSeries.length > 0) {
+            dataToRender.push({ brandSlug: brand.slug, brandName: brand.name, series: matchedSeries });
+          }
+        });
+      } else if (brandId === 'all') {
+        Object.values(catalogData).forEach(brand => {
+          let matchedSeries = [];
+          brand.series.forEach(series => {
+            const matchedModels = series.models.filter(model => model.hasGuide);
             if (matchedModels.length > 0) {
               matchedSeries.push({ name: series.name, models: matchedModels });
             }

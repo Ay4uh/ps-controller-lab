@@ -41,13 +41,18 @@ export class Controller3DVisualizer {
     this.camera.position.set(0, 3.5, 4.5);
     this.camera.lookAt(0, 0, 0);
 
-    // Renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.container.appendChild(this.renderer.domElement);
+    // Renderer with graceful fallback if WebGL is disabled/unavailable
+    try {
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      this.renderer.setSize(width, height);
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      this.renderer.shadowMap.enabled = true;
+      this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      this.container.appendChild(this.renderer.domElement);
+    } catch (err) {
+      this.container.innerHTML = `<div style="padding:32px;text-align:center;color:#94a3b8;font-size:13px;"><i class="fa-solid fa-cube" style="font-size:28px;margin-bottom:8px;display:block;color:#3b82f6;"></i>3D WebGL viewport unavailable in this graphics context. All telemetry, circularity, polling, IMU, and Hall Effect diagnostics remain active.</div>`;
+      return;
+    }
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);

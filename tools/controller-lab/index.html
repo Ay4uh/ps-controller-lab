@@ -3049,6 +3049,18 @@
       }
     });
 
+    // Support URL ?tab=... deep-linking from homepage & search
+    window.addEventListener('DOMContentLoaded', () => {
+      const tabParam = new URLSearchParams(window.location.search).get('tab');
+      if (tabParam) {
+        const targetId = tabParam.startsWith('tab-') ? tabParam : `tab-${tabParam}`;
+        setTimeout(() => {
+          const tabBtn = document.querySelector(`.tab-btn[data-tab="${targetId}"]`);
+          if (tabBtn) tabBtn.click();
+        }, 80);
+      }
+    });
+
     // Clear logs
     document.getElementById("btnClearRawLog").addEventListener("click", () => {
       rawHidLogEl.innerHTML = '<div class="text-muted text-center pt-5">Waiting for HID interface actions...</div>';

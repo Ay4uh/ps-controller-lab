@@ -74,16 +74,24 @@
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .breadcrumb a:hover { color: var(--text-primary); }
     
-    /* Photo Placeholder */
-    .photo-placeholder {
+    /* Technical Reference Diagram Card */
+    .diagram-card {
       background: var(--bg-hover);
-      border: 1px dashed var(--border);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-blue);
       border-radius: 8px;
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--text-muted);
-      font-style: italic;
-      margin: 1.5rem 0;
+      padding: 16px 20px;
+      margin: 1.25rem 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+    }
+    .diagram-card i {
+      font-size: 1.4rem;
+      color: var(--accent-blue);
+      flex-shrink: 0;
     }
   </style>
 
@@ -287,7 +295,7 @@
           <li>The battery is now safely disconnected</li>
         </ol>
         <blockquote class="success"><p>✅ You can now work safely without risk of electrical shorts.</p></blockquote>
-        <div class="photo-placeholder">[Photo placeholder: BIOS screen showing "Disable Built-in Battery" option highlighted]</div>
+        <div class="diagram-card"><i class="fa-solid fa-sliders"></i><div><strong>BIOS Path:</strong> Press <code>F1</code> at Lenovo splash &rarr; <code>Config</code> &rarr; <code>Power</code> &rarr; select <code>Disable Built-in Battery</code> &rarr; confirm Yes. System will shut off instantly until AC is plugged back in.</div></div>
 
         <h3>Step 2 — Remove the bottom panel</h3>
         <ol>
@@ -297,7 +305,7 @@
           <li>Work the pick around all four edges — you will hear/feel clips releasing</li>
           <li>Lift the bottom panel away and set aside</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: Bottom of laptop showing 5 screw locations circled in red]</div>
+        <div class="diagram-card"><i class="fa-solid fa-screwdriver"></i><div><strong>Screw Map:</strong> 3 captive Phillips #0 screws along rear edge (near hinges), 1 center screw, 1 front-center screw. Do not pry out screws completely.</div></div>
         <blockquote class="warning"><p>⚠️ The screws are captive — do not try to pull them all the way out. Turn until loose and leave them in the panel.</p></blockquote>
 
         <h3>Step 3 — Locate and identify the LCD cable</h3>
@@ -307,7 +315,7 @@
           <li>You do NOT need to disconnect it from the motherboard end — you will disconnect it from the screen end in Step 6</li>
           <li>Take a moment to visually trace the cable path so you know how to re-route it later</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: Inside of T14 Gen 1 with LCD cable highlighted/traced in yellow]</div>
+        <div class="diagram-card"><i class="fa-solid fa-route"></i><div><strong>Cable Routing Note:</strong> The 30-pin eDP ribbon exits the upper-left motherboard connector cleanly through the left hinge channel. Inspect for kinks before proceeding.</div></div>
 
         <h3>Step 4 — Open the display assembly and remove the bezel</h3>
         <ol>
@@ -318,8 +326,7 @@
           <li>Finish at the <strong>top edge</strong> — be extra careful near the webcam module at the top centre</li>
           <li>Once all clips are released, carefully lift the bezel off — it is held by clips only, no screws</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: Plastic pick being inserted at bottom-left corner of bezel]</div>
-        <div class="photo-placeholder">[Photo placeholder: Bezel halfway removed showing clip positions]</div>
+        <div class="diagram-card"><i class="fa-solid fa-layer-group"></i><div><strong>Bezel Removal Order:</strong> Start bottom-left &rarr; slide across bottom hinge seam &rarr; release left &amp; right clips &rarr; carefully clear top webcam lip (ThinkShutter area).</div></div>
         <blockquote class="warning"><p>⚠️ If a section resists, do not force it — move the pick closer to that spot and try again. Forcing cracks the bezel plastic.</p></blockquote>
         <blockquote class="warning"><p>⚠️ Near the webcam (top centre), slow down. There is a thin webcam cable just behind the bezel — do not snag it.</p></blockquote>
 
@@ -331,8 +338,8 @@
           <li>Carefully tilt the top of the panel forward toward you — like opening a book forward</li>
           <li>Rest the panel face-down on the keyboard (place the microfibre cloth first to protect both surfaces)</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: Panel with 4 bracket screws circled in red]</div>
-        <div class="photo-placeholder">[Photo placeholder: Panel tilted forward resting on keyboard with cloth]</div>
+        <div class="diagram-card"><i class="fa-solid fa-wrench"></i><div><strong>Mounting Brackets:</strong> 2 screws top/bottom on left mounting rail + 2 screws top/bottom on right mounting rail. Keep track of screw lengths.</div></div>
+        <blockquote class="info"><p>💡 Some T14 Gen 1 configurations use stretch-release adhesive strips behind the panel instead of side brackets. Pull tabs slowly parallel to the chassis if brackets are absent.</p></blockquote>
 
         <h3>Step 6 — Disconnect the LCD cable</h3>
         <p>This is the most critical step — be slow and deliberate.</p>
@@ -348,9 +355,7 @@
           </li>
           <li>Set the old panel aside</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: Back of panel showing ribbon cable and adhesive tape]</div>
-        <div class="photo-placeholder">[Photo placeholder: Close-up of ZIF connector with locking tab visible]</div>
-        <div class="photo-placeholder">[Photo placeholder: Locking tab flipped up, cable sliding out]</div>
+        <div class="diagram-card"><i class="fa-solid fa-plug"></i><div><strong>30-Pin eDP ZIF Latch:</strong> Lift the metallic/black retention bar straight up 90° before sliding the gold connector backwards gently along the PCB plane.</div></div>
         <blockquote class="warning"><p>⚠️ If the cable does not slide out easily after unlocking, stop and check the locking tab again. Forcing a locked ZIF connector tears the cable.</p></blockquote>
 
         <h3>Step 7 — Connect the new screen</h3>
@@ -361,21 +366,19 @@
           <li>Press the <strong>locking tab back down</strong> (rotate 90° until it clicks flat) to secure the cable</li>
           <li>Re-apply the black adhesive tape over the connector to hold the cable in place</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: New panel face-down, cable being inserted into connector]</div>
-        <div class="photo-placeholder">[Photo placeholder: Locking tab pressed down flat, tape being re-applied]</div>
+        <div class="diagram-card"><i class="fa-solid fa-check-double"></i><div><strong>Alignment Check:</strong> The white reference line on the eDP cable must sit squarely flush with the ZIF socket housing before flipping the metal latch shut and pressing the black Mylar tape down flat.</div></div>
         <blockquote class="success"><p>✅ Give the cable a gentle tug to confirm it is locked — it should not move.</p></blockquote>
 
         <h3>Step 8 — Test before closing up</h3>
         <p><strong>Always test before reassembling — saves you from opening it again.</strong></p>
         <ol>
           <li>Carefully tilt the new panel upright (lean it against something steady, or have someone hold it)</li>
-          <li>Reconnect the battery: power on the laptop (the BIOS battery disable resets after each boot)</li>
+          <li>Reconnect the AC charger and power on the laptop (connecting AC re-enables the built-in battery)</li>
           <li>The screen should light up during boot</li>
           <li>Check for: correct brightness, no lines, no dead zones, full colour</li>
           <li>If anything looks wrong — power off and check the cable connection before continuing</li>
           <li>If everything looks good — power off and proceed to reassembly</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: Laptop booting with new screen during test, screen lit up]</div>
         <blockquote class="success"><p>✅ If the screen is black but you can hear the boot sound, the cable is likely not fully seated — open the lock tab and reinsert.</p></blockquote>
 
         <h3>Step 9 — Reassemble</h3>
@@ -385,11 +388,6 @@
           <li><strong>Replace the bottom panel</strong> — align the clips around all edges, press down firmly, then tighten the 5 captive screws</li>
           <li>Power on the laptop and run a final display check</li>
         </ol>
-        <div class="photo-placeholder">[Photo placeholder: Bottom panel being pressed back into place]</div>
-
-        <div style="margin: 32px 0;">
-          <div class="ad-slot ad-728x90" id="ad-bottom-repair">Advertisement</div>
-        </div>
 
         <hr>
 
@@ -421,55 +419,52 @@
 
         <hr>
 
-        <h2>Related Guides</h2>
+        <h2>More Repair Guides &amp; Tools</h2>
         <ul>
-          <li><a href="#">Lenovo ThinkPad T14 Gen 1 — Battery Replacement</a></li>
-          <li><a href="#">Lenovo ThinkPad T14 Gen 1 — Keyboard Replacement</a></li>
-          <li><a href="#">Lenovo ThinkPad T14 Gen 1 — SSD Upgrade</a></li>
-          <li><a href="#">How to identify your ThinkPad T14 generation</a></li>
+          <li><a href="/repair-guides/apple/macbook-air-13-m1/">Apple MacBook Air 13" M1 — Component &amp; Repair Guide</a></li>
+          <li><a href="/fix-ps5-controller-drift/">PS5 DualSense — Stick Drift Fix &amp; Recalibration Guide</a></li>
+          <li><a href="/tools/display-test/">Run Online Monitor &amp; Refresh Rate Test</a></li>
+          <li><a href="/tools/dead-pixel-test/">Run Online Dead Pixel Inspection</a></li>
         </ul>
 
         <hr>
 
-        <h2>Parts &amp; Tools (Affiliate Links — Canada)</h2>
-        <p><em>Links below help support TechTest at no extra cost to you.</em></p>
+        <h2>Verified Part Numbers &amp; Compatible Panels</h2>
         <ul>
-          <li><a href="#">AUO B140HAN05.7 — Amazon.ca</a></li>
-          <li><a href="#">BOE NV140FHM-N3B — Amazon.ca</a></li>
-          <li><a href="#">iFixit Pro Tech Toolkit — Amazon.ca</a></li>
-          <li><a href="#">Anti-static wrist strap — Amazon.ca</a></li>
+          <li><strong>AUO B140HAN05.7</strong> — 14.0" FHD 1920&times;1080 IPS Matte, 400 nits, 72% NTSC, Low-Power 30-Pin eDP</li>
+          <li><strong>BOE NV140FHM-N3B</strong> — 14.0" FHD 1920&times;1080 IPS Matte, 250 nits, 30-Pin eDP (Standard OEM)</li>
+          <li><strong>Innolux N140HCG-GQ2</strong> — 14.0" FHD IPS 400 nits Low-Power (72% NTSC, Drop-in compatible)</li>
+          <li><strong>Tools Required:</strong> Phillips #0 precision driver, plastic pry pick / spudger, anti-static ESD wrist strap</li>
         </ul>
 
         <hr>
         
-        <p><em>Guide accuracy verified: June 2026<br>Applies to: ThinkPad T14 Gen 1 AMD (20UD, 20UE) — all sub-variants including 20UES08Q0R</em></p>
+        <p><em>Guide technical specs verified: 2026<br>Applies to: ThinkPad T14 Gen 1 AMD (20UD, 20UE) — all sub-variants including 20UES08Q0R</em></p>
 
       </div>
       
       <!-- Right Sidebar -->
       <aside class="guide-right-sidebar">
-        <div class="ad-slot ad-300x250" id="ad-sidebar-repair">Advertisement</div>
-        
         <div class="affiliate-card">
-          <h3>Parts & Tools</h3>
+          <h3>Quick Diagnostics</h3>
           <hr>
           <div class="affiliate-item">
-            <span>Display Panel</span>
-            <a href="#" class="affiliate-buy">Buy on Amazon.ca &rarr;</a>
+            <span>Display Uniformity</span>
+            <a href="/tools/display-test/" class="affiliate-buy">Launch &rarr;</a>
           </div>
           <div class="affiliate-item">
-            <span>iFixit Toolkit</span>
-            <a href="#" class="affiliate-buy">Buy on Amazon.ca &rarr;</a>
+            <span>Dead Pixel Check</span>
+            <a href="/tools/dead-pixel-test/" class="affiliate-buy">Launch &rarr;</a>
           </div>
           <div class="affiliate-item">
-            <span>Plastic Spudger</span>
-            <a href="#" class="affiliate-buy">Buy on Amazon.ca &rarr;</a>
+            <span>Keyboard Matrix</span>
+            <a href="/tools/keyboard-test/" class="affiliate-buy">Launch &rarr;</a>
           </div>
           <div class="affiliate-item">
-            <span>Anti-Static Strap</span>
-            <a href="#" class="affiliate-buy">Buy on Amazon.ca &rarr;</a>
+            <span>Webcam Optics</span>
+            <a href="/tools/webcam-test/" class="affiliate-buy">Launch &rarr;</a>
           </div>
-          <span class="affiliate-disclaimer">Links support ay5uh.com at no extra cost to you.</span>
+          <span class="affiliate-disclaimer">Run post-repair verification directly in your browser.</span>
         </div>
       </aside>
       

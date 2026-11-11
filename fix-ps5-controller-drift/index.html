@@ -39,6 +39,14 @@
       --text-muted: #64748b;
       --border: #e2e8f0;
     }
+    [data-theme="dark"] {
+      --bg: #1c1917;
+      --bg-card: #272522;
+      --accent: #3b82f6;
+      --text: #f5f5f4;
+      --text-muted: #d6d3d1;
+      --border: #44403c;
+    }
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -188,7 +196,7 @@
 <body>
 
   <nav class="navbar">
-    <a href="https://ay5uh.com" class="navbar-brand">
+    <a href="/" class="navbar-brand">
       <i class="fa-solid fa-gamepad"></i> Controller Diagnostic Lab
     </a>
   </nav>
@@ -231,7 +239,7 @@
     </div>
 
     <div class="cta-container">
-      <a href="https://ay5uh.com" class="btn-cta">Test My Controller Now &rarr;</a>
+      <a href="/tools/controller-lab/?tab=drift" class="btn-cta">Test My Controller Now &rarr;</a>
     </div>
 
     <div class="content-section">

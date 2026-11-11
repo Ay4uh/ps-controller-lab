@@ -452,8 +452,8 @@
         <!-- Middle Column: Feed -->
         <section class="feed-container">
           <div class="forum-header-row">
-            <h1 class="forum-h1" id="forumTitle">AntiGravity Forum</h1>
-            <button class="btn-create-post" id="btnNewPost"><i class="fa-solid fa-plus"></i> New Post</button>
+            <h1 class="forum-h1" id="forumTitle">AntiGravity Community Q&amp;A</h1>
+            <button type="button" class="btn-create-post" id="btnNewPost"><i class="fa-solid fa-plus"></i> Ask a Question</button>
           </div>
           
           <div id="postsFeed">
@@ -461,79 +461,44 @@
           </div>
         </section>
         
-        <!-- Right Column: Widgets & Moderator Panel -->
+        <!-- Right Column: Widgets & Diagnostics Shortcuts -->
         <aside class="widgets-sidebar">
           
-          <!-- Forum Stats widget -->
+          <!-- Live Forum Stats widget -->
           <div class="widget-box">
-            <div class="widget-header">About AntiGravity</div>
-            <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 12px 0; line-height: 1.5;">AntiGravity is a free hardware discussion board. Guest visitors are served contextual ads to support hosting, while logged-in members enjoy an ad-free experience.</p>
+            <div class="widget-header">About Community Q&amp;A</div>
+            <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 12px 0; line-height: 1.5;">Ask hardware troubleshooting questions, share diagnostic results, and get repair advice from the TechTest community.</p>
             <div class="dash-metric-row">
-              <span class="dash-metric-label">Online Fixers</span>
-              <span class="dash-metric-val">1,421</span>
+              <span class="dash-metric-label">Published Threads</span>
+              <span class="dash-metric-val" id="lblTotalThreads">0</span>
             </div>
             <div class="dash-metric-row">
-              <span class="dash-metric-label">Repairs Logged</span>
-              <span class="dash-metric-val">33,489</span>
+              <span class="dash-metric-label">Total Community Votes</span>
+              <span class="dash-metric-val" id="lblTotalVotes">0</span>
+            </div>
+          </div>
+
+          <!-- Quick Diagnostic Links -->
+          <div class="widget-box">
+            <div class="widget-header"><i class="fa-solid fa-stethoscope"></i> Hardware Diagnostics</div>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+              <a href="/tools/controller-lab/" style="color:var(--accent-blue); text-decoration:none; font-size:13px; font-weight:600;"><i class="fa-solid fa-gamepad" style="width:18px;"></i> Controller Lab &rarr;</a>
+              <a href="/tools/benchmark/" style="color:var(--accent-blue); text-decoration:none; font-size:13px; font-weight:600;"><i class="fa-solid fa-bolt" style="width:18px;"></i> GPU Stress Test &rarr;</a>
+              <a href="/tools/display-test/" style="color:var(--accent-blue); text-decoration:none; font-size:13px; font-weight:600;"><i class="fa-solid fa-desktop" style="width:18px;"></i> Display Test &rarr;</a>
+              <a href="/repair-guides/" style="color:var(--accent-blue); text-decoration:none; font-size:13px; font-weight:600;"><i class="fa-solid fa-screwdriver-wrench" style="width:18px;"></i> Repair Guides &rarr;</a>
+              <a href="/verify/" style="color:var(--accent-blue); text-decoration:none; font-size:13px; font-weight:600;"><i class="fa-solid fa-shield-halved" style="width:18px;"></i> Verify Certificate &rarr;</a>
             </div>
           </div>
           
-          <!-- Ad Slot Right Sidebar -->
-          <div id="sidebar-ad-slot-widget">
-            <!-- Populated by JS if guests -->
-          </div>
-          
-          <!-- Moderator Analytics Dashboard widget -->
-          <div class="widget-box" style="border: 1px solid var(--accent-gold);">
-            <div class="widget-header" style="color: var(--accent-gold);"><i class="fa-solid fa-chart-line"></i> Adsense Dashboard</div>
-            
-            <div class="dash-metric-row" style="margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-              <span class="dash-metric-label" style="font-weight: 600;">Enable AdSense Ads</span>
-              <label class="switch">
-                <input type="checkbox" id="chkAdsenseToggle" checked>
-                <span class="slider"></span>
-              </label>
-            </div>
-            
-            <div class="dash-metric-row">
-              <span class="dash-metric-label">Ad Impressions</span>
-              <span class="dash-metric-val" id="lblAdImpressions">0</span>
-            </div>
-            <div class="dash-metric-row">
-              <span class="dash-metric-label">Ad Clicks</span>
-              <span class="dash-metric-val" id="lblAdClicks">0</span>
-            </div>
-            <div class="dash-metric-row">
-              <span class="dash-metric-label">Ad CTR</span>
-              <span class="dash-metric-val" id="lblAdCTR">0.00%</span>
-            </div>
-            <div class="dash-metric-row" style="margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border);">
-              <span class="dash-metric-label" style="font-weight: 600;">Estimated Earnings</span>
-              <span class="dash-metric-val" id="lblAdEarnings" style="color: var(--accent-green);">$0.00</span>
-            </div>
-            
-            <div class="dash-metric-row">
-              <span class="dash-metric-label">Affiliate Clicks</span>
-              <span class="dash-metric-val" id="lblAffClicks">0</span>
-            </div>
-            <div class="dash-metric-row">
-              <span class="dash-metric-label">Affiliate Conversions</span>
-              <span class="dash-metric-val" id="lblAffConversions">0</span>
-            </div>
-            <div class="dash-metric-row">
-              <span class="dash-metric-label" style="font-weight: 600;">Affiliate Commission</span>
-              <span class="dash-metric-val" id="lblAffCommission" style="color: var(--accent-green);">$0.00</span>
-            </div>
-            
-            <button class="btn-reset-stats" id="btnResetAdStats">Reset Stats</button>
-            
-            <!-- Firebase Setup Panel -->
-            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
-              <button id="btnToggleFirebaseSetup" style="background: none; border: none; color: var(--text-secondary); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0;"><i class="fa-solid fa-database"></i> FIREBASE SETTINGS <i class="fa-solid fa-chevron-down" id="firebaseChevron"></i></button>
-              <div id="firebaseSetupFields" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px;">
-                <textarea id="txtFirebaseConfig" placeholder='Paste Firebase Config JSON here (e.g. {"apiKey": "...", "authDomain": "...", ...})' style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; color: var(--text-primary); outline: none; width: 100%; min-height: 80px; font-family: monospace; resize: vertical;"></textarea>
-                <button id="btnConnectFirebase" style="background: var(--accent-gold); color: white; border: none; padding: 6px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%;">Connect & Reload</button>
-              </div>
+          <!-- Optional Ad Slot Right Sidebar -->
+          <div id="sidebar-ad-slot-widget"></div>
+
+          <!-- Firebase Sync Settings (Collapsed by default) -->
+          <div class="widget-box">
+            <button type="button" id="btnToggleFirebaseSetup" style="background: none; border: none; color: var(--text-secondary); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0;"><span><i class="fa-solid fa-database"></i> CLOUD SYNC SETTINGS</span> <i class="fa-solid fa-chevron-down" id="firebaseChevron"></i></button>
+            <div id="firebaseSetupFields" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px;">
+              <textarea id="txtFirebaseConfig" placeholder='Paste Firebase Config JSON here (optional)' style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; color: var(--text-primary); outline: none; width: 100%; min-height: 70px; font-family: monospace; resize: vertical;"></textarea>
+              <button type="button" id="btnConnectFirebase" style="background: var(--accent-blue); color: white; border: none; padding: 6px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%;">Connect &amp; Reload</button>
             </div>
           </div>
           
@@ -542,38 +507,36 @@
       </div>
       
       <!-- Footer ad placement -->
-      <div id="footer-ad-slot-widget" style="margin-top: 40px; display: flex; justify-content: center; width: 100%;">
-        <!-- Populated by JS if guests -->
-      </div>
+      <div id="footer-ad-slot-widget" style="margin-top: 40px; display: flex; justify-content: center; width: 100%;"></div>
       
     </main>
   </div>
 
-  <!-- Create Post Modal -->
+  <!-- Create Post / Ask a Question Modal -->
   <div class="modal-overlay" id="createPostModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Create a new post</h2>
-        <button class="modal-close" id="btnClosePostModal">&times;</button>
+        <h2>Ask a Repair Question</h2>
+        <button type="button" class="modal-close" id="btnClosePostModal">&times;</button>
       </div>
       <form id="createPostForm">
         <div class="form-group">
           <label>Select Community</label>
           <select id="postCommunity" class="form-input" style="height: 40px;">
-            <option value="r/MacBooks">r/MacBooks</option>
             <option value="r/Gaming">r/Gaming</option>
+            <option value="r/MacBooks">r/MacBooks</option>
             <option value="r/Thermal">r/Thermal</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Title</label>
-          <input type="text" id="postTitle" required placeholder="What's on your mind?" class="form-input">
+          <label>Question Title</label>
+          <input type="text" id="postTitle" required placeholder="e.g. DualSense L3 stick drift after cleaning..." class="form-input">
         </div>
         <div class="form-group">
-          <label>Content</label>
-          <textarea id="postContent" required placeholder="Describe your test results, repair issues, or benchmarks..." rows="6" class="form-input" style="resize: vertical;"></textarea>
+          <label>Details &amp; Diagnostic Results</label>
+          <textarea id="postContent" required placeholder="Describe your symptoms, test measurements, or repair steps..." rows="6" class="form-input" style="resize: vertical;"></textarea>
         </div>
-        <button type="submit" class="btn-submit">Publish Post</button>
+        <button type="submit" class="btn-submit">Submit Question</button>
       </form>
     </div>
   </div>
@@ -668,16 +631,9 @@
       const btnClosePostModal = document.getElementById('btnClosePostModal');
       const createPostForm = document.getElementById('createPostForm');
       
-      // Dashboard Selector elements
-      const chkAdsenseToggle = document.getElementById('chkAdsenseToggle');
-      const lblAdImpressions = document.getElementById('lblAdImpressions');
-      const lblAdClicks = document.getElementById('lblAdClicks');
-      const lblAdCTR = document.getElementById('lblAdCTR');
-      const lblAdEarnings = document.getElementById('lblAdEarnings');
-      const lblAffClicks = document.getElementById('lblAffClicks');
-      const lblAffConversions = document.getElementById('lblAffConversions');
-      const lblAffCommission = document.getElementById('lblAffCommission');
-      const btnResetAdStats = document.getElementById('btnResetAdStats');
+      // Stats elements
+      const lblTotalThreads = document.getElementById('lblTotalThreads');
+      const lblTotalVotes = document.getElementById('lblTotalVotes');
       
       // Firebase controls
       const btnToggleFirebaseSetup = document.getElementById('btnToggleFirebaseSetup');
@@ -686,11 +642,10 @@
       const txtFirebaseConfig = document.getElementById('txtFirebaseConfig');
       const btnConnectFirebase = document.getElementById('btnConnectFirebase');
       
-      // Load Ads settings
-      chkAdsenseToggle.checked = localStorage.getItem('adsense_enabled') !== 'false';
-      
       // Load Firebase input caches
-      txtFirebaseConfig.value = localStorage.getItem('firebase_config') || '';
+      if (txtFirebaseConfig) {
+        txtFirebaseConfig.value = localStorage.getItem('firebase_config') || '';
+      }
       
       // Firebase setup actions
       if (btnToggleFirebaseSetup) {
@@ -837,11 +792,14 @@
           const downActive = post.userVote === 'down' ? 'down-active' : '';
           
           const isSaved = post.saved;
+          const replies = Array.isArray(post.replies) ? post.replies : [];
+          const replyCount = post.comments || replies.length || 0;
+          postCard.id = `post-card-${post.id}`;
           postCard.innerHTML = `
             <div class="post-votes-col">
-              <button class="vote-btn vote-up ${upActive}" data-post-id="${post.id}"><i class="fa-solid fa-arrow-up"></i></button>
+              <button type="button" class="vote-btn vote-up ${upActive}" data-post-id="${post.id}" aria-label="Upvote"><i class="fa-solid fa-arrow-up"></i></button>
               <span class="vote-count" id="vote-count-${post.id}">${post.votes}</span>
-              <button class="vote-btn vote-down ${downActive}" data-post-id="${post.id}"><i class="fa-solid fa-arrow-down"></i></button>
+              <button type="button" class="vote-btn vote-down ${downActive}" data-post-id="${post.id}" aria-label="Downvote"><i class="fa-solid fa-arrow-down"></i></button>
             </div>
             <div class="post-content-col">
               <div class="post-header">
@@ -853,9 +811,18 @@
               <h3 class="post-title">${post.title}</h3>
               <p class="post-body">${post.content}</p>
               <div class="post-footer">
-                <div class="post-footer-item"><i class="fa-regular fa-comment"></i> ${post.comments} Comments</div>
+                <div class="post-footer-item btn-toggle-comments" data-post-id="${post.id}" style="cursor: pointer;"><i class="fa-regular fa-comment"></i> <span id="comment-count-${post.id}">${replyCount}</span> Comments</div>
                 <div class="post-footer-item btn-save-post" data-post-id="${post.id}" style="cursor: pointer;"><i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i> ${isSaved ? 'Saved' : 'Save'}</div>
-                <div class="post-footer-item"><i class="fa-solid fa-share"></i> Share</div>
+                <div class="post-footer-item btn-share-post" data-post-id="${post.id}" style="cursor: pointer;"><i class="fa-solid fa-share"></i> Share</div>
+              </div>
+              <div class="comments-drawer" id="comments-drawer-${post.id}" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+                <div class="comments-list" id="comments-list-${post.id}" style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;">
+                  ${replies.length ? replies.map(r => `<div style="background:var(--bg-hover); padding:8px 12px; border-radius:6px; font-size:12px;"><strong>u/${r.author}</strong> &middot; <span style="color:var(--text-muted);">${r.time || 'just now'}</span><div style="margin-top:4px; color:var(--text-primary);">${r.text}</div></div>`).join('') : '<div style="font-size:12px; color:var(--text-muted);">No replies yet. Add your answer below.</div>'}
+                </div>
+                <form class="reply-form" data-post-id="${post.id}" style="display:flex; gap:8px;">
+                  <input type="text" required placeholder="Write a helpful reply..." style="flex:1; padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--bg-base); color:var(--text-primary); font-size:12px;">
+                  <button type="submit" style="background:var(--text-primary); color:var(--bg-card); border:none; border-radius:6px; padding:8px 14px; font-size:12px; font-weight:600; cursor:pointer;">Reply</button>
+                </form>
               </div>
             </div>
           `;
@@ -956,6 +923,54 @@
           });
         });
         
+        // Toggle Comments Drawer
+        document.querySelectorAll('.btn-toggle-comments').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const postId = btn.getAttribute('data-post-id');
+            const drawer = document.getElementById(`comments-drawer-${postId}`);
+            if (drawer) {
+              drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+            }
+          });
+        });
+
+        // Submit Replies locally (or sync cleanly)
+        document.querySelectorAll('.reply-form').forEach(form => {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const postId = form.getAttribute('data-post-id');
+            const input = form.querySelector('input');
+            const text = input.value.trim();
+            if (!text) return;
+            const author = localStorage.getItem('techtest_user') || 'CommunityMember';
+            const post = posts.find(p => String(p.id) === String(postId));
+            if (post) {
+              if (!Array.isArray(post.replies)) post.replies = [];
+              post.replies.push({ author, text: text.replace(/</g, '&lt;'), time: 'just now' });
+              post.comments = (post.comments || 0) + 1;
+              localStorage.setItem('antigravity_posts', JSON.stringify(posts));
+              renderForum();
+              const drawer = document.getElementById(`comments-drawer-${postId}`);
+              if (drawer) drawer.style.display = 'block';
+            }
+          });
+        });
+
+        // Share Post
+        document.querySelectorAll('.btn-share-post').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const postId = btn.getAttribute('data-post-id');
+            const url = `${window.location.origin}/answers/#post-card-${postId}`;
+            try {
+              if (navigator.clipboard) await navigator.clipboard.writeText(url);
+              btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+              setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-share"></i> Share'; }, 2000);
+            } catch {
+              window.prompt('Copy thread URL:', url);
+            }
+          });
+        });
+
         // Add community badge click filtering
         document.querySelectorAll('.post-community-badge').forEach(badge => {
           badge.addEventListener('click', (e) => {
@@ -973,8 +988,9 @@
           });
         });
         
-        // Render right sidebar and footer ads
+        // Render right sidebar and footer ads & update live forum counts
         renderWidgetAds(showAds);
+        updateDashboardUI();
       }
       
       // Render widget ads
@@ -1163,7 +1179,22 @@
             }
           }
         } catch (err) {
-          console.error('Voting error:', err);
+          // Local / Static Hosting Voting Fallback
+          const post = posts.find(p => String(p.id) === String(postId));
+          if (post) {
+            let diff = 0;
+            if (post.userVote === type) {
+              diff = type === 'up' ? -1 : 1;
+              post.userVote = null;
+            } else {
+              diff = type === 'up' ? 1 : -1;
+              if (post.userVote) diff *= 2;
+              post.userVote = type;
+            }
+            post.votes = (post.votes || 0) + diff;
+            localStorage.setItem('antigravity_posts', JSON.stringify(posts));
+            renderForum();
+          }
         }
       }
       
@@ -1181,77 +1212,18 @@
         });
         
         // Update title and render feed
-        forumTitle.textContent = filterVal === 'all' ? 'AntiGravity Forum' : `${filterVal}`;
+        forumTitle.textContent = filterVal === 'all' ? 'AntiGravity Community Q&A' : `${filterVal}`;
         renderForum();
       }
       
-      // Update Moderator Dashboard Stats
-      async function updateDashboardUI() {
-        const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
-        if (services) {
-          try {
-            const impressionsSnap = await services.db.collection('ad_impressions').get();
-            const affiliateSnap = await services.db.collection('affiliate_clicks').get();
-            
-            let totalImpressions = 0;
-            let totalClicks = 0;
-            let totalAffClicks = 0;
-            let totalAffSales = 0;
-            let totalAffCommission = 0.00;
-            
-            impressionsSnap.forEach(doc => {
-              const data = doc.data();
-              totalImpressions++;
-              if (data.click === 1) {
-                totalClicks++;
-              }
-            });
-            
-            affiliateSnap.forEach(doc => {
-              const data = doc.data();
-              totalAffClicks++;
-              if (data.purchased) {
-                totalAffSales++;
-                totalAffCommission += parseFloat(data.commission || 0);
-              }
-            });
-            
-            const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0.00;
-            const earnings = (totalImpressions * 2.50 / 1000) + (totalClicks * 0.15);
-            
-            lblAdImpressions.textContent = totalImpressions.toLocaleString();
-            lblAdClicks.textContent = totalClicks.toLocaleString();
-            lblAdCTR.textContent = `${ctr.toFixed(2)}%`;
-            lblAdEarnings.textContent = `$${earnings.toFixed(2)}`;
-            
-            lblAffClicks.textContent = totalAffClicks.toLocaleString();
-            lblAffConversions.textContent = totalAffSales.toLocaleString();
-            lblAffCommission.textContent = `$${totalAffCommission.toFixed(2)}`;
-            return;
-          } catch (e) {
-            console.error('Firestore stats load error:', e);
-          }
+      // Update Live Community Stats
+      function updateDashboardUI() {
+        if (lblTotalThreads) {
+          lblTotalThreads.textContent = posts.length.toLocaleString();
         }
-
-        try {
-          const res = await fetch(apiBase + '/api/ads/stats');
-          const data = await res.json();
-          
-          const impressions = data.totalImpressions || 0;
-          const clicks = data.totalClicks || 0;
-          const ctr = impressions > 0 ? (clicks / impressions) * 100 : 0.00;
-          const earnings = data.totalRevenue || 0.00;
-          
-          lblAdImpressions.textContent = impressions.toLocaleString();
-          lblAdClicks.textContent = clicks.toLocaleString();
-          lblAdCTR.textContent = `${ctr.toFixed(2)}%`;
-          lblAdEarnings.textContent = `$${earnings.toFixed(2)}`;
-          
-          lblAffClicks.textContent = (data.totalAffClicks || 0).toLocaleString();
-          lblAffConversions.textContent = (data.totalAffSales || 0).toLocaleString();
-          lblAffCommission.textContent = `$${(data.totalAffCommission || 0.00).toFixed(2)}`;
-        } catch (e) {
-          console.error('Error fetching ad stats:', e);
+        if (lblTotalVotes) {
+          const totalVotes = posts.reduce((sum, p) => sum + (p.votes || 0), 0);
+          lblTotalVotes.textContent = totalVotes.toLocaleString();
         }
       }
       
@@ -1264,58 +1236,17 @@
         });
       });
       
-      // Global Adsense Toggle
-      chkAdsenseToggle.addEventListener('change', () => {
-        localStorage.setItem('adsense_enabled', chkAdsenseToggle.checked ? 'true' : 'false');
-        window.dispatchEvent(new CustomEvent('adsSettingsChanged'));
-        renderForum();
-      });
-      
-      // Reset Stats
-      btnResetAdStats.addEventListener('click', async () => {
-        const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
-        if (services) {
-          try {
-            const impressionsSnap = await services.db.collection('ad_impressions').get();
-            const affiliateSnap = await services.db.collection('affiliate_clicks').get();
-            
-            const deletePromises = [];
-            impressionsSnap.forEach(doc => {
-              deletePromises.push(doc.ref.delete());
-            });
-            affiliateSnap.forEach(doc => {
-              deletePromises.push(doc.ref.delete());
-            });
-            
-            await Promise.all(deletePromises);
-            updateDashboardUI();
-            renderForum();
-            return;
-          } catch (e) {
-            console.error('Firestore reset stats error:', e);
-          }
-        }
-
-        try {
-          await fetch(apiBase + '/api/ads/reset-stats', { method: 'POST' });
-          updateDashboardUI();
-          renderForum();
-        } catch (e) {
-          console.error('Reset stats error:', e);
-        }
-      });
-      
-      // Create Post Modals
+      // Create Post Modals (Works both logged-in & as guest locally without dead ends)
       btnNewPost.addEventListener('click', () => {
-        const user = localStorage.getItem('techtest_user');
-        if (!user) {
-          window.openAuthModal();
-        } else {
-          createPostModal.classList.add('open');
-        }
+        createPostModal.classList.add('open');
+        const titleInput = document.getElementById('postTitle');
+        if (titleInput) setTimeout(() => titleInput.focus(), 50);
       });
       btnClosePostModal.addEventListener('click', () => {
         createPostModal.classList.remove('open');
+      });
+      createPostModal.addEventListener('click', (e) => {
+        if (e.target === createPostModal) createPostModal.classList.remove('open');
       });
       
       createPostForm.addEventListener('submit', async (e) => {
@@ -1323,25 +1254,20 @@
         const community = document.getElementById('postCommunity').value;
         const title = document.getElementById('postTitle').value.trim();
         const content = document.getElementById('postContent').value.trim();
-        const author = localStorage.getItem('techtest_user') || 'Anonymous';
+        const author = localStorage.getItem('techtest_user') || 'CommunityMember';
         
         if (title && content) {
           const services = window.getFirebaseServices ? window.getFirebaseServices() : null;
-          if (services) {
+          if (services && services.auth.currentUser) {
             try {
               const user = services.auth.currentUser;
-              if (!user) {
-                window.openAuthModal();
-                return;
-              }
-              
               const postRef = await services.db.collection('posts').add({
                 community,
                 title,
                 content,
                 author,
                 user_id: user.uid,
-                votes: 1, // Start with author's own upvote
+                votes: 1,
                 comments: 0,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
               });
@@ -1362,7 +1288,6 @@
               return;
             } catch (err) {
               console.error('Firestore create post error:', err);
-              alert(err.message || 'Failed to publish post');
             }
           }
 
@@ -1372,30 +1297,49 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ community, title, content })
             });
-            
-            if (!res.ok) {
-              const data = await res.json();
-              alert(data.error || 'Failed to create post');
-              return;
+            const ct = res.headers.get('content-type') || '';
+            if (!res.ok || !ct.includes('application/json')) {
+              throw new Error('NO_BACKEND');
             }
-            
             const data = await res.json();
             if (data.success) {
-              // Close modal and reset
               createPostModal.classList.remove('open');
               document.getElementById('postTitle').value = '';
               document.getElementById('postContent').value = '';
-              
-              // Reload posts and user votes
               await loadPostsAndVotes();
+              return;
             }
           } catch (err) {
-            console.error('Create post error:', err);
-            alert('Failed to publish post. Is the server running?');
+            // Static / Local Forum Submission Fallback
+            const newPost = {
+              id: Date.now(),
+              community,
+              author,
+              time: 'just now',
+              title: title.replace(/</g, '&lt;'),
+              content: content.replace(/</g, '&lt;'),
+              votes: 1,
+              comments: 0,
+              replies: [],
+              userVote: 'up'
+            };
+            posts.unshift(newPost);
+            localStorage.setItem('antigravity_posts', JSON.stringify(posts));
+            createPostModal.classList.remove('open');
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            renderForum();
           }
         }
       });
       
+      // Auto-open Ask a Question modal if navigated with ?ask=1
+      if (new URLSearchParams(window.location.search).get('ask') === '1') {
+        createPostModal.classList.add('open');
+        const titleInput = document.getElementById('postTitle');
+        if (titleInput) setTimeout(() => titleInput.focus(), 100);
+      }
+
       // Listen to Auth State Changes
       window.addEventListener('authStateChanged', () => {
         loadPostsAndVotes();
@@ -1405,13 +1349,8 @@
         renderForum();
       });
       
-      window.addEventListener('adStatsUpdated', () => {
-        updateDashboardUI();
-      });
-      
       // Initial render calls
       loadPostsAndVotes();
-      updateDashboardUI();
     });
   </script>
 </body>
