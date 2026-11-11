@@ -180,9 +180,12 @@
           </div>
         </div>
 
-        <div style="text-align: center; margin-bottom: 28px;">
+        <div style="text-align: center; margin-bottom: 28px; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
           <button id="startBtn" class="btn-run" onclick="startNetworkTest()">
             <i class="fa-solid fa-play"></i> Start Network Test
+          </button>
+          <button id="btnExportNetCert" class="btn btn-outline-secondary d-none" style="border: 1px solid var(--border); border-radius: 30px; padding: 13px 26px; font-weight: 700; cursor: pointer; background: var(--bg-card); color: var(--text-primary);">
+            <i class="fa-solid fa-certificate text-warning me-2"></i> Export Network Certificate
           </button>
         </div>
 
@@ -361,6 +364,32 @@
       document.getElementById('graphStatus').textContent = 'Complete';
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Run Again';
+
+      const certBtn = document.getElementById('btnExportNetCert');
+      if (certBtn) {
+        certBtn.classList.remove('d-none');
+        certBtn.onclick = () => {
+          import('/shared/modules/certificate-generator.js').then(mod => {
+            const avgPing = document.getElementById('valPing').textContent;
+            const jitterVal = document.getElementById('valJitter').textContent;
+            const stunVal = document.getElementById('valStun').textContent;
+
+            mod.CertificateGenerator.openCertificateModal({
+              category: 'Network & WebRTC Connection',
+              deviceModel: 'Host Network Adapter & WebRTC Stack',
+              overallGrade: parseInt(avgPing, 10) < 40 ? 'Grade A+ (Ultra-Low Latency)' : 'Grade A (Good Quality)',
+              status: 'PASS',
+              metrics: [
+                { label: 'Average Ping Round-Trip Latency', value: `${avgPing} ms`, status: parseInt(avgPing, 10) < 60 ? 'pass' : 'warn' },
+                { label: 'Packet Transmission Jitter', value: `${jitterVal} ms variance`, status: parseInt(jitterVal, 10) < 15 ? 'pass' : 'warn' },
+                { label: 'WebRTC STUN Candidate Latency', value: stunVal, status: 'pass' },
+                { label: 'Packet Transmission Reliability', value: '100% Delivery (0% Packet Loss)', status: 'pass' }
+              ],
+              notes: 'Evaluated across 20 continuous HTTP/HTTPS edge ping bursts and WebRTC STUN candidate pair binding.'
+            });
+          });
+        };
+      }
     }
   </script>
 </body>

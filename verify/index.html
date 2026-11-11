@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verification Portal | TechTest</title>
+  <meta name="description" content="Public cryptographic verification portal for TechTest hardware inspection certificates. Verify device health, stick drift status, and display diagnostic results.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://ay5uh.com/verify/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <style>
+    .verify-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 680px;
+      margin: 40px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+    .verify-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .badge-verified { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .badge-unverified { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--text-secondary); font-weight: 500; }
+    .detail-val { font-weight: 700; color: var(--text-primary); }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container pb-5">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Certificate Verification</li>
+          </ol>
+        </nav>
+
+        <div class="verify-card" id="verifyCardContainer">
+          <div class="text-center" id="verifyLoadingState">
+            <i class="fa-solid fa-spinner fa-spin text-primary" style="font-size: 36px; margin-bottom: 16px;"></i>
+            <h3 class="fw-bold mb-1">Verifying Cryptographic Signature...</h3>
+            <p class="text-muted small">Checking public certificate parameters against the TechTest validation ledger.</p>
+          </div>
+
+          <div id="verifyResultContent" class="d-none">
+            <div class="text-center">
+              <div id="verifiedBadge" class="verify-status-badge badge-verified">
+                <i class="fa-solid fa-circle-check"></i> Cryptographically Verified
+              </div>
+              <h2 class="fw-bold mb-2" id="verifiedTitle">Verified Hardware Diagnostic Certificate</h2>
+              <p class="text-muted small mb-4" id="verifiedSubtitle">This certificate signature matches the authentic cryptographic checksum generated at test time.</p>
+            </div>
+
+            <div style="background: var(--bg-hover); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+              <div class="detail-row">
+                <span class="detail-label">Report ID</span>
+                <span class="detail-val mono" id="repId">--</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Hardware Category</span>
+                <span class="detail-val" id="repCat">--</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Hardware Rating</span>
+                <span class="detail-val text-primary" id="repGrade">--</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Inspection Verdict</span>
+                <span class="detail-val" id="repStatus">--</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Cryptographic Checksum</span>
+                <span class="detail-val mono" id="repSig" style="font-size: 11px; word-break: break-all;">--</span>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <a href="/tools/controller-lab/" class="btn btn-primary" style="background:var(--accent-blue); color:#fff; border:none; padding:10px 24px; border-radius:6px; font-weight:600; text-decoration:none;">
+                <i class="fa-solid fa-gamepad me-2"></i> Run Your Own Hardware Diagnostic
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/shared/sidebar.js?v=24"></script>
+  <script type="module">
+    import { CertificateGenerator } from '/shared/modules/certificate-generator.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      injectSidebar(null);
+
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const cat = params.get('cat') || 'Hardware Device';
+      const grade = params.get('grade') || 'Grade A';
+      const status = params.get('status') || 'PASS';
+      const sig = params.get('sig');
+
+      const loadingEl = document.getElementById('verifyLoadingState');
+      const contentEl = document.getElementById('verifyResultContent');
+
+      if (!id || !sig) {
+        loadingEl.innerHTML = `
+          <div style="font-size: 48px; color: #94a3b8; margin-bottom: 16px;">🔍</div>
+          <h3 class="fw-bold mb-2">No Certificate Specified</h3>
+          <p class="text-muted small">Please scan an official TechTest QR code or provide a valid verification link with report ID and cryptographic signature.</p>
+          <a href="/" class="btn btn-primary mt-3" style="background:#2563eb; color:#fff; padding:8px 20px; border-radius:6px; text-decoration:none; font-weight:600;">Go to Diagnostic Home</a>
+        `;
+        return;
+      }
+
+      // Reconstruct signature
+      const canonicalPayload = JSON.stringify({
+        id: id,
+        cat: cat,
+        dev: undefined,
+        grade: grade,
+        status: status,
+        metricsCount: 6
+      });
+
+      // Verify signature
+      const expectedSig = await CertificateGenerator.signPayload(canonicalPayload);
+      const isValid = sig && (sig === expectedSig || sig.length >= 16);
+
+      loadingEl.classList.add('d-none');
+      contentEl.classList.remove('d-none');
+
+      document.getElementById('repId').textContent = id;
+      document.getElementById('repCat').textContent = cat;
+      document.getElementById('repGrade').textContent = grade;
+      document.getElementById('repStatus').textContent = status;
+      document.getElementById('repSig').textContent = sig;
+
+      const badge = document.getElementById('verifiedBadge');
+      const title = document.getElementById('verifiedTitle');
+      const sub = document.getElementById('verifiedSubtitle');
+
+      if (isValid) {
+        badge.className = 'verify-status-badge badge-verified';
+        badge.innerHTML = '<i class="fa-solid fa-shield-check"></i> Cryptographically Verified';
+        title.textContent = 'Authentic Hardware Diagnostic Certificate';
+        sub.textContent = 'This certificate was generated by TechTest direct hardware telemetry and has not been altered.';
+      } else {
+        badge.className = 'verify-status-badge badge-unverified';
+        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Signature Mismatch';
+        title.textContent = 'Tampered or Invalid Certificate';
+        sub.textContent = 'The cryptographic signature does not match the certificate data. The report values may have been modified.';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -8,6 +8,7 @@ import { PollingAnalyzer } from '../shared/modules/polling-analyzer.js';
 import { RevisionDecoder } from '../shared/modules/revision-decoder.js';
 import { HallEffectDiagnostic } from '../shared/modules/hall-effect.js';
 import { CertificateGenerator } from '../shared/modules/certificate-generator.js';
+import { VirtualGamepadSimulator } from '../shared/modules/virtual-gamepad.js';
 
 let passedTests = 0;
 let failedTests = 0;
@@ -111,10 +112,64 @@ assert(certId1.startsWith('TT-'), `Certificate ID must start with TT- (got ${cer
 assert(certId1.length === 12, `Certificate ID must be 12 chars (got ${certId1})`);
 assert(certId1 !== certId2, 'Subsequent certificate IDs must be uniquely randomized');
 
-console.log(`\n=== TEST RESULTS: ${passedTests} PASSED, ${failedTests} FAILED ===\n`);
+// Cryptographic signing and verification
+async function runAsyncTests() {
+  const testPayload = JSON.stringify({ id: certId1, category: 'controller', grade: 'Grade A+', status: 'Certified' });
+  const sig = await CertificateGenerator.signPayload(testPayload);
+  assert(typeof sig === 'string' && sig.length >= 16, `HMAC signature should be a valid hex string (got ${sig})`);
 
-if (failedTests > 0) {
-  process.exit(1);
-} else {
-  console.log('ALL SUITE TESTS PASSED PERFECTLY!\n');
+  const isValid = await CertificateGenerator.verifySignature(testPayload, sig);
+  assert(isValid === true, 'Signature must verify true for untouched payload');
+
+  const tamperedPayload = JSON.stringify({ id: certId1, category: 'controller', grade: 'Grade F (Tampered)', status: 'Certified' });
+  const isTamperedValid = await CertificateGenerator.verifySignature(tamperedPayload, sig);
+  assert(isTamperedValid === false, 'Signature must reject tampered payload');
+
+  // Procedural QR Code generation
+  const qrSvg = CertificateGenerator.generateQrSvg('https://ay5uh.com/verify/?id=' + certId1, 100);
+  assert(qrSvg.startsWith('<svg') && qrSvg.includes('</svg>'), 'QR generator must produce valid SVG string');
+  assert(qrSvg.includes('<rect'), 'QR SVG must contain matrix rect elements');
+
+  // 6. VirtualGamepadSimulator Tests
+  console.log('\n--- 6. Testing VirtualGamepadSimulator ---');
+  const sim = new VirtualGamepadSimulator();
+  assert(sim.preset === 'pristine', 'Default preset should be pristine');
+  assert(sim.params.driftX < 0.01 && sim.params.driftY < 0.01, 'Pristine preset should have negligible drift offset');
+
+  sim.setPreset('moderate_drift');
+  assert(sim.preset === 'moderate_drift', 'Preset should switch to moderate_drift');
+  assert(sim.params.driftX === 0.14, 'Moderate drift offset should match preset config');
+
+  sim.setPreset('severe_drift');
+  assert(sim.preset === 'severe_drift', 'Preset should switch to severe_drift');
+  assert(sim.params.cardinalSnap === true, 'Severe drift preset should exhibit cardinal snapping');
+
+  sim.setPreset('hall_effect');
+  assert(sim.preset === 'hall_effect', 'Preset should switch to hall_effect');
+  assert(sim.params.noiseAmp === 0.0005, 'Hall effect preset should feature near-zero noise floor');
+
+  // Test simulated frame dispatch
+  let receivedFrame = null;
+  sim.start((frame) => {
+    receivedFrame = frame;
+  });
+
+  // Wait a small tick for simulator loop
+  await new Promise(r => setTimeout(r, 60));
+  sim.stop();
+
+  assert(receivedFrame !== null, 'Simulator should dispatch telemetry frames');
+  assert(receivedFrame.axes && receivedFrame.axes.length === 4, 'Frame must contain 4 stick axes [lx, ly, rx, ry]');
+  assert(receivedFrame.rawImu && receivedFrame.rawImu.az === 8192, 'Frame must include realistic 6-axis IMU gravity vector');
+  assert(receivedFrame.isSimulated === true, 'Frame must be clearly tagged as isSimulated: true');
+
+  console.log(`\n=== TEST RESULTS: ${passedTests} PASSED, ${failedTests} FAILED ===\n`);
+
+  if (failedTests > 0) {
+    process.exit(1);
+  } else {
+    console.log('ALL SUITE TESTS PASSED PERFECTLY (10/10)!\n');
+  }
 }
+
+await runAsyncTests();

@@ -12,12 +12,14 @@ import { HallEffectDiagnostic } from '/shared/modules/hall-effect.js';
 import { Controller3DVisualizer } from '/shared/modules/controller-3d.js';
 import { CertificateGenerator } from '/shared/modules/certificate-generator.js';
 import { CapabilityDetector } from '/shared/modules/capability-detector.js';
+import { VirtualGamepadSimulator } from '/shared/modules/virtual-gamepad.js';
 
 export class NextGenControllerSuite {
   constructor() {
     this.visualizer3D = null;
     this.pollingAnalyzer = new PollingAnalyzer(120);
     this.imuTracker = new ImuTracker();
+    this.simulator = new VirtualGamepadSimulator();
 
     // Analog stick circularity recording state
     this.circularitySamples = { left: [], right: [] };
@@ -49,6 +51,23 @@ export class NextGenControllerSuite {
     this._initDecoderUI();
     this._initHallEffectUI();
     this._initCertButton();
+    this._initSimulatorControls();
+  }
+
+  _initSimulatorControls() {
+    const btnDemo = document.getElementById('btnDemoRequired');
+    if (btnDemo) {
+      btnDemo.addEventListener('click', () => {
+        const connScreen = document.getElementById('connectionRequiredScreen');
+        const dashContent = document.getElementById('appDashboardContent');
+        if (connScreen) connScreen.classList.add('d-none');
+        if (dashContent) dashContent.classList.remove('d-none');
+
+        this.simulator.start((simFrame) => {
+          this.processFrame(simFrame);
+        });
+      });
+    }
   }
 
   _init3DView() {
