@@ -1412,7 +1412,7 @@ window.openProfileDrawer = function(username) {
           
           <div class="profile-info-section">
             <h4 class="profile-username" id="lblProfileUsername">u/${username}</h4>
-            <div class="profile-cake-day"><i class="fa-solid fa-cake-candles"></i> Cake Day: <span id="lblProfileCakeDay">June 24, 2026</span></div>
+            <div class="profile-cake-day"><i class="fa-solid fa-user-check"></i> Status: <span id="lblProfileCakeDay">Active Session</span></div>
             
             <div class="profile-karma-badges">
               <div class="karma-badge">
@@ -1698,11 +1698,16 @@ window.openProfileDrawer = function(username) {
   // Load data from Firebase or offline fallback
   const syncDrawerProfile = async () => {
     const services = getFirebaseServices();
+    const localAccounts = JSON.parse(localStorage.getItem('techtest_accounts') || '[]');
+    const localAcc = localAccounts.find(a => a.username === username);
+    const localJoinDate = localAcc && localAcc.createdAt
+      ? new Date(localAcc.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+      : 'Active Local Session';
     let profileData = {
-      joinDate: "June 2026",
+      joinDate: localJoinDate,
       karma: parseInt(localStorage.getItem('techtest_karma') || "100", 10),
-      credentials: localStorage.getItem('techtest_credentials') || "Gamepad Restorer",
-      bio: localStorage.getItem('techtest_bio') || "Tell the community about your gaming setups and repair skills...",
+      credentials: localStorage.getItem('techtest_credentials') || "Community Member",
+      bio: localStorage.getItem('techtest_bio') || "",
       avatarPreset: localStorage.getItem('techtest_avatar_preset') || "🎮",
       avatarTheme: localStorage.getItem('techtest_avatar_theme') || "gold"
     };
@@ -1749,7 +1754,7 @@ window.openProfileDrawer = function(username) {
     // Update DOM
     document.getElementById('lblProfileCakeDay').textContent = profileData.joinDate;
     document.getElementById('lblProfilePostKarma').textContent = profileData.karma;
-    document.getElementById('lblProfileCommentKarma').textContent = postCount * 2; // Simulated comment karma
+    document.getElementById('lblProfileCommentKarma').textContent = 0;
     document.getElementById('lblProfileCredential').textContent = profileData.credentials;
     document.getElementById('lblProfileBio').textContent = profileData.bio;
     document.getElementById('lblProfileReputation').textContent = reputation;

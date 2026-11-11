@@ -373,28 +373,10 @@
   <div class="app-layout">
     <main class="main-content">
       
-      <div class="hero animate-fade-in-up">
+      <div class="hero animate-fade-in-up" style="padding-bottom: 40px;">
         <p style="font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;">Free Hardware Diagnostics</p>
         <h1 class="hero-title">Test Your Hardware.<br>Know What's Wrong.</h1>
-        <p class="hero-subtitle">Run comprehensive diagnostics on laptops, phones, and gaming controllers in your browser.</p>
-      </div>
-
-      <!-- Stats Bar -->
-      <div class="container animate-fade-in-up delay-1" style="margin-bottom: 48px;">
-        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; display: flex; justify-content: space-around; padding: 28px; text-align: center; flex-wrap: wrap; gap: 20px;">
-          <div>
-            <div id="stat-devices-tested" style="font-size: 32px; font-weight: 700; color: var(--text-primary);">14</div>
-            <div id="stat-devices-label" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Diagnostic Tools</div>
-          </div>
-          <div>
-            <div id="stat-repair-guides" style="font-size: 32px; font-weight: 700; color: var(--text-primary);"><!-- REPAIR_GUIDES_COUNT -->4</div>
-            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Repair Guides</div>
-          </div>
-          <div>
-            <div style="font-size: 32px; font-weight: 700; color: var(--text-primary);">100%</div>
-            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Local &amp; Private</div>
-          </div>
-        </div>
+        <p class="hero-subtitle">Run diagnostics on laptops, phones, and gaming controllers directly in your browser.</p>
       </div>
 
       <!-- Homepage Search Bar -->
@@ -413,7 +395,7 @@
         
         <!-- Gamepad Card -->
         <div class="dashboard-card animate-fade-in-up delay-1" data-href="/tools/controller-lab/" data-keywords="controller lab gamepad ps5 dualsense ps4 dualshock xbox drift calibration 3d hall effect vibration circularity" tabindex="0" role="link">
-          <span class="card-count-badge">8 tests</span>
+          <span class="card-count-badge">WebHID &amp; 3D</span>
           <div class="card-emoji-container">🎮</div>
           <h2 class="card-title">Controller Lab</h2>
           <p class="card-desc">Diagnose, test, and calibrate PlayStation, Xbox, and Nintendo controllers. Read raw HID data, inspect 3D sticks, test haptics, and check for stick drift.</p>
@@ -434,7 +416,7 @@
 
         <!-- Laptop Card -->
         <div class="dashboard-card animate-fade-in-up delay-2" data-href="/tools/laptop/" data-keywords="laptop pc macbook windows diagnostics keyboard mouse mic speaker display dead pixel webcam stress cpu" tabindex="0" role="link">
-          <span class="card-count-badge">9 tools</span>
+          <span class="card-count-badge">PC &amp; Peripherals</span>
           <div class="card-emoji-container">💻</div>
           <h2 class="card-title">Laptop / PC Diagnostics</h2>
           <p class="card-desc">Comprehensive suite for testing your computer. Includes Keyboard, Mouse, Microphone, Speaker, Webcam, Display, and Stress Test tools.</p>
@@ -456,7 +438,7 @@
 
         <!-- Phone Card -->
         <div class="dashboard-card animate-fade-in-up delay-3" data-href="/tools/phone-diagnostics/" data-keywords="phone ios android mobile smartphone touchscreen digitizer multitouch dead pixel camera mic speaker" tabindex="0" role="link">
-          <span class="card-count-badge">6 tests</span>
+          <span class="card-count-badge">Mobile Sensors</span>
           <div class="card-emoji-container">📱</div>
           <h2 class="card-title">Phone Tester</h2>
           <p class="card-desc">Scan your iOS or Android smartphone for hardware defects. Test touchscreen digitizers, haptics, cameras, and dead pixels.</p>
@@ -611,7 +593,7 @@
             <div style="padding: 24px;">
               <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
               <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">ThinkPad T14 Gen 1 — Screen Replacement</h3>
-              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Intermediate &middot; 45 min</div>
+              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">LCD Assembly &middot; 30-Pin eDP</div>
             </div>
           </a>
 
@@ -629,7 +611,7 @@
             <div style="padding: 24px;">
               <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
               <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">MacBook Air 13" M1 — Hardware Repair Guide</h3>
-              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Intermediate &middot; 60 min</div>
+              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Diagnostics &amp; Part ID Reference</div>
             </div>
           </a>
 
@@ -649,7 +631,7 @@
             <div style="padding: 24px;">
               <span style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">REPAIR GUIDES</span>
               <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; color: var(--text-primary);">PS5 Controller — Stick Drift Fix &amp; Recalibrate</h3>
-              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Beginner &middot; 15 min</div>
+              <div style="color: var(--text-secondary); font-size: 13px; font-weight: 500;">Calibration &amp; Hardware Guide</div>
             </div>
           </a>
 
@@ -670,7 +652,7 @@
         <div class="footer-grid">
           <div class="footer-col">
             <h4 style="color: white; font-weight: 700; font-size: 15px; margin-bottom: 16px;">TechTest</h4>
-            <p>Free hardware diagnostics for everyone. All diagnostics run fully local in your browser with zero data collection.</p>
+            <p>Browser-based hardware diagnostics executed locally on your device.</p>
           </div>
           <div class="footer-col">
             <h4>Tools</h4>
@@ -701,7 +683,7 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2026 TechTest &middot; All diagnostics run locally. Free forever.</p>
+          <p>&copy; 2026 TechTest &middot; Browser Hardware Diagnostics.</p>
         </div>
       </footer>
 
