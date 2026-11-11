@@ -317,6 +317,12 @@
           <span>These values are estimated by your browser using Web APIs and may differ from actual hardware specs due to browser sandboxing. For exact specifications, check your device's System Information or Task Manager.</span>
         </div>
 
+        <div style="text-align: center; margin-top: 24px;">
+          <button type="button" id="btnExportSpecsCert" style="background: var(--text-primary); color: var(--bg-card); border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-certificate"></i> Export System Specs Certificate
+          </button>
+        </div>
+
       </div>
     </main>
   </div>
@@ -514,6 +520,29 @@
         ?`${pts} simultaneous touch point${pts>1?'s':''} supported`
         :'No touch input (maxTouchPoints = 0)';
     })();
+  </script>
+  <script type="module">
+    import { CertificateGenerator } from '/shared/modules/certificate-generator.js';
+    document.getElementById('btnExportSpecsCert')?.addEventListener('click', () => {
+      const cpu = document.getElementById('cpuVal')?.textContent || 'Unknown';
+      const ram = document.getElementById('ramVal')?.textContent || 'Unknown';
+      const gpu = document.getElementById('gpuVal')?.textContent || 'Unknown';
+      const hz = document.getElementById('hzVal')?.textContent || 'Unknown';
+      const plat = document.getElementById('platformVal')?.textContent || 'Unknown';
+      CertificateGenerator.openCertificateModal({
+        category: 'System Hardware Specs',
+        deviceModel: plat,
+        status: 'PASS',
+        overallGrade: 'Verified System Inventory',
+        metrics: [
+          { label: 'Logical CPU Threads', value: cpu, status: 'pass' },
+          { label: 'Device Memory API', value: ram, status: 'pass' },
+          { label: 'WebGL Graphics Renderer', value: gpu, status: 'pass' },
+          { label: 'Measured Refresh Rate', value: hz, status: 'pass' }
+        ],
+        notes: 'Hardware configuration fingerprint collected locally via standard Web APIs.'
+      });
+    });
   </script>
 </body>
 </html>

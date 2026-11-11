@@ -12,11 +12,62 @@ export class Controller3DVisualizer {
     this.renderer = null;
     this.controllerGroup = null;
     this.parts = {};
+    this.materials = {};
+    this.profile = 'dualsense';
     this.animationId = null;
     this.isInitialized = false;
 
     // Default lightbar color
     this.lightbarColor = 0x2563eb;
+  }
+
+  /**
+   * Switches 3D shell, asymmetric stick placement, touchpad visibility, and button accents
+   * across 'dualsense' | 'xbox' | 'switch'.
+   */
+  setProfile(profile = 'dualsense') {
+    const normalized = ['dualsense', 'xbox', 'switch'].includes(profile) ? profile : 'dualsense';
+    this.profile = normalized;
+
+    if (!this.parts.leftStick || !this.parts.dpad) return;
+
+    if (normalized === 'xbox') {
+      // Xbox asymmetric layout: left stick high-left, D-pad lower-inner, stealth matte shell, ABXY accents
+      this.parts.leftStick.position.set(-0.8, 0.32, -0.15);
+      this.parts.dpad.position.set(-0.48, 0.34, 0.28);
+      if (this.parts.touchpad) this.parts.touchpad.visible = false;
+      if (this.parts.lightbar) this.parts.lightbar.visible = false;
+      if (this.materials.shell) this.materials.shell.color.setHex(0x1f2937);
+      if (this.parts.cross) this.parts.cross.material.color.setHex(0x16a34a); // A (Green)
+      if (this.parts.circle) this.parts.circle.material.color.setHex(0xdc2626); // B (Red)
+      if (this.parts.square) this.parts.square.material.color.setHex(0x2563eb); // X (Blue)
+      if (this.parts.triangle) this.parts.triangle.material.color.setHex(0xeab308); // Y (Yellow)
+    } else if (normalized === 'switch') {
+      this.parts.leftStick.position.set(-0.8, 0.32, -0.15);
+      this.parts.dpad.position.set(-0.48, 0.34, 0.28);
+      if (this.parts.touchpad) this.parts.touchpad.visible = false;
+      if (this.parts.lightbar) {
+        this.parts.lightbar.visible = true;
+        this.parts.lightbar.material.color.setHex(0xef4444);
+      }
+      if (this.materials.shell) this.materials.shell.color.setHex(0x334155);
+      [this.parts.cross, this.parts.circle, this.parts.square, this.parts.triangle].forEach(b => {
+        if (b) b.material.color.setHex(0x0f172a);
+      });
+    } else {
+      // DualSense symmetric layout
+      this.parts.leftStick.position.set(-0.48, 0.32, 0.28);
+      this.parts.dpad.position.set(-0.8, 0.34, -0.15);
+      if (this.parts.touchpad) this.parts.touchpad.visible = true;
+      if (this.parts.lightbar) {
+        this.parts.lightbar.visible = true;
+        this.parts.lightbar.material.color.setHex(this.lightbarColor);
+      }
+      if (this.materials.shell) this.materials.shell.color.setHex(0xf3f4f6);
+      [this.parts.cross, this.parts.circle, this.parts.square, this.parts.triangle].forEach(b => {
+        if (b) b.material.color.setHex(0x27272a);
+      });
+    }
   }
 
   /**
@@ -90,6 +141,7 @@ export class Controller3DVisualizer {
       roughness: 0.35,
       metalness: 0.05
     });
+    this.materials.shell = shellWhiteMat;
     const shellDarkMat = new THREE.MeshStandardMaterial({
       color: 0x18181b,
       roughness: 0.6,
@@ -189,15 +241,15 @@ export class Controller3DVisualizer {
     this.controllerGroup.add(dpadGroup);
     this.parts.dpad = dpadGroup;
 
-    // Face Buttons (Cross, Circle, Square, Triangle)
+    // Face Buttons (Cross/A, Circle/B, Square/X, Triangle/Y)
     const buttonGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 16);
-    const btnCross = new THREE.Mesh(buttonGeo, buttonMat);
+    const btnCross = new THREE.Mesh(buttonGeo, buttonMat.clone());
     btnCross.position.set(0.8, 0.35, 0.02);
-    const btnCircle = new THREE.Mesh(buttonGeo, buttonMat);
+    const btnCircle = new THREE.Mesh(buttonGeo, buttonMat.clone());
     btnCircle.position.set(0.98, 0.35, -0.15);
-    const btnSquare = new THREE.Mesh(buttonGeo, buttonMat);
+    const btnSquare = new THREE.Mesh(buttonGeo, buttonMat.clone());
     btnSquare.position.set(0.62, 0.35, -0.15);
-    const btnTriangle = new THREE.Mesh(buttonGeo, buttonMat);
+    const btnTriangle = new THREE.Mesh(buttonGeo, buttonMat.clone());
     btnTriangle.position.set(0.8, 0.35, -0.32);
 
     this.controllerGroup.add(btnCross);

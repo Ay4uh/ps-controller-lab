@@ -239,11 +239,46 @@
           </div>
         </div>
 
+        <div style="text-align: center; margin-top: 24px;">
+          <button type="button" id="btnExportWebcamCert" class="btn-custom-primary" style="display:inline-flex; align-items:center; gap:8px; padding:10px 22px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">
+            <i class="fa-solid fa-certificate"></i> Export Webcam Certificate
+          </button>
+        </div>
+
       </div>
     </main>
   </div>
 
   <script src="/shared/sidebar.js?v=24"></script>
+  <script type="module">
+    import { CertificateGenerator } from '/shared/modules/certificate-generator.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('btnExportWebcamCert');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const cam = document.getElementById('valName').innerText;
+          const res = document.getElementById('valRes').innerText;
+          const fps = document.getElementById('valFps').innerText;
+          const aspect = document.getElementById('valAspect').innerText;
+          const isTested = cam !== '--' && res !== '--';
+          CertificateGenerator.openCertificateModal({
+            category: 'Camera & Optics',
+            deviceModel: isTested ? cam : 'USB / Integrated Webcam (Pending)',
+            status: isTested ? 'PASS' : 'WARNING',
+            overallGrade: isTested ? 'Grade A (Optical & Stream Verified)' : 'Pending Camera Capture',
+            metrics: [
+              { label: 'Sensor Label', value: cam, status: isTested ? 'pass' : 'warn' },
+              { label: 'Captured Resolution', value: res, status: isTested ? 'pass' : 'warn' },
+              { label: 'Measured Framerate', value: fps === '--' ? '--' : `${fps} FPS`, status: isTested ? 'pass' : 'warn' },
+              { label: 'Aspect Ratio', value: aspect, status: isTested ? 'pass' : 'warn' }
+            ],
+            notes: isTested ? 'Camera stream acquired locally via MediaDevices.getUserMedia without transmitting video outside the browser.' : 'Click "Enable Webcam" to capture optical stream telemetry before final certification.'
+          });
+        });
+      }
+    });
+  </script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       injectSidebar('webcam-test');

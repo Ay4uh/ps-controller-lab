@@ -1596,8 +1596,13 @@
               <h2 class="card-title-custom mb-1"><i class="fa-solid fa-cube text-primary"></i> 3D Interactive Controller Environment</h2>
               <p class="text-muted small mb-0">Full PBR 3D viewport. Real-time stick gimbal deflection, trigger hinge compression, button tactile feedback, and lightbar emissive glow.</p>
             </div>
-            <div class="d-flex gap-2">
-              <button class="btn btn-sm btn-outline-secondary" onclick="window.nextGenSuite && window.nextGenSuite.visualizer3D && window.nextGenSuite.visualizer3D.controllerGroup && (window.nextGenSuite.visualizer3D.controllerGroup.rotation.set(0,0,0))">
+            <div class="d-flex gap-2 align-items-center">
+              <select id="select3DProfile" class="form-select form-select-sm" style="width: auto;" onchange="window.nextGenSuite && window.nextGenSuite.visualizer3D && window.nextGenSuite.visualizer3D.setProfile(this.value)">
+                <option value="dualsense">DualSense / PS4</option>
+                <option value="xbox">Xbox Series X|S</option>
+                <option value="switch">Switch Pro</option>
+              </select>
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.nextGenSuite && window.nextGenSuite.visualizer3D && window.nextGenSuite.visualizer3D.controllerGroup && (window.nextGenSuite.visualizer3D.controllerGroup.rotation.set(0,0,0))">
                 <i class="fa-solid fa-arrows-rotate"></i> Reset Camera
               </button>
             </div>

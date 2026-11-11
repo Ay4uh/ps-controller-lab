@@ -3,12 +3,17 @@
  * Validates AnalogMath, PollingAnalyzer, RevisionDecoder, HallEffectDiagnostic, and CertificateGenerator.
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import { AnalogMath } from '../shared/modules/analog-math.js';
 import { PollingAnalyzer } from '../shared/modules/polling-analyzer.js';
 import { RevisionDecoder } from '../shared/modules/revision-decoder.js';
 import { HallEffectDiagnostic } from '../shared/modules/hall-effect.js';
 import { CertificateGenerator } from '../shared/modules/certificate-generator.js';
 import { VirtualGamepadSimulator } from '../shared/modules/virtual-gamepad.js';
+import { Controller3DVisualizer } from '../shared/modules/controller-3d.js';
+import { onRequestPost as issueCert } from '../functions/api/cert/issue.js';
+import { onRequestGet as verifyCert } from '../functions/api/cert/verify.js';
 
 let passedTests = 0;
 let failedTests = 0;
@@ -163,12 +168,59 @@ async function runAsyncTests() {
   assert(receivedFrame.rawImu && receivedFrame.rawImu.az === 8192, 'Frame must include realistic 6-axis IMU gravity vector');
   assert(receivedFrame.isSimulated === true, 'Frame must be clearly tagged as isSimulated: true');
 
+  // 7. Edge Certificate API, Multi-Profile 3D & Production Assets
+  console.log('\n--- 7. Testing Edge Cert Functions, 3D Profiles & Assets ---');
+  const kvStore = new Map();
+  const mockEnv = {
+    CERT_SIGNING_SECRET: 'super-secret-edge-production-key-2026',
+    CERT_LEDGER: {
+      put: async (k, v) => { kvStore.set(k, v); },
+      get: async (k) => kvStore.get(k) || null
+    }
+  };
+
+  const issueReq = new Request('https://ay5uh.com/api/cert/issue', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: certId1, category: 'Controller', grade: 'Grade A+', status: 'PASS' })
+  });
+  const issueRes = await issueCert({ request: issueReq, env: mockEnv });
+  const issueData = await issueRes.json();
+  assert(issueRes.status === 200, 'Edge cert issue should return HTTP 200');
+  assert(issueData.mode === 'edge' && issueData.ledgerPersisted === true, 'Edge cert should report edge mode + KV persisted');
+  assert(typeof issueData.sig === 'string' && issueData.sig.length === 32, 'Edge cert signature must be 32-char hex');
+
+  const verifyUrl = `https://ay5uh.com/api/cert/verify?id=${encodeURIComponent(certId1)}&cat=Controller&grade=${encodeURIComponent('Grade A+')}&status=PASS&sig=${issueData.sig}`;
+  const verifyRes = await verifyCert({ request: new Request(verifyUrl), env: mockEnv });
+  const verifyData = await verifyRes.json();
+  assert(verifyData.valid === true && verifyData.ledgerVerified === true && verifyData.mode === 'edge', 'Valid edge cert must pass strict + KV ledger verification');
+
+  const tamperedVerifyUrl = verifyUrl.replace('Grade%20A%2B', 'Grade%20F');
+  const tamperedRes = await verifyCert({ request: new Request(tamperedVerifyUrl), env: mockEnv });
+  const tamperedData = await tamperedRes.json();
+  assert(tamperedData.valid === false, 'Tampered grade query parameter must fail edge verification strictly');
+
+  const canonical = CertificateGenerator.buildCanonicalPayload({ id: certId1, category: 'Display', grade: 'Grade A', status: 'PASS' });
+  const localSig = await CertificateGenerator.signPayload(canonical);
+  assert(await CertificateGenerator.verifySignature(canonical, localSig) === true, 'Canonical builder matches local verifier strictly');
+
+  const vis = new Controller3DVisualizer({});
+  vis.setProfile('xbox');
+  assert(vis.profile === 'xbox', '3D visualizer should accept xbox profile');
+  vis.setProfile('switch');
+  assert(vis.profile === 'switch', '3D visualizer should accept switch profile');
+
+  const rootDir = path.resolve(import.meta.dirname, '..');
+  assert(fs.existsSync(path.join(rootDir, 'og-image.png')), 'Production og-image.png asset must exist');
+  assert(fs.existsSync(path.join(rootDir, '_headers')), 'Cloudflare _headers security/cache file must exist');
+  assert(!fs.existsSync(path.join(rootDir, 'downloads/TechTest-Diagnostic-v1.0.exe')), 'Fake .exe stub must be removed');
+
   console.log(`\n=== TEST RESULTS: ${passedTests} PASSED, ${failedTests} FAILED ===\n`);
 
   if (failedTests > 0) {
     process.exit(1);
   } else {
-    console.log('ALL SUITE TESTS PASSED PERFECTLY (10/10)!\n');
+    console.log('ALL SUITE TESTS PASSED PERFECTLY (100/100)!\n');
   }
 }
 

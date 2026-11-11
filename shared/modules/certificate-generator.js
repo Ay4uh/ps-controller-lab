@@ -108,25 +108,63 @@ export class CertificateGenerator {
   }
 
   /**
+   * Builds canonical payload JSON string matching edge /verify endpoint fields.
+   */
+  static buildCanonicalPayload({ id, category, grade, status }) {
+    return JSON.stringify({
+      id: String(id),
+      category: String(category),
+      grade: String(grade),
+      status: String(status)
+    });
+  }
+
+  /**
+   * Requests an edge-signed certificate from /api/cert/issue with automatic
+   * offline Web Crypto HMAC fallback when offline or running locally.
+   */
+  static async issueSignedRecord({ id, category, grade, status }) {
+    const canonicalPayload = this.buildCanonicalPayload({ id, category, grade, status });
+    try {
+      const res = await fetch('/api/cert/issue', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, category, grade, status })
+      });
+      const ct = res.headers.get('content-type') || '';
+      if (res.ok && ct.includes('application/json')) {
+        const data = await res.json();
+        if (data && data.sig) {
+          return { sig: data.sig, mode: data.mode || 'edge', ledgerPersisted: Boolean(data.ledgerPersisted) };
+        }
+      }
+    } catch {}
+    const sig = await this.signPayload(canonicalPayload);
+    return { sig, mode: 'local', ledgerPersisted: false };
+  }
+
+  /**
    * Renders a certificate data model into a high-fidelity printable view or initiates browser print/export.
    * @param {Object} certData 
    */
   static async openCertificateModal(certData) {
     const reportId = this.generateReportId();
     const timestamp = new Date().toUTCString();
+    const category = certData.category || 'Hardware Device';
+    const overallGrade = certData.overallGrade || 'Grade A';
+    const status = certData.status || 'PASS';
 
-    // Canonical payload string for cryptographic signing
-    const canonicalPayload = JSON.stringify({
+    const { sig: signature, mode: attestationMode, ledgerPersisted } = await this.issueSignedRecord({
       id: reportId,
-      cat: certData.category,
-      dev: certData.deviceModel,
-      grade: certData.overallGrade,
-      status: certData.status,
-      metricsCount: (certData.metrics || []).length
+      category,
+      grade: overallGrade,
+      status
     });
 
-    const signature = await this.signPayload(canonicalPayload);
-    const verificationUrl = `https://ay5uh.com/verify/?id=${reportId}&cat=${encodeURIComponent(certData.category)}&grade=${encodeURIComponent(certData.overallGrade)}&status=${certData.status}&sig=${signature}`;
+    const origin = (typeof window !== 'undefined' && window.location && window.location.origin.startsWith('http'))
+      ? window.location.origin
+      : 'https://ay5uh.com';
+    const verificationUrl = `${origin}/verify/?id=${encodeURIComponent(reportId)}&cat=${encodeURIComponent(category)}&grade=${encodeURIComponent(overallGrade)}&status=${encodeURIComponent(status)}&sig=${encodeURIComponent(signature)}&mode=${attestationMode}`;
     const qrSvg = this.generateQrSvg(verificationUrl, 84);
 
     const existingModal = document.getElementById('techtest-cert-modal');
@@ -223,7 +261,7 @@ export class CertificateGenerator {
             </div>
             <div class="cert-disclaimer">
               <div class="d-flex align-items-center gap-2 mb-1">
-                <span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-lock"></i> Web Crypto Signed:</span>
+                <span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-lock"></i> ${attestationMode === 'edge' ? (ledgerPersisted ? 'Edge Secret + KV Attested:' : 'Edge Secret Attested:') : 'Web Crypto Signed:'}</span>
                 <span class="mono" style="font-size:10px; color:#64748b;">${signature}</span>
               </div>
               <strong>Verification &amp; Privacy Notice:</strong> This diagnostic certification is computed in-browser using direct hardware telemetry (WebHID / Web Audio / WebGPU). No personally identifiable serial numbers or private device telemetry are broadcast or retained. Signature is verifiable against the public TechTest verification portal.

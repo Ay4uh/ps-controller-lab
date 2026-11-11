@@ -3,12 +3,16 @@
  * Provides offline-first caching for diagnostic suites, hardware math engines, and UI assets.
  */
 
-const CACHE_NAME = 'techtest-pwa-v3';
+const CACHE_NAME = 'techtest-pwa-v4';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   '/logo.png',
+  '/og-image.png',
+  '/verify/',
+  '/repair-guides/',
+  '/answers/',
   '/shared/styles.css',
   '/shared/sidebar.js',
   '/shared/modules/capability-detector.js',
@@ -19,13 +23,23 @@ const PRECACHE_ASSETS = [
   '/shared/modules/hall-effect.js',
   '/shared/modules/gpu-stress.js',
   '/shared/modules/certificate-generator.js',
+  '/shared/modules/controller-3d.js',
+  '/shared/modules/virtual-gamepad.js',
   '/tools/controller-lab/',
+  '/tools/laptop/',
+  '/tools/laptop-comprehensive/',
+  '/tools/laptop-stress/',
   '/tools/keyboard-test/',
   '/tools/mouse-test/',
   '/tools/display-test/',
+  '/tools/dead-pixel-test/',
   '/tools/benchmark/',
   '/tools/speaker-test/',
-  '/tools/dead-pixel-test/'
+  '/tools/mic-test/',
+  '/tools/webcam-test/',
+  '/tools/network-test/',
+  '/tools/system-specs/',
+  '/tools/phone-diagnostics/'
 ];
 
 self.addEventListener('install', (event) => {
@@ -55,8 +69,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Skip non-GET requests or external analytics
-  if (event.request.method !== 'GET' || url.origin !== location.origin) {
+  // Skip non-GET requests, external analytics, or dynamic API endpoints
+  if (event.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) {
     return;
   }
 

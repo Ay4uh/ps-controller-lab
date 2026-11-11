@@ -347,35 +347,35 @@
               <tbody id="reportBody"></tbody>
             </table>
 
-            <button id="copyBtn" onclick="copyReport()">
-              <i class="fa-solid fa-copy"></i> Copy Report to Clipboard
-            </button>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+              <button type="button" id="btnExportLaptopCert" style="background: var(--accent-blue); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-certificate"></i> Issue Master Health Certificate
+              </button>
+              <button id="copyBtn" onclick="copyReport()">
+                <i class="fa-solid fa-copy"></i> Copy Report to Clipboard
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Download CTA -->
         <div class="download-cta">
-          <h3>🖥️ Want Deeper Hardware Access?</h3>
-          <p class="sub">Browsers can't access CPU temperatures, RAM slot details, BIOS info, or S.M.A.R.T. drive health. Our native tool unlocks all of that.</p>
+          <h3>🖥️ Want Deeper OS &amp; S.M.A.R.T. Hardware Access?</h3>
+          <p class="sub">Browsers sandbox CPU temperature sensors and low-level disk controllers. Run our open-source Python CLI scanner locally for extended OS hardware telemetry.</p>
 
           <div class="limit-chips">
-            <span class="chip"><i class="fa-solid fa-thermometer-half"></i> CPU &amp; GPU Temps</span>
-            <span class="chip"><i class="fa-solid fa-server"></i> BIOS / UEFI Info</span>
-            <span class="chip"><i class="fa-solid fa-hard-drive"></i> S.M.A.R.T. Drive Health</span>
-            <span class="chip"><i class="fa-solid fa-memory"></i> RAM Slot Details</span>
-            <span class="chip"><i class="fa-solid fa-fan"></i> Fan Speed (RPM)</span>
-            <span class="chip"><i class="fa-solid fa-bolt"></i> Power Draw (Watts)</span>
+            <span class="chip"><i class="fa-solid fa-microchip"></i> CPU Brand String</span>
+            <span class="chip"><i class="fa-solid fa-server"></i> Platform &amp; Kernel</span>
+            <span class="chip"><i class="fa-solid fa-hard-drive"></i> Drive Partitions</span>
+            <span class="chip"><i class="fa-solid fa-file-code"></i> JSON Summary</span>
           </div>
 
           <div class="dl-btns">
-            <a href="/downloads/TechTest-Diagnostic-v1.0.exe" download class="dl-primary">
-              <i class="fa-brands fa-windows"></i> Download for Windows (.exe)
-            </a>
-            <a href="/downloads/TechTest-Diagnostic-v1.0.dmg" download class="dl-secondary">
-              <i class="fa-brands fa-apple"></i> macOS Version (.dmg)
+            <a href="/downloads/TechTest-Diagnostic.py" download class="dl-primary">
+              <i class="fa-brands fa-python"></i> Download Cross-Platform Script (.py)
             </a>
           </div>
-          <div class="dl-note">Free · Portable · No install required · No data collected</div>
+          <div class="dl-note">Open-Source Python 3 · Windows, macOS &amp; Linux · Zero network calls</div>
         </div>
 
       </div>
@@ -627,6 +627,29 @@
     }
 
     buildRows();
+  </script>
+  <script type="module">
+    import { CertificateGenerator } from '/shared/modules/certificate-generator.js';
+    document.getElementById('btnExportLaptopCert')?.addEventListener('click', () => {
+      const scoreText = document.getElementById('scoreNum').textContent;
+      const numericScore = parseInt(scoreText, 10) || 0;
+      const metrics = TESTS.map(t => {
+        const r = results[t.id] || { status: 'skip', detail: 'Not run' };
+        return {
+          label: t.name,
+          value: r.detail || '—',
+          status: r.status === 'pass' ? 'pass' : (r.status === 'fail' ? 'fail' : 'warn')
+        };
+      });
+      CertificateGenerator.openCertificateModal({
+        category: 'Full System Audit',
+        deviceModel: navigator.platform || 'Laptop / Desktop System',
+        status: numericScore >= 75 ? 'PASS' : 'WARNING',
+        overallGrade: `${numericScore}/100 (${numericScore >= 85 ? 'Grade A' : numericScore >= 65 ? 'Grade B' : 'Grade C'})`,
+        metrics,
+        notes: '11-point automated browser diagnostic suite completed across compute, display, input, storage, and media interfaces.'
+      });
+    });
   </script>
 </body>
 </html>
