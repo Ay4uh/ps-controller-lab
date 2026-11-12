@@ -3,7 +3,7 @@
  * Provides offline-first caching for diagnostic suites, hardware math engines, and UI assets.
  */
 
-const CACHE_NAME = 'techtest-pwa-v4';
+const CACHE_NAME = 'techtest-pwa-v5';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
@@ -74,7 +74,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-first for dynamic API/Firebase, Stale-while-revalidate for local pages and assets
+  // Network-first for HTML navigations so content updates appear immediately
+  const isHtmlRequest = event.request.mode === 'navigate' ||
+    url.pathname.endsWith('/') ||
+    url.pathname.endsWith('.html');
+
+  if (isHtmlRequest) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Stale-while-revalidate for static assets (JS/CSS/images)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
@@ -85,10 +105,7 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => {
-        // Offline fallback
-        return cachedResponse;
-      });
+      }).catch(() => cachedResponse);
 
       return cachedResponse || fetchPromise;
     })
