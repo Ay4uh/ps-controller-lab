@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MacBook Keyboard Keycap Cleaning &amp; Chatter Diagnosis | TechTest</title>
+  <meta name="description" content="Diagnose repeating, stuck, or unresponsive keys on MacBook Pro and MacBook Air scissor-switch keyboards and clean beneath keycaps safely.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ay5uh.com/repair-guides/apple/macbook-keyboard-cleaning/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <meta property="og:title" content="MacBook Keyboard Keycap Cleaning & Chatter Diagnosis | TechTest">
+  <meta property="og:description" content="How to isolate chattering or stuck keys and safely clean scissor-switch MacBook keyboards.">
+  <meta property="og:url" content="https://ay5uh.com/repair-guides/apple/macbook-keyboard-cleaning/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+  <style>
+    .guide-container { max-width: 860px; margin: 0 auto; padding: 32px 24px 80px 24px; line-height: 1.7; }
+    .guide-breadcrumb { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+    .guide-breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .guide-card-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 24px; }
+    .guide-container h1 { font-family: var(--font-title); font-size: 2rem; margin: 0 0 12px 0; color: var(--text-primary); }
+    .guide-container h2 { font-size: 1.35rem; margin: 28px 0 12px 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .callout { background: var(--bg-hover); border-left: 4px solid #ef4444; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.95rem; }
+  </style>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      document.documentElement.setAttribute('data-theme', savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="guide-container">
+        <nav class="guide-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a> &rarr; <a href="/repair-guides/">Repair Guides</a> &rarr; Apple &rarr; MacBook Keyboard Cleaning
+        </nav>
+
+        <div class="guide-card-box">
+          <h1>MacBook Keyboard Keycap Cleaning &amp; Chatter Diagnosis</h1>
+          <p style="color: var(--text-secondary);">Repeating letters (key chatter), sticky key travel, or dead switches are frequently caused by debris trapped under the keycap dome rather than a failed keyboard controller.</p>
+
+          <h2>1. Isolate Faulty Switches First</h2>
+          <p>Launch our <a href="/test/macbook-pro-keyboard/" style="color:var(--accent-blue);font-weight:600;">MacBook Keyboard Test</a> or <a href="/tools/keyboard-test/" style="color:var(--accent-blue);font-weight:600;">Input Matrix Tester</a> and tap every key repeatedly while watching debounce timing and stuck-key logs:</p>
+          <ul>
+            <li><strong>Entire row or column dead:</strong> Likely a damaged keyboard flex ribbon or liquid corrosion on the IPD/keyboard connector rather than a single dirty keycap.</li>
+            <li><strong>Single key sticks or double-registers:</strong> Usually food crumbs or sticky residue around the white nylon scissor mechanism or silicone dome.</li>
+          </ul>
+
+          <h2>2. Non-Invasive Compressed Air Sweep (Recommended First Step)</h2>
+          <ol>
+            <li>Shut down your MacBook completely and elevate it at a <strong>75-degree angle</strong> (not completely vertical).</li>
+            <li>Use compressed air in short bursts left-to-right across the affected row, then tilt 75 degrees the opposite direction and repeat.</li>
+            <li>Avoid holding cans inverted — liquid propellant freezes keycaps and leaves moisture near electronics.</li>
+          </ol>
+
+          <div class="callout">
+            <strong>Warning Before Prying Keycaps:</strong> MacBook <strong>Spacebar, Shift, Return, and Option</strong> stabilizers use delicate metal wire bars that bend easily, and 2016–2019 Butterfly mechanisms are extremely fragile. If only a standard letter keycap needs cleaning on a Magic/Scissor keyboard, lift gently from the <strong>top edge clips</strong> outward with a thin nylon spudger; slide backward off the bottom hooks cleanly rather than twisting.
+          </div>
+
+          <h2>3. When Liquid Spill Occurred</h2>
+          <p>Sugary liquids crystallize inside the dome membrane sheet below the scissor clips. If compressed air fails, power down immediately, keep the battery disconnected, clean accessible switches with <strong>99% isopropyl alcohol</strong> on a lint-free swab, and allow 24 hours to dry before powering back on. Re-verify every key in <a href="/tools/keyboard-test/" style="color:var(--accent-blue);font-weight:600;">Keyboard Test</a>.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="/shared/sidebar.js?v=24"></script>
+  <script>document.addEventListener('DOMContentLoaded', () => injectSidebar(null));</script>
+</body>
+</html>

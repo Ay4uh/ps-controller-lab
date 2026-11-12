@@ -66,6 +66,7 @@
       
       <!-- Zone 1: Search -->
       <div class="catalog-top-zone">
+        <h1 style="font-size: 24px; font-weight: 700; margin: 0 0 14px 0; color: var(--text-primary); font-family: var(--font-title);">Hardware Repair &amp; Troubleshooting Guides</h1>
         <div class="search-container">
           <i class="fa-solid fa-search search-icon"></i>
           <input type="text" id="catalogSearch" placeholder="e.g. MacBook Air M1, ThinkPad T14, PS5 Drift Fix" autocomplete="off">
@@ -84,6 +85,9 @@
 
           <div class="sidebar-category mt-4">GAMING</div>
           <div class="brand-link" data-brand="playstation">PlayStation</div>
+
+          <div class="sidebar-category mt-4">DISPLAYS</div>
+          <div class="brand-link" data-brand="displays">Monitors & Panels</div>
         </aside>
 
         <!-- Zone 3: Model Grid -->
@@ -118,8 +122,9 @@
         name: 'Apple',
         slug: 'apple',
         series: [
-          { name: 'MacBook Air', models: [
-            { name: 'MacBook Air 13" M1 (A2337 Hardware Guide)', slug: 'macbook-air-13-m1', hasGuide: true }
+          { name: 'MacBook Air & Pro', models: [
+            { name: 'MacBook Air 13" M1 (A2337 Hardware Guide)', slug: 'macbook-air-13-m1', hasGuide: true },
+            { name: 'MacBook Keyboard — Cleaning & Key Chatter Fix', slug: 'macbook-keyboard-cleaning', hasGuide: true }
           ]}
         ]
       },
@@ -129,7 +134,17 @@
         series: [
           { name: 'Controllers', models: [
             { name: 'PS5 DualSense — Stick Drift Fix & Calibration', slug: '../../fix-ps5-controller-drift', hasGuide: true },
+            { name: 'PS5 DualSense — L2 / R2 Trigger Spring Replacement', slug: 'dualsense-trigger-spring', hasGuide: true },
             { name: 'PS4 DualShock 4 — Stick Drift Test & Repair', slug: '../../ps4-controller-drift-test', hasGuide: true }
+          ]}
+        ]
+      },
+      displays: {
+        name: 'Monitors & Panels',
+        slug: 'displays',
+        series: [
+          { name: 'LCD / IPS / OLED', models: [
+            { name: 'Dead vs. Stuck Pixels — Identification & Recovery', slug: 'dead-vs-stuck-pixels', hasGuide: true }
           ]}
         ]
       }

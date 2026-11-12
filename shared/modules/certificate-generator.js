@@ -194,8 +194,8 @@ export class CertificateGenerator {
             <div class="cert-brand">
               <div class="cert-logo-mark">⚡</div>
               <div>
-                <h1 class="cert-title">TechTest Hardware Diagnostic Lab</h1>
-                <p class="cert-subtitle">Cryptographically Verified Hardware Health Certificate</p>
+                <h1 class="cert-title">TechTest Hardware Diagnostic Report</h1>
+                <p class="cert-subtitle">${attestationMode === 'edge' ? 'Edge-Attested Hardware Health Certificate' : 'Browser Telemetry Report &amp; Integrity Checksum'}</p>
               </div>
             </div>
             <div class="cert-badge ${certData.status.toLowerCase()}">
@@ -261,10 +261,12 @@ export class CertificateGenerator {
             </div>
             <div class="cert-disclaimer">
               <div class="d-flex align-items-center gap-2 mb-1">
-                <span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-lock"></i> ${attestationMode === 'edge' ? (ledgerPersisted ? 'Edge Secret + KV Attested:' : 'Edge Secret Attested:') : 'Web Crypto Signed:'}</span>
+                <span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-lock"></i> ${attestationMode === 'edge' ? (ledgerPersisted ? 'Edge Secret + KV Attested:' : 'Edge Secret Attested:') : 'Local Browser Checksum:'}</span>
                 <span class="mono" style="font-size:10px; color:#64748b;">${signature}</span>
               </div>
-              <strong>Verification &amp; Privacy Notice:</strong> This diagnostic certification is computed in-browser using direct hardware telemetry (WebHID / Web Audio / WebGPU). No personally identifiable serial numbers or private device telemetry are broadcast or retained. Signature is verifiable against the public TechTest verification portal.
+              <strong>Verification Notice:</strong> ${attestationMode === 'edge'
+                ? 'Signed by Cloudflare Edge Function with server secret and verifiable against the public verification endpoint.'
+                : 'Checksum computed locally in your browser via Web Crypto HMAC-SHA256 to detect accidental URL alterations. Self-reported client telemetry; configure Cloudflare Edge CERT_SIGNING_SECRET for third-party attestation.'}
             </div>
           </div>
         </div>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AntiGravity Forum — Hardware Testing & Discussions | TechTest</title>
-  <meta name="description" content="Ask hardware questions, share CPU/GPU stress test benchmarks, and troubleshoot drift in the AntiGravity community.">
+  <title>Hardware Troubleshooting Q&amp;A &amp; Repair Reference | TechTest</title>
+  <meta name="description" content="Practical hardware troubleshooting answers for DualSense stick drift, laptop display issues, thermals, and peripheral testing.">
   <link rel="canonical" href="https://ay5uh.com/answers/">
   <meta name="robots" content="index, follow">
   <meta property="og:site_name" content="TechTest">
@@ -438,22 +438,22 @@
       
       <div class="forum-grid">
         
-        <!-- Left Column: Communities -->
+        <!-- Left Column: Topics -->
         <aside class="community-sidebar">
-          <div class="community-title">COMMUNITIES</div>
+          <div class="community-title">TOPICS</div>
           <ul class="community-list">
-            <li><a href="#" class="community-link active" data-filter="all"><i class="fa-solid fa-house"></i> All Communities</a></li>
-            <li><a href="#" class="community-link" data-filter="r/MacBooks"><i class="fa-solid fa-laptop"></i> r/MacBooks</a></li>
-            <li><a href="#" class="community-link" data-filter="r/Gaming"><i class="fa-solid fa-gamepad"></i> r/Gaming</a></li>
-            <li><a href="#" class="community-link" data-filter="r/Thermal"><i class="fa-solid fa-fire-burner"></i> r/Thermal</a></li>
+            <li><a href="#" class="community-link active" data-filter="all"><i class="fa-solid fa-house"></i> All Topics</a></li>
+            <li><a href="#" class="community-link" data-filter="Controllers"><i class="fa-solid fa-gamepad"></i> Controllers</a></li>
+            <li><a href="#" class="community-link" data-filter="Laptops"><i class="fa-solid fa-laptop"></i> Laptops &amp; MacBooks</a></li>
+            <li><a href="#" class="community-link" data-filter="Displays & Thermal"><i class="fa-solid fa-fire-burner"></i> Displays &amp; Thermal</a></li>
           </ul>
         </aside>
         
-        <!-- Middle Column: Feed -->
+        <!-- Middle Column: Knowledge Base & Notes -->
         <section class="feed-container">
           <div class="forum-header-row">
-            <h1 class="forum-h1" id="forumTitle">AntiGravity Community Q&amp;A</h1>
-            <button type="button" class="btn-create-post" id="btnNewPost"><i class="fa-solid fa-plus"></i> Ask a Question</button>
+            <h1 class="forum-h1" id="forumTitle">Troubleshooting Q&amp;A</h1>
+            <button type="button" class="btn-create-post" id="btnNewPost"><i class="fa-solid fa-plus"></i> Ask / Log Issue</button>
           </div>
           
           <div id="postsFeed">
@@ -464,17 +464,17 @@
         <!-- Right Column: Widgets & Diagnostics Shortcuts -->
         <aside class="widgets-sidebar">
           
-          <!-- Live Forum Stats widget -->
+          <!-- Storage Status Widget -->
           <div class="widget-box">
-            <div class="widget-header">About Community Q&amp;A</div>
-            <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 12px 0; line-height: 1.5;">Ask hardware troubleshooting questions, share diagnostic results, and get repair advice from the TechTest community.</p>
+            <div class="widget-header">About Troubleshooting Q&amp;A</div>
+            <p id="syncStatusNote" style="font-size: 13px; color: var(--text-secondary); margin: 0 0 12px 0; line-height: 1.5;">Verified repair reference Q&amp;As. Questions or notes you add here are saved locally in your browser unless Cloud Sync is connected below.</p>
             <div class="dash-metric-row">
-              <span class="dash-metric-label">Published Threads</span>
+              <span class="dash-metric-label">Entries Loaded</span>
               <span class="dash-metric-val" id="lblTotalThreads">0</span>
             </div>
             <div class="dash-metric-row">
-              <span class="dash-metric-label">Total Community Votes</span>
-              <span class="dash-metric-val" id="lblTotalVotes">0</span>
+              <span class="dash-metric-label">Storage Mode</span>
+              <span class="dash-metric-val" id="lblStorageMode">Local Browser</span>
             </div>
           </div>
 
@@ -521,22 +521,22 @@
       </div>
       <form id="createPostForm">
         <div class="form-group">
-          <label>Select Community</label>
+          <label>Select Topic</label>
           <select id="postCommunity" class="form-input" style="height: 40px;">
-            <option value="r/Gaming">r/Gaming</option>
-            <option value="r/MacBooks">r/MacBooks</option>
-            <option value="r/Thermal">r/Thermal</option>
+            <option value="Controllers">Controllers</option>
+            <option value="Laptops">Laptops &amp; MacBooks</option>
+            <option value="Displays & Thermal">Displays &amp; Thermal</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Question Title</label>
+          <label>Issue / Question Title</label>
           <input type="text" id="postTitle" required placeholder="e.g. DualSense L3 stick drift after cleaning..." class="form-input">
         </div>
         <div class="form-group">
           <label>Details &amp; Diagnostic Results</label>
           <textarea id="postContent" required placeholder="Describe your symptoms, test measurements, or repair steps..." rows="6" class="form-input" style="resize: vertical;"></textarea>
         </div>
-        <button type="submit" class="btn-submit">Submit Question</button>
+        <button type="submit" class="btn-submit">Save Question / Issue Log</button>
       </form>
     </div>
   </div>
@@ -545,72 +545,66 @@
   <script src="/shared/sidebar.js?v=24"></script>
   
   <script>
-    // In-Memory Database with default communities and threads
+    // Verified Troubleshooting Reference Knowledge Base (No fake users, affiliate links, or fabricated votes)
     const DEFAULT_POSTS = [
       {
-        id: 1,
-        community: 'r/MacBooks',
-        author: 'MacFixerPro',
-        time: '2h ago',
-        title: 'MacBook Air M1 Screen flickering after update',
-        content: 'My screen started flickering green lines after the macOS Sonoma update. I already tried resetting NVRAM/SMC (which doesn\'t exist on Apple Silicon anyway). Should I open it up or is this software? For cleaning connectors, I usually use <a href="https://www.amazon.com/CRC-05103-Electronic-Cleaner-MicroFibers/dp/B000BXOGNI" target="_blank" class="affiliate-link" data-product-id="crc_cleaner">CRC Electronic Cleaner</a>.',
-        votes: 42,
-        comments: 8,
+        id: 'ref-ds5-drift',
+        community: 'Controllers',
+        author: 'TechTest Reference',
+        time: 'Technical Note',
+        title: 'DualSense stick drift: cleaning wiper discs vs replacing the potentiometer module',
+        content: 'Minor jitter or center offset caused by carbon dust can sometimes recover after cleaning the green/black potentiometer wiper housing with 99% isopropyl alcohol. However, a physically worn carbon resistive track (e.g., permanent bias visible in <a href="/tools/controller-lab/?tab=drift" style="color:var(--accent-blue);">Controller Lab Drift Check</a>) requires desoldering and replacing the Alps potentiometer or swapping to calibrated Hall Effect / TMR modules. Check <a href="/tools/controller-lab/?tab=decoder" style="color:var(--accent-blue);">BDM Revision Decoder</a> to match 2.1kΩ (BDM-010/020) vs newer board footprints before ordering.',
+        votes: 0,
+        comments: 0,
+        replies: [],
         userVote: null
       },
       {
-        id: 2,
-        community: 'r/Gaming',
-        author: 'DualSenseRepairer',
-        time: '4h ago',
-        title: 'PS5 Stick Drift DIY Potentiometer Replacement',
-        content: 'If you have PS5 DualSense controller drift, don\'t buy a new controller yet! You can clean or replace the potentiometer discs. Use this <a href="https://www.amazon.com/DeoxIT-D5S-6-Contact-Cleaner-Rejuvenator/dp/B0002BBV4G" target="_blank" class="affiliate-link" data-product-id="deoxit_cleaner">CAIG DeoxIT D5 Spray</a> to clean it first. Here is my complete guide below...',
-        votes: 18,
-        comments: 3,
+        id: 'ref-apple-silicon-flicker',
+        community: 'Laptops',
+        author: 'TechTest Reference',
+        time: 'Technical Note',
+        title: 'Apple Silicon (M1/M2/M3) MacBook display flicker or dark band symptoms',
+        content: 'Unlike older Intel Macs, Apple Silicon Macs do not have a manual NVRAM or SMC key-combo reset. First verify whether external HDMI/USB-C output also flickers: if external output is clean while the internal panel glitches or goes black above a certain hinge angle (Dustgate/Flexgate wear on eDP flex), inspect our <a href="/repair-guides/apple/macbook-air-13-m1/" style="color:var(--accent-blue);">MacBook Air M1 Guide</a> and <a href="/tools/display-test/" style="color:var(--accent-blue);">Display Test</a>.',
+        votes: 0,
+        comments: 0,
+        replies: [],
         userVote: null
       },
       {
-        id: 3,
-        community: 'r/Thermal',
-        author: 'Overclocker99',
-        time: '1d ago',
-        title: 'GPU repasting: Honeywell PTM7950 vs Arctic MX-6',
-        content: 'Just repasted my RTX 3080. The hot spot temp dropped by 15°C! Highly recommend the <a href="https://www.amazon.com/Arctic-MX-6-Carbon-Based-Performance-Durability/dp/B09VDNKY14" target="_blank" class="affiliate-link" data-product-id="mx6_paste">ARCTIC MX-6 Thermal Paste</a>. Let\'s discuss thermal conductivity benchmarks here.',
-        votes: 89,
-        comments: 24,
+        id: 'ref-xbox-bumper',
+        community: 'Controllers',
+        author: 'TechTest Reference',
+        time: 'Technical Note',
+        title: 'Xbox Series X|S LB/RB bumper stops clicking cleanly',
+        content: 'The Xbox Series X|S bumper uses a thin plastic lever arm pressing a surface-mount tactile microswitch on the upper PCB. If the physical click feels mushy or absent while pushing hard still triggers in the <a href="/tools/controller-lab/?tab=tester" style="color:var(--accent-blue);">Input Tester</a>, the plastic bumper bridge is usually snapped inside the shell (~$5 replacement). If the mechanical click feels crisp yet zero electrical input registers, the soldered SMD tact switch itself has failed.',
+        votes: 0,
+        comments: 0,
+        replies: [],
         userVote: null
       },
       {
-        id: 4,
-        community: 'r/MacBooks',
-        author: 'AppleCareTech',
-        time: '2d ago',
-        title: 'Warning: Third-party USB-C hubs bricking M2 MacBooks',
-        content: 'We have seen a sudden increase in bricked M2 MacBooks coming into our repair shop. Most are due to cheap third-party USB-C hubs delivering incorrect power. Make sure you use a reputable charger or standard hub!',
-        votes: 56,
-        comments: 11,
+        id: 'ref-usbc-power',
+        community: 'Laptops',
+        author: 'TechTest Reference',
+        time: 'Technical Note',
+        title: 'Why uncertified USB-C PD chargers or passthrough hubs stress laptop power rails',
+        content: 'USB-C Power Delivery negotiates 5V, 9V, 15V, or 20V dynamically via the CC lines. Low-quality hubs with poor isolation between external barrel inputs and host PD lines can back-feed voltage spikes onto the CD3217/USB-C controller IC. Always test USB-PD negotiation using USB-IF certified cables and avoid passive DC-to-USB-C adapters without overvoltage protection.',
+        votes: 0,
+        comments: 0,
+        replies: [],
         userVote: null
       },
       {
-        id: 5,
-        community: 'r/Gaming',
-        author: 'XboxModder',
-        time: '3d ago',
-        title: 'Xbox Series X controller bumper button loose',
-        content: 'My LB bumper button stopped clicking. It feels loose and doesn\'t register inputs. Do I need to buy a replacement bumper plastic piece or is the tactile switch on the board broken?',
-        votes: 7,
-        comments: 2,
-        userVote: null
-      },
-      {
-        id: 6,
-        community: 'r/Thermal',
-        author: 'CoolerMasterFans',
-        time: '4d ago',
-        title: 'MacBook Pro 16" running hot? Clean your fans first!',
-        content: 'Before spending money on software or cooling pads, just open the backplate and clean out the dust blocks in the heat sink fins. It literally takes 10 minutes and restores full thermal performance.',
-        votes: 31,
-        comments: 6,
+        id: 'ref-thermal-throttling',
+        community: 'Displays & Thermal',
+        author: 'TechTest Reference',
+        time: 'Technical Note',
+        title: 'High fan noise & sudden FPS drops: heatsink dust buildup vs pump-out paste',
+        content: 'Before repasting a laptop CPU/GPU, inspect the heatsink fin exhaust channels — lint carpets often form directly between the fan blower outlet and copper fins, blocking 100% of airflow. If fins are spotless yet boost clocks collapse immediately under our <a href="/tools/benchmark/" style="color:var(--accent-blue);">GPU Benchmark</a>, traditional silicone paste may have pumped out from bare-die laptop GPUs; phase-change pads or high-viscosity TIM hold contact pressure longer.',
+        votes: 0,
+        comments: 0,
+        replies: [],
         userVote: null
       }
     ];
@@ -633,7 +627,7 @@
       
       // Stats elements
       const lblTotalThreads = document.getElementById('lblTotalThreads');
-      const lblTotalVotes = document.getElementById('lblTotalVotes');
+      const lblStorageMode = document.getElementById('lblStorageMode');
       
       // Firebase controls
       const btnToggleFirebaseSetup = document.getElementById('btnToggleFirebaseSetup');
@@ -757,10 +751,10 @@
         } catch (e) {
           console.error('Error loading posts/votes:', e);
           // Fallback to local storage if API fails
-          if (!localStorage.getItem('antigravity_posts')) {
-            localStorage.setItem('antigravity_posts', JSON.stringify(DEFAULT_POSTS));
+          if (!localStorage.getItem('techtest_qa_entries_v2')) {
+            localStorage.setItem('techtest_qa_entries_v2', JSON.stringify(DEFAULT_POSTS));
           }
-          posts = JSON.parse(localStorage.getItem('antigravity_posts'));
+          posts = JSON.parse(localStorage.getItem('techtest_qa_entries_v2'));
           renderForum();
         }
       }
@@ -805,7 +799,7 @@
               <div class="post-header">
                 <a href="#" class="post-community-badge" data-community="${post.community}">${post.community}</a>
                 <span>&bull;</span>
-                <span>Posted by u/${post.author}</span>
+                <span>${post.author}</span>
                 <span>${post.time}</span>
               </div>
               <h3 class="post-title">${post.title}</h3>
@@ -948,7 +942,7 @@
               if (!Array.isArray(post.replies)) post.replies = [];
               post.replies.push({ author, text: text.replace(/</g, '&lt;'), time: 'just now' });
               post.comments = (post.comments || 0) + 1;
-              localStorage.setItem('antigravity_posts', JSON.stringify(posts));
+              localStorage.setItem('techtest_qa_entries_v2', JSON.stringify(posts));
               renderForum();
               const drawer = document.getElementById(`comments-drawer-${postId}`);
               if (drawer) drawer.style.display = 'block';
@@ -1192,7 +1186,7 @@
               post.userVote = type;
             }
             post.votes = (post.votes || 0) + diff;
-            localStorage.setItem('antigravity_posts', JSON.stringify(posts));
+            localStorage.setItem('techtest_qa_entries_v2', JSON.stringify(posts));
             renderForum();
           }
         }
@@ -1212,18 +1206,18 @@
         });
         
         // Update title and render feed
-        forumTitle.textContent = filterVal === 'all' ? 'AntiGravity Community Q&A' : `${filterVal}`;
+        forumTitle.textContent = filterVal === 'all' ? 'Troubleshooting Q&A' : `${filterVal}`;
         renderForum();
       }
       
-      // Update Live Community Stats
+      // Update Live Storage & Entry Count
       function updateDashboardUI() {
         if (lblTotalThreads) {
           lblTotalThreads.textContent = posts.length.toLocaleString();
         }
-        if (lblTotalVotes) {
-          const totalVotes = posts.reduce((sum, p) => sum + (p.votes || 0), 0);
-          lblTotalVotes.textContent = totalVotes.toLocaleString();
+        if (lblStorageMode) {
+          const hasFirebase = Boolean(window.getFirebaseServices && window.getFirebaseServices());
+          lblStorageMode.textContent = hasFirebase ? 'Cloud Sync' : 'Local Browser';
         }
       }
       
@@ -1324,7 +1318,7 @@
               userVote: 'up'
             };
             posts.unshift(newPost);
-            localStorage.setItem('antigravity_posts', JSON.stringify(posts));
+            localStorage.setItem('techtest_qa_entries_v2', JSON.stringify(posts));
             createPostModal.classList.remove('open');
             document.getElementById('postTitle').value = '';
             document.getElementById('postContent').value = '';

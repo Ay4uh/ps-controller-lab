@@ -194,17 +194,18 @@
           badge.innerHTML = ledgerVerified
             ? '<i class="fa-solid fa-shield-halved"></i> Edge Secret &amp; KV Ledger Verified'
             : '<i class="fa-solid fa-shield-halved"></i> Edge Secret Verified';
-          sub.textContent = 'This certificate matches the Cloudflare Edge secret attestation and has not been altered.';
+          title.textContent = 'Edge-Attested Hardware Diagnostic Certificate';
+          sub.textContent = 'Signature matches the private Cloudflare Edge secret and has not been modified.';
         } else {
-          badge.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Cryptographically Verified';
-          sub.textContent = 'This certificate checksum matches the issued telemetry parameters cleanly.';
+          badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> Local Checksum Valid (Unattested)';
+          title.textContent = 'Hardware Telemetry Report — Local Checksum';
+          sub.textContent = 'The report URL matches its browser-computed HMAC checksum, meaning no parameters changed after export. Note: local mode reflects self-reported browser results unless Edge Secret attestation is enabled.';
         }
-        title.textContent = 'Authentic Hardware Diagnostic Certificate';
       } else {
         badge.className = 'verify-status-badge badge-unverified';
-        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Signature Mismatch';
-        title.textContent = 'Tampered or Invalid Certificate';
-        sub.textContent = 'The cryptographic signature does not match the certificate data. One or more report fields may have been modified.';
+        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Checksum Mismatch';
+        title.textContent = 'Modified or Invalid Report';
+        sub.textContent = 'The signature does not match the report parameters. One or more fields were altered.';
       }
     });
   </script>
