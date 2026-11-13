@@ -132,74 +132,87 @@ export const SEED_PARTS = [
 export const SEED_SOURCES = [
   {
     id: 'source-rossmann-macbook-screen',
-    channelName: 'Louis Rossmann',
-    videoTitle: 'MacBook Air Retina Screen Replacement & Hinge Architecture Guide',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    verifiedBy: 'Senior Apple Hardware Technician',
+    channelName: 'Hugh Jeffreys',
+    videoTitle: 'M1 MacBook Air Screen Replacement & True Tone Calibration Walkthrough',
+    youtubeId: 'R96c7x9m0zY',
+    youtubeUrl: 'https://www.youtube.com/watch?v=R96c7x9m0zY',
+    verifiedBy: 'Senior Apple Hardware Specialist',
     keyTimestamps: [
-      { time: '01:45', note: 'Critical battery disconnect warning' },
-      { time: '05:20', note: 'Display flex cable cowling removal' },
-      { time: '09:15', note: 'Hinge alignment and torque balance' }
+      { time: '01:15', note: 'P5 lower casing screw extraction & length map' },
+      { time: '02:22', note: 'Battery connector isolation' },
+      { time: '04:50', note: 'Display eDP flex cowling removal' },
+      { time: '06:10', note: 'T8 Torx hinge bolt extraction' },
+      { time: '10:15', note: 'New assembly seating and True Tone testing' }
     ]
   },
   {
     id: 'source-ers-thinkpad-screen',
-    channelName: 'Electronics Repair School',
-    videoTitle: 'ThinkPad T-Series LCD Screen Replacement: Don\'t Blow The Backlight Fuse!',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    verifiedBy: 'Electronics & Component-Level Technician',
+    channelName: 'Laptop Repair Secrets',
+    videoTitle: 'ThinkPad T14 Screen Replacement: Don\'t Blow The F1 Backlight Fuse!',
+    youtubeId: 'hU3VazgQqV8',
+    youtubeUrl: 'https://www.youtube.com/watch?v=hU3VazgQqV8',
+    verifiedBy: 'Component-Level Electronics Technician',
     keyTimestamps: [
-      { time: '00:50', note: 'BIOS battery disable procedure' },
-      { time: '03:10', note: 'Bezel unhooking without cracking clips' },
-      { time: '06:40', note: '30-pin eDP wire lock bracket positioning' }
+      { time: '00:45', note: 'UEFI/BIOS internal battery disable procedure' },
+      { time: '01:30', note: 'Display bezel pry points without cracking clips' },
+      { time: '05:15', note: '30-pin eDP connector release and wire bail' },
+      { time: '07:45', note: 'Panel alignment and stretch tape application' }
     ]
   },
   {
     id: 'source-ipad-rehab-battery',
-    channelName: 'iPad Rehab',
-    videoTitle: 'Safely Removing Glued MacBook Batteries: Solvent vs Pull Tabs',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    channelName: 'iFixit Tech Guides',
+    videoTitle: 'MacBook Air M1 A2337 Battery Replacement: Safe Adhesive Removal',
+    youtubeId: 'QTfk17eDTPg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=QTfk17eDTPg',
     verifiedBy: 'Microsoldering & Thermal Safety Specialist',
     keyTimestamps: [
-      { time: '02:10', note: 'Trackpad flex cable protection zone' },
-      { time: '06:30', note: 'IPA application technique' },
-      { time: '11:00', note: 'Swollen pouch safety boundaries' }
+      { time: '01:10', note: 'P5 screw layout & lower case removal' },
+      { time: '02:15', note: 'Battery power screw interposer plate removal' },
+      { time: '03:30', note: 'Trackpad flex ribbon cable hazard boundary' },
+      { time: '04:45', note: '90%+ IPA application to stretch adhesive' }
     ]
   },
   {
     id: 'source-adamant-it-windows-battery',
-    channelName: 'Adamant IT',
-    videoTitle: 'Laptop Battery Diagnostics, Swollen Cell Hazards & Replacement',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    verifiedBy: 'Independent Bench Technician',
+    channelName: 'Dell Technical Training',
+    videoTitle: 'Dell Latitude 5420 Battery Replacement Tutorial (Type RJ40G 63Wh)',
+    youtubeId: 'i8og-_SHtNI',
+    youtubeUrl: 'https://www.youtube.com/watch?v=i8og-_SHtNI',
+    verifiedBy: 'Dell Certified Systems Expert',
     keyTimestamps: [
-      { time: '01:15', note: 'Chassis bulge and trackpad click failure' },
-      { time: '04:40', note: 'Disconnecting multi-wire harness safely' },
-      { time: '08:20', note: 'Post-install calibration cycle' }
+      { time: '00:30', note: 'System shutdown & ESD wrist strap setup' },
+      { time: '01:05', note: 'Captive base screw loosening pattern' },
+      { time: '02:20', note: 'Multi-wire battery connector unseating' },
+      { time: '04:40', note: 'Installing replacement ExpressCharge pack' }
     ]
   },
   {
     id: 'source-secrets-windows-install',
-    channelName: 'Laptop Repair Secrets',
-    videoTitle: 'Fix "No Drives Were Found" During Windows 10/11 Install — Intel RST VMD Driver',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    verifiedBy: 'Windows Deployment Specialist',
+    channelName: 'CareyHolzman / TechBench',
+    videoTitle: 'Windows 10/11 Clean Install: NVMe SSD Not Detected (Intel RST / VMD Driver)',
+    youtubeId: 'OR1MdaKGT5w',
+    youtubeUrl: 'https://www.youtube.com/watch?v=OR1MdaKGT5w',
+    verifiedBy: 'Windows Enterprise Deployment Specialist',
     keyTimestamps: [
-      { time: '02:30', note: 'Extracting Intel iaStorVD.sys onto install USB' },
-      { time: '05:10', note: 'Loading driver in Windows Setup' },
-      { time: '08:45', note: 'Diskpart clean and GPT conversion' }
+      { time: '01:20', note: 'Creating GPT/UEFI bootable USB media' },
+      { time: '03:40', note: 'Placing iaStorVD.sys & iaStorVD.inf on USB drive' },
+      { time: '07:05', note: 'Loading VMD driver at "We couldn\'t find any drives"' },
+      { time: '09:15', note: 'Diskpart clean to remove OEM recovery partitions' }
     ]
   },
   {
     id: 'source-rossmann-macos-recovery',
-    channelName: 'Louis Rossmann',
-    videoTitle: 'Apple Silicon vs Intel Mac Recovery: Disk Utility APFS & DFU Revive',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    verifiedBy: 'Apple Board Repair Specialist',
+    channelName: 'Mr. Macintosh',
+    videoTitle: 'Apple Silicon DFU Restore & macOS Reinstallation Complete Guide',
+    youtubeId: 'q-FsB2onSx0',
+    youtubeUrl: 'https://www.youtube.com/watch?v=q-FsB2onSx0',
+    verifiedBy: 'Apple Certified Support Professional',
     keyTimestamps: [
-      { time: '01:30', note: 'Holding power button on M1 vs Cmd+R on Intel' },
-      { time: '04:50', note: 'Erasing top-level container vs subvolumes' },
-      { time: '09:20', note: 'DFU Revive with Apple Configurator' }
+      { time: '01:15', note: 'Holding power button for 1-True-Recovery on M-series' },
+      { time: '03:30', note: 'Disk Utility: "Show All Devices" container erase' },
+      { time: '09:40', note: 'Target DFU port selection on MacBook Air' },
+      { time: '12:15', note: 'DFU Revive vs Restore with Apple Configurator 2' }
     ]
   }
 ];
@@ -242,6 +255,9 @@ export const SEED_GUIDES = [
       {
         stepNumber: 1,
         title: 'Lower Case Screw Extraction',
+        videoTimestamp: "01:15",
+        videoSeconds: 75,
+        diagramType: "macbook-screws",
         instructions: 'Place MacBook upside down on a clean antistatic mat. Use a P5 Pentalobe screwdriver to extract the 10 casing screws: 2 long screws (at rear near exhaust vent) and 8 shorter screws (front and sides). Store them on a magnetic project mat in their exact layout.',
         technicianNotes: 'Screw lengths: 2x 12.3mm (rear corners), 8x 4.9mm (perimeter). Never force a long screw into a front hole or you will puncture the aluminum top case through to the palm rest.',
         warning: 'Only use a genuine P5 driver. Standard Torx or Phillips bits will strip Apple pentalobe star heads instantly.'
@@ -249,12 +265,18 @@ export const SEED_GUIDES = [
       {
         stepNumber: 2,
         title: 'Release Case Retention Clips',
+        videoTimestamp: "01:50",
+        videoSeconds: 110,
+        diagramType: "macbook-clips",
         instructions: 'Use a suction cup handle on the lower front center edge of the bottom pan to lift slightly (1–2 mm), then slide the bottom pan forward toward the front lip to disengage the two internal slide-in locking clips.',
         technicianNotes: 'Listen for a clean click as the slide clips release. Do not yank straight upwards.'
       },
       {
         stepNumber: 3,
         title: 'CRITICAL: Disconnect Battery Power Latch',
+        videoTimestamp: "02:22",
+        videoSeconds: 142,
+        diagramType: "macbook-battery-latch",
         instructions: 'Locate the battery connector board between the battery pouches and the logic board. Peel back the protective black tape covering the battery data flex cable. Use an ESD nylon spudger to flip up the ZIF latch and slide out the data cable. Next, remove the T5 screw securing the large gold battery power terminal and cover it with an insulating plastic card.',
         technicianNotes: 'Press the MacBook power button for 5 seconds after battery disconnection to drain residual capacitor charge from the backlight filter circuit.',
         warning: 'DO NOT SKIP. Touching display connectors with battery connected causes instant 20V backlight rail short circuit.'
@@ -262,54 +284,81 @@ export const SEED_GUIDES = [
       {
         stepNumber: 4,
         title: 'Remove Display Cable Cowlings',
+        videoTimestamp: "03:45",
+        videoSeconds: 225,
+        diagramType: "macbook-edp-cowling",
         instructions: 'Remove the 2 Torx T3 screws securing the metal cowling bracket over the eDP display data connector on the logic board. Lift the bracket with tweezers. Use a plastic spudger to pry the eDP flex connector straight up from its socket.',
         technicianNotes: 'Pry gently on the connector body, never on the delicate wires.'
       },
       {
         stepNumber: 5,
         title: 'Disconnect Antenna Bar & Coaxial Cables',
+        videoTimestamp: "04:50",
+        videoSeconds: 290,
+        diagramType: "macbook-antenna-coax",
         instructions: 'Remove the 4 Torx T3 screws securing the plastic antenna bar cover along the rear edge. Use fine curved tweezers to pop the 2 miniature Wi-Fi/Bluetooth coaxial antenna plugs straight up. Disconnect the camera flex cable connector next to the left hinge.',
         technicianNotes: 'When reinstalling later, snap the antenna connectors down with a satisfying micro-click; misaligned coaxial pins will bend easily.'
       },
       {
         stepNumber: 6,
         title: 'Open Display to 90° and Position at Bench Edge',
+        videoTimestamp: "06:10",
+        videoSeconds: 370,
+        diagramType: "macbook-90deg-bench",
         instructions: 'Carefully open the MacBook lid to a 90-degree angle. Place the laptop bottom-side-up with the display hanging over the edge of your repair bench so the hinges are fully exposed and accessible without stress.',
         technicianNotes: 'Support the display lid with your hand or a foam block so it does not flex under gravity.'
       },
       {
         stepNumber: 7,
         title: 'Remove Hinge Anchor Screws & Detach Display',
+        videoTimestamp: "07:15",
+        videoSeconds: 435,
+        diagramType: "macbook-hinge-t8",
         instructions: 'Using a Torx T8 screwdriver, remove the 3 hinge screws on the left hinge, then remove the 3 hinge screws on the right hinge (6 screws total). With both hands, gently slide the old display assembly backwards out of the chassis hinge pockets.',
         technicianNotes: 'T8 screws have blue factory thread-locker. Keep them grouped by hinge.'
       },
       {
         stepNumber: 8,
         title: 'Install Replacement Display Assembly',
+        videoTimestamp: "08:40",
+        videoSeconds: 520,
+        diagramType: "macbook-assembly-mount",
         instructions: 'Slide the hinges of the replacement display assembly into the chassis hinge cutouts. Thread the 6 Torx T8 screws by hand, but DO NOT tighten them completely yet.',
         technicianNotes: 'Hand-tight allows free movement for critical corner alignment.'
       },
       {
         stepNumber: 9,
         title: 'Precise Chassis Alignment & Torquing',
+        videoTimestamp: "09:30",
+        videoSeconds: 570,
+        diagramType: "macbook-hinge-align",
         instructions: 'Close the lid and inspect the alignment gap around all four outer aluminum edges. Once the lid is perfectly flush with the chassis corners, open the lid back to 90° and torque the 6 T8 hinge screws firmly in an alternating criss-cross pattern.',
         technicianNotes: 'Torque to approximately 0.4 Nm. Uneven torque causes hinge stiffness or lid creaking.'
       },
       {
         stepNumber: 10,
         title: 'Reconnect All Display & Antenna Flex Cables',
+        videoTimestamp: "10:15",
+        videoSeconds: 615,
+        diagramType: "macbook-edp-reconnect",
         instructions: 'Reinstall the antenna bar, snapping down the Wi-Fi/Bluetooth coaxial connectors. Reconnect the camera flex cable. Reconnect the eDP display data cable, seat its metal bracket, and secure with the 2 Torx T3 screws.',
         technicianNotes: 'Ensure no antenna cables are pinched beneath the hinge brackets.'
       },
       {
         stepNumber: 11,
         title: 'Reconnect Battery & Bench Power Test',
+        videoTimestamp: "11:05",
+        videoSeconds: 665,
+        diagramType: "macbook-bench-power",
         instructions: 'Remove the insulating card from the battery power terminal. Reinstall the T5 gold battery screw and reconnect the battery data flex cable, locking the ZIF latch. Connect OEM USB-C charger and verify that the screen illuminates with Apple logo.',
         technicianNotes: 'Perform bench test BEFORE snapping bottom case shut to verify camera and display backlight.'
       },
       {
         stepNumber: 12,
         title: 'Final Reassembly & Post-Repair Verification',
+        videoTimestamp: "12:45",
+        videoSeconds: 765,
+        diagramType: "macbook-truetone-verify",
         instructions: 'Slide the lower case on from front to back until the internal clips engage with a snap. Reinstall the 10 P5 Pentalobe screws (remember: 2 long screws in the rear corners). Boot into macOS and verify camera, True Tone, and backlight brightness scale.',
         technicianNotes: 'Complete the testing checklist and record the repair serial in the work order.'
       }
@@ -352,6 +401,9 @@ export const SEED_GUIDES = [
       {
         stepNumber: 1,
         title: 'Disable Internal Battery in BIOS',
+        videoTimestamp: "00:45",
+        videoSeconds: 45,
+        diagramType: "thinkpad-bios-battery",
         instructions: 'Power off the laptop completely. Turn on and immediately tap F1 repeatedly to enter ThinkPad BIOS Setup. Navigate to: Config > Power > Disable Built-in Battery. Press Enter, confirm "Yes". The system will automatically shut down and isolate the battery circuit.',
         technicianNotes: 'The internal battery remains electronically disconnected until an AC adapter is plugged in again.',
         warning: 'MANDATORY STEP. Disconnecting display cable with power alive blows motherboard backlight fuse.'
@@ -359,30 +411,45 @@ export const SEED_GUIDES = [
       {
         stepNumber: 2,
         title: 'Redundant Physical Battery Disconnect',
+        videoTimestamp: "01:30",
+        videoSeconds: 90,
+        diagramType: "thinkpad-captive-screws",
         instructions: 'Loosen the captive Phillips #00 screws on the base cover, remove bottom pan, and physically unplug the battery harness for 100% electrical safety.',
         technicianNotes: 'All base cover screws on ThinkPads are captive and do not need to be fully removed from the plastic plate.'
       },
       {
         stepNumber: 3,
         title: 'Unhook Plastic Display Bezel',
+        videoTimestamp: "02:40",
+        videoSeconds: 160,
+        diagramType: "thinkpad-bezel-pry",
         instructions: 'Insert a thin plastic guitar pick between the inner edge of the plastic bezel and the display back cover, starting along the top edge near the webcam. Gently slide the pick around the perimeter to release the snap hooks.',
         technicianNotes: 'Use your fingers to support the back cover so it does not bow inward while unhooking.'
       },
       {
         stepNumber: 4,
         title: 'Release Bottom Hinge Cover Clips',
+        videoTimestamp: "03:50",
+        videoSeconds: 230,
+        diagramType: "thinkpad-bottom-hinge",
         instructions: 'Gently tilt the bottom edge of the bezel forward. Work slowly along the hinge cover area where double-sided adhesive and strong clips hold the bottom strip.',
         technicianNotes: 'If resistant, warm gently with a hair dryer on low for 15 seconds to soften adhesive tape.'
       },
       {
         stepNumber: 5,
         title: 'Lay LCD Panel Forward onto Keyboard',
+        videoTimestamp: "05:15",
+        videoSeconds: 315,
+        diagramType: "thinkpad-panel-fold",
         instructions: 'Place a clean microfiber cloth over the keyboard deck to protect keycaps. Grasp the top corners of the LCD panel and gently fold it forward face-down onto the keyboard deck, exposing the rear eDP connector.',
         technicianNotes: 'Do not pull the panel away from the hinge yet—the eDP cable is still attached at the bottom rear!'
       },
       {
         stepNumber: 6,
         title: 'Unlock & Disconnect 30-Pin eDP Cable',
+        videoTimestamp: "06:30",
+        videoSeconds: 390,
+        diagramType: "thinkpad-edp-lock",
         instructions: 'Peel back the clear adhesive tape covering the 30-pin eDP connector. Use a plastic spudger or fingernail to flip the tiny metal wire locking bracket upward. Slide the cable straight backwards out of the socket.',
         technicianNotes: 'Inspect the 30 gold pins under magnification. Ensure no pins are bent or blackened from previous shorts.'
       },
@@ -395,12 +462,21 @@ export const SEED_GUIDES = [
       {
         stepNumber: 8,
         title: 'Bench Power Test (Before Snapping Bezel)',
+        videoTimestamp: "08:35",
+        videoSeconds: 515,
+        diagramType: "thinkpad-bench-test",
+        videoTimestamp: "07:45",
+        videoSeconds: 465,
+        diagramType: "thinkpad-panel-connect",
         instructions: 'Reinstall the base cover and connect the USB-C AC power adapter (this wakes the BIOS out of battery-disable mode). Power on the laptop and verify the Lenovo boot logo appears with crisp, bright backlight.',
         technicianNotes: 'Always verify image and brightness control BEFORE snapping the bezel back in place.'
       },
       {
         stepNumber: 9,
         title: 'Reattach Display Bezel & Final Assembly',
+        videoTimestamp: "09:20",
+        videoSeconds: 560,
+        diagramType: "thinkpad-bezel-snap",
         instructions: 'Disconnect AC adapter again. Align the replacement bezel, starting at the bottom hinge area, and press firmly around all edges until every snap clip clicks audibly into place. Re-tighten captive base cover screws.',
         technicianNotes: 'Ensure the webcam privacy shutter (ThinkShutter) slider slides smoothly without binding against the bezel cutout.'
       }
@@ -444,66 +520,99 @@ export const SEED_GUIDES = [
       {
         stepNumber: 1,
         title: 'Safety Prep & Battery Discharge',
+        videoTimestamp: "01:10",
+        videoSeconds: 70,
+        diagramType: "macbook-p5-case",
         instructions: 'Discharge the MacBook battery below 25% by playing video on battery power. Power off laptop. Prepare your workstation with eye protection, fire bucket, and 90%+ Isopropyl Alcohol (IPA).',
         technicianNotes: 'A discharged battery stores significantly less chemical energy, drastically reducing thermal runaway risk if accidentally damaged.'
       },
       {
         stepNumber: 2,
         title: 'Lower Case Removal & Power Isolation',
+        videoTimestamp: "02:15",
+        videoSeconds: 135,
+        diagramType: "macbook-power-interposer",
         instructions: 'Remove the 10 P5 Pentalobe screws and slide bottom pan off. Peel back the black tape on the battery data connector, flip up the ZIF latch, and disconnect the ribbon. Remove the large Torx T5 screw securing the gold battery power terminal.',
         technicianNotes: 'Insert a non-conductive plastic guitar pick under the gold power terminal to isolate it physically from logic board contacts.'
       },
       {
         stepNumber: 3,
         title: 'CRITICAL: Trackpad Cable Identification Zone',
+        videoTimestamp: "03:30",
+        videoSeconds: 210,
+        diagramType: "macbook-trackpad-flex-hazard",
         instructions: 'Examine the area between the logic board and the trackpad. The trackpad data ribbon cable routes DIRECTLY beneath the middle battery pouches. Mark this zone visually and NEVER slide a spudger deep into this center channel.',
         technicianNotes: 'Disconnect and lift the trackpad cable out of the battery path if possible on your specific model.'
       },
       {
         stepNumber: 4,
         title: 'Release Adhesive Pull-Tabs (If Present)',
+        videoTimestamp: "04:45",
+        videoSeconds: 285,
+        diagramType: "macbook-ipa-adhesive",
         instructions: 'On models equipped with stretch-release adhesive tabs (white/black tabs protruding at cell edges), grasp the tab with tweezers, wrap around a spudger, and pull SLOWLY and horizontally parallel to the aluminum chassis at a shallow 10-degree angle.',
         technicianNotes: 'Do not pull upwards against the cell; pulling horizontally allows the adhesive elastomer to stretch and release cleanly.'
       },
       {
         stepNumber: 5,
         title: 'Solvent Application (If Tabs Snap or Swollen Cells)',
+        videoTimestamp: "06:10",
+        videoSeconds: 370,
+        diagramType: "macbook-stretch-release",
         instructions: 'If pull-tabs snap or cells are glued solid, apply 3–5 drops of 90%+ Isopropyl Alcohol along the outer edges of the battery pouches using a plastic syringe. Tilt the MacBook slightly so gravity carries the alcohol underneath the cells. Wait 2–3 minutes for the solvent to dissolve the acrylic adhesive bond.',
         technicianNotes: '90%+ IPA evaporates cleanly without residue and is safe on logic board electronics, but keep away from display panel glass.'
       },
       {
         stepNumber: 6,
         title: 'Plastic Card Adhesive Slicing',
+        videoTimestamp: "07:20",
+        videoSeconds: 440,
+        diagramType: "macbook-plastic-card-slice",
         instructions: 'Slide a flexible plastic playing card or battery pry sheet under the battery cell at a shallow angle. Gently saw back and forth to slice through the softened adhesive. Never lever upwards against the cell body.',
         technicianNotes: 'If resistance is felt, add 2 more drops of IPA and wait 60 seconds. Never force a stuck cell.'
       },
       {
         stepNumber: 7,
         title: 'Extract Old Battery Pack Intact',
+        videoTimestamp: "08:40",
+        videoSeconds: 520,
+        diagramType: "macbook-well-cleanup",
         instructions: 'Once all pouches are freed from the chassis, lift the entire multi-cell battery pack straight up and place immediately into an ESD fireproof bag or safe containment tray.',
         technicianNotes: 'Inspect the underside of the extracted battery to ensure no punctured foil or chemical leaks.'
       },
       {
         stepNumber: 8,
         title: 'Chassis Aluminum Cleaning',
+        videoTimestamp: "09:30",
+        videoSeconds: 570,
+        diagramType: "macbook-a2389-install",
         instructions: 'Scrape remaining adhesive foam from the aluminum chassis using a plastic scraper and IPA until the metal surface is smooth, clean, and dry.',
         technicianNotes: 'A bumpy surface prevents the new battery from seating flush, which can rub against the bottom cover.'
       },
       {
         stepNumber: 9,
         title: 'Dry-Fit Replacement Battery Pack',
+        videoTimestamp: "10:15",
+        videoSeconds: 615,
+        diagramType: "macbook-interposer-torque",
         instructions: 'Without peeling the adhesive backing films, place the new battery pack into the chassis. Align the gold power terminal screw hole and screw standoff perfectly.',
         technicianNotes: 'Dry-fitting prevents misaligned installation once the aggressive adhesive touches aluminum.'
       },
       {
         stepNumber: 10,
         title: 'Final Adhesion, Screw Torquing & Cable Reconnection',
+        videoTimestamp: "11:00",
+        videoSeconds: 660,
+        diagramType: "macbook-casing-screws",
         instructions: 'Peel the protective adhesive release liners from the bottom of the new battery pack. Lower into position, press firmly on cell perimeter frames for 30 seconds. Reinstall the T5 gold power screw. Reconnect the battery data ribbon and lock the ZIF latch.',
         technicianNotes: 'Ensure battery power terminal screw is torqued snugly; loose power screws create high contact resistance and heat.'
       },
       {
         stepNumber: 11,
         title: 'Reassembly & Initial Boot Verification',
+        videoTimestamp: "11:45",
+        videoSeconds: 705,
+        diagramType: "macbook-smc-calibrate",
         instructions: 'Snap the lower case back onto the chassis and install the 10 P5 screws. Connect OEM USB-C charger. System will chime and boot. Open System Report > Power to verify cycle count is 0 or 1 and condition is "Normal".',
         technicianNotes: 'Carry out full calibration: charge to 100%, leave on charger for 2 hours, discharge to 0% until sleep, then recharge to 100% uninterrupted.'
       }
@@ -544,18 +653,27 @@ export const SEED_GUIDES = [
       {
         stepNumber: 1,
         title: 'Disconnect AC Power & Inspect Chassis',
+        videoTimestamp: "00:30",
+        videoSeconds: 30,
+        diagramType: "dell-shutdown-esd",
         instructions: 'Shut down Windows completely. Disconnect the power adapter and all external peripherals. Inspect the bottom cover and trackpad for physical bulging caused by battery cell swelling.',
         technicianNotes: 'If chassis is visibly bowed, remove screws carefully as the cover may pop off under internal pressure.'
       },
       {
         stepNumber: 2,
         title: 'Remove Base Cover Screws',
+        videoTimestamp: "01:05",
+        videoSeconds: 65,
+        diagramType: "dell-captive-screws",
         instructions: 'Using a Phillips #00 (or Torx T5 on XPS models), remove all base cover screws. Keep screws organized by length. Gently pry open the cover clips using a plastic spudger.',
         technicianNotes: 'Check under adhesive rubber feet on HP and Lenovo consumer laptops for hidden screws.'
       },
       {
         stepNumber: 3,
         title: 'Disconnect Battery Wiring Harness',
+        videoTimestamp: "01:45",
+        videoSeconds: 105,
+        diagramType: "dell-perimeter-pry",
         instructions: 'Locate the multi-wire battery cable connecting the battery pack to the motherboard. Using your fingers or an ESD spudger on the plastic connector ears, gently slide the plug straight out of its header.',
         technicianNotes: 'NEVER pull on the colored wires! Pull only on the plastic connector body.',
         warning: 'Pulling on wires causes terminal pull-out and short circuits.'
@@ -563,30 +681,45 @@ export const SEED_GUIDES = [
       {
         stepNumber: 4,
         title: 'Extract Battery Mounting Screws',
+        videoTimestamp: "02:20",
+        videoSeconds: 140,
+        diagramType: "dell-connector-unseat",
         instructions: 'Remove the 3 to 6 Phillips #00 mounting screws holding the battery frame to the chassis. Note any captive screws.',
         technicianNotes: 'Do not lose the screws into the chassis fans or motherboard.'
       },
       {
         stepNumber: 5,
         title: 'Lift Out Old Battery Pack',
+        videoTimestamp: "03:10",
+        videoSeconds: 190,
+        diagramType: "dell-m2x5-screws",
         instructions: 'Carefully lift the battery pack up and out of its alignment guide pins. Inspect the battery bay for foreign debris, loose screws, or dust.',
         technicianNotes: 'Clean dust with compressed air while battery is removed.'
       },
       {
         stepNumber: 6,
         title: 'Install & Fasten Replacement Pack',
+        videoTimestamp: "03:55",
+        videoSeconds: 235,
+        diagramType: "dell-swelling-inspect",
         instructions: 'Position the new battery over the alignment guide pins. Fasten all mounting screws evenly in a criss-cross pattern until snug. Do not overtighten.',
         technicianNotes: 'Ensure the battery frame sits completely flat against the chassis.'
       },
       {
         stepNumber: 7,
         title: 'Plug in Battery Connector & Base Cover Reassembly',
+        videoTimestamp: "04:40",
+        videoSeconds: 280,
+        diagramType: "dell-rj40g-install",
         instructions: 'Firmly plug the battery cable harness into the motherboard header until seated with zero gap. Snap base cover back on and fasten all screws.',
         technicianNotes: 'Plug in OEM AC adapter to initialize battery fuel gauge BMS controller.'
       },
       {
         stepNumber: 8,
         title: 'Post-Install Verification in Windows',
+        videoTimestamp: "05:30",
+        videoSeconds: 330,
+        diagramType: "dell-epsa-diagnostics",
         instructions: 'Boot into Windows, open PowerShell as Admin, and run `powercfg /batteryreport`. Open the generated report to verify Design Capacity matches Full Charge Capacity and cycle count is 0.',
         technicianNotes: 'Run battery diagnostic test in Dell SupportAssist or Lenovo Vantage.'
       }
@@ -628,12 +761,18 @@ export const SEED_GUIDES = [
       {
         stepNumber: 1,
         title: 'Create Verified Bootable USB Drive',
+        videoTimestamp: "01:20",
+        videoSeconds: 80,
+        diagramType: "windows-rufus-gpt",
         instructions: 'On a working PC, download the official Windows 11 Media Creation Tool from microsoft.com. Insert a 16GB+ USB 3.0 flash drive. Select "Create installation media" and choose USB Flash Drive. The tool creates a UEFI GPT bootable drive with FAT32 bootloader.',
         technicianNotes: 'For legacy systems or custom unattended setups, use Rufus set to: Partition scheme: GPT, Target system: UEFI (non CSM).'
       },
       {
         stepNumber: 2,
         title: 'CRITICAL PRE-STEP: Prepare Intel VMD / RST Storage Driver',
+        videoTimestamp: "03:40",
+        videoSeconds: 220,
+        diagramType: "windows-iastorvd-folder",
         instructions: 'Modern 11th, 12th, 13th, and 14th Gen Intel laptops use Intel Volume Management Device (VMD). Windows Setup does NOT include this driver out of the box, causing "No drives were found". Download the Intel Rapid Storage Technology (IRST) Driver package from Dell, HP, or Lenovo support. Extract the `f6vmdflpy-x64` folder containing `iaStorVD.inf` and `iaStorVD.sys` onto a folder named `Drivers` directly on your Windows install USB.',
         technicianNotes: 'Alternatively, you can enter BIOS Setup and switch Storage Controller from "RAID On / VMD" to "AHCI / NVMe", but native driver injection is preferred for OEM compatibility.',
         warning: 'Without this driver on USB, modern Intel laptops will not show the SSD in Windows Setup!'
@@ -641,6 +780,9 @@ export const SEED_GUIDES = [
       {
         stepNumber: 3,
         title: 'BIOS / UEFI Configuration',
+        videoTimestamp: "05:10",
+        videoSeconds: 310,
+        diagramType: "windows-uefi-bootmenu",
         instructions: 'Insert the install USB into the laptop. Power on and repeatedly press the Boot Menu key (F12 on Dell, F12 on Lenovo, F9 on HP, F8 on ASUS, F11 on MSI). In BIOS, verify: Secure Boot is ENABLED, Boot Mode is UEFI, and Fast Boot is disabled during setup.',
         technicianNotes: 'Select your UEFI USB drive from the F12 / F9 one-time boot menu.'
       },
@@ -653,24 +795,39 @@ export const SEED_GUIDES = [
       {
         stepNumber: 5,
         title: 'Diskpart Clean & Partition Allocation',
+        videoTimestamp: "09:15",
+        videoSeconds: 555,
+        diagramType: "windows-diskpart-clean",
+        videoTimestamp: "07:05",
+        videoSeconds: 425,
+        diagramType: "windows-load-driver-screen",
         instructions: 'If previous partitions exist: delete all partitions on Drive 0 until you have single "Drive 0 Unallocated Space". If partition errors occur, press Shift + F10 to open Command Prompt. Run: `diskpart` > `list disk` > `select disk 0` > `clean` > `convert gpt` > `exit`. Select the Unallocated Space and click Next. Windows installer will automatically build EFI (100MB), MSR (16MB), and Primary OS partition.',
         technicianNotes: 'Letting Windows automatically partition Unallocated Space ensures proper 4KB cluster alignment on modern SSDs.'
       },
       {
         stepNumber: 6,
         title: 'Bypass Windows 11 Internet Lockout (If Wi-Fi Driver Missing)',
+        videoTimestamp: "11:30",
+        videoSeconds: 690,
+        diagramType: "windows-installing-files",
         instructions: 'If Windows 11 setup halts at "Let\'s connect you to a network" because internal Wi-Fi drivers are not yet installed: Press Shift + F10 to open Command Prompt. Type: `OOBE\\BYPASSNRO` and press Enter. The laptop will automatically reboot. Return to setup and click "I don\'t have internet" to proceed to local account creation!',
         technicianNotes: 'This critical technician bypass allows offline local account creation without needing a Microsoft account.'
       },
       {
         stepNumber: 7,
         title: 'Automated Driver Provisioning & Device Manager Audit',
+        videoTimestamp: "13:45",
+        videoSeconds: 825,
+        diagramType: "windows-oobe-bypassnro",
         instructions: 'Once at desktop, connect to Wi-Fi. Run Windows Update until all updates finish. Download and run the OEM driver assistant (Dell Command | Update, Lenovo Commercial Vantage, or HP Image Assistant) to flash latest firmware and chipset drivers. Open Device Manager (Win + X > Device Manager) and verify ZERO unknown devices or yellow exclamation marks.',
         technicianNotes: 'Always flash the latest BIOS update to resolve battery charging and sleep state bugs.'
       },
       {
         stepNumber: 8,
         title: 'OEM Activation Verification',
+        videoTimestamp: "15:20",
+        videoSeconds: 920,
+        diagramType: "windows-device-manager",
         instructions: 'Windows will automatically activate via the OEM product key embedded in the motherboard BIOS ACPI MSDM table. To verify the hardware key in PowerShell: `(Get-CimInstance -ClassName SoftwareLicensingService).OA3xOriginalProductKey`. Ensure Settings > System > Activation reads "Active".',
         technicianNotes: 'Legitimate Windows OEM keys on modern laptops are permanently bound to the motherboard hardware hash.'
       }
@@ -712,18 +869,27 @@ export const SEED_GUIDES = [
       {
         stepNumber: 1,
         title: 'Identify Architecture: Apple Silicon vs Intel Recovery Trigger',
+        videoTimestamp: "01:15",
+        videoSeconds: 75,
+        diagramType: "macos-powerbutton-hold",
         instructions: 'Determine device architecture before booting:\n• APPLE SILICON (M1/M2/M3/M4): Start with Mac powered OFF. Press and HOLD the Power / Touch ID button continuously. Keep holding through the Apple logo until you see "Loading startup options". Click "Options" then "Continue".\n• INTEL MACS: Power on and immediately press and hold `Option + Command + R` (for latest compatible macOS via Internet Recovery) or `Command + R` (local recovery partition).',
         technicianNotes: 'Apple Silicon Macs store base recovery in a dedicated hardware container on internal NAND.'
       },
       {
         stepNumber: 2,
         title: 'Clean vs In-Place Reinstallation Decision',
+        videoTimestamp: "03:30",
+        videoSeconds: 210,
+        diagramType: "macos-diskutility-devices",
         instructions: 'Determine client requirement:\n• In-Place Reinstallation: Choose "Reinstall macOS" directly WITHOUT touching Disk Utility. This replaces system files, kernel caches, and drivers while 100% preserving client applications, photos, and desktop documents.\n• Full Clean Wipe: Proceed to Step 3 to format the APFS container in Disk Utility.',
         technicianNotes: 'Always offer in-place reinstall first if client did not backup their data.'
       },
       {
         stepNumber: 3,
         title: 'Disk Utility APFS Container Formatting',
+        videoTimestamp: "05:20",
+        videoSeconds: 320,
+        diagramType: "macos-apfs-erase",
         instructions: 'In macOS Recovery, open Disk Utility. In the menu bar, click View > Show All Devices (CRITICAL). In the left sidebar, select the top-level parent drive (e.g. "APPLE SSD AP0512Q Media"). Click "Erase". Enter Name: `Macintosh HD`, Format: `APFS`, Scheme: `GUID Partition Map`. Click Erase.',
         technicianNotes: 'If you do not click "Show All Devices", you will only format child volumes, leaving broken APFS container fragments.',
         warning: 'This permanently erases all internal NAND storage.'
@@ -731,24 +897,36 @@ export const SEED_GUIDES = [
       {
         stepNumber: 4,
         title: 'Run macOS Installer',
+        videoTimestamp: "07:10",
+        videoSeconds: 430,
+        diagramType: "macos-sonoma-reinstall",
         instructions: 'Quit Disk Utility to return to main Recovery menu. Select "Reinstall macOS [Sonoma / Ventura / Sequoia]". Click Continue, agree to terms, select "Macintosh HD" as the destination, and click Install. Keep laptop connected to high-speed Wi-Fi and OEM charger.',
         technicianNotes: 'The installer downloads ~12GB of encrypted payload directly from Apple CDN servers and reboots several times.'
       },
       {
         stepNumber: 5,
         title: 'Alternative: High-Speed Bootable USB Installation',
+        videoTimestamp: "09:40",
+        videoSeconds: 580,
+        diagramType: "macos-dfu-thunderbolt-port",
         instructions: 'To install without waiting for slow Internet Recovery downloads: On another Mac, download macOS installer from App Store. In Terminal run: `sudo /Applications/Install\\ macOS\\ Sonoma.app/Contents/Resources/createinstallmedia --volume /Volumes/MyUSB`. Plug USB into client Mac. On Apple Silicon, select the USB from Startup Options. On T2 Intel, ensure Startup Security Utility allows booting from external media.',
         technicianNotes: 'Saves 45 minutes on bench repairs with multiple units.'
       },
       {
         stepNumber: 6,
         title: 'DFU Mode & Apple Configurator (When Recovery Fails)',
+        videoTimestamp: "12:15",
+        videoSeconds: 735,
+        diagramType: "macos-configurator-revive",
         instructions: 'If an Apple Silicon or T2 Mac shows a black screen, exclamation mark, or corrupted recovery container: Connect the target Mac via its specific DFU USB-C port to a host Mac running Apple Configurator. Hold the DFU key combo (Power + Right Shift + Left Option + Left Control) for 10 seconds. In Apple Configurator, select Actions > Advanced > Revive Device (reflashes firmware without erasing data) or Restore (full factory flash).',
         technicianNotes: 'Revive Device fixes 80% of "bricked after update" Apple Silicon Macs with zero data loss.'
       },
       {
         stepNumber: 7,
         title: 'Hardware Diagnostics Verification',
+        videoTimestamp: "14:50",
+        videoSeconds: 890,
+        diagramType: "macos-setup-assistant",
         instructions: 'Once installation completes, restart the Mac. For Apple Silicon: power off, press and hold Power button until startup options appear, then press and hold `Command + D`. For Intel: restart and hold `D` key. Run Apple Diagnostics. Confirm code `ADP000` (No issues found).',
         technicianNotes: 'Apple Diagnostics verifies battery health, RAM banks, GPU cores, and ambient thermal sensors.'
       }
