@@ -140,6 +140,101 @@
       box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
     }
 
+    .kb-key.chatter {
+      border-color: #f59e0b !important;
+      color: #f59e0b !important;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4) !important;
+      position: relative;
+    }
+    .kb-key.chatter::after {
+      content: "⚠";
+      position: absolute;
+      top: 1px;
+      right: 3px;
+      font-size: 8px;
+      color: #f59e0b;
+    }
+
+    /* Active Toolbar */
+    .kb-toolbar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .kb-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .layout-toggle-btn {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .layout-toggle-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    .layout-toggle-btn.active {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+    .kb-select {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+    }
+    .kb-chatter-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 1.5rem;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .chatter-badge-pass {
+      color: #10b981;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chatter-badge-warn {
+      color: #f59e0b;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     /* Status Bar */
     .test-status {
       background: var(--bg-card);
@@ -355,6 +450,33 @@
         </div>
 
         <div id="testScreen">
+          <!-- Active Keyboard Toolbar -->
+          <div class="kb-toolbar">
+            <!-- Layout Switcher -->
+            <div class="kb-toolbar-group">
+              <span style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Layout:</span>
+              <button type="button" class="layout-toggle-btn active" id="btnLayoutMacbook" onclick="selectLayout('macbook')">🍎 MacBook</button>
+              <button type="button" class="layout-toggle-btn" id="btnLayoutWindows" onclick="selectLayout('windows')">🪟 Windows (104)</button>
+              <button type="button" class="layout-toggle-btn" id="btnLayoutChromebook" onclick="selectLayout('chromebook')">📚 Chromebook</button>
+            </div>
+
+            <!-- Switch Sound & Controls -->
+            <div class="kb-toolbar-group">
+              <span style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;"><i class="fa-solid fa-volume-high"></i> Sound:</span>
+              <select id="switchSoundSelect" class="kb-select" title="Mechanical switch click audio synthesizer">
+                <option value="blue">Blue (Clicky)</option>
+                <option value="brown">Brown (Tactile)</option>
+                <option value="red">Red (Linear)</option>
+                <option value="off">Off (Silent)</option>
+              </select>
+              <input type="range" id="soundVolRange" min="0" max="100" value="60" style="width:70px; accent-color:var(--accent-blue);" title="Sound volume">
+              
+              <button type="button" id="btnResetMatrix" class="btn btn-sm btn-outline-secondary" style="font-size:12px; font-weight:600; padding:5px 10px;" title="Reset tested keys and rollover counter">
+                <i class="fa-solid fa-arrows-rotate me-1"></i> Reset
+              </button>
+            </div>
+          </div>
+
           <div class="test-status" style="flex-wrap: wrap;">
             <div>
               <div class="test-counter" id="testCounter">0 / 0</div>
@@ -655,6 +777,31 @@
               </div>
             </div>
           </div>
+
+          <!-- Switch Chatter & Debounce Diagnostics Panel -->
+          <div class="kb-chatter-panel" id="chatterPanel">
+            <div>
+              <div style="font-weight: 700; font-size: 14px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-bolt-lightning" style="color: var(--accent-blue);"></i> Switch Chatter &amp; Debounce Monitor
+                <span id="chatterStatusBadge" class="chatter-badge-pass"><i class="fa-solid fa-circle-check"></i> Clean Contacts (0 Chatter)</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 3px;" id="debounceStatsText">
+                Fastest actuation interval: <strong id="minIntervalText">—</strong> · Chatter threshold: <strong id="thresholdText">&lt; 35ms</strong> (flags physical bounce &amp; double-strikes)
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <select id="chatterThresholdSelect" class="kb-select" style="font-size: 11px;">
+                <option value="35">Threshold: 35ms (Standard)</option>
+                <option value="50">Threshold: 50ms (Sensitive)</option>
+                <option value="20">Threshold: 20ms (Lenient)</option>
+              </select>
+              <button type="button" id="btnClearChatterLog" class="btn btn-sm btn-outline-secondary" style="font-size: 11px; padding: 4px 8px;">
+                Clear Flags
+              </button>
+            </div>
+          </div>
+          <div id="chatterLogDetails" style="display: none; margin-top: 8px; font-size: 12px; color: var(--text-muted); background: var(--bg-hover); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);"></div>
+
         </div>
       </div>
         <!-- End Tool Content -->
@@ -694,6 +841,89 @@
   </script>
   
 <script>
+    // ── Mechanical Switch Sound Engine (Web Audio API) ──
+    class SwitchAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.soundType = localStorage.getItem('techtest_kb_sound') || 'blue';
+        this.volume = parseFloat(localStorage.getItem('techtest_kb_vol') || '0.6');
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      play(isUp = false) {
+        if (this.soundType === 'off') return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const gain = this.ctx.createGain();
+          const amp = this.volume * (isUp ? 0.3 : 0.55);
+          gain.gain.setValueAtTime(Math.max(0.001, amp), now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + (isUp ? 0.04 : 0.07));
+          gain.connect(this.ctx.destination);
+
+          if (this.soundType === 'blue') {
+            // Clicky transient + noise burst
+            const osc = this.ctx.createOscillator();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(isUp ? 2600 : 4200, now);
+            osc.frequency.exponentialRampToValueAtTime(800, now + 0.035);
+            osc.connect(gain);
+            osc.start(now);
+            osc.stop(now + 0.04);
+
+            // Resonant click snap
+            const bufSize = Math.floor(this.ctx.sampleRate * 0.015);
+            const buffer = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) {
+              data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.2));
+            }
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = isUp ? 2200 : 3800;
+            filter.Q.value = 2.5;
+            noise.connect(filter);
+            filter.connect(gain);
+            noise.start(now);
+          } else if (this.soundType === 'brown') {
+            // Tactile bump
+            const osc = this.ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(isUp ? 900 : 1600, now);
+            osc.frequency.exponentialRampToValueAtTime(240, now + 0.05);
+            osc.connect(gain);
+            osc.start(now);
+            osc.stop(now + 0.05);
+          } else if (this.soundType === 'red') {
+            // Linear bottom out thud
+            const osc = this.ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(isUp ? 280 : 460, now);
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.06);
+            osc.connect(gain);
+            osc.start(now);
+            osc.stop(now + 0.06);
+          }
+        } catch (e) {
+          console.warn('Switch sound error:', e);
+        }
+      }
+    }
+
+    const audioEngine = new SwitchAudioEngine();
+
     const layouts = {
       macbook: { count: 78, query: '.layout-macbook-key' },
       windows: { count: 104, query: '.layout-windows-key' },
@@ -709,29 +939,118 @@
     const pressTimers = {};
     let isComplete = false;
 
+    // Switch Chatter & Debounce state
+    const lastKeyTimestamps = {};
+    const chatteringKeys = new Set();
+    const chatterLog = [];
+    let chatterThresholdMs = 35;
+    let minRecordedInterval = Infinity;
+
     function selectLayout(type) {
       activeLayout = type;
       totalKeys = layouts[type].count;
       
       document.getElementById('deviceSelection').style.display = 'none';
       document.getElementById('testScreen').style.display = 'block';
-      document.getElementById('layout-' + type).style.display = 'block';
+
+      // Hide all layout containers and display selected one
+      document.querySelectorAll('.keyboard-container').forEach(el => el.style.display = 'none');
+      const targetLayout = document.getElementById('layout-' + type);
+      if (targetLayout) targetLayout.style.display = 'block';
+
+      // Update active toolbar button state
+      document.querySelectorAll('.layout-toggle-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btnLayout${type.charAt(0).toUpperCase() + type.slice(1)}`);
+      if (activeBtn) activeBtn.classList.add('active');
       
       updateCounter();
+    }
+
+    // Reset keyboard matrix state
+    function resetMatrix() {
+      testedKeys.clear();
+      stuckKeys.clear();
+      currentlyPressed.clear();
+      maxPressed = 0;
+      isComplete = false;
+      Object.keys(pressTimers).forEach(k => clearTimeout(pressTimers[k]));
+
+      document.querySelectorAll('.kb-key').forEach(el => {
+        el.classList.remove('active', 'tested', 'stuck');
+      });
+
+      document.getElementById('currentPressedCount').textContent = '0';
+      document.getElementById('maxPressedCount').textContent = '0';
+      updateCounter();
+      updateAlerts();
+    }
+
+    // Chatter logger and UI update
+    function recordChatter(code, delta) {
+      chatterLog.push({ code, delta, time: new Date().toLocaleTimeString() });
+      const badge = document.getElementById('chatterStatusBadge');
+      if (badge) {
+        badge.className = 'chatter-badge-warn';
+        badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${chatteringKeys.size} Key(s) Chattering`;
+      }
+
+      const logBox = document.getElementById('chatterLogDetails');
+      if (logBox) {
+        logBox.style.display = 'block';
+        logBox.innerHTML = `<strong>⚠️ Switch Bounce Detected:</strong> ` +
+          chatterLog.slice(-5).map(c => `<code>[${c.code}] ${c.delta}ms</code>`).join(' · ');
+      }
+    }
+
+    function clearChatterFlags() {
+      chatteringKeys.clear();
+      chatterLog.length = 0;
+      minRecordedInterval = Infinity;
+      document.querySelectorAll('.kb-key.chatter').forEach(el => el.classList.remove('chatter'));
+      document.getElementById('minIntervalText').textContent = '—';
+      const badge = document.getElementById('chatterStatusBadge');
+      if (badge) {
+        badge.className = 'chatter-badge-pass';
+        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Clean Contacts (0 Chatter)';
+      }
+      const logBox = document.getElementById('chatterLogDetails');
+      if (logBox) {
+        logBox.style.display = 'none';
+        logBox.innerHTML = '';
+      }
     }
 
     document.addEventListener('keydown', (e) => {
       if (!activeLayout) return;
 
-      if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
-        e.preventDefault(); // Prevent scrolling
+      if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
+        e.preventDefault(); // Prevent page scrolling
       }
       
       const code = e.code;
-      // We only care about keys in the active layout
       const selector = `#layout-${activeLayout} [data-code="${code}"]`;
-      const els = document.querySelectorAll(selector); // Could be multiple e.g., shift? Normally mapped properly
+      const els = document.querySelectorAll(selector);
       
+      // Play mechanical switch actuation audio
+      audioEngine.play(false);
+
+      // Measure Debounce & Switch Chatter
+      const now = performance.now();
+      if (lastKeyTimestamps[code]) {
+        const delta = Math.round(now - lastKeyTimestamps[code]);
+        if (delta > 0 && delta < minRecordedInterval) {
+          minRecordedInterval = delta;
+          const minText = document.getElementById('minIntervalText');
+          if (minText) minText.textContent = `${delta}ms (${code})`;
+        }
+        if (delta > 0 && delta < chatterThresholdMs) {
+          chatteringKeys.add(code);
+          els.forEach(el => el.classList.add('chatter'));
+          recordChatter(code, delta);
+        }
+      }
+      lastKeyTimestamps[code] = now;
+
       if (els.length > 0) {
         els.forEach(el => {
           el.classList.add('active', 'tested');
@@ -768,6 +1087,9 @@
       const selector = `#layout-${activeLayout} [data-code="${code}"]`;
       const els = document.querySelectorAll(selector);
       
+      // Play switch release audio
+      audioEngine.play(true);
+
       els.forEach(el => el.classList.remove('active'));
       currentlyPressed.delete(code);
       document.getElementById('currentPressedCount').textContent = currentlyPressed.size;
@@ -787,7 +1109,7 @@
     function updateCounter() {
       const c = testedKeys.size;
       document.getElementById('testCounter').innerText = `${c} / ${totalKeys} keys tested`;
-      document.getElementById('testProgress').style.width = `${(c / totalKeys) * 100}%`;
+      document.getElementById('testProgress').style.width = `${totalKeys > 0 ? (c / totalKeys) * 100 : 0}%`;
       
       if (c >= totalKeys && !isComplete) {
         isComplete = true;
@@ -809,6 +1131,42 @@
         alertEl.style.display = 'none';
       }
     }
+
+    // Sound and Threshold controls setup
+    document.addEventListener('DOMContentLoaded', () => {
+      const soundSelect = document.getElementById('switchSoundSelect');
+      if (soundSelect) {
+        soundSelect.value = audioEngine.soundType;
+        soundSelect.addEventListener('change', (e) => {
+          audioEngine.soundType = e.target.value;
+          localStorage.setItem('techtest_kb_sound', e.target.value);
+        });
+      }
+
+      const volRange = document.getElementById('soundVolRange');
+      if (volRange) {
+        volRange.value = Math.round(audioEngine.volume * 100);
+        volRange.addEventListener('input', (e) => {
+          audioEngine.volume = parseInt(e.target.value, 10) / 100;
+          localStorage.setItem('techtest_kb_vol', audioEngine.volume.toString());
+        });
+      }
+
+      const threshSelect = document.getElementById('chatterThresholdSelect');
+      if (threshSelect) {
+        threshSelect.addEventListener('change', (e) => {
+          chatterThresholdMs = parseInt(e.target.value, 10) || 35;
+          const thText = document.getElementById('thresholdText');
+          if (thText) thText.textContent = `< ${chatterThresholdMs}ms`;
+        });
+      }
+
+      const btnReset = document.getElementById('btnResetMatrix');
+      if (btnReset) btnReset.addEventListener('click', resetMatrix);
+
+      const btnClearChatter = document.getElementById('btnClearChatterLog');
+      if (btnClearChatter) btnClearChatter.addEventListener('click', clearChatterFlags);
+    });
   </script>
 
   <script type="module">
@@ -818,20 +1176,22 @@
       const tested = testedKeys.size;
       const total = totalKeys;
       const maxNkro = document.getElementById('maxPressedCount').textContent || '1';
-      const isPass = tested >= (total * 0.9) && stuckKeys.size === 0;
+      const hasChatter = chatteringKeys.size > 0;
+      const isPass = tested >= (total * 0.9) && stuckKeys.size === 0 && !hasChatter;
 
       CertificateGenerator.openCertificateModal({
-        category: 'Computer Keyboard',
+        category: 'Computer Keyboard Matrix',
         deviceModel: `${activeLayout ? activeLayout.toUpperCase() : 'Standard'} Keyboard Matrix`,
-        overallGrade: isPass ? 'Grade A+ (Full Matrix Passed)' : 'Grade B (Partial Check)',
-        status: isPass ? 'PASS' : 'ACCEPTABLE',
+        overallGrade: isPass ? 'Grade A+ (Full Matrix Passed)' : (hasChatter ? 'Grade B (Switch Chatter Warning)' : 'Grade B (Partial Matrix)'),
+        status: isPass ? 'PASS' : (hasChatter ? 'WARNING' : 'ACCEPTABLE'),
         metrics: [
           { label: 'Key Matrix Actuation Coverage', value: `${tested} / ${total} Tested (${Math.round((tested/total)*100)}%)`, status: isPass ? 'pass' : 'warn' },
-          { label: 'Simultaneous Rollover (NKRO)', value: `${maxNkro}-Key Rollover Verified`, status: 'pass' },
-          { label: 'Stuck Key / Chatter Status', value: stuckKeys.size === 0 ? 'Zero Stuck Keys (Clean Switch Return)' : `${stuckKeys.size} Stuck Keys Detected`, status: stuckKeys.size === 0 ? 'pass' : 'fail' },
-          { label: 'Debounce Switch Stability', value: 'Nominal Actuation', status: 'pass' }
+          { label: 'Simultaneous Rollover (NKRO)', value: `${maxNkro}-Key Rollover Actuation Peak`, status: 'pass' },
+          { label: 'Switch Chatter / Double-Typing', value: hasChatter ? `⚠️ ${chatteringKeys.size} Chattering Key(s): ${Array.from(chatteringKeys).join(', ')}` : 'Zero Contact Chatter (< 35ms Debounce Clean)', status: hasChatter ? 'warn' : 'pass' },
+          { label: 'Key Retention / Stuck Keys', value: stuckKeys.size === 0 ? 'Zero Stuck Keys (Clean Switch Return)' : `${stuckKeys.size} Stuck Keys Detected`, status: stuckKeys.size === 0 ? 'pass' : 'fail' },
+          { label: 'Minimum Contact Debounce', value: minRecordedInterval === Infinity ? 'Standard Actuation' : `${minRecordedInterval} ms`, status: 'pass' }
         ],
-        notes: `Keyboard tested across full alphanumeric, modifier, and function rows. Anti-ghosting rollover verified.`
+        notes: `Physical switch contact test completed across alphanumeric and modifier matrices. NKRO peak rollover: ${maxNkro} keys.`
       });
     });
   </script>

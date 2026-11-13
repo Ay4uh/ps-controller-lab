@@ -3,7 +3,7 @@
  * Provides offline-first caching for diagnostic suites, hardware math engines, and UI assets.
  */
 
-const CACHE_NAME = 'techtest-pwa-v8';
+const CACHE_NAME = 'techtest-pwa-v9';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',

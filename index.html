@@ -300,6 +300,142 @@
       border-bottom: 1px solid var(--border);
     }
 
+    /* Instant Telemetry HUD */
+    .telemetry-hud-container {
+      max-width: 1200px;
+      margin: 0 auto 32px auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+    .telemetry-hud-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .telemetry-live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    .telemetry-live-dot {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseDot 1.8s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .telemetry-hud-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 900px) {
+      .telemetry-hud-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .telemetry-hud-grid { grid-template-columns: 1fr; }
+    }
+    .telemetry-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .telemetry-card:hover {
+      border-color: var(--accent-blue);
+    }
+    .telemetry-card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+    }
+    .telemetry-card-top i {
+      color: var(--accent-blue);
+      font-size: 13px;
+    }
+    .telemetry-card-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .telemetry-card-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .telemetry-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .telemetry-copy-btn {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .telemetry-copy-btn:hover {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+    .telemetry-full-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .telemetry-full-link:hover {
+      text-decoration: underline;
+    }
+
     /* Redesigned Q&A Teaser */
     .qa-teaser {
       background: var(--bg-card);
@@ -379,7 +515,7 @@
     "description": "Free browser-based hardware diagnostics for laptops, phones and controllers",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://ay5uh.com/repair-guides/?q={search_term_string}",
+      "target": "https://ay5uh.com/tools/laptop/?q={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   }
@@ -414,6 +550,52 @@
           <a href="/tools/controller-lab/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--accent-blue); color: #ffffff; padding: 11px 22px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">Open Controller Lab <i class="fa-solid fa-arrow-right"></i></a>
           <a href="/tools/laptop-comprehensive/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 11px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">One-Click Diagnostic Suite</a>
           <a href="/tools/laptop/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 11px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">PC &amp; Laptop Tools</a>
+        </div>
+      </div>
+
+      <!-- Instant Live Hardware Telemetry HUD -->
+      <div class="container animate-fade-in-up delay-1">
+        <div class="telemetry-hud-container" id="telemetryHud">
+          <div class="telemetry-hud-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="telemetry-live-pill"><span class="telemetry-live-dot"></span> Live Telemetry</span>
+              <span style="font-size:12px; color:var(--text-muted);">Real-time browser hardware snapshot (Zero permissions required)</span>
+            </div>
+            <div class="telemetry-actions">
+              <button type="button" class="telemetry-copy-btn" id="btnCopyTelemetry" title="Copy full hardware report to clipboard">
+                <i class="fa-solid fa-copy"></i> Copy Specs
+              </button>
+              <a href="/tools/laptop-comprehensive/" class="telemetry-full-link">
+                Full 1-Click Scan <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+          <div class="telemetry-hud-grid">
+            <!-- Screen & Refresh Rate -->
+            <div class="telemetry-card">
+              <div class="telemetry-card-top"><i class="fa-solid fa-desktop"></i> Display &amp; Motion</div>
+              <div class="telemetry-card-val" id="hudDisplayVal">Scanning…</div>
+              <div class="telemetry-card-sub" id="hudDisplaySub">Measuring refresh rate &amp; gamut…</div>
+            </div>
+            <!-- GPU & Engine -->
+            <div class="telemetry-card">
+              <div class="telemetry-card-top"><i class="fa-solid fa-microchip"></i> Processor &amp; GPU</div>
+              <div class="telemetry-card-val" id="hudGpuVal">Detecting…</div>
+              <div class="telemetry-card-sub" id="hudGpuSub">WebGL unmasked renderer…</div>
+            </div>
+            <!-- Battery & Power -->
+            <div class="telemetry-card">
+              <div class="telemetry-card-top"><i class="fa-solid fa-battery-three-quarters"></i> Power State</div>
+              <div class="telemetry-card-val" id="hudBatteryVal">Checking…</div>
+              <div class="telemetry-card-sub" id="hudBatterySub">Battery status query…</div>
+            </div>
+            <!-- Audio & Network -->
+            <div class="telemetry-card">
+              <div class="telemetry-card-top"><i class="fa-solid fa-wifi"></i> Engine &amp; Latency</div>
+              <div class="telemetry-card-val" id="hudNetVal">Measuring…</div>
+              <div class="telemetry-card-sub" id="hudNetSub">Audio clock &amp; CDN ping…</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -824,6 +1006,156 @@
         else if (caps.browser.isSafari) engineBadge.innerHTML = '<span style="color:#f59e0b;">● Apple WebKit (Standard)</span>';
         else if (caps.browser.isFirefox) engineBadge.innerHTML = '<span style="color:#f59e0b;">● Mozilla Gecko (Standard)</span>';
         else engineBadge.textContent = 'Generic Web Engine';
+      }
+
+      // ── Instant Live Hardware Telemetry HUD ──
+      const telemetryData = {
+        platform: navigator.platform || 'Unknown OS',
+        resolution: '',
+        refreshRate: '',
+        gamut: '',
+        cores: navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : 'Multi-core',
+        gpu: 'Detecting…',
+        battery: 'Checking…',
+        audio: '48,000 Hz',
+        ping: 'Measuring…'
+      };
+
+      // 1. Display & Motion
+      const dpr = (window.devicePixelRatio || 1).toFixed(1);
+      const physW = Math.round(window.screen.width * (window.devicePixelRatio || 1));
+      const physH = Math.round(window.screen.height * (window.devicePixelRatio || 1));
+      let gamutName = 'sRGB';
+      if (window.matchMedia && window.matchMedia('(color-gamut: rec2020)').matches) gamutName = 'Rec.2020 HDR';
+      else if (window.matchMedia && window.matchMedia('(color-gamut: p3)').matches) gamutName = 'Display P3 Wide';
+
+      telemetryData.resolution = `${physW} × ${physH}`;
+      telemetryData.gamut = gamutName;
+
+      // Estimate refresh rate via requestAnimationFrame
+      let frames = 0;
+      let startRaf = performance.now();
+      function measureHz(now) {
+        frames++;
+        if (now - startRaf < 260) {
+          requestAnimationFrame(measureHz);
+        } else {
+          const rawFps = Math.round((frames * 1000) / (now - startRaf));
+          const snapHz = [30, 48, 60, 75, 90, 120, 144, 165, 240, 360];
+          const closest = snapHz.reduce((prev, curr) => Math.abs(curr - rawFps) <= 4 ? curr : prev, rawFps);
+          telemetryData.refreshRate = `${closest} Hz`;
+          const dispVal = document.getElementById('hudDisplayVal');
+          const dispSub = document.getElementById('hudDisplaySub');
+          if (dispVal) dispVal.textContent = `${physW} × ${physH} (${dpr}x DPR)`;
+          if (dispSub) dispSub.textContent = `${closest} Hz Refresh · ${gamutName}`;
+        }
+      }
+      requestAnimationFrame(measureHz);
+
+      // 2. CPU & GPU
+      try {
+        const glCanvas = document.createElement('canvas');
+        const gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
+        if (gl) {
+          const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+          let renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+          if (renderer) {
+            renderer = renderer.replace(/^ANGLE\s*\(([^,]+),\s*([^,]+),.*?\)$/, '$2 ($1)').replace(/vs_\d+_\d+|ps_\d+_\d+/gi, '').trim();
+            telemetryData.gpu = renderer;
+          }
+        }
+      } catch (e) {
+        telemetryData.gpu = 'Standard 3D Accelerator';
+      }
+      const gpuVal = document.getElementById('hudGpuVal');
+      const gpuSub = document.getElementById('hudGpuSub');
+      if (gpuVal) gpuVal.textContent = telemetryData.gpu.length > 28 ? telemetryData.gpu.substring(0, 27) + '…' : telemetryData.gpu;
+      if (gpuSub) gpuSub.textContent = `${telemetryData.cores} Logical Threads · WebGL Active`;
+
+      // 3. Power State / Battery
+      const batVal = document.getElementById('hudBatteryVal');
+      const batSub = document.getElementById('hudBatterySub');
+      if ('getBattery' in navigator) {
+        navigator.getBattery().then(bat => {
+          const updateBat = () => {
+            const pct = Math.round(bat.level * 100);
+            const isCharging = bat.charging;
+            telemetryData.battery = `${pct}% · ${isCharging ? 'AC Plugged In' : 'On Battery'}`;
+            if (batVal) batVal.textContent = `${isCharging ? '⚡' : '🔋'} ${pct}% (${isCharging ? 'Charging / AC' : 'Battery'})`;
+            if (batSub) {
+              if (isCharging) {
+                batSub.textContent = bat.chargingTime && isFinite(bat.chargingTime) ? `Full in ${Math.round(bat.chargingTime/60)}m` : 'Connected to AC power source';
+              } else {
+                batSub.textContent = bat.dischargingTime && isFinite(bat.dischargingTime) ? `~${(bat.dischargingTime/3600).toFixed(1)}h remaining` : 'Discharging on internal battery';
+              }
+            }
+          };
+          updateBat();
+          bat.addEventListener('levelchange', updateBat);
+          bat.addEventListener('chargingchange', updateBat);
+        }).catch(() => {
+          telemetryData.battery = 'AC Power / Desktop';
+          if (batVal) batVal.textContent = '🔌 AC Connected';
+          if (batSub) batSub.textContent = 'Standard desktop power profile';
+        });
+      } else {
+        telemetryData.battery = 'AC Power / Standard Profile';
+        if (batVal) batVal.textContent = '🔌 AC Connected';
+        if (batSub) batSub.textContent = 'Standard desktop or non-battery client';
+      }
+
+      // 4. Audio Engine & Network Latency
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          const actx = new AudioCtx();
+          telemetryData.audio = `${actx.sampleRate.toLocaleString()} Hz`;
+          actx.close().catch(() => {});
+        }
+      } catch (e) {}
+
+      const netVal = document.getElementById('hudNetVal');
+      const netSub = document.getElementById('hudNetSub');
+      const pingStart = performance.now();
+      fetch('/logo.png?ping=' + Date.now(), { method: 'HEAD', cache: 'no-store' })
+        .then(() => {
+          const pingMs = Math.max(1, Math.round(performance.now() - pingStart));
+          telemetryData.ping = `${pingMs}ms`;
+          const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+          const netType = conn ? (conn.effectiveType || conn.type || '').toUpperCase() : 'FAST';
+          if (netVal) netVal.textContent = `⚡ ${pingMs}ms CDN Ping`;
+          if (netSub) netSub.textContent = `${netType ? netType + ' · ' : ''}Audio Engine: ${telemetryData.audio}`;
+        })
+        .catch(() => {
+          if (netVal) netVal.textContent = `Online · ${telemetryData.audio}`;
+          if (netSub) netSub.textContent = 'Standard Web Audio pipeline';
+        });
+
+      // 5. Copy Specs Button
+      const btnCopyTel = document.getElementById('btnCopyTelemetry');
+      if (btnCopyTel) {
+        btnCopyTel.addEventListener('click', () => {
+          const summary = [
+            '═══ TechTest Hardware Telemetry ═══',
+            `• Display: ${telemetryData.resolution} (${dpr}x DPR) @ ${telemetryData.refreshRate || '60 Hz'} [${telemetryData.gamut}]`,
+            `• CPU: ${telemetryData.cores}`,
+            `• GPU: ${telemetryData.gpu}`,
+            `• Power: ${telemetryData.battery}`,
+            `• Audio Engine: ${telemetryData.audio}`,
+            `• Edge Ping: ${telemetryData.ping}`,
+            `• Platform: ${navigator.userAgent}`,
+            'Verified on: https://ay5uh.com/'
+          ].join('\n');
+
+          navigator.clipboard.writeText(summary).then(() => {
+            btnCopyTel.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            setTimeout(() => {
+              btnCopyTel.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Specs';
+            }, 2000);
+          }).catch(err => {
+            console.warn('Clipboard write failed', err);
+          });
+        });
       }
     });
   </script>
