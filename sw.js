@@ -3,7 +3,7 @@
  * Provides offline-first caching for diagnostic suites, hardware math engines, and UI assets.
  */
 
-const CACHE_NAME = 'techtest-pwa-v7';
+const CACHE_NAME = 'techtest-pwa-v8';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
@@ -11,10 +11,6 @@ const PRECACHE_ASSETS = [
   '/logo.png',
   '/og-image.png',
   '/verify/',
-  '/repair-guides/',
-  '/repair-guides/viewer/',
-  '/repair-guides/research/',
-  '/repair-guides/js/repair-db.js',
   '/answers/',
   '/shared/styles.css',
   '/shared/sidebar.js',
@@ -31,9 +27,6 @@ const PRECACHE_ASSETS = [
   '/tools/controller-lab/',
   '/tools/controller-lab/css/controller-lab.css',
   '/tools/controller-lab/js/controller-lab-core.js',
-  '/repair-guides/playstation/dualsense-trigger-spring/',
-  '/repair-guides/apple/macbook-keyboard-cleaning/',
-  '/repair-guides/displays/dead-vs-stuck-pixels/',
   '/tools/exam-device-check/',
   '/tools/battery-test/',
   '/tools/fingerprint-test/',

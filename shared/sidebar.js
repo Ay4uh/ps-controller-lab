@@ -134,19 +134,8 @@ window.TECHTEST_SEARCH_INDEX = [
   { title: 'Network Ping, Jitter & WebRTC Latency', url: '/tools/network-test/', category: 'Tool', keywords: 'network ping latency jitter webrtc stun speed' },
   { title: 'Phone Diagnostics (Touch, Multi-Touch, Sensors)', url: '/tools/phone-diagnostics/', category: 'Tool', keywords: 'phone iphone android touch screen multitouch digitizer mobile' },
   { title: 'Verify Hardware Health Certificate', url: '/verify/', category: 'Ledger', keywords: 'verify certificate hmac qr code health score report' },
-  { title: 'ThinkPad T14 Gen 1 AMD — Screen Replacement Guide', url: '/repair-guides/viewer/?id=thinkpad-t14-screen-replacement', category: 'Repair Guide', keywords: 'lenovo thinkpad t14 gen1 lcd screen replacement guide matte edp' },
-  { title: 'MacBook Air 13" M1 (A2337) — Screen Replacement Guide', url: '/repair-guides/viewer/?id=macbook-screen-replacement-a2337', category: 'Repair Guide', keywords: 'apple macbook air m1 a2337 display screen assembly replacement true tone' },
-  { title: 'MacBook Air 13" M1 (A2337) — Battery Replacement Guide', url: '/repair-guides/viewer/?id=macbook-battery-replacement-a2337', category: 'Repair Guide', keywords: 'apple macbook air m1 a2337 battery replacement swollen ipa adhesive solvent' },
-  { title: 'Dell Latitude 5420 / 5430 — Battery Replacement Guide', url: '/repair-guides/viewer/?id=dell-latitude-battery-replacement-5420', category: 'Repair Guide', keywords: 'dell latitude 5420 5430 battery replacement expresscharge rj40g' },
-  { title: 'Windows 10 & 11 Clean Installation & Intel RST/VMD Guide', url: '/repair-guides/viewer/?id=windows-10-11-clean-installation-guide', category: 'Repair Guide', keywords: 'windows 11 windows 10 clean install uefi gpt intel rst vmd storage driver no drives found' },
-  { title: 'macOS Clean Installation, Recovery & DFU Revive Guide', url: '/repair-guides/viewer/?id=macos-clean-installation-recovery-guide', category: 'Repair Guide', keywords: 'macos clean install recovery apple silicon intel internet recovery apfs dfu configurator' },
-  { title: 'YouTube Repair Video Research & Ingestion Pipeline', url: '/repair-guides/research/', category: 'Tool', keywords: 'youtube repair research louis rossmann northridgefix ipad rehab extraction ingestion' },
-  { title: 'MacBook Keyboard Cleaning & Key Chatter Fix', url: '/repair-guides/apple/macbook-keyboard-cleaning/', category: 'Repair Guide', keywords: 'macbook keyboard cleaning keycap scissor butterfly double type chatter compressed air' },
-  { title: 'PS5 Controller Stick Drift Fix & Recalibration', url: '/fix-ps5-controller-drift/', category: 'Repair Guide', keywords: 'ps5 dualsense stick drift repair fix guide' },
-  { title: 'PS5 DualSense L2 / R2 Trigger Spring Replacement', url: '/repair-guides/playstation/dualsense-trigger-spring/', category: 'Repair Guide', keywords: 'ps5 dualsense l2 r2 trigger spring loose broken adaptive teardown guide' },
-  { title: 'PS4 DualShock 4 Stick Drift Test & Guide', url: '/ps4-controller-drift-test/', category: 'Repair Guide', keywords: 'ps4 dualshock 4 drift test guide' },
-  { title: 'Dead vs. Stuck Pixels: Identification & Recovery', url: '/repair-guides/displays/dead-vs-stuck-pixels/', category: 'Repair Guide', keywords: 'dead pixel stuck pixel monitor screen lcd ips oled jscreenfix warranty' },
-  { title: 'Laptop Repair Knowledge Base & Guided Platform', url: '/repair-guides/', category: 'Directory', keywords: 'laptop repair guides macbook windows screen battery os installation' },
+  { title: 'PS5 Controller Stick Drift Fix & Recalibration', url: '/fix-ps5-controller-drift/', category: 'Diagnostics', keywords: 'ps5 dualsense stick drift recalibration fix test' },
+  { title: 'PS4 DualShock 4 Stick Drift Test', url: '/ps4-controller-drift-test/', category: 'Diagnostics', keywords: 'ps4 dualshock 4 drift test calibration' },
   { title: 'Community Q&A & Hardware Answers', url: '/answers/', category: 'Community', keywords: 'questions answers forum help ask community' },
   { title: 'PS5 Controller Repair London', url: '/services/ps5-repair-london/', category: 'Service Info', keywords: 'ps5 repair london uk service' },
   { title: 'About TechTest & Privacy', url: '/about/', category: 'Info', keywords: 'about privacy local open source' },
@@ -1908,8 +1897,8 @@ function injectSidebar(activeToolId = null) {
         <div class="topnav-divider"></div>
         <div class="topnav-links">
           <a href="/" class="topnav-link ${window.location.pathname === '/' || window.location.pathname.startsWith('/tools/') ? 'active' : ''}">Tools</a>
-          <a href="/repair-guides/" class="topnav-link ${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
           <a href="/answers/" class="topnav-link ${window.location.pathname.startsWith('/answers/') ? 'active' : ''}">Answers</a>
+          <a href="/verify/" class="topnav-link ${window.location.pathname.startsWith('/verify/') ? 'active' : ''}">Verify</a>
         </div>
       </div>
       <div class="topnav-right" style="display: flex; align-items: center; gap: 8px;">
@@ -1923,18 +1912,17 @@ function injectSidebar(activeToolId = null) {
     <!-- Search Drawer -->
     <div class="search-drawer" id="searchDrawer">
       <i class="fa-solid fa-search" style="color: #9CA3AF; margin-right: 12px;"></i>
-      <input type="text" id="searchInput" placeholder="Search devices, repair guides, tools..." autocomplete="off">
+      <input type="text" id="searchInput" placeholder="Search diagnostic tools and hardware tests..." autocomplete="off">
       <div class="nav-search-results" id="navSearchResults"></div>
     </div>
 
     <!-- Mobile Dropdown -->
     <div class="mobile-dropdown" id="mobileDropdown">
       <a href="/" class="${window.location.pathname === '/' || window.location.pathname.startsWith('/tools/') ? 'active' : ''}">Tools</a>
-      <a href="/repair-guides/" class="${window.location.pathname.startsWith('/repair-guides/') ? 'active' : ''}">Repair Guides</a>
       <a href="/answers/" class="${window.location.pathname.startsWith('/answers/') ? 'active' : ''}">Answers</a>
       <a href="/verify/" class="${window.location.pathname.startsWith('/verify/') ? 'active' : ''}">Verify Certificate</a>
       <div class="mobile-dropdown-actions">
-        <input type="text" id="mobileSearchInput" placeholder="Quick search tools or guides..." style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; background:var(--bg-base); color:var(--text-primary); font-size:14px;">
+        <input type="text" id="mobileSearchInput" placeholder="Quick search tools..." style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; background:var(--bg-base); color:var(--text-primary); font-size:14px;">
       </div>
     </div>
   `;
@@ -2049,10 +2037,9 @@ function injectSidebar(activeToolId = null) {
     }
     if (matches.length === 0) {
       resultsEl.innerHTML = `
-        <a href="/repair-guides/?q=${encodeURIComponent(query.trim())}" class="search-result-item">
-          <span>Search repair guides for "<strong>${query.trim().replace(/</g, '&lt;')}</strong>"</span>
-          <span class="search-result-meta">Search Guides &rarr;</span>
-        </a>
+        <div class="search-result-item" style="cursor:default; color:var(--text-muted);">
+          <span>No diagnostic tool found for "<strong>${query.trim().replace(/</g, '&lt;')}</strong>"</span>
+        </div>
       `;
     } else {
       resultsEl.innerHTML = matches.map(m => `
@@ -2088,8 +2075,6 @@ function injectSidebar(activeToolId = null) {
           const matches = window.searchTechTestCatalog ? window.searchTechTestCatalog(q) : [];
           if (matches.length > 0) {
             window.location.href = matches[0].url;
-          } else {
-            window.location.href = `/repair-guides/?q=${encodeURIComponent(q)}`;
           }
         }
       });
@@ -2129,7 +2114,9 @@ function injectSidebar(activeToolId = null) {
           const q = mobileSearchInput.value.trim();
           if (!q) return;
           const matches = window.searchTechTestCatalog ? window.searchTechTestCatalog(q) : [];
-          window.location.href = matches.length > 0 ? matches[0].url : `/repair-guides/?q=${encodeURIComponent(q)}`;
+          if (matches.length > 0) {
+            window.location.href = matches[0].url;
+          }
         }
       });
     }

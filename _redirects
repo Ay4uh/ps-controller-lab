@@ -1,1 +1,3 @@
 /ads.txt  /ads.txt  200
+/repair-guides/*  /  301
+/repair-guides  /  301
