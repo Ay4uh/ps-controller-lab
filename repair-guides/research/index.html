@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Research &amp; Video Analysis Pipeline | TechTest Knowledge Base</title>
+  <meta name="description" content="Technical research intake pipeline for converting reliable YouTube laptop repair videos into verified, structured step-by-step repair guides.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://ay5uh.com/repair-guides/research/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <style>
+    .research-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+      border-radius: 14px;
+      padding: 36px 32px;
+      color: #fff;
+      margin-bottom: 28px;
+    }
+    .research-hero h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      color: #fff;
+    }
+    .research-hero p {
+      font-size: 14px;
+      opacity: 0.9;
+      max-width: 680px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 992px) {
+      .pipeline-grid {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+    }
+
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+    .form-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 16px 0;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      outline: none;
+      box-sizing: border-box;
+      font-family: var(--font-body);
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .step-input-row {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .btn-action-primary {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .btn-action-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .channel-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 99px;
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      margin: 3px;
+    }
+    .channel-pill:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .status-badge-draft {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container pb-5">
+
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/repair-guides/">Repair Guides</a></li>
+            <li class="breadcrumb-item active" aria-current="page">YouTube Research Pipeline</li>
+          </ol>
+        </nav>
+
+        <div class="research-hero">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; opacity:0.85;">Technician Research Intake</div>
+          <h1>YouTube Repair Video Analysis &amp; Extraction Pipeline</h1>
+          <p>Analyze trusted video footage from reputable repair channels. Extract verified disassembly steps, critical safety warnings, component part numbers, and timestamp references into the Firestore repair guide schema.</p>
+        </div>
+
+        <div class="pipeline-grid">
+
+          <!-- Left Column: Video Ingestion & Step Extractor Form -->
+          <div class="form-card">
+            <h2 class="form-title"><i class="fa-solid fa-file-circle-plus" style="color:var(--accent-blue);"></i> Ingest Technical Repair Video</h2>
+
+            <div class="form-group">
+              <label>Select Verified Channel or Type Name</label>
+              <div style="margin-bottom:8px;">
+                <span class="channel-pill" onclick="setChannel('Louis Rossmann')"><i class="fa-brands fa-youtube"></i> Louis Rossmann</span>
+                <span class="channel-pill" onclick="setChannel('NorthridgeFix')"><i class="fa-brands fa-youtube"></i> NorthridgeFix</span>
+                <span class="channel-pill" onclick="setChannel('iPad Rehab')"><i class="fa-brands fa-youtube"></i> iPad Rehab</span>
+                <span class="channel-pill" onclick="setChannel('Electronics Repair School')"><i class="fa-brands fa-youtube"></i> Electronics Repair School</span>
+                <span class="channel-pill" onclick="setChannel('Adamant IT')"><i class="fa-brands fa-youtube"></i> Adamant IT</span>
+                <span class="channel-pill" onclick="setChannel('Hugh Jeffreys')"><i class="fa-brands fa-youtube"></i> Hugh Jeffreys</span>
+                <span class="channel-pill" onclick="setChannel('Laptop Repair Secrets')"><i class="fa-brands fa-youtube"></i> Laptop Repair Secrets</span>
+              </div>
+              <input type="text" id="inpChannel" class="form-input" placeholder="e.g. Louis Rossmann">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>YouTube Video URL</label>
+                <input type="url" id="inpUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+              </div>
+              <div class="form-group">
+                <label>Video Title</label>
+                <input type="text" id="inpTitle" class="form-input" placeholder="e.g. MacBook Air M1 Screen Teardown">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Device Category</label>
+                <select id="selCategory" class="form-select">
+                  <option value="macbook">Apple MacBook</option>
+                  <option value="windows">Windows Laptop</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Repair Type</label>
+                <select id="selRepairType" class="form-select">
+                  <option value="screen">Screen / LCD Replacement</option>
+                  <option value="battery">Battery Replacement</option>
+                  <option value="os_install">OS Installation / Recovery</option>
+                  <option value="motherboard">Motherboard Diagnostics</option>
+                  <option value="keyboard">Keyboard Replacement</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Target Model / Identifiers</label>
+                <input type="text" id="inpModels" class="form-input" placeholder="e.g. A2337, ThinkPad T14 Gen 1 AMD">
+              </div>
+              <div class="form-group">
+                <label>Initial Quality Status</label>
+                <select id="selStatus" class="form-select">
+                  <option value="research_pending">Research Pending</option>
+                  <option value="draft">Draft (Under Review)</option>
+                  <option value="source_verified">Source Verified</option>
+                  <option value="technically_reviewed">Technically Reviewed</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Extracted Steps Area -->
+            <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <label style="font-size:13px; font-weight:700; margin:0;">Extracted Step Breakdown &amp; Timestamps</label>
+                <button type="button" class="btn-action-primary" style="padding:6px 12px; font-size:12px;" onclick="addStepInput()">+ Add Step</button>
+              </div>
+              <div id="stepsContainer">
+                <div class="step-input-row" data-step="1">
+                  <div style="display:flex; gap:10px; margin-bottom:6px;">
+                    <strong style="font-size:12px;">Step 1:</strong>
+                    <input type="text" class="form-input step-name" placeholder="Step title (e.g. Disconnect battery latch)" style="padding:6px 8px; font-size:12px;">
+                    <input type="text" class="form-input step-time" placeholder="Timestamp (e.g. 02:45)" style="width:140px; padding:6px 8px; font-size:12px;">
+                  </div>
+                  <textarea class="form-textarea step-desc" rows="2" placeholder="Exact technician procedure and critical warning observed in footage..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:24px;">
+              <button class="btn-action-primary" onclick="submitDraft()">
+                <i class="fa-solid fa-floppy-disk"></i> Submit to Verification Queue
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Verification Standards & Recent Drafts -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+
+            <!-- QC Guidelines Card -->
+            <div class="form-card">
+              <h2 class="form-title" style="font-size:16px;"><i class="fa-solid fa-scale-balanced" style="color:#10b981;"></i> Technical Verification Standards</h2>
+              <div style="font-size:13px; color:var(--text-secondary); line-height:1.6;">
+                <div style="margin-bottom:10px;">
+                  <strong style="color:var(--text-primary);"><i class="fa-solid fa-check text-success"></i> Do Not Guess:</strong>
+                  Never invent a screw length or cable latch mechanism. If footage is unclear, pause at the exact frame or consult the manufacturer service manual.
+                </div>
+                <div style="margin-bottom:10px;">
+                  <strong style="color:var(--text-primary);"><i class="fa-solid fa-triangle-exclamation text-warning"></i> Safety First:</strong>
+                  Always isolate lithium-ion battery fire hazards and backlight rail fuses as mandatory red alerts.
+                </div>
+                <div>
+                  <strong style="color:var(--text-primary);"><i class="fa-solid fa-tag text-primary"></i> Two Review Gates:</strong>
+                  Drafts require independent review by a senior technician before status moves to <em>Published</em>.
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Research Drafts -->
+            <div class="form-card">
+              <h2 class="form-title" style="font-size:16px;"><i class="fa-solid fa-list-check" style="color:var(--accent-blue);"></i> Active Ingestion Queue</h2>
+              <div id="draftsList" style="font-size:13px;"></div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/shared/sidebar.js?v=24"></script>
+  <script type="module">
+    import { repairDb } from '/repair-guides/js/repair-db.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      try { injectSidebar(null); } catch(e){}
+      renderDrafts();
+    });
+
+    window.setChannel = function(name) {
+      document.getElementById('inpChannel').value = name;
+    };
+
+    let stepCount = 1;
+    window.addStepInput = function() {
+      stepCount++;
+      const container = document.getElementById('stepsContainer');
+      const div = document.createElement('div');
+      div.className = 'step-input-row';
+      div.setAttribute('data-step', stepCount);
+      div.innerHTML = `
+        <div style="display:flex; gap:10px; margin-bottom:6px;">
+          <strong style="font-size:12px;">Step ${stepCount}:</strong>
+          <input type="text" class="form-input step-name" placeholder="Step title" style="padding:6px 8px; font-size:12px;">
+          <input type="text" class="form-input step-time" placeholder="Timestamp" style="width:140px; padding:6px 8px; font-size:12px;">
+        </div>
+        <textarea class="form-textarea step-desc" rows="2" placeholder="Procedure notes..."></textarea>
+      `;
+      container.appendChild(div);
+    };
+
+    window.submitDraft = function() {
+      const channel = document.getElementById('inpChannel').value.trim();
+      const title = document.getElementById('inpTitle').value.trim();
+      const url = document.getElementById('inpUrl').value.trim();
+      const cat = document.getElementById('selCategory').value;
+      const repairType = document.getElementById('selRepairType').value;
+      const models = document.getElementById('inpModels').value.trim();
+      const status = document.getElementById('selStatus').value;
+
+      if (!channel || !title || !url) {
+        alert('Please fill out the channel name, video title, and YouTube URL.');
+        return;
+      }
+
+      // Collect steps
+      const stepRows = document.querySelectorAll('.step-input-row');
+      const timestamps = [];
+      stepRows.forEach(row => {
+        const name = row.querySelector('.step-name').value.trim();
+        const time = row.querySelector('.step-time').value.trim();
+        const desc = row.querySelector('.step-desc').value.trim();
+        if (name || time) {
+          timestamps.push({ note: name + (desc ? ' — ' + desc : ''), time: time || '00:00' });
+        }
+      });
+
+      repairDb.submitResearchVideo({
+        channelName: channel,
+        videoTitle: title,
+        youtubeUrl: url,
+        deviceCategory: cat,
+        repairType: repairType,
+        models: models,
+        status: status,
+        timestamps: timestamps
+      });
+
+      alert('Research draft successfully recorded in verification queue!');
+      document.getElementById('inpTitle').value = '';
+      document.getElementById('inpUrl').value = '';
+      renderDrafts();
+    };
+
+    function renderDrafts() {
+      const drafts = repairDb.getResearchDrafts();
+      const listEl = document.getElementById('draftsList');
+      if (drafts.length === 0) {
+        listEl.innerHTML = '<div style="color:var(--text-muted);">No custom video drafts in queue yet. Ingest your first video on the left.</div>';
+        return;
+      }
+
+      listEl.innerHTML = drafts.slice(0, 6).map(d => `
+        <div style="border-bottom:1px solid var(--border); padding:10px 0;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <strong style="font-size:13px; color:var(--text-primary);">${d.channelName}</strong>
+            <span class="status-badge-draft">${d.status.replace('_', ' ')}</span>
+          </div>
+          <div style="color:var(--text-secondary); font-size:12px; margin-bottom:4px;">${d.videoTitle}</div>
+          <div style="font-size:11px; color:var(--accent-blue);">${d.models || d.deviceCategory} · ${d.timestamps.length} steps indexed</div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

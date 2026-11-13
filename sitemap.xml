@@ -98,6 +98,16 @@
   <url>
     <loc>https://ay5uh.com/repair-guides/</loc>
     <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/repair-guides/viewer/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/repair-guides/research/</loc>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
