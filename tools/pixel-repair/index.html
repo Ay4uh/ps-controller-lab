@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stuck Pixel Fixer — Free Online Pixel Repair Tool | TechTest</title>
+  <meta name="description" content="Fix stuck pixels online for free. Rapid 60Hz RGB color cycling and noise stimulation to revive stuck red, green, or blue subpixels on laptop and monitor screens.">
+  <meta name="keywords" content="stuck pixel fixer, fix stuck pixel online, pixel repair tool, unstick pixel screen, jscreenfix alternative, monitor pixel repair">
+  <meta name="robots" content="index, follow">
+  <meta property="og:site_name" content="TechTest">
+  <meta property="og:type" content="website">
+  <meta name="author" content="TechTest">
+  <link rel="canonical" href="https://ay5uh.com/tools/pixel-repair/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <meta property="og:title" content="Stuck Pixel Fixer — Free Online Pixel Repair Tool | TechTest">
+  <meta property="og:description" content="Rapid 60Hz RGB color cycling to unstick stubborn display pixels. Free, draggable, no install.">
+  <meta property="og:url" content="https://ay5uh.com/tools/pixel-repair/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ay5uh.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://ay5uh.com/tools/laptop/" },
+      { "@type": "ListItem", "position": 3, "name": "Stuck Pixel Fixer", "item": "https://ay5uh.com/tools/pixel-repair/" }
+    ]
+  }
+  </script>
+
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <style>
+    .repair-hero {
+      background: linear-gradient(135deg, #701a75 0%, #831843 50%, #9f1239 100%);
+      border-radius: 16px;
+      padding: 40px 32px;
+      color: #fff;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    }
+    .repair-hero h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      color: #fff;
+    }
+    .repair-hero p {
+      font-size: 15px;
+      opacity: 0.9;
+      max-width: 680px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .repair-controls-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .ctrl-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .ctrl-select {
+      width: 100%;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-fixer-start {
+      background: #e11d48;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-fixer-start:hover {
+      background: #be123c;
+      transform: translateY(-1px);
+    }
+    .btn-fixer-secondary {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Draggable Exerciser Box */
+    .draggable-flasher {
+      position: fixed;
+      top: 180px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 140px;
+      background: #000;
+      border: 2px solid #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: none;
+      cursor: move;
+      user-select: none;
+      overflow: hidden;
+    }
+    .flasher-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .flasher-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    .flasher-close {
+      cursor: pointer;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    .warning-alert {
+      background: rgba(239, 68, 68, 0.08);
+      border-left: 4px solid #ef4444;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 24px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container pb-5">
+
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/tools/laptop/">Laptop Tools</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Stuck Pixel Fixer</li>
+          </ol>
+        </nav>
+
+        <div class="repair-hero">
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; opacity:0.85;">Display Restoration</div>
+          <h1>Stuck Pixel Fixer &amp; Screen Exerciser</h1>
+          <p>Unstick stubborn red, green, or blue subpixels on LCD, IPS, and OLED displays using rapid 60Hz multi-spectral voltage switching. Position the floating exerciser box directly over the defect.</p>
+        </div>
+
+        <div class="warning-alert">
+          <strong style="color:#ef4444; display:block; margin-bottom:2px;"><i class="fa-solid fa-triangle-exclamation"></i> Photosensitivity Warning:</strong>
+          This tool generates rapid flashing colors designed to stimulate liquid crystal subpixels. Do not look directly at the flashing pattern if you are sensitive to flashing lights or have photosensitive epilepsy.
+        </div>
+
+        <div class="repair-controls-card">
+          <h2 style="font-size:18px; font-weight:700; margin:0 0 16px 0;"><i class="fa-solid fa-sliders" style="color:#e11d48; margin-right:8px;"></i> Exerciser Configuration</h2>
+
+          <div class="controls-grid">
+            <div class="ctrl-group">
+              <label for="patternSelect">Flashing Pattern</label>
+              <select id="patternSelect" class="ctrl-select">
+                <option value="rgb" selected>Rapid RGB Cycle (60 Hz)</option>
+                <option value="snow">White Noise / Static Snow</option>
+                <option value="alternator">High-Contrast Dual Phase</option>
+              </select>
+            </div>
+
+            <div class="ctrl-group">
+              <label for="sizeSelect">Flasher Window Size</label>
+              <select id="sizeSelect" class="ctrl-select">
+                <option value="80">Small (80 × 80 px)</option>
+                <option value="140" selected>Medium (140 × 140 px)</option>
+                <option value="260">Large (260 × 260 px)</option>
+                <option value="fullscreen">Full Screen Monitor</option>
+              </select>
+            </div>
+
+            <div class="ctrl-group">
+              <label for="timerSelect">Session Duration</label>
+              <select id="timerSelect" class="ctrl-select">
+                <option value="300">5 Minutes</option>
+                <option value="600" selected>10 Minutes (Recommended)</option>
+                <option value="1800">30 Minutes</option>
+                <option value="3600">60 Minutes</option>
+                <option value="0">Continuous (Until Stopped)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-fixer-start" id="btnToggleFlasher" onclick="toggleFlasher()">
+              <i class="fa-solid fa-bolt"></i> Launch Floating Exerciser
+            </button>
+            <a href="/tools/dead-pixel-test/" class="btn-fixer-secondary">
+              <i class="fa-solid fa-magnifying-glass"></i> Find Stuck Pixels First
+            </a>
+            <span id="timerCountdown" style="font-size:13px; font-weight:700; color:var(--text-secondary); margin-left:8px;"></span>
+          </div>
+        </div>
+
+        <!-- Explainer: Stuck vs Dead Pixels -->
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:28px;">
+          <h2 style="font-size:18px; font-weight:700; margin:0 0 14px 0;"><i class="fa-solid fa-book-open" style="color:var(--accent-blue); margin-right:8px;"></i> Stuck Pixel vs. Dead Pixel: What Can Be Fixed?</h2>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; font-size:13px; color:var(--text-secondary); line-height:1.6;">
+            <div>
+              <strong style="color:#10b981; display:block; margin-bottom:4px;"><i class="fa-solid fa-circle-check"></i> Stuck Pixel (Fixable)</strong>
+              A stuck pixel appears as a bright red, green, blue, or yellow dot. The subpixel transistor still has power, but the liquid crystal inside is physically stuck in one orientation. Rapid 60Hz color cycling forces the crystal to twist back and forth, often freeing it within 10 to 30 minutes.
+            </div>
+            <div>
+              <strong style="color:#ef4444; display:block; margin-bottom:4px;"><i class="fa-solid fa-circle-xmark"></i> Dead Pixel (Hardware Defect)</strong>
+              A dead pixel is permanently black (or white on some older TN panels). The transistor is burnt out or disconnected. Software tools cannot repair dead pixels; if your screen has multiple dead pixels, consult your manufacturer warranty for panel replacement.
+            </div>
+            <div>
+              <strong style="color:var(--text-primary); display:block; margin-bottom:4px;"><i class="fa-solid fa-lightbulb"></i> How to Use This Tool</strong>
+              1. Click "Launch Floating Exerciser".<br>
+              2. Drag the small flashing square directly over the stuck dot on your screen.<br>
+              3. Let it cycle for 10–20 minutes, then close the flasher to inspect the result.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Floating Draggable Flasher Element -->
+  <div class="draggable-flasher" id="draggableFlasher">
+    <div class="flasher-header" id="flasherHeader">
+      <span><i class="fa-solid fa-arrows-up-down-left-right"></i> DRAG OVER PIXEL</span>
+      <span class="flasher-close" onclick="stopFlasher()">&times;</span>
+    </div>
+    <canvas class="flasher-canvas" id="flasherCanvas"></canvas>
+  </div>
+
+  <script src="/shared/sidebar.js?v=24"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      try { injectSidebar('laptop'); } catch(e){}
+      setupDrag();
+    });
+
+    const flasherEl = document.getElementById('draggableFlasher');
+    const headerEl = document.getElementById('flasherHeader');
+    const canvasEl = document.getElementById('flasherCanvas');
+    const ctx = canvasEl.getContext('2d');
+    const btnToggle = document.getElementById('btnToggleFlasher');
+    const timerText = document.getElementById('timerCountdown');
+
+    let isRunning = false;
+    let animId = null;
+    let timerId = null;
+    let remainingSec = 0;
+
+    const COLORS = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff', '#ffffff', '#000000'];
+    let cIdx = 0;
+
+    function toggleFlasher() {
+      if (isRunning) {
+        stopFlasher();
+      } else {
+        startFlasher();
+      }
+    }
+
+    function startFlasher() {
+      isRunning = true;
+      btnToggle.innerHTML = '<i class="fa-solid fa-stop"></i> Stop Pixel Exerciser';
+      btnToggle.style.background = '#0f172a';
+
+      const sizeVal = document.getElementById('sizeSelect').value;
+      if (sizeVal === 'fullscreen') {
+        flasherEl.style.width = '100vw';
+        flasherEl.style.height = '100vh';
+        flasherEl.style.left = '0';
+        flasherEl.style.top = '0';
+        flasherEl.style.transform = 'none';
+        flasherEl.style.borderRadius = '0';
+      } else {
+        const s = parseInt(sizeVal, 10);
+        flasherEl.style.width = s + 'px';
+        flasherEl.style.height = s + 'px';
+        flasherEl.style.borderRadius = '8px';
+      }
+
+      flasherEl.style.display = 'block';
+      canvasEl.width = flasherEl.clientWidth;
+      canvasEl.height = flasherEl.clientHeight;
+
+      const dur = parseInt(document.getElementById('timerSelect').value, 10);
+      remainingSec = dur;
+      if (dur > 0) {
+        updateTimerLabel();
+        timerId = setInterval(() => {
+          remainingSec--;
+          updateTimerLabel();
+          if (remainingSec <= 0) {
+            stopFlasher();
+            alert('Pixel exerciser session completed! Check your screen to see if the pixel has freed up.');
+          }
+        }, 1000);
+      } else {
+        timerText.textContent = 'Running continuously';
+      }
+
+      const pattern = document.getElementById('patternSelect').value;
+      runAnimation(pattern);
+    }
+
+    function stopFlasher() {
+      isRunning = false;
+      if (animId) cancelAnimationFrame(animId);
+      if (timerId) clearInterval(timerId);
+      flasherEl.style.display = 'none';
+      btnToggle.innerHTML = '<i class="fa-solid fa-bolt"></i> Launch Floating Exerciser';
+      btnToggle.style.background = '#e11d48';
+      timerText.textContent = '';
+    }
+
+    function updateTimerLabel() {
+      const m = Math.floor(remainingSec / 60);
+      const s = remainingSec % 60;
+      timerText.textContent = `Time remaining: ${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function runAnimation(pattern) {
+      function loop() {
+        if (!isRunning) return;
+        const w = canvasEl.width;
+        const h = canvasEl.height;
+
+        if (pattern === 'snow') {
+          const imgData = ctx.createImageData(w, h);
+          const buf = new Uint32Array(imgData.data.buffer);
+          for (let i = 0; i < buf.length; i++) {
+            buf[i] = Math.random() < 0.5 ? 0xffffffff : 0xff000000;
+          }
+          ctx.putImageData(imgData, 0, 0);
+        } else if (pattern === 'alternator') {
+          ctx.fillStyle = cIdx % 2 === 0 ? '#ff0000' : '#00ffff';
+          ctx.fillRect(0, 0, w, h);
+          cIdx++;
+        } else {
+          // Rapid RGB
+          ctx.fillStyle = COLORS[cIdx % COLORS.length];
+          ctx.fillRect(0, 0, w, h);
+          cIdx++;
+        }
+
+        animId = requestAnimationFrame(loop);
+      }
+      animId = requestAnimationFrame(loop);
+    }
+
+    // Draggable Logic
+    function setupDrag() {
+      let isDragging = false;
+      let startX, startY, initialLeft, initialTop;
+
+      headerEl.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        flasherEl.style.transform = 'none';
+        const rect = flasherEl.getBoundingClientRect();
+        startX = e.clientX;
+        startY = e.clientY;
+        initialLeft = rect.left;
+        initialTop = rect.top;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        flasherEl.style.left = (initialLeft + dx) + 'px';
+        flasherEl.style.top = (initialTop + dy) + 'px';
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch events for mobile/tablet
+      headerEl.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        isDragging = true;
+        flasherEl.style.transform = 'none';
+        const rect = flasherEl.getBoundingClientRect();
+        startX = touch.clientX;
+        startY = touch.clientY;
+        initialLeft = rect.left;
+        initialTop = rect.top;
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        flasherEl.style.left = (initialLeft + dx) + 'px';
+        flasherEl.style.top = (initialTop + dy) + 'px';
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+    }
+  </script>
+</body>
+</html>

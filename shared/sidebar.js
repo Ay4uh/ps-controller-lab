@@ -117,6 +117,10 @@ window.TECHTEST_SEARCH_INDEX = [
   { title: 'DualSense Board Revision Decoder (BDM-010–050)', url: '/tools/controller-lab/?tab=decoder', category: 'Hardware Reference', keywords: 'bdm-010 bdm-020 bdm-030 bdm-040 bdm-050 fcc id potentiometer' },
   { title: 'Laptop / PC Diagnostics Hub', url: '/tools/laptop/', category: 'Hub', keywords: 'laptop pc macbook computer diagnostics tests' },
   { title: 'One-Click Comprehensive Laptop Suite', url: '/tools/laptop-comprehensive/', category: 'Suite', keywords: 'full suite all in one automatic test laptop' },
+  { title: 'Online Exam & Interview Device Check', url: '/tools/exam-device-check/', category: 'Tool', keywords: 'exam interview system check proctoru pearson vue zoom camera mic speaker' },
+  { title: 'Laptop Battery Health & Drain Test', url: '/tools/battery-test/', category: 'Tool', keywords: 'battery health test level drain runtime cycle count wear' },
+  { title: 'Fingerprint Scanner & Biometrics Test', url: '/tools/fingerprint-test/', category: 'Tool', keywords: 'fingerprint scanner test biometric windows hello touch id sensor' },
+  { title: 'Stuck Pixel Fixer & Screen Exerciser', url: '/tools/pixel-repair/', category: 'Tool', keywords: 'stuck pixel fixer repair unstick rgb flasher exerciser jscreenfix' },
   { title: 'GPU & Compute Stress Benchmark (WebGPU / WebGL2)', url: '/tools/benchmark/', category: 'Tool', keywords: 'gpu webgpu webgl compute shader stress fps benchmark graphics' },
   { title: 'CPU & Thermal Laptop Stress Test', url: '/tools/laptop-stress/', category: 'Tool', keywords: 'cpu thermal throttling stress cores workers' },
   { title: 'System Specs Detector', url: '/tools/system-specs/', category: 'Tool', keywords: 'specs hardware cpu ram gpu cores battery monitor' },
@@ -1947,8 +1951,20 @@ function injectSidebar(activeToolId = null) {
         </div>
 
         <div class="nav-section">
-          <div class="nav-category"><span>LAPTOP / MACBOOK</span> <span class="nav-category-pill">9</span></div>
+          <div class="nav-category"><span>LAPTOP / MACBOOK</span> <span class="nav-category-pill">13</span></div>
           <ul class="nav-list">
+            <li class="nav-item"><a href="/tools/exam-device-check/" id="nav-exam-device-check" title="Exam &amp; Interview Check">
+              <i class="fa-solid fa-graduation-cap nav-icon" style="color:#0284c7;"></i> <span class="item-text">Exam Pre-Check</span>
+            </a></li>
+            <li class="nav-item"><a href="/tools/battery-test/" id="nav-battery-test" title="Battery Health Test">
+              <i class="fa-solid fa-battery-three-quarters nav-icon" style="color:#10b981;"></i> <span class="item-text">Battery Health</span>
+            </a></li>
+            <li class="nav-item"><a href="/tools/fingerprint-test/" id="nav-fingerprint-test" title="Fingerprint Test">
+              <i class="fa-solid fa-fingerprint nav-icon" style="color:#6366f1;"></i> <span class="item-text">Fingerprint Test</span>
+            </a></li>
+            <li class="nav-item"><a href="/tools/pixel-repair/" id="nav-pixel-repair" title="Stuck Pixel Fixer">
+              <i class="fa-solid fa-wand-magic-sparkles nav-icon" style="color:#e11d48;"></i> <span class="item-text">Stuck Pixel Fixer</span>
+            </a></li>
             <li class="nav-item"><a href="/tools/keyboard-test/" id="nav-keyboard-test" title="Keyboard Test">
               <i class="fa-solid fa-keyboard nav-icon"></i> <span class="item-text">Keyboard Test</span>
             </a></li>

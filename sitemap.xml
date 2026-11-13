@@ -76,6 +76,26 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://ay5uh.com/tools/exam-device-check/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/battery-test/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/fingerprint-test/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://ay5uh.com/tools/pixel-repair/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://ay5uh.com/repair-guides/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

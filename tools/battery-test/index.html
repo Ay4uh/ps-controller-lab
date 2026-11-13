@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laptop Battery Health Test — Status, Drain &amp; Runtime | TechTest</title>
+  <meta name="description" content="Check your laptop battery health, charge level, charging state, and estimated runtime online. Run a real-time battery drain test and find your battery cycle count.">
+  <meta name="keywords" content="laptop battery test, check battery health online, battery drain test, laptop battery wear, battery cycle count, test macbook battery">
+  <meta name="robots" content="index, follow">
+  <meta property="og:site_name" content="TechTest">
+  <meta property="og:type" content="website">
+  <meta name="author" content="TechTest">
+  <link rel="canonical" href="https://ay5uh.com/tools/battery-test/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-31VR9YJW06"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-31VR9YJW06');
+  </script>
+
+  <link rel="stylesheet" href="/shared/styles.css?v=24">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <meta property="og:title" content="Laptop Battery Health Test | TechTest">
+  <meta property="og:description" content="Test your laptop battery level, charging status, drain rate, and estimated runtime directly in your browser.">
+  <meta property="og:url" content="https://ay5uh.com/tools/battery-test/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ay5uh.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://ay5uh.com/tools/laptop/" },
+      { "@type": "ListItem", "position": 3, "name": "Battery Health Test", "item": "https://ay5uh.com/tools/battery-test/" }
+    ]
+  }
+  </script>
+
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('techtest_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <style>
+    .battery-hero {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+      border-radius: 16px;
+      padding: 40px 32px;
+      color: #fff;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    }
+    .battery-hero h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      color: #fff;
+    }
+    .battery-hero p {
+      font-size: 15px;
+      opacity: 0.9;
+      max-width: 680px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .gauge-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* Battery Graphic */
+    .battery-visual-shell {
+      width: 180px;
+      height: 90px;
+      border: 6px solid var(--text-primary);
+      border-radius: 16px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 6px;
+      margin-bottom: 24px;
+    }
+    .battery-visual-shell::after {
+      content: '';
+      position: absolute;
+      right: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 38px;
+      background: var(--text-primary);
+      border-radius: 0 6px 6px 0;
+    }
+    .battery-visual-fill {
+      height: 100%;
+      width: 0%;
+      background: #10b981;
+      border-radius: 8px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s;
+    }
+    .battery-visual-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      display: none;
+    }
+
+    .battery-metric-big {
+      font-size: 48px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      margin-bottom: 6px;
+    }
+    .battery-state-badge {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 99px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .stat-pills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .stat-pill {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: left;
+    }
+    .stat-pill-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .stat-pill-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Drain test section */
+    .drain-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+    .drain-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 18px 0;
+    }
+    .btn-drain {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+    .btn-drain:hover {
+      opacity: 0.9;
+    }
+
+    .terminal-box {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      position: relative;
+      margin: 10px 0 16px 0;
+      overflow-x: auto;
+    }
+    .btn-copy-code {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .btn-copy-code:hover {
+      background: rgba(255,255,255,0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="container pb-5">
+
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/tools/laptop/">Laptop Tools</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Battery Health Test</li>
+          </ol>
+        </nav>
+
+        <div class="battery-hero">
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; opacity:0.85;">Hardware Power Diagnostics</div>
+          <h1>Laptop Battery Health &amp; Runtime Test</h1>
+          <p>Read your battery's live charge status, monitor real-time drain under workload, estimate remaining battery life, and generate OS cycle count reports.</p>
+        </div>
+
+        <!-- Live Battery Status Card -->
+        <div class="gauge-card">
+          <div class="battery-visual-shell">
+            <div class="battery-visual-fill" id="batteryFill"></div>
+            <i class="fa-solid fa-bolt battery-visual-icon" id="batteryBolt"></i>
+          </div>
+
+          <div class="battery-metric-big" id="batteryPercentText">—%</div>
+          <div class="battery-state-badge" id="batteryStatusBadge" style="background:var(--bg-hover); color:var(--text-muted);">
+            <i class="fa-solid fa-spinner fa-spin"></i> Reading battery status…
+          </div>
+
+          <div class="stat-pills-grid">
+            <div class="stat-pill">
+              <div class="stat-pill-label">Power Source</div>
+              <div class="stat-pill-val" id="valPowerSource">—</div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">Charging State</div>
+              <div class="stat-pill-val" id="valChargingState">—</div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">Time to Full / Empty</div>
+              <div class="stat-pill-val" id="valTimeEstimate">—</div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">API Support</div>
+              <div class="stat-pill-val" id="valApiStatus">Checking…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Drain Test Benchmark -->
+        <div class="drain-card">
+          <h2 style="font-size:18px; font-weight:700; margin:0 0 8px 0;"><i class="fa-solid fa-stopwatch" style="color:var(--accent-blue); margin-right:8px;"></i> Live Battery Drain Rate Monitor</h2>
+          <p style="font-size:13px; color:var(--text-secondary); margin:0 0 16px 0;">
+            Benchmark how quickly your battery percentage drops over time under normal or simulated computational workload.
+          </p>
+          <div class="drain-controls">
+            <button class="btn-drain" id="btnStartDrain" onclick="toggleDrainMonitor()">
+              <i class="fa-solid fa-play"></i> Start 60-Second Drain Test
+            </button>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+              <input type="checkbox" id="chkStressLoad"> Apply simulated CPU workload
+            </label>
+          </div>
+          <div id="drainProgressBox" style="display:none; background:var(--bg-base); border:1px solid var(--border); border-radius:8px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px;">
+              <span id="drainTimeLabel">Monitoring drain: 0s / 60s</span>
+              <span id="drainDeltaLabel">Δ% Change: 0.0%</span>
+            </div>
+            <div style="width:100%; height:8px; background:var(--bg-hover); border-radius:4px; overflow:hidden;">
+              <div id="drainProgressBar" style="width:0%; height:100%; background:var(--accent-blue); transition:width 0.2s linear;"></div>
+            </div>
+            <div id="drainResultMsg" style="font-size:13px; margin-top:12px; color:var(--text-secondary); font-weight:600;"></div>
+          </div>
+        </div>
+
+        <!-- OS Deep-Dive Guide (Cycle Count & Factory Capacity) -->
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:28px;">
+          <h2 style="font-size:18px; font-weight:700; margin:0 0 12px 0;"><i class="fa-solid fa-terminal" style="color:var(--accent-blue); margin-right:8px;"></i> How to Check Exact Battery Health &amp; Cycle Count</h2>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:20px;">
+            Browsers restrict low-level battery cycle count and design capacity to prevent hardware fingerprinting. To view your battery's exact cycle count, maximum factory capacity, and wear level, run the native OS command below:
+          </p>
+
+          <h3 style="font-size:14px; font-weight:700; margin:16px 0 6px 0;"><i class="fa-brands fa-windows" style="color:#0078d4;"></i> Windows (Command Prompt / PowerShell)</h3>
+          <p style="font-size:12px; color:var(--text-secondary); margin:0;">Generates an HTML report showing Design Capacity, Full Charge Capacity, and Cycle Count:</p>
+          <div class="terminal-box">
+            <code>powercfg /batteryreport /output "%USERPROFILE%\Desktop\battery_report.html"</code>
+            <button class="btn-copy-code" onclick="copySnippet('powercfg /batteryreport /output &quot;%USERPROFILE%\\Desktop\\battery_report.html&quot;')">Copy</button>
+          </div>
+
+          <h3 style="font-size:14px; font-weight:700; margin:20px 0 6px 0;"><i class="fa-brands fa-apple" style="color:var(--text-primary);"></i> macOS (Terminal)</h3>
+          <p style="font-size:12px; color:var(--text-secondary); margin:0;">Prints battery condition, cycle count, and maximum health percentage directly:</p>
+          <div class="terminal-box">
+            <code>system_profiler SPPowerDataType | grep -A 10 "Health Information"</code>
+            <button class="btn-copy-code" onclick="copySnippet('system_profiler SPPowerDataType | grep -A 10 &quot;Health Information&quot;')">Copy</button>
+          </div>
+
+          <h3 style="font-size:14px; font-weight:700; margin:20px 0 6px 0;"><i class="fa-brands fa-linux" style="color:#f59e0b;"></i> Linux (Bash)</h3>
+          <div class="terminal-box">
+            <code>upower -i $(upower -e | grep 'BAT')</code>
+            <button class="btn-copy-code" onclick="copySnippet('upower -i $(upower -e | grep \'BAT\')')">Copy</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/shared/sidebar.js?v=24"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      try { injectSidebar('laptop'); } catch(e){}
+      initBattery();
+    });
+
+    let batteryRef = null;
+    let drainTimer = null;
+    let drainWorker = null;
+
+    async function initBattery() {
+      const fillEl = document.getElementById('batteryFill');
+      const boltEl = document.getElementById('batteryBolt');
+      const textEl = document.getElementById('batteryPercentText');
+      const badgeEl = document.getElementById('batteryStatusBadge');
+      const powerEl = document.getElementById('valPowerSource');
+      const chargingEl = document.getElementById('valChargingState');
+      const timeEl = document.getElementById('valTimeEstimate');
+      const apiEl = document.getElementById('valApiStatus');
+
+      if (!('getBattery' in navigator)) {
+        apiEl.textContent = 'Restricted (Safari/Firefox)';
+        badgeEl.style.background = 'rgba(245, 158, 11, 0.15)';
+        badgeEl.style.color = '#f59e0b';
+        badgeEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Battery API restricted in this browser';
+        textEl.textContent = 'N/A';
+        chargingEl.textContent = 'Browser Sandbox';
+        powerEl.textContent = 'Use Chrome/Edge or OS report below';
+        timeEl.textContent = 'See commands below';
+        return;
+      }
+
+      try {
+        batteryRef = await navigator.getBattery();
+        apiEl.textContent = 'Supported (Live API)';
+
+        function updateUI() {
+          const pct = Math.round(batteryRef.level * 100);
+          textEl.textContent = pct + '%';
+          fillEl.style.width = pct + '%';
+
+          // Color scale
+          if (pct > 50) fillEl.style.backgroundColor = '#10b981';
+          else if (pct > 20) fillEl.style.backgroundColor = '#f59e0b';
+          else fillEl.style.backgroundColor = '#ef4444';
+
+          if (batteryRef.charging) {
+            boltEl.style.display = 'block';
+            badgeEl.style.background = 'rgba(16, 185, 129, 0.15)';
+            badgeEl.style.color = '#10b981';
+            badgeEl.innerHTML = '<i class="fa-solid fa-bolt"></i> Connected to AC Power (Charging)';
+            powerEl.textContent = 'AC Power Adapter';
+            chargingEl.textContent = 'Charging';
+            if (batteryRef.chargingTime && isFinite(batteryRef.chargingTime)) {
+              const mins = Math.round(batteryRef.chargingTime / 60);
+              timeEl.textContent = `${Math.floor(mins / 60)}h ${mins % 60}m to full`;
+            } else {
+              timeEl.textContent = 'Calculating…';
+            }
+          } else {
+            boltEl.style.display = 'none';
+            badgeEl.style.background = 'rgba(59, 130, 246, 0.15)';
+            badgeEl.style.color = '#3b82f6';
+            badgeEl.innerHTML = '<i class="fa-solid fa-battery-half"></i> Discharging (Running on Battery)';
+            powerEl.textContent = 'Internal Battery';
+            chargingEl.textContent = 'Discharging';
+            if (batteryRef.dischargingTime && isFinite(batteryRef.dischargingTime)) {
+              const mins = Math.round(batteryRef.dischargingTime / 60);
+              timeEl.textContent = `${Math.floor(mins / 60)}h ${mins % 60}m remaining`;
+            } else {
+              timeEl.textContent = 'Calculating…';
+            }
+          }
+        }
+
+        updateUI();
+        batteryRef.addEventListener('chargingchange', updateUI);
+        batteryRef.addEventListener('levelchange', updateUI);
+        batteryRef.addEventListener('chargingtimechange', updateUI);
+        batteryRef.addEventListener('dischargingtimechange', updateUI);
+      } catch (err) {
+        apiEl.textContent = 'Permission Denied';
+      }
+    }
+
+    let isMonitoring = false;
+    let startPct = 0;
+    let elapsedSec = 0;
+    const TOTAL_TEST_SEC = 60;
+
+    function toggleDrainMonitor() {
+      if (isMonitoring) {
+        stopDrainMonitor();
+        return;
+      }
+      if (!batteryRef) {
+        alert('Battery API is not supported in this browser. Please use Chrome, Edge, or use the OS terminal command below.');
+        return;
+      }
+      isMonitoring = true;
+      startPct = batteryRef.level * 100;
+      elapsedSec = 0;
+
+      const btn = document.getElementById('btnStartDrain');
+      btn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop Drain Monitor';
+      btn.style.background = '#ef4444';
+
+      const box = document.getElementById('drainProgressBox');
+      const bar = document.getElementById('drainProgressBar');
+      const timeLbl = document.getElementById('drainTimeLabel');
+      const deltaLbl = document.getElementById('drainDeltaLabel');
+      const resultMsg = document.getElementById('drainResultMsg');
+      box.style.display = 'block';
+      bar.style.width = '0%';
+      resultMsg.textContent = 'Monitoring live battery voltage and discharge trajectory…';
+
+      // Optional stress loop
+      const doStress = document.getElementById('chkStressLoad').checked;
+      let stressLoop = null;
+      if (doStress) {
+        stressLoop = setInterval(() => {
+          for (let i = 0; i < 2000000; i++) Math.sqrt(i);
+        }, 30);
+      }
+
+      drainTimer = setInterval(() => {
+        elapsedSec++;
+        bar.style.width = (elapsedSec / TOTAL_TEST_SEC) * 100 + '%';
+        timeLbl.textContent = `Monitoring drain: ${elapsedSec}s / ${TOTAL_TEST_SEC}s`;
+
+        const currentPct = batteryRef.level * 100;
+        const delta = (startPct - currentPct).toFixed(2);
+        deltaLbl.textContent = `Δ% Change: ${delta}%`;
+
+        if (elapsedSec >= TOTAL_TEST_SEC) {
+          stopDrainMonitor();
+          if (stressLoop) clearInterval(stressLoop);
+          resultMsg.textContent = `Drain Test Completed: Battery ${batteryRef.charging ? 'charged' : 'discharged'} ${Math.abs(delta)}% over 60s. Estimated discharge under current load is ~${(Math.abs(delta) * 60).toFixed(1)}% per hour.`;
+        }
+      }, 1000);
+    }
+
+    function stopDrainMonitor() {
+      isMonitoring = false;
+      clearInterval(drainTimer);
+      const btn = document.getElementById('btnStartDrain');
+      btn.innerHTML = '<i class="fa-solid fa-play"></i> Start 60-Second Drain Test';
+      btn.style.background = 'var(--accent-blue)';
+    }
+
+    function copySnippet(code) {
+      navigator.clipboard.writeText(code).then(() => {
+        alert('Command copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

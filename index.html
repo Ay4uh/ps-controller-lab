@@ -200,6 +200,39 @@
       color: var(--accent-blue);
       background: rgba(37, 99, 235, 0.08);
     }
+
+    .category-filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 18px;
+      margin-bottom: 28px;
+    }
+    .category-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: 99px;
+      padding: 7px 15px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .category-pill:hover {
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+    }
+    .category-pill.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
     
     .card-action {
       width: 100%;
@@ -394,12 +427,22 @@
           </form>
           <div id="heroSearchResults" class="hero-search-results"></div>
         </div>
+
+        <!-- Quick Category Filter Pills -->
+        <div class="category-filter-row" id="categoryFilterBar">
+          <button type="button" class="category-pill active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All Tools</button>
+          <button type="button" class="category-pill" data-filter="controller"><i class="fa-solid fa-gamepad"></i> Controllers</button>
+          <button type="button" class="category-pill" data-filter="exam"><i class="fa-solid fa-graduation-cap"></i> Exam Pre-Check</button>
+          <button type="button" class="category-pill" data-filter="laptop"><i class="fa-solid fa-laptop"></i> Laptop &amp; PC</button>
+          <button type="button" class="category-pill" data-filter="display"><i class="fa-solid fa-desktop"></i> Display &amp; Pixels</button>
+          <button type="button" class="category-pill" data-filter="benchmark"><i class="fa-solid fa-bolt"></i> GPU Benchmark</button>
+        </div>
       </div>
 
       <div class="container dashboard-grid" id="heroToolsGrid">
         
         <!-- Gamepad Card -->
-        <div class="dashboard-card animate-fade-in-up delay-1" data-href="/tools/controller-lab/" data-keywords="controller lab gamepad ps5 dualsense ps4 dualshock xbox drift calibration 3d hall effect vibration circularity" tabindex="0" role="link">
+        <div class="dashboard-card animate-fade-in-up delay-1" data-category="controller" data-href="/tools/controller-lab/" data-keywords="controller lab gamepad ps5 dualsense ps4 dualshock xbox drift calibration 3d hall effect vibration circularity" tabindex="0" role="link">
           <span class="card-count-badge">WebHID &amp; 3D</span>
           <div class="card-emoji-container">🎮</div>
           <h2 class="card-title">Controller Lab</h2>
@@ -419,19 +462,38 @@
           </a>
         </div>
 
+        <!-- Exam & Interview Device Check Card -->
+        <div class="dashboard-card animate-fade-in-up delay-1" data-category="laptop exam" data-href="/tools/exam-device-check/" data-keywords="exam interview proctoru pearson vue zoom camera mic speaker ping network readiness preflight" tabindex="0" role="link">
+          <span class="card-count-badge" style="background: rgba(3, 105, 161, 0.12); color: #0284c7; border-color: rgba(3, 105, 161, 0.3);">5-in-1 Automated</span>
+          <div class="card-emoji-container">🎓</div>
+          <h2 class="card-title">Exam &amp; Interview Check</h2>
+          <p class="card-desc">1-Click system pre-check for proctored exams and video interviews. Tests webcam resolution, microphone audio waveform, stereo sound, and network ping.</p>
+          <div class="tool-preview-tags">
+            <a href="/tools/exam-device-check/">Camera 720p/1080p</a>
+            <a href="/tools/exam-device-check/">Mic Visualizer</a>
+            <a href="/tools/exam-device-check/">Speaker Chime</a>
+            <a href="/tools/exam-device-check/">Ping &amp; Jitter</a>
+            <a href="/tools/exam-device-check/">Browser WebRTC</a>
+          </div>
+          <a href="/tools/exam-device-check/" class="card-action" style="background: #0284c7; color: #ffffff;">
+            Start 1-Click Exam Check <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+
         <!-- Laptop Card -->
-        <div class="dashboard-card animate-fade-in-up delay-2" data-href="/tools/laptop/" data-keywords="laptop pc macbook windows diagnostics keyboard mouse mic speaker display dead pixel webcam stress cpu" tabindex="0" role="link">
+        <div class="dashboard-card animate-fade-in-up delay-2" data-category="laptop" data-href="/tools/laptop/" data-keywords="laptop pc macbook windows diagnostics keyboard mouse mic speaker display dead pixel webcam stress cpu battery fingerprint" tabindex="0" role="link">
           <span class="card-count-badge">PC &amp; Peripherals</span>
           <div class="card-emoji-container">💻</div>
           <h2 class="card-title">Laptop / PC Diagnostics</h2>
-          <p class="card-desc">Comprehensive suite for testing your computer. Includes Keyboard, Mouse, Microphone, Speaker, Webcam, Display, and Stress Test tools.</p>
+          <p class="card-desc">Comprehensive suite for testing your computer. Includes Battery Health, Fingerprint reader, Keyboard, Mouse, Microphone, Speaker, Display, and Stress Test tools.</p>
           <div class="tool-preview-tags">
+            <a href="/tools/battery-test/">Battery Health</a>
+            <a href="/tools/fingerprint-test/">Fingerprint</a>
+            <a href="/tools/laptop-comprehensive/">Full Suite</a>
             <a href="/tools/keyboard-test/">Keyboard</a>
             <a href="/tools/mouse-test/">Mouse</a>
             <a href="/tools/mic-test/">Mic</a>
             <a href="/tools/speaker-test/">Speaker</a>
-            <a href="/tools/display-test/">Display</a>
-            <a href="/tools/dead-pixel-test/">Dead Pixel</a>
             <a href="/tools/webcam-test/">Webcam</a>
             <a href="/tools/laptop-stress/">Stress Test</a>
             <a href="/tools/system-specs/">Specs</a>
@@ -441,27 +503,26 @@
           </a>
         </div>
 
-        <!-- Phone Card -->
-        <div class="dashboard-card animate-fade-in-up delay-3" data-href="/tools/phone-diagnostics/" data-keywords="phone ios android mobile smartphone touchscreen digitizer multitouch dead pixel camera mic speaker" tabindex="0" role="link">
-          <span class="card-count-badge">Mobile Sensors</span>
-          <div class="card-emoji-container">📱</div>
-          <h2 class="card-title">Phone Tester</h2>
-          <p class="card-desc">Scan your iOS or Android smartphone for hardware defects. Test touchscreen digitizers, haptics, cameras, and dead pixels.</p>
+        <!-- Display Card -->
+        <div class="dashboard-card animate-fade-in-up delay-2" data-category="display laptop" data-href="/tools/display-test/" data-keywords="display monitor screen refresh rate hz pixels uniformity backlight bleed hdr gamut stuck pixel fixer repair" tabindex="0" role="link">
+          <span class="card-count-badge">Refresh &amp; Pixels</span>
+          <div class="card-emoji-container">🖥️</div>
+          <h2 class="card-title">Display &amp; Refresh Rate</h2>
+          <p class="card-desc">Test measured monitor Hz, DCI-P3 color gamut, HDR capability, backlight bleed, screen ghosting, dead pixels, and stuck pixel recovery.</p>
           <div class="tool-preview-tags">
-            <a href="/tools/dead-pixel-test/">Dead Pixel</a>
-            <a href="/tools/phone-diagnostics/#touch">Touch</a>
-            <a href="/tools/phone-diagnostics/#multitouch">Multi-Touch</a>
-            <a href="/tools/speaker-test/">Speaker</a>
-            <a href="/tools/mic-test/">Mic</a>
-            <a href="/tools/webcam-test/">Camera</a>
+            <a href="/tools/display-test/">Hz Timing</a>
+            <a href="/tools/dead-pixel-test/">Dead Pixels</a>
+            <a href="/tools/pixel-repair/">Stuck Pixel Fixer</a>
+            <a href="/tools/display-test/#uniformity">Uniformity</a>
+            <a href="/tools/display-test/#hdr">HDR Readout</a>
           </div>
-          <a href="/tools/phone-diagnostics/" class="card-action">
-            Start Phone Test <i class="fa-solid fa-arrow-right"></i>
+          <a href="/tools/display-test/" class="card-action">
+            Test Monitor &amp; Display <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
 
         <!-- Benchmark Card -->
-        <div class="dashboard-card animate-fade-in-up delay-1" data-href="/tools/benchmark/" data-keywords="gpu compute benchmark webgpu webgl shader stress fps stability specs" tabindex="0" role="link">
+        <div class="dashboard-card animate-fade-in-up delay-1" data-category="benchmark laptop" data-href="/tools/benchmark/" data-keywords="gpu compute benchmark webgpu webgl shader stress fps stability specs" tabindex="0" role="link">
           <span class="card-count-badge">Compute &amp; Stress</span>
           <div class="card-emoji-container">⚡</div>
           <h2 class="card-title">GPU &amp; Compute Benchmark</h2>
@@ -477,25 +538,8 @@
           </a>
         </div>
 
-        <!-- Display Card -->
-        <div class="dashboard-card animate-fade-in-up delay-2" data-href="/tools/display-test/" data-keywords="display monitor screen refresh rate hz pixels uniformity backlight bleed hdr gamut" tabindex="0" role="link">
-          <span class="card-count-badge">Refresh &amp; Pixels</span>
-          <div class="card-emoji-container">🖥️</div>
-          <h2 class="card-title">Display &amp; Refresh Rate</h2>
-          <p class="card-desc">Test measured monitor Hz, DCI-P3 color gamut, HDR capability, backlight bleed, screen ghosting, and 16-step grayscale contrast.</p>
-          <div class="tool-preview-tags">
-            <a href="/tools/display-test/">Hz Timing</a>
-            <a href="/tools/dead-pixel-test/">Dead Pixels</a>
-            <a href="/tools/display-test/#uniformity">Uniformity</a>
-            <a href="/tools/display-test/#hdr">HDR Readout</a>
-          </div>
-          <a href="/tools/display-test/" class="card-action">
-            Test Monitor &amp; Display <i class="fa-solid fa-arrow-right"></i>
-          </a>
-        </div>
-
         <!-- Keyboard & Peripherals Card -->
-        <div class="dashboard-card animate-fade-in-up delay-3" data-href="/tools/keyboard-test/" data-keywords="keyboard input matrix nkro anti-ghosting key rollover debounce mouse network ping" tabindex="0" role="link">
+        <div class="dashboard-card animate-fade-in-up delay-3" data-category="laptop controller" data-href="/tools/keyboard-test/" data-keywords="keyboard input matrix nkro anti-ghosting key rollover debounce mouse network ping" tabindex="0" role="link">
           <span class="card-count-badge">NKRO Rollover</span>
           <div class="card-emoji-container">⌨️</div>
           <h2 class="card-title">Keyboard &amp; Input Matrix</h2>
@@ -508,6 +552,25 @@
           </div>
           <a href="/tools/keyboard-test/" class="card-action">
             Test Keyboard <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <!-- Phone Card -->
+        <div class="dashboard-card animate-fade-in-up delay-3" data-category="phone" data-href="/tools/phone-diagnostics/" data-keywords="phone ios android mobile smartphone touchscreen digitizer multitouch dead pixel camera mic speaker" tabindex="0" role="link">
+          <span class="card-count-badge">Mobile Sensors</span>
+          <div class="card-emoji-container">📱</div>
+          <h2 class="card-title">Phone Tester</h2>
+          <p class="card-desc">Scan your iOS or Android smartphone for hardware defects. Test touchscreen digitizers, haptics, cameras, and dead pixels.</p>
+          <div class="tool-preview-tags">
+            <a href="/tools/dead-pixel-test/">Dead Pixel</a>
+            <a href="/tools/phone-diagnostics/#touch">Touch</a>
+            <a href="/tools/phone-diagnostics/#multitouch">Multi-Touch</a>
+            <a href="/tools/speaker-test/">Speaker</a>
+            <a href="/tools/mic-test/">Mic</a>
+            <a href="/tools/webcam-test/">Camera</a>
+          </div>
+          <a href="/tools/phone-diagnostics/" class="card-action">
+            Start Phone Test <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
 
@@ -733,6 +796,18 @@
       const heroEmpty = document.getElementById('heroSearchEmptyState');
       const heroEmptyLink = document.getElementById('heroSearchEmptyLink');
 
+      // Category Filter Bar Pills
+      let activeCategory = 'all';
+      const catPills = Array.from(document.querySelectorAll('.category-pill'));
+      catPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          catPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          activeCategory = pill.getAttribute('data-filter') || 'all';
+          updateHeroSearch();
+        });
+      });
+
       const updateHeroSearch = () => {
         if (!heroInput) return;
         const q = heroInput.value.trim().toLowerCase();
@@ -741,7 +816,10 @@
         let visibleCount = 0;
         heroCards.forEach(card => {
           const text = (card.textContent + ' ' + (card.getAttribute('data-keywords') || '')).toLowerCase();
-          const matched = !q || q.split(/\s+/).every(t => text.includes(t));
+          const cat = (card.getAttribute('data-category') || '').toLowerCase();
+          const catMatched = (activeCategory === 'all') || cat.includes(activeCategory);
+          const searchMatched = !q || q.split(/\s+/).every(t => text.includes(t));
+          const matched = catMatched && searchMatched;
           card.style.display = matched ? 'flex' : 'none';
           if (matched) visibleCount++;
         });
