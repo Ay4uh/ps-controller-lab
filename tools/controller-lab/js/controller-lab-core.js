@@ -1014,18 +1014,35 @@
       const isDS4 = hidDevice.productId === 0x05C4 || hidDevice.productId === 0x09CC;
       
       // 1. Process and update live button & axis values directly from WebHID if connected
-      if (data.byteLength === 63) {
+      const isBluetoothReport = reportId === 0x31 || reportId === 0x11 || data.byteLength > 63;
+      if (data.byteLength === 63 || isBluetoothReport) {
         let lx_byte = 0, ly_byte = 1, rx_byte = 2, ry_byte = 3;
         let l2_byte = 7, r2_byte = 8;
         let hat_byte = 4, btn_byte1 = 5, btn_byte2 = 6;
         
         if (!isDS4) {
-          // DualSense USB Offsets
-          l2_byte = 4;
-          r2_byte = 5;
-          hat_byte = 7;
-          btn_byte1 = 8;
-          btn_byte2 = 9;
+          // DualSense
+          if (reportId === 0x31 || (isBluetoothReport && data.byteLength >= 11)) {
+            // DualSense Bluetooth report (0x31)
+            lx_byte = 1; ly_byte = 2; rx_byte = 3; ry_byte = 4;
+            l2_byte = 5; r2_byte = 6;
+            hat_byte = 8; btn_byte1 = 9; btn_byte2 = 10;
+          } else {
+            // DualSense USB Offsets (0x01)
+            l2_byte = 4;
+            r2_byte = 5;
+            hat_byte = 7;
+            btn_byte1 = 8;
+            btn_byte2 = 9;
+          }
+        } else {
+          // DualShock 4
+          if (reportId === 0x11 || (isBluetoothReport && data.byteLength >= 11)) {
+            // DS4 Bluetooth report (0x11)
+            lx_byte = 2; ly_byte = 3; rx_byte = 4; ry_byte = 5;
+            hat_byte = 6; btn_byte1 = 7; btn_byte2 = 8;
+            l2_byte = 9; r2_byte = 10;
+          }
         }
         
         // Parse axes: convert 0..255 to -1.0..1.0
@@ -1104,22 +1121,71 @@
         // Parse motion sensors for DS4 and DualSense
         if (isDS4 && data.byteLength >= 24) {
           try {
-            sensorState.gyroX = data.getInt16(12, true) / 1000.0;
-            sensorState.gyroY = data.getInt16(14, true) / 1000.0;
-            sensorState.gyroZ = data.getInt16(16, true) / 1000.0;
-            sensorState.accelX = data.getInt16(18, true) / 8192.0;
-            sensorState.accelY = data.getInt16(20, true) / 8192.0;
-            sensorState.accelZ = data.getInt16(22, true) / 8192.0;
+            const imuOffset = reportId === 0x11 ? 14 : 12;
+            sensorState.gyroX = data.getInt16(imuOffset, true) / 1000.0;
+            sensorState.gyroY = data.getInt16(imuOffset + 2, true) / 1000.0;
+            sensorState.gyroZ = data.getInt16(imuOffset + 4, true) / 1000.0;
+            sensorState.accelX = data.getInt16(imuOffset + 6, true) / 8192.0;
+            sensorState.accelY = data.getInt16(imuOffset + 8, true) / 8192.0;
+            sensorState.accelZ = data.getInt16(imuOffset + 10, true) / 8192.0;
           } catch(e) {}
         } else if (!isDS4 && data.byteLength >= 28) {
           try {
-            sensorState.accelX = data.getInt16(16, true) / 8192.0;
-            sensorState.accelY = data.getInt16(18, true) / 8192.0;
-            sensorState.accelZ = data.getInt16(20, true) / 8192.0;
-            sensorState.gyroX = data.getInt16(22, true) / 1000.0;
-            sensorState.gyroY = data.getInt16(24, true) / 1000.0;
-            sensorState.gyroZ = data.getInt16(26, true) / 1000.0;
+            const imuOffset = reportId === 0x31 ? 17 : 16;
+            sensorState.accelX = data.getInt16(imuOffset, true) / 8192.0;
+            sensorState.accelY = data.getInt16(imuOffset + 2, true) / 8192.0;
+            sensorState.accelZ = data.getInt16(imuOffset + 4, true) / 8192.0;
+            sensorState.gyroX = data.getInt16(imuOffset + 6, true) / 1000.0;
+            sensorState.gyroY = data.getInt16(imuOffset + 8, true) / 1000.0;
+            sensorState.gyroZ = data.getInt16(imuOffset + 10, true) / 1000.0;
           } catch(e) {}
+        }
+
+        // Parse hardware battery status from HID report
+        try {
+          if (!isDS4) {
+            const batByteIdx = (reportId === 0x31) ? 53 : 52;
+            if (data.byteLength > batByteIdx) {
+              const batVal = data.getUint8(batByteIdx);
+              batteryLevel = Math.min(100, Math.max(0, (batVal & 0x0F) * 10));
+              isBatteryCharging = (batVal & 0x10) !== 0 || (batVal & 0x20) !== 0;
+            }
+          } else {
+            const batByteIdx = (reportId === 0x11) ? 30 : 29;
+            if (data.byteLength > batByteIdx) {
+              const batVal = data.getUint8(batByteIdx);
+              batteryLevel = Math.min(100, Math.max(0, (batVal & 0x0F) * 10));
+              isBatteryCharging = (batVal & 0x10) !== 0;
+            }
+          }
+        } catch (e) {}
+
+        // Feed high-rate WebHID frame to NextGen Controller Suite
+        if (window.nextGenSuite) {
+          window.nextGenSuite.processFrame({
+            axes: [lx, ly, rx, ry],
+            buttons: {
+              cross,
+              circle,
+              square,
+              triangle,
+              l1,
+              r1
+            },
+            triggers: {
+              l2: l2Val,
+              r2: r2Val
+            },
+            rawImu: {
+              gx: Math.round((sensorState.gyroX || 0) * 1000),
+              gy: Math.round((sensorState.gyroY || 0) * 1000),
+              gz: Math.round((sensorState.gyroZ || 0) * 1000),
+              ax: Math.round((sensorState.accelX || 0) * 8192),
+              ay: Math.round((sensorState.accelY || 0) * 8192),
+              az: Math.round((sensorState.accelZ || 0) * 8192)
+            },
+            sync3dImu: true
+          });
         }
       }
 
@@ -1290,7 +1356,7 @@
       }
 
       if (gp) {
-        if (!isConnected) {
+        if (!isConnected || connectionType === "Bluetooth") {
           updateInputDisplay(gp);
           if (document.getElementById("finetuneModal")?.classList.contains("show")) {
             if (typeof handleFinetuneDpadAndSticks === "function") {
@@ -1299,7 +1365,8 @@
           }
         }
 
-        if (window.nextGenSuite && gp.axes && gp.buttons) {
+        // Only feed NextGen suite from 60Hz Gamepad API when WebHID is not actively connected
+        if (!isConnected && window.nextGenSuite && gp.axes && gp.buttons) {
           window.nextGenSuite.processFrame({
             axes: gp.axes,
             buttons: {
@@ -1536,7 +1603,15 @@
       });
 
       if (isConnected) {
-        document.getElementById("infoBattery").innerHTML = `<i class="fa-solid fa-battery-three-quarters text-success"></i> 85%`;
+        const bEl = document.getElementById("infoBattery");
+        if (bEl) {
+          if (batteryLevel !== null && !isNaN(batteryLevel)) {
+            const icon = isBatteryCharging ? "fa-bolt text-warning" : (batteryLevel > 50 ? "fa-battery-three-quarters text-success" : (batteryLevel > 20 ? "fa-battery-half text-warning" : "fa-battery-quarter text-danger"));
+            bEl.innerHTML = `<i class="fa-solid ${icon}"></i> ${batteryLevel}%${isBatteryCharging ? ' (Charging)' : ''}`;
+          } else {
+            bEl.innerHTML = `<i class="fa-solid fa-battery-three-quarters text-success"></i> Connected`;
+          }
+        }
       }
 
       // Calculate live stick center deviations

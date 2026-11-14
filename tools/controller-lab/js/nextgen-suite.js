@@ -307,26 +307,39 @@ export class NextGenControllerSuite {
     if (this.isRecordingDrift && inputState.axes) {
       const lx = inputState.axes[0] || 0;
       const ly = inputState.axes[1] || 0;
+      const rx = inputState.axes[2] || 0;
+      const ry = inputState.axes[3] || 0;
       this.driftSamples.left.push({ x: lx, y: ly, timestamp: now });
+      this.driftSamples.right.push({ x: rx, y: ry, timestamp: now });
 
       const scatterCanvas = document.getElementById('driftScatterCanvas');
       if (scatterCanvas) this._plotScatterPoint(scatterCanvas, lx, ly);
 
       if ((now - this.driftStartTime) >= (this.driftDuration * 1000)) {
         this.isRecordingDrift = false;
-        const driftResult = AnalogMath.analyzeDrift(this.driftSamples.left);
+        const driftL = AnalogMath.analyzeDrift(this.driftSamples.left);
+        const driftR = AnalogMath.analyzeDrift(this.driftSamples.right);
+        const worseGrade = driftL.offsetDistance >= driftR.offsetDistance ? driftL.grade : driftR.grade;
         const resContainer = document.getElementById('driftAnalysisResults');
         if (resContainer) {
           resContainer.innerHTML = `
-            <div class="alert ${driftResult.status === 'Pass' ? 'alert-success' : driftResult.status === 'Acceptable' ? 'alert-warning' : 'alert-danger'} mt-3">
-              <h6 class="fw-bold mb-1">${driftResult.grade}</h6>
-              <div class="small">
-                Resting Offset Distance: <strong>${driftResult.offsetDistance}</strong> | Micro-Jitter Variance: <strong>${driftResult.microJitter}</strong>
+            <div class="row g-2 mt-2">
+              <div class="col-md-6">
+                <div class="alert ${driftL.status === 'Pass' ? 'alert-success' : driftL.status === 'Acceptable' ? 'alert-warning' : 'alert-danger'} mb-0">
+                  <h6 class="fw-bold mb-1">Left: ${driftL.grade}</h6>
+                  <div class="small">Offset: <strong>${driftL.offsetDistance}</strong> | Jitter: <strong>${driftL.microJitter}</strong></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="alert ${driftR.status === 'Pass' ? 'alert-success' : driftR.status === 'Acceptable' ? 'alert-warning' : 'alert-danger'} mb-0">
+                  <h6 class="fw-bold mb-1">Right: ${driftR.grade}</h6>
+                  <div class="small">Offset: <strong>${driftR.offsetDistance}</strong> | Jitter: <strong>${driftR.microJitter}</strong></div>
+                </div>
               </div>
             </div>
           `;
         }
-        this.lastCertMetrics.driftGrade = driftResult.grade;
+        this.lastCertMetrics.driftGrade = worseGrade;
         const btnStartDrift = document.getElementById('btnStartDriftTimer');
         if (btnStartDrift) {
           btnStartDrift.disabled = false;

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-prod';
+const jwtSecret = process.env.JWT_SECRET || 'techtest-auth-jwt-secret-key-v1-fallback';
 
 module.exports = (db) => {
   // 1. Verify token and ensure session is active in db

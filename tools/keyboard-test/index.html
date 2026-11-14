@@ -1026,6 +1026,11 @@
       if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
         e.preventDefault(); // Prevent page scrolling
       }
+
+      // Ignore OS auto-repeat events when key is held down to prevent chatter false-positives and audio looping
+      if (e.repeat) {
+        return;
+      }
       
       const code = e.code;
       const selector = `#layout-${activeLayout} [data-code="${code}"]`;

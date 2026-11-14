@@ -373,7 +373,7 @@ function getLoggedInUser(req) {
   const token = req.headers.authorization?.split(' ')[1] || req.cookies?.auth_token;
   if (!token) return null;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-in-prod');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'techtest-auth-jwt-secret-key-v1-fallback');
     return {
       id: decoded.userId,
       username: decoded.username,

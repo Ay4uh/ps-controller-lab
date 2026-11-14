@@ -22,6 +22,35 @@ class ControllerManager {
     this.VIBRATION_MAX = 255;
     this.DURATION_MIN = 0;
     this.DURATION_MAX = 60000; // 60 seconds max
+
+    // Button and stick states for UI updates
+    this.button_states = {
+      // e.g. 'square': false, 'cross': false, ...
+      sticks: {
+        left: {
+          x: 0,
+          y: 0
+        },
+        right: {
+          x: 0,
+          y: 0
+        }
+      }
+    };
+
+    // Touch points for touchpad input
+    this.touchPoints = [];
+
+    // Battery status tracking
+    this.batteryStatus = {
+      bat_txt: "",
+      changed: false,
+      charge_level: 0,
+      cable_connected: false,
+      is_charging: false,
+      is_error: false
+    };
+    this._lastBatteryText = "";
   }
 
   /**
@@ -79,36 +108,6 @@ class ControllerManager {
     }
   }
 
-    // Button and stick states for UI updates
-    this.button_states = {
-      // e.g. 'square': false, 'cross': false, ...
-      sticks: {
-        left: {
-          x: 0,
-          y: 0
-        },
-        right: {
-          x: 0,
-          y: 0
-        }
-      }
-    };
-
-    // Touch points for touchpad input
-    this.touchPoints = [];
-
-    // Battery status tracking
-    this.batteryStatus = {
-      bat_txt: "",
-      changed: false,
-      charge_level: 0,
-      cable_connected: false,
-      is_charging: false,
-      is_error: false
-    };
-    this._lastBatteryText = "";
-  }
-
   /**
   * Save has_changes_to_write state to storage
   */
@@ -143,6 +142,7 @@ class ControllerManager {
   * Update UI based on current has_changes_to_write state
   */
   _updateUI() {
+    if (typeof document === 'undefined') return;
     const saveBtn = document.getElementById("savechanges");
     if (saveBtn) {
       saveBtn
@@ -559,20 +559,20 @@ class ControllerManager {
    * @param {Function} doneCb - Callback function called when vibration ends (optional)
    */
   async setVibration({heavyLeft, lightRight, duration = 0}, doneCb = ({success}) => {}) {
+    // Validate input parameters first so validation errors are raised directly
+    this._validateVibrationValue(heavyLeft, 'heavyLeft');
+    this._validateVibrationValue(lightRight, 'lightRight');
+    if (duration > 0) {
+      this._validateDuration(duration);
+    }
+    this._validateCallback(doneCb, 'doneCb');
+
     if (!this.currentController) {
       if (doneCb) doneCb({ success: false});
       return;
     }
 
     try {
-      // Validate input parameters
-      this._validateVibrationValue(heavyLeft, 'heavyLeft');
-      this._validateVibrationValue(lightRight, 'lightRight');
-      if (duration > 0) {
-        this._validateDuration(duration);
-      }
-      this._validateCallback(doneCb, 'doneCb');
-
       await this.currentController.setVibration(heavyLeft, lightRight);
 
       // If duration is specified, automatically turn off vibration after the duration
@@ -608,23 +608,23 @@ class ControllerManager {
    * @param {string} output - Audio output destination: "speaker" (default) or "headphones" (optional)
    */
   async setSpeakerTone(duration = 1000, doneCb = ({success}) => {}, output = "speaker") {
+    // Validate input parameters first so validation errors are raised directly
+    if (duration > 0) {
+      this._validateDuration(duration);
+    }
+    this._validateCallback(doneCb, 'doneCb');
+
+    const validOutputs = ['speaker', 'headphones'];
+    if (typeof output !== 'string' || !validOutputs.includes(output)) {
+      throw new Error(`output must be one of: ${validOutputs.join(', ')}, got "${output}"`);
+    }
+
     if (!this.currentController) {
       if (doneCb) doneCb({ success: false});
       return;
     }
 
     try {
-      // Validate input parameters
-      if (duration > 0) {
-        this._validateDuration(duration);
-      }
-      this._validateCallback(doneCb, 'doneCb');
-
-      const validOutputs = ['speaker', 'headphones'];
-      if (typeof output !== 'string' || !validOutputs.includes(output)) {
-        throw new Error(`output must be one of: ${validOutputs.join(', ')}, got "${output}"`);
-      }
-
       await this.currentController.setSpeakerTone(output);
 
       // If duration is specified, automatically reset speaker after the duration

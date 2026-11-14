@@ -1,5 +1,5 @@
-module.exports = {
-  testEnvironment: 'jsdom',
+export default {
+  testEnvironment: 'node',
   testMatch: [
     '**/__tests__/**/*.+(js|ts|jsx|tsx)',
     '**/?(*.)+(spec|test).+(js|ts|jsx|tsx)'
