@@ -1,4 +1,3 @@
-               try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
     // Remote Diagnostics Logging
     window.onerror = function(message, source, lineno, colno, error) {
       fetch('/log', {

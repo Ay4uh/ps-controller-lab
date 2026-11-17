@@ -10,9 +10,55 @@
   <meta property="og:site_name" content="TechTest">
   <meta property="og:type" content="website">
   <meta name="author" content="TechTest">
-  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo.png?v=24">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/shared/styles.css?v=24">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Hardware Troubleshooting Q&amp;A &amp; Repair Reference | TechTest">
+  <meta property="og:description" content="Practical hardware troubleshooting answers for DualSense stick drift, laptop display issues, thermals, and peripheral testing.">
+  <meta property="og:url" content="https://ay5uh.com/answers/">
+  <meta property="og:image" content="https://ay5uh.com/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hardware Troubleshooting Q&amp;A &amp; Repair Reference | TechTest">
+  <meta name="twitter:description" content="Practical hardware troubleshooting answers for DualSense stick drift, laptop display issues, thermals, and peripheral testing.">
+  <meta name="twitter:image" content="https://ay5uh.com/og-image.png">
+
+  <!-- FAQ Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I diagnose PS5 DualSense stick drift?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Connect your DualSense controller via USB or Bluetooth in Chrome, open Controller Lab, and test resting deadzone offset. Any offset greater than 0.05 indicates hardware stick drift."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can stick drift be fixed without opening the controller?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Minor drift (under 5%) can often be compensated via firmware recalibration and deadzone mapping. Severe mechanical drift caused by carbon potentiometer wear typically requires cleaning or Hall Effect sensor replacement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I check for stuck keyboard keys online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Open the TechTest Keyboard Diagnostic tool. Press each key on your keyboard to verify matrix registration and test for key switch chatter or bounce."
+        }
+      }
+    ]
+  }
+  </script>
 
   <!-- Theme Initialization -->
   <script>

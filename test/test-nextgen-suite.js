@@ -215,6 +215,52 @@ async function runAsyncTests() {
   assert(fs.existsSync(path.join(rootDir, '_headers')), 'Cloudflare _headers security/cache file must exist');
   assert(!fs.existsSync(path.join(rootDir, 'downloads/TechTest-Diagnostic-v1.0.exe')), 'Fake .exe stub must be removed');
 
+  // 8. Automated SEO & Metadata Invariant Tests
+  console.log('\n--- 8. Testing Comprehensive SEO, Metadata & Structured Data Invariants ---');
+  function findHtmlFiles(dir) {
+    let results = [];
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const e of entries) {
+      if (e.name === 'node_modules' || e.name === 'dist' || e.name === '.git') continue;
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) results = results.concat(findHtmlFiles(full));
+      else if (e.name.endsWith('.html')) results.push(full);
+    }
+    return results;
+  }
+
+  const allHtml = findHtmlFiles(rootDir);
+  assert(allHtml.length >= 35, `Found ${allHtml.length} HTML pages to validate for SEO`);
+
+  let duplicateCanonicals = 0;
+  let missingCanonicals = 0;
+  let missingOg = 0;
+  let missingTwitter = 0;
+  let missingSchema = 0;
+
+  for (const file of allHtml) {
+    const content = fs.readFileSync(file, 'utf8');
+    const canons = content.match(/<link[^>]*rel=["']canonical["']/gi) || [];
+    if (canons.length > 1) duplicateCanonicals++;
+    if (canons.length === 0) missingCanonicals++;
+    if (!/<meta[^>]*property=["']og:title["']/i.test(content)) missingOg++;
+    if (!/<meta[^>]*name=["']twitter:card["']/i.test(content)) missingTwitter++;
+    if (!/application\/ld\+json/i.test(content)) missingSchema++;
+  }
+
+  assert(duplicateCanonicals === 0, `All HTML pages must have zero duplicate canonical tags (found ${duplicateCanonicals})`);
+  assert(missingCanonicals === 0, `All HTML pages must define a canonical tag (found ${missingCanonicals} missing)`);
+  assert(missingOg === 0, `All HTML pages must define OpenGraph title (found ${missingOg} missing)`);
+  assert(missingTwitter === 0, `All HTML pages must define Twitter Card meta (found ${missingTwitter} missing)`);
+  assert(missingSchema === 0, `All HTML pages must embed JSON-LD Structured Data (found ${missingSchema} missing)`);
+
+  const sitemapContent = fs.readFileSync(path.join(rootDir, 'sitemap.xml'), 'utf8');
+  assert(sitemapContent.includes('https://ay5uh.com/policies/'), 'Sitemap must index policies/ URL');
+  assert(sitemapContent.includes('https://ay5uh.com/tools/controller-lab/'), 'Sitemap must index controller-lab URL');
+
+  const mainScript = fs.readFileSync(path.join(rootDir, 'main_script.js'), 'utf8');
+  assert(!mainScript.startsWith('try { (adsbygoogle'), 'main_script.js should not have orphaned ad snippet at line 1');
+
   console.log(`\n=== TEST RESULTS: ${passedTests} PASSED, ${failedTests} FAILED ===\n`);
 
   if (failedTests > 0) {
