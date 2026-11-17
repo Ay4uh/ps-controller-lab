@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechTest — Free Hardware Diagnostics | No Download Required</title>
-  <meta name="description" content="Free browser-based hardware diagnostics for laptops, MacBooks, phones, and gaming controllers. Test keyboard, display, mic, speakers, webcam and more. No download required.">
-  <meta name="keywords" content="free hardware test, online keyboard test, dead pixel test, webcam test, controller drift test, MacBook diagnostics">
+  <title>Hardware Tester — Free Online Gamepad, Keyboard &amp; Screen Diagnostics | TechTest</title>
+  <meta name="description" content="Free browser-based hardware tester &amp; diagnostic lab. Test gamepad stick drift, keyboard rollover, screen dead pixels, microphone audio, webcam, and mouse latency online.">
+  <meta name="keywords" content="hardware tester, gamepad tester, controller drift test, keyboard tester, dead pixel test, mic test online, webcam test online, screen refresh rate test">
   <meta name="robots" content="index, follow">
   <meta property="og:site_name" content="TechTest">
   <meta property="og:type" content="website">
@@ -521,16 +521,76 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "TechTest",
+    "url": "https://ay5uh.com",
+    "logo": "https://ay5uh.com/logo.png",
+    "description": "TechTest is a free, browser-based hardware diagnostic and testing platform providing real-time telemetry, WebHID report decoding, and performance benchmarks for controllers, keyboards, monitors, and PCs."
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I test my controller for stick drift online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Connect your PlayStation (DualSense, PS4), Xbox, or Nintendo Switch controller to your PC or Mac via USB-C or Bluetooth in Chrome or Edge. Open our free Controller Lab tool and rotate both analog sticks. Our mathematical circularity engine will instantly measure resting deadzone drift, axis jitter, and circularity error percentage without installing any software."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does TechTest require downloading software or drivers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. All TechTest diagnostic suites run 100% locally in your web browser using modern Web APIs (WebHID, Gamepad API, WebGL2, WebGPU, Web Audio API, and MediaDevices). Your input and sensor data never leave your device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which controllers and gamepads are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "TechTest natively supports Sony PS5 DualSense & DualSense Edge, PS4 DualShock 4, Microsoft Xbox Series X/S & Xbox One, Nintendo Switch Pro Controller & Joy-Cons, Logitech, 8BitDo, and all standard X-Input and DirectInput PC gamepads."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I test my keyboard for stuck keys or ghosting?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Launch our Online Keyboard Tester and begin pressing keys. The visual layout highlights registered keypresses, measures switch latency, and tests for N-Key Rollover (NKRO) matrix ghosting to ensure simultaneous key combos register accurately."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I check my screen for dead pixels and refresh rate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use our Display Test and Dead Pixel Test. The tools cycle full-screen primary colors (Red, Green, Blue, White, Black) to expose stuck or dead sub-pixels, and run high-precision requestAnimationFrame timers to detect your monitor's true refresh rate (60Hz, 120Hz, 144Hz, 240Hz, or 360Hz)."
+        }
+      }
+    ]
+  }
+  </script>
+
   <!-- Open Graph -->
-  <meta property="og:title" content="TechTest — Free Hardware Diagnostics | No Download Required">
-  <meta property="og:description" content="Free browser-based hardware diagnostics for laptops, MacBooks, phones, and gaming controllers. Test keyboard, display, mic, speakers, webcam and more. No download required.">
+  <meta property="og:title" content="Hardware Tester — Free Online Gamepad, Keyboard &amp; Screen Diagnostics | TechTest">
+  <meta property="og:description" content="Free browser-based hardware tester &amp; diagnostic lab. Test gamepad stick drift, keyboard rollover, screen dead pixels, microphone audio, webcam, and mouse latency online.">
   <meta property="og:url" content="https://ay5uh.com/">
   <meta property="og:image" content="https://ay5uh.com/og-image.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="TechTest — Free Hardware Diagnostics | No Download Required">
-  <meta name="twitter:description" content="Free browser-based hardware diagnostics for laptops, MacBooks, phones, and gaming controllers. Test keyboard, display, mic, speakers, webcam and more. No download required.">
+  <meta name="twitter:title" content="Hardware Tester — Free Online Gamepad, Keyboard &amp; Screen Diagnostics | TechTest">
+  <meta name="twitter:description" content="Free browser-based hardware tester &amp; diagnostic lab. Test gamepad stick drift, keyboard rollover, screen dead pixels, microphone audio, webcam, and mouse latency online.">
   <meta name="twitter:image" content="https://ay5uh.com/og-image.png">
 
   <!-- Sitemap reference -->
@@ -543,13 +603,13 @@
     <main class="main-content">
       
       <div class="hero animate-fade-in-up" style="padding-bottom: 28px;">
-        <p style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;">Browser Hardware Diagnostics</p>
-        <h1 class="hero-title">Test Your Hardware.<br>Know What's Wrong.</h1>
-        <p class="hero-subtitle">Run interactive diagnostics on gaming controllers, laptops, displays, and peripherals directly in your browser.</p>
+        <p style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;">Browser Hardware Diagnostics &amp; Telemetry</p>
+        <h1 class="hero-title">Free Hardware Diagnostics &amp; Gamepad Tester</h1>
+        <p class="hero-subtitle">Instant browser-based hardware testing for gaming controllers, keyboards, laptop displays, microphones, webcams, and mice — 100% free with zero downloads.</p>
         <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 22px;">
           <a href="/tools/controller-lab/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--accent-blue); color: #ffffff; padding: 11px 22px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">Open Controller Lab <i class="fa-solid fa-arrow-right"></i></a>
-          <a href="/tools/laptop-comprehensive/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 11px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">One-Click Diagnostic Suite</a>
-          <a href="/tools/laptop/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 11px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">PC &amp; Laptop Tools</a>
+          <a href="/tools/keyboard-test/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 11px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">Keyboard Key Tester</a>
+          <a href="/tools/display-test/" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 11px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">Display &amp; Dead Pixel Test</a>
         </div>
       </div>
 
@@ -818,6 +878,35 @@
         </div>
       </div>
 
+      <!-- Frequently Asked Questions -->
+      <div class="container animate-fade-in-up delay-3" style="margin-bottom: 56px;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 40px 32px;">
+          <h2 style="font-family: var(--font-title); font-size: 26px; font-weight: 700; margin: 0 0 24px 0; color: var(--text-primary); text-align: center;">Frequently Asked Questions</h2>
+          <div style="display: flex; flex-direction: column; gap: 20px; max-width: 900px; margin: 0 auto;">
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 18px;">
+              <h3 style="font-size: 17px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px 0;">How do I test my controller for stick drift online?</h3>
+              <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">Connect your PlayStation (DualSense, PS4), Xbox, or Nintendo Switch controller to your PC or Mac via USB-C or Bluetooth in Chrome or Edge. Open our free <a href="/tools/controller-lab/" style="color: var(--accent-blue); font-weight: 600;">Controller Lab</a> tool and rotate both analog sticks. Our mathematical circularity engine will instantly measure resting deadzone drift, axis jitter, and circularity error percentage without installing any software.</p>
+            </div>
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 18px;">
+              <h3 style="font-size: 17px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px 0;">Does TechTest require downloading software or drivers?</h3>
+              <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">No. All TechTest diagnostic suites run 100% locally in your web browser using modern Web APIs (WebHID, Gamepad API, WebGL2, WebGPU, Web Audio API, and MediaDevices). Your input and sensor data never leave your device.</p>
+            </div>
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 18px;">
+              <h3 style="font-size: 17px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px 0;">Which controllers and gamepads are supported?</h3>
+              <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">TechTest natively supports Sony PS5 DualSense &amp; DualSense Edge, PS4 DualShock 4, Microsoft Xbox Series X/S &amp; Xbox One, Nintendo Switch Pro Controller &amp; Joy-Cons, Logitech, 8BitDo, and all standard X-Input and DirectInput PC gamepads.</p>
+            </div>
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 18px;">
+              <h3 style="font-size: 17px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px 0;">How do I test my keyboard for stuck keys or ghosting?</h3>
+              <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">Launch our <a href="/tools/keyboard-test/" style="color: var(--accent-blue); font-weight: 600;">Online Keyboard Tester</a> and begin pressing keys. The visual layout highlights registered keypresses, measures switch latency, and tests for N-Key Rollover (NKRO) matrix ghosting to ensure simultaneous key combos register accurately.</p>
+            </div>
+            <div>
+              <h3 style="font-size: 17px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px 0;">How do I check my screen for dead pixels and refresh rate?</h3>
+              <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">Use our <a href="/tools/display-test/" style="color: var(--accent-blue); font-weight: 600;">Display Test</a> and <a href="/tools/dead-pixel-test/" style="color: var(--accent-blue); font-weight: 600;">Dead Pixel Test</a>. The tools cycle full-screen primary colors (Red, Green, Blue, White, Black) to expose stuck or dead sub-pixels, and run high-precision requestAnimationFrame timers to detect your monitor's true refresh rate (60Hz, 120Hz, 144Hz, 240Hz, or 360Hz).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Q&A Teaser -->
       <div class="container animate-fade-in-up delay-3" style="margin-bottom: 56px;">
         <div class="qa-teaser">
@@ -832,29 +921,41 @@
         <div class="footer-grid">
           <div class="footer-col">
             <h4 style="color: white; font-weight: 700; font-size: 15px; margin-bottom: 16px;">TechTest</h4>
-            <p>Browser-based hardware diagnostics executed locally on your device.</p>
+            <p>Browser-based hardware diagnostics executed locally on your device with native WebHID telemetry and cryptographic certification.</p>
           </div>
           <div class="footer-col">
-            <h4>Tools</h4>
+            <h4>Gamepad &amp; Peripherals</h4>
             <ul>
-              <li><a href="/tools/controller-lab/">Controller Lab</a></li>
-              <li><a href="/tools/laptop/">Laptop Diagnostics</a></li>
-              <li><a href="/tools/phone-diagnostics/">Phone Tester</a></li>
-              <li><a href="/tools/benchmark/">GPU Benchmark</a></li>
-              <li><a href="/verify/">Verify Certificate</a></li>
+              <li><a href="/tools/controller-lab/">Controller Drift Tester</a></li>
+              <li><a href="/fix-ps5-controller-drift/">Fix PS5 Stick Drift</a></li>
+              <li><a href="/dualsense-calibration/">DualSense Calibration</a></li>
+              <li><a href="/ps4-controller-drift-test/">PS4 Controller Drift Test</a></li>
+              <li><a href="/controller-vibration-test/">Controller Vibration Test</a></li>
+              <li><a href="/tools/keyboard-test/">Keyboard Key Tester</a></li>
+              <li><a href="/tools/mouse-test/">Mouse &amp; Trackpad Test</a></li>
             </ul>
           </div>
           <div class="footer-col">
-            <h4>Resources</h4>
+            <h4>Display, Audio &amp; System</h4>
             <ul>
-              <li><a href="/about/">About Us</a></li>
-              <li><a href="/answers/">Q&amp;A Answers</a></li>
+              <li><a href="/tools/display-test/">Display &amp; Refresh Rate (Hz)</a></li>
+              <li><a href="/tools/dead-pixel-test/">Dead Pixel Screen Test</a></li>
+              <li><a href="/tools/pixel-repair/">Stuck Pixel Fixer</a></li>
+              <li><a href="/tools/mic-test/">Microphone Audio Test</a></li>
+              <li><a href="/tools/speaker-test/">Speaker Stereo Test</a></li>
+              <li><a href="/tools/webcam-test/">Webcam Camera Test</a></li>
+              <li><a href="/tools/benchmark/">GPU &amp; WebGL Benchmark</a></li>
+              <li><a href="/tools/battery-test/">Laptop Battery Health</a></li>
+              <li><a href="/tools/network-test/">Network Latency &amp; Ping</a></li>
+              <li><a href="/verify/">Verify Health Certificate</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>About &amp; Legal</h4>
+            <ul>
+              <li><a href="/about/">About TechTest</a></li>
+              <li><a href="/answers/">Troubleshooting Q&amp;A</a></li>
               <li><a href="/contact/">Contact Us</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Legal &amp; Services</h4>
-            <ul>
               <li><a href="/policies/">Policies &amp; Legal</a></li>
               <li><a href="https://github.com/Ay4uh/ps-controller-lab" target="_blank" rel="noopener">GitHub Project</a></li>
               <li><a href="/services/ps5-repair-london/" style="color: #60a5fa;">PS5 Repair London</a></li>
